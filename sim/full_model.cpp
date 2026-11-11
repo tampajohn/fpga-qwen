@@ -52,6 +52,12 @@ extern "C" void weight_row(int64_t index,int count,const svOpenArrayHandle outpu
 }
 extern "C" int64_t tensor_base(int slot) { return offsets.at(slot); }
 static std::unique_ptr<ProjectionPool> pool;
+// Only the coordinator changes command purpose; run() waits for all readers.
+static bool verification_command=false;
+struct VerificationCommand {
+    VerificationCommand() {verification_command=true;}
+    ~VerificationCommand() {verification_command=false;}
+};
 #ifdef PARALLEL_ATTENTION
 static const Vqwen_behavioral___024root* attention_root=nullptr;
 extern "C" double attention_key_value(int index) {
@@ -98,7 +104,7 @@ extern "C" void dispatch_block_projection(int64_t base,int rows,int width,int co
     const auto* x=static_cast<const double*>(svGetArrayPtr(input));
     auto* y=static_cast<double*>(svGetArrayPtr(output));
     if(!pool || !x || !y) throw std::runtime_error("Invalid block projection dispatch");
-    pool->run(base,rows,width,x,y,count>4?3:2,0,0,count);
+    pool->run(base,rows,width,x,y,verification_command?4:(count>4?3:2),0,0,count);
 }
 #endif
 #ifdef SCALAR_GROUP
@@ -137,7 +143,7 @@ extern "C" void dispatch_projection_group(const svOpenArrayHandle bases,
     if(count<2 || count>3) throw std::runtime_error("Invalid projection group count");
     std::array<ProjectionDescriptor,3> jobs{};
     for(int i=0;i<count;++i) jobs[i]={b[i],r[i],1024,o[i]};
-    pool->run_group(jobs,count,tokens,x,y);
+    pool->run_group(jobs,count,tokens,x,y,false,verification_command);
 }
 #endif
 
@@ -226,7 +232,7 @@ int main(int argc,char** argv) {
                 std::cout<<"prefill "<<count<<' '<<d->position<<'\n'<<std::flush;
 #endif
             } else if(command=="block") {
-#ifdef FP32_PROJECTION_B1
+#if defined(FP32_PROJECTION_B1) && !defined(FP32_VERIFICATION_B4)
                 throw std::runtime_error("FP32 B1 hybrid does not support block verification; use FP64 prefill");
 #else
                 int count,logits,sampled;
@@ -248,6 +254,9 @@ int main(int argc,char** argv) {
                     d->block_uniforms[t]=uniform;
                 }
                 d->block_count=count;d->do_logits=logits;d->sample_enabled=sampled;
+#ifdef FP32_VERIFICATION_B4
+                VerificationCommand verification_scope;
+#endif
                 d->presence_penalty=penalty;d->start=0;d->block_start=1;tick();d->block_start=0;
                 if(!d->done) throw std::runtime_error("Block simulation did not finish");
                 std::cout<<"block "<<count<<std::setprecision(17);
@@ -277,7 +286,11 @@ int main(int argc,char** argv) {
 #endif
 #ifdef FP32_PROJECTION_B1
             } else if(command=="precision") {
+#ifdef FP32_VERIFICATION_B4
+                std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill","scalar_projection":"fp32","prefill_projection":"fp64","verification_projection":"fp32","attention_kv":"fp64","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"fp64_b8_aligned_v1"})"<<'\n'<<std::flush;
+#else
                 std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill","scalar_projection":"fp32","prefill_projection":"fp64","attention_kv":"fp64","max_verification_block":1,"prefix_reuse_supported":false,"canonical_prefix_policy":"fp64_b8_aligned_v1"})"<<'\n'<<std::flush;
+#endif
             } else if(command=="fp32probe") {
                 int slot,rows,width;
                 std::string path;

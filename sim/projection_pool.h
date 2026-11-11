@@ -5,6 +5,9 @@
 #include "Vprojection_worker.h"
 #ifdef FP32_PROJECTION_B1
 #include "Vfp32_projection_kernel.h"
+#ifdef FP32_VERIFICATION_B4
+#include "Vfp32_verification_kernel.h"
+#endif
 #if !defined(PARALLEL_ATTENTION) || !defined(BATCH_PREFILL) || !defined(PREFILL_B8)
 #error "FP32 B1 requires the FP64 parallel-attention and B8-prefill backend"
 #endif
@@ -80,6 +83,12 @@ class ProjectionPool {
             auto fp32=std::make_unique<Vfp32_projection_kernel>(fp32_context.get());
             fp32->start=0;fp32->clk=0;fp32->eval();
 #endif
+#ifdef FP32_VERIFICATION_B4
+            auto verify_context=std::make_unique<VerilatedContext>();
+            verify_context->threads(1);
+            auto verify=std::make_unique<Vfp32_verification_kernel>(verify_context.get());
+            verify->start=0;verify->clk=0;verify->eval();
+#endif
             std::unique_lock<std::mutex> lock(mutex);
             ++ready;complete.notify_one();
             uint64_t seen=0;
@@ -118,6 +127,12 @@ class ProjectionPool {
 #endif
 #ifdef FP32_PROJECTION_B1
                 // One copy per dispatch, including a multi-matrix scalar group.
+#ifdef FP32_VERIFICATION_B4
+                if(operation==4) {
+                    for(int j=0;j<width;++j) for(int t=0;t<4;++t)
+                        verify->activation[j*4+t]=t<batch_count?input[j*8+t]:0.0;
+                } else
+#endif
                 if(operation==0) std::memcpy(fp32->activation.data(),input,width*sizeof(double));
                 else {
 #endif
@@ -153,6 +168,14 @@ class ProjectionPool {
 #endif
                 int begin=job_rows*id/count, end=job_rows*(id+1)/count;
 #ifdef FP32_PROJECTION_B1
+#ifdef FP32_VERIFICATION_B4
+                if(operation==4) {
+                    verify->base=job_base;verify->width=width;verify->first_row=begin;verify->end_row=end;
+                    verify->start=1;verify->clk=0;verify->eval();verify->clk=1;verify->eval();
+                    for(int r=begin;r<end;++r) for(int t=0;t<batch_count;++t)
+                        destination[(output_offset+r)*8+t]=verify->result[r*4+t];
+                } else
+#endif
                 if(operation==0) {
                     fp32->base=job_base;fp32->width=width;fp32->first_row=begin;fp32->end_row=end;
                     fp32->start=1;fp32->clk=0;fp32->eval();fp32->clk=1;fp32->eval();
@@ -256,6 +279,12 @@ public:
                 throw std::runtime_error("Invalid wide prefill projection job");
         }
 #endif
+#ifdef FP32_VERIFICATION_B4
+        else if(requested_operation==4) {
+            if(requested_batch_count<1 || requested_batch_count>4 || matrix_rows>3072 || matrix_width%8)
+                throw std::runtime_error("Invalid FP32 verification job");
+        }
+#endif
         else if(requested_operation!=0) throw std::runtime_error("Invalid worker operation");
 #endif
         if(matrix_rows<1 || matrix_rows>151936 || matrix_width<1 || matrix_width>3072)
@@ -305,14 +334,18 @@ public:
     // Bounded immutable descriptors; every job reads the same normalized input.
     // Matrix reductions still execute in the existing SystemVerilog worker.
     void run_group(const std::array<ProjectionDescriptor,3>& jobs,int count,int tokens,
-                   const double* x,double* y,bool scalar=false) {
+                   const double* x,double* y,bool scalar=false,bool verification=false) {
+#ifndef FP32_VERIFICATION_B4
+        if(verification)throw std::runtime_error("FP32 verification unavailable");
+#endif
+        if(verification && (scalar || tokens<1 || tokens>4))throw std::runtime_error("Invalid verification group");
         if(scalar && tokens!=1)throw std::runtime_error("Scalar group requires one token");
         validate_projection_group(jobs,count,tokens,x,y);
         std::unique_lock<std::mutex> lock(mutex);
         if(error) std::rethrow_exception(error);
         ++group_counters[0];group_counters[1]+=count;group_counters[2]+=count-1;
         group_counters[3]+=uint64_t(count-1)*threads.size()*1024*(scalar?1:(tokens>4?8:4))*sizeof(double);
-        group_jobs=jobs;group_count=count;operation=scalar?0:(tokens>4?3:2);batch_count=tokens;
+        group_jobs=jobs;group_count=count;operation=verification?4:(scalar?0:(tokens>4?3:2));batch_count=tokens;
         base=jobs[0].base;rows=jobs[0].rows;width=1024;input=x;output=y;
 #ifdef PROJECTION_HYBRID_WAIT
         pending.store(threads.size(),std::memory_order_relaxed);

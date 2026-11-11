@@ -1,0 +1,167 @@
+{
+  "cases": [
+    {
+      "prefill_tail": 0,
+      "count": 1,
+      "exact": true
+    },
+    {
+      "prefill_tail": 0,
+      "count": 2,
+      "exact": true
+    },
+    {
+      "prefill_tail": 0,
+      "count": 3,
+      "exact": true
+    },
+    {
+      "prefill_tail": 0,
+      "count": 4,
+      "exact": true
+    },
+    {
+      "prefill_tail": 1,
+      "count": 1,
+      "exact": true
+    },
+    {
+      "prefill_tail": 1,
+      "count": 2,
+      "exact": true
+    },
+    {
+      "prefill_tail": 1,
+      "count": 3,
+      "exact": true
+    },
+    {
+      "prefill_tail": 1,
+      "count": 4,
+      "exact": true
+    },
+    {
+      "prefill_tail": 2,
+      "count": 1,
+      "exact": true
+    },
+    {
+      "prefill_tail": 2,
+      "count": 2,
+      "exact": true
+    },
+    {
+      "prefill_tail": 2,
+      "count": 3,
+      "exact": true
+    },
+    {
+      "prefill_tail": 2,
+      "count": 4,
+      "exact": true
+    },
+    {
+      "prefill_tail": 3,
+      "count": 1,
+      "exact": true
+    },
+    {
+      "prefill_tail": 3,
+      "count": 2,
+      "exact": true
+    },
+    {
+      "prefill_tail": 3,
+      "count": 3,
+      "exact": true
+    },
+    {
+      "prefill_tail": 3,
+      "count": 4,
+      "exact": true
+    },
+    {
+      "prefill_tail": 4,
+      "count": 1,
+      "exact": true
+    },
+    {
+      "prefill_tail": 4,
+      "count": 2,
+      "exact": true
+    },
+    {
+      "prefill_tail": 4,
+      "count": 3,
+      "exact": true
+    },
+    {
+      "prefill_tail": 4,
+      "count": 4,
+      "exact": true
+    },
+    {
+      "prefill_tail": 7,
+      "count": 1,
+      "exact": true
+    },
+    {
+      "prefill_tail": 7,
+      "count": 2,
+      "exact": true
+    },
+    {
+      "prefill_tail": 7,
+      "count": 3,
+      "exact": true
+    },
+    {
+      "prefill_tail": 7,
+      "count": 4,
+      "exact": true
+    }
+  ],
+  "binary_sha256": "91e3e161d6e08c83e435ab093d8d15ff2132e1275b842c323423f4780e577cc2",
+  "sources": {
+    "rtl/projection_worker.sv": "0c3a166902dd28e6e3daa05a137271d766a0bf380889f741a730a1549cba555e",
+    "rtl/qwen_behavioral.sv": "1e3184f1e39596cf921e6e653f8cb4ab1e68626adb40667402f24a6b880595a0",
+    "rtl/sampling.svh": "0dbc0e7afbe0f74c5deea579739171256629dcf8c374770a16de0ca49102c01a",
+    "sim/full_model.cpp": "152b4081a42c64deb272ec4f24eefb8fed67421fedb9b503b8465d24e596866a",
+    "sim/projection_pool.h": "a08e2a7f981aeee40d778d58cd5ee13b87ef93a5f29a9b29be9fabdf3164a663",
+    "sim/projection_descriptors.h": "476090efcd9a0941acb9190c9ab0b7e609de438f86a323cba2c7ae19074f233c",
+    "tools/build_projection_variant.py": "e8904775ebae1be56928d94134a0815a325bcab7741451d3d4e7c8f9ff9a6896",
+    "rtl/fp32_projection_kernel.sv": "385ccd251f83c8fc5e8f552a7aaf55e7c15c466415b8731edf5a239daad7c4e2"
+  },
+  "verification_profile": "FP32 B4 hidden projections, FP32 B1 vocabulary, FP64 prefill/attention/KV",
+  "additional_gates": {
+    "unchanged_prefill_lengths": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      17,
+      85,
+      452
+    ],
+    "reference_binary_sha256": "bf8242221d07675916cd6711869d3568cb24d8655824d875dee5d1eefda943a7",
+    "partition_workers": [
+      1,
+      3,
+      17
+    ],
+    "partition_replay_counts": [
+      4,
+      1,
+      3,
+      2
+    ],
+    "all_logits_bit_identical": true,
+    "existing_block_suite": "5 passed, actual4096 capacity skipped",
+    "scheduler": "CV and hybrid, op4 counts1..4, invalid shapes/counts/span, canaries and group byte accounting"
+  },
+  "timing_claim": null
+}
