@@ -17,6 +17,11 @@ module qwen_behavioral (
     import "DPI-C" function longint tensor_base(input int slot);
     import "DPI-C" function void dispatch_projection(input longint base, input int rows, width,
                                                       input real activation[], output real result[]);
+`ifdef PARALLEL_ATTENTION
+    import "DPI-C" function void dispatch_attention(input int layer, position,
+        input real query[], output real attention_result[]);
+    real attention_output[2048];
+`endif
     real projection_input[3072];
 `ifdef COMPACT_PROJECTION_BUFFER
     // DPI output arrays are initialized/copied at their declared size. Hidden
@@ -132,6 +137,12 @@ module qwen_behavioral (
         for (int j=0;j<H;j++) begin
             keys[index+j]=k[j]; values[index+j]=v[j];
         end
+`ifdef PARALLEL_ATTENTION
+        if (parallel_workers>0) begin
+            dispatch_attention(layer,position,q,attention_output);
+            for (int j=0;j<Q;j++) a[j]=attention_output[j];
+        end else begin
+`endif
         for (int head=0;head<16;head++) begin
             kvhead=head/2;
             maximum=-1.0e300;
@@ -166,6 +177,9 @@ module qwen_behavioral (
             end
 `endif
         end
+`ifdef PARALLEL_ATTENTION
+        end
+`endif
         base=tensor_base(3+layer*11+4);
         if (parallel_workers>0) begin
             for (int j=0;j<Q;j++) projection_input[j]=a[j];

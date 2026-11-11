@@ -47,6 +47,39 @@ extern "C" void weight_row(int64_t index,int count,const svOpenArrayHandle outpu
 }
 extern "C" int64_t tensor_base(int slot) { return offsets.at(slot); }
 static std::unique_ptr<ProjectionPool> pool;
+#ifdef PARALLEL_ATTENTION
+static const Vqwen_behavioral___024root* attention_root=nullptr;
+extern "C" double attention_key_value(int index) {
+    if(!attention_root || index<0 || index>=28*4096*1024)
+        throw std::runtime_error("Invalid attention key address");
+#ifdef STATIC_KV
+    return attention_root->qwen_behavioral__DOT__keys[index];
+#else
+    return attention_root->__Vnontrivs.qwen_behavioral__DOT__keys.at(index);
+#endif
+}
+extern "C" double attention_value_value(int index) {
+    if(!attention_root || index<0 || index>=28*4096*1024)
+        throw std::runtime_error("Invalid attention value address");
+#ifdef STATIC_KV
+    return attention_root->qwen_behavioral__DOT__values[index];
+#else
+    return attention_root->__Vnontrivs.qwen_behavioral__DOT__values.at(index);
+#endif
+}
+extern "C" void dispatch_attention(int layer,int position,const svOpenArrayHandle query,
+                                    const svOpenArrayHandle output) {
+    const auto* q=static_cast<const double*>(svGetArrayPtr(query));
+    auto* a=static_cast<double*>(svGetArrayPtr(output));
+    if(!pool || !q || !a || !attention_root) throw std::runtime_error("Invalid attention dispatch");
+    pool->run(0,16,2048,q,a,1,layer,position);
+}
+// This guard is destroyed before the main model, including exception unwinding.
+struct AttentionLifetime {
+    ~AttentionLifetime() {pool.reset();attention_root=nullptr;}
+};
+#endif
+
 extern "C" void dispatch_projection(int64_t base,int rows,int width,
                                     const svOpenArrayHandle input,const svOpenArrayHandle output) {
     const auto* x=static_cast<const double*>(svGetArrayPtr(input));
@@ -73,6 +106,10 @@ int main(int argc,char** argv) {
         if(count) pool=std::make_unique<ProjectionPool>(count,reduction_lanes);
         auto context=std::make_unique<VerilatedContext>();
         auto d=std::make_unique<Vqwen_behavioral>(context.get());
+#ifdef PARALLEL_ATTENTION
+        attention_root=d->rootp;
+        AttentionLifetime attention_lifetime;
+#endif
         auto tick=[&](){d->clk=0;d->eval();d->clk=1;d->eval();};
         d->sample_enabled=0;d->sample_uniform=0.0;d->presence_penalty=0.0;
         d->parallel_workers=count; d->rst_n=0; d->start=0; d->truncate_cache=0; tick(); d->rst_n=1;
