@@ -52,12 +52,20 @@ static const Vqwen_behavioral___024root* attention_root=nullptr;
 extern "C" double attention_key_value(int index) {
     if(!attention_root || index<0 || index>=28*4096*1024)
         throw std::runtime_error("Invalid attention key address");
+#ifdef STATIC_KV
+    return attention_root->qwen_behavioral__DOT__keys[index];
+#else
     return attention_root->__Vnontrivs.qwen_behavioral__DOT__keys.at(index);
+#endif
 }
 extern "C" double attention_value_value(int index) {
     if(!attention_root || index<0 || index>=28*4096*1024)
         throw std::runtime_error("Invalid attention value address");
+#ifdef STATIC_KV
+    return attention_root->qwen_behavioral__DOT__values[index];
+#else
     return attention_root->__Vnontrivs.qwen_behavioral__DOT__values.at(index);
+#endif
 }
 extern "C" void dispatch_attention(int layer,int position,const svOpenArrayHandle query,
                                     const svOpenArrayHandle output) {

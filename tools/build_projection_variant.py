@@ -19,9 +19,12 @@ def main():
     parser.add_argument('--fast-math', action='store_true', help='Experimental relaxed IEEE semantics; requires separate quality validation')
     parser.add_argument('--unroll', action='store_true')
     parser.add_argument('--masked-activation', action='store_true')
+    parser.add_argument('--unsigned-indices', action='store_true')
+    parser.add_argument('--cpu', choices=['generic', 'native'], default='generic')
     parser.add_argument('--fast-attention', action='store_true')
     parser.add_argument('--parallel-attention', action='store_true')
     parser.add_argument('--compact-projection', action='store_true')
+    parser.add_argument('--static-kv', action='store_true')
     parser.add_argument('--pool', choices=['cv', 'hybrid'], default='cv')
     parser.add_argument('--tag', default='', help='Extra alphanumeric/dash suffix for a reproducible experiment')
     parser.add_argument('--print-path', action='store_true', help='Print output path without compiling')
@@ -35,9 +38,12 @@ def main():
     if args.fast_math: tag += '-fast-math'
     if args.unroll: tag += '-unroll'
     if args.masked_activation: tag += '-masked-activation'
+    if args.unsigned_indices: tag += '-unsigned-indices'
+    if args.cpu == 'native': tag += '-cpu-native'
     if args.fast_attention: tag += '-fast-attention'
     if args.parallel_attention: tag += '-parallel-attention'
     if args.compact_projection: tag += '-compact-projection'
+    if args.static_kv: tag += '-static-kv'
     if args.pool != 'cv': tag += '-pool-'+args.pool
     if args.tag: tag += '-'+args.tag
     directory = ROOT / 'build/variants' / tag
@@ -49,20 +55,24 @@ def main():
     projection.mkdir(parents=True, exist_ok=True)
     full.mkdir(parents=True, exist_ok=True)
     flags = '-std=c++17 -' + args.opt + (' -flto=thin' if args.lto else '')
+    if args.cpu == 'native': flags += ' -mcpu=native'
     if args.fast_math: flags += ' -ffast-math'
     if args.fp_contract != 'on': flags += ' -ffp-contract='+args.fp_contract
     if args.unroll: flags += ' -funroll-loops'
     if args.pool == 'hybrid': flags += ' -DPROJECTION_HYBRID_WAIT'
     if args.parallel_attention: flags += ' -DPARALLEL_ATTENTION'
+    if args.static_kv: flags += ' -DSTATIC_KV'
     defines = {'scalar': [], 'row': ['+define+BULK_ROW_WEIGHTS']}[args.storage]
     if args.unchecked: defines += ['+define+UNCHECKED_WEIGHTS']
     if args.masked_activation: defines += ['+define+MASK_ACTIVATION_INDEX']
+    if args.unsigned_indices: defines += ['+define+UNSIGNED_PROJECTION_INDEX']
     main_defines = []
     if args.parallel_attention:
         defines += ['+define+PARALLEL_ATTENTION']
         main_defines += ['+define+PARALLEL_ATTENTION']
     if args.fast_attention: main_defines += ['+define+FAST_ATTENTION']
     if args.compact_projection: main_defines += ['+define+COMPACT_PROJECTION_BUFFER']
+    if args.static_kv: main_defines += ['+define+STATIC_KV']
     commands = [
         ['verilator', '--cc', '--build', '-j', '4', '--top-module',
          'projection_worker', '--Mdir', str(projection), '-Wall', '-Wno-BLKSEQ',

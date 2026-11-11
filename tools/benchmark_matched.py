@@ -192,7 +192,7 @@ def make_prompt(protocol, profile):
     return request.ids
 
 
-def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, workers, lanes, count, atol, profile='short'):
+def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, workers, lanes, count, atol, profile='short', reference_lanes=1, require_bit_identical=False):
     """Teacher-force both engines from the same prompt; test every output logit.
 
     Reassociation may change low bits. Exact sampled text is not required, but
@@ -200,10 +200,10 @@ def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, 
     tolerance. The candidate is fed the reference token so context cannot drift.
     """
     import numpy as np
-    reference = SVEngine(checkpoint,workers,protocol.tokenizer,reference_binary,1)
+    reference = SVEngine(checkpoint,workers,protocol.tokenizer,reference_binary,reference_lanes)
     candidate = SVEngine(checkpoint,workers,protocol.tokenizer,candidate_binary,lanes)
     prompt = make_prompt(protocol,profile)
-    errors, choices, finite = [], [], True
+    errors, choices, finite, bit_identical = [], [], True, True
     try:
         reference.start(); candidate.start()
         for token in prompt[:-1]:
@@ -221,6 +221,7 @@ def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, 
                 b=np.fromfile(cand_path,dtype=np.float64)
                 if len(a)!=151936 or len(b)!=151936:
                     raise RuntimeError('Unexpected full-vocabulary logit shape')
+                bit_identical = bit_identical and bool(np.array_equal(a.view(np.uint64), b.view(np.uint64)))
                 current_finite=bool(np.isfinite(a).all() and np.isfinite(b).all())
                 finite=finite and current_finite
                 errors.append(float(np.max(np.abs(a-b))) if current_finite else None)
@@ -232,10 +233,11 @@ def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, 
             reference_sha256=hashlib.sha256(reference_binary.read_bytes()).hexdigest(),
             candidate_sha256=hashlib.sha256(candidate_binary.read_bytes()).hexdigest(),
             prompt_tokens=len(prompt),teacher_forced_generated_tokens=count,
-            candidate_reduction_lanes=lanes,absolute_error_tolerance=atol,
+            candidate_reduction_lanes=lanes,reference_reduction_lanes=reference_lanes,
+            bit_identical_logits=bit_identical,require_bit_identical=require_bit_identical,absolute_error_tolerance=atol,
             per_position_max_absolute_logit_errors=errors,max_absolute_logit_error=maximum,
             greedy_choices=choices,unchanged_greedy_sequence=matched,all_logits_finite=finite,
-            passed=finite and matched and maximum<=atol)
+            passed=finite and matched and maximum<=atol and (bit_identical or not require_bit_identical))
         print(json.dumps(dict(numerical_gate_passed=result['passed'],max_absolute_logit_error=maximum,
                               unchanged_greedy_sequence=matched)),flush=True)
         return result
@@ -254,6 +256,8 @@ def main():
     parser.add_argument('--sv-binary', type=Path, help='Trusted local simulator executable; never accepted through HTTP')
     parser.add_argument('--sv-lanes', type=int, choices=[1,8], default=1)
     parser.add_argument('--reference-sv-binary', type=Path, help='Optional baseline for a separate numerical gate before timing')
+    parser.add_argument('--reference-sv-lanes', type=int, choices=[1,8], default=1)
+    parser.add_argument('--require-bit-identical', action='store_true', help='Require exact logit bit patterns as well as the numerical/greedy gate')
     parser.add_argument('--gate-tokens', type=int, default=16)
     parser.add_argument('--gate-profile', choices=['short','medium','long'], default='short')
     parser.add_argument('--logit-atol', type=float, default=1e-6)
@@ -262,6 +266,8 @@ def main():
     parser.add_argument('--quality-cases', default='', help='Comma-separated objective case names; empty means all')
     parser.add_argument('--output', type=Path, default=ROOT/'build/matched-benchmark.json')
     args = parser.parse_args()
+    if args.require_bit_identical and not args.reference_sv_binary:
+        parser.error('--require-bit-identical requires --reference-sv-binary')
     if not 1<=args.gate_tokens<=128 or not 0<args.logit_atol<1:
         parser.error('Invalid numerical gate limits')
     for name in ('sv_binary', 'reference_sv_binary'):
@@ -299,7 +305,7 @@ def main():
         report[key] = hashlib.sha256(binary.read_bytes()).hexdigest() if binary.is_file() else None
     if args.reference_sv_binary:
         report['numerical_gate'] = compare_sv_logits(checkpoint, protocol, args.reference_sv_binary,
-            sv_binary, args.threads, args.sv_lanes, args.gate_tokens, args.logit_atol, args.gate_profile)
+            sv_binary, args.threads, args.sv_lanes, args.gate_tokens, args.logit_atol, args.gate_profile, args.reference_sv_lanes, args.require_bit_identical)
         args.output.write_text(json.dumps(report,indent=2)+'\n')
         if not report['numerical_gate']['passed']:
             raise RuntimeError('Numerical gate failed; candidate timing skipped')

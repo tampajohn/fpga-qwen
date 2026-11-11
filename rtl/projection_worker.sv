@@ -69,6 +69,13 @@ module projection_worker (
         end
     endtask
 `endif
+// Host validation guarantees nonnegative rows and columns. Unsigned loop
+// variables keep index widening free of signed-extension bookkeeping.
+`ifdef UNSIGNED_PROJECTION_INDEX
+`define PROJECTION_INDEX int unsigned
+`else
+`define PROJECTION_INDEX int
+`endif
     always @(posedge clk) begin
         real sum;
         real partial[8];
@@ -77,13 +84,13 @@ module projection_worker (
             if (operation==1) attend_heads();
             else begin
 `endif
-            for (int row=first_row;row<end_row;row++) begin
+            for (`PROJECTION_INDEX row=first_row;row<end_row;row++) begin
 `ifdef BULK_ROW_WEIGHTS
                 weight_row(base+longint'(row)*width,width,row_weights);
 `endif
                 if (reduction_lanes==8 && width%8==0) begin
                     for (int lane=0;lane<8;lane++) partial[lane]=0.0;
-                    for (int column=0;column<width && column<3065;column+=8) begin
+                    for (`PROJECTION_INDEX column=0;column<width && column<3065;column+=8) begin
 `ifdef BULK_ROW_WEIGHTS
                         partial[0]+=`ACTIVATION_AT(column+0)*row_weights[column+0];
 `else
@@ -130,7 +137,7 @@ module projection_worker (
                     for (int lane=0;lane<8;lane++) sum+=partial[lane];
                 end else begin
                     sum=0.0;
-                    for (int column=0;column<width && column<3072;column++) begin
+                    for (`PROJECTION_INDEX column=0;column<width && column<3072;column++) begin
 `ifdef BULK_ROW_WEIGHTS
                         sum+=`ACTIVATION_AT(column)*row_weights[column];
 `else
@@ -145,5 +152,6 @@ module projection_worker (
 `endif
         end
     end
+`undef PROJECTION_INDEX
 `undef ACTIVATION_AT
 endmodule
