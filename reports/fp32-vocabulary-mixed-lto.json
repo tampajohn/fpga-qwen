@@ -1,0 +1,409 @@
+{
+  "gpu": false,
+  "pytorch": false,
+  "completed": true,
+  "workers": 8,
+  "repetitions": 1000,
+  "pairs": 3,
+  "baseline": "Production FP64 worker independently compiled with installed Verilator/O3/thin-LTO and original contraction behavior.",
+  "candidate": "Original SV shortreal kernel, real ports/BF16 DPI, explicit FP32 conversions/add/mul; strict no contraction.",
+  "limitations": "Projection-only synthetic-activation timing, not model-quality or end-to-end evidence. This B1 extension has151936-row output capacity and covers Q plus complete vocabulary; stock worker additionally carries batch ports. Shape spans validated. No-LTO and mixed strict/default ThinLTO are distinct documented linking policies.",
+  "model_provenance": {
+    "same_original_checkpoint_for_both_engines": true,
+    "original_checkpoint": {
+      "filename": "model.safetensors",
+      "bytes": 1503300328,
+      "sha256": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+    },
+    "config_tokenizer_template_files": {
+      "config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+      "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+      "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+    },
+    "chat_protocol_source_sha256": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e",
+    "candidate_artifact_limitation": "External quantized weights/calibration artifacts are not discovered automatically; supply their separate manifest before claiming full candidate reproducibility."
+  },
+  "runs": [
+    {
+      "batch": 1,
+      "name": "q",
+      "slot": 4,
+      "rows": 2048,
+      "width": 1024,
+      "reduction_lanes": 8,
+      "manifests": {
+        "fp64": {
+          "binary": "$HYBRID/build/fp32-vocab-mixed/fp64-b1/Vprojection_worker",
+          "binary_sha256": "e8d76615068e8d77f54a9b2ee7f7773b73504e86be0850dd02a3547c62277ea0",
+          "command": [
+            "/opt/homebrew/bin/verilator",
+            "--cc",
+            "--exe",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "projection_worker",
+            "--Mdir",
+            "$HYBRID/build/fp32-vocab-mixed/fp64-b1",
+            "-Wall",
+            "-Wno-BLKSEQ",
+            "-Wno-fatal",
+            "-CFLAGS",
+            "-std=c++17 -O3 -DKERNEL_BATCH=1 -DKERNEL_ROWS=151936 -flto=thin -DBASELINE_FP64",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-LDFLAGS",
+            "-flto=thin",
+            "-O3",
+            "+define+PARALLEL_ATTENTION",
+            "+define+BATCH_PREFILL",
+            "+define+BLOCK_UNROLL",
+            "+define+UNCHECKED_WEIGHTS",
+            "+define+MASK_ACTIVATION_INDEX",
+            "+define+UNSIGNED_PROJECTION_INDEX",
+            "+define+WIDE_BATCH=8",
+            "+define+WIDE_FOUR_LANES",
+            "$HYBRID/rtl/projection_worker.sv",
+            "$HYBRID/sim/fp32_projection_probe.cpp"
+          ],
+          "version": "Verilator 5.054 2026-11-01 rev vUNKNOWN-built20261101",
+          "compiler_binary_sha256": "ec2b6aea5b16b17eb4dc97c5a52be51018a46390410794757dd72341cb3d33a4",
+          "compiler_patch_base": null,
+          "compiler_git_head": null,
+          "compiler_patch_sha256": null,
+          "environment": {},
+          "source_hashes": {
+            "rtl/projection_worker.sv": "0c3a166902dd28e6e3daa05a137271d766a0bf380889f741a730a1549cba555e",
+            "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+            "tools/probe_fp32_projection.py": "ed54937516faedf117bbc65e6024e5628c0e6c3a63d14c9ba79b59e832b945ad",
+            "tools/fp32_rounding_oracle.py": "497383808159a47ee4bdf53034b9c64be7d6924b84871a05946c8eada672931e"
+          }
+        },
+        "fp32": {
+          "binary": "$HYBRID/build/fp32-vocab-mixed/fp32-b1/Vfp32_projection_kernel",
+          "binary_sha256": "20753f88488164e905cdaf4bdbdf932dc863bf81de8fa6563dce1ef5467fa9e5",
+          "command": [
+            [
+              "$COMPILER/bin/verilator",
+              "--cc",
+              "--build",
+              "-j",
+              "4",
+              "--top-module",
+              "fp32_projection_kernel",
+              "--Mdir",
+              "$HYBRID/build/fp32-vocab-mixed/fp32-b1",
+              "-Wall",
+              "-Wno-BLKSEQ",
+              "-Wno-fatal",
+              "-CFLAGS",
+              "-std=c++17 -O3 -flto=thin -fno-fast-math -ffp-contract=off",
+              "-MAKEFLAGS",
+              "OPT_FAST=-O3",
+              "-O3",
+              "+define+KERNEL_BATCH=1",
+              "+define+KERNEL_ROWS=151936",
+              "$HYBRID/rtl/fp32_projection_kernel.sv"
+            ],
+            [
+              "c++",
+              "-std=c++17",
+              "-O3",
+              "-flto=thin",
+              "-pthread",
+              "-DKERNEL_BATCH=1",
+              "-DKERNEL_ROWS=151936",
+              "-I$HYBRID/build/fp32-vocab-mixed/fp32-b1",
+              "-I/opt/homebrew/Cellar/verilator/5.054/share/verilator/include",
+              "-I/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/vltstd",
+              "$HYBRID/sim/fp32_projection_probe.cpp",
+              "$HYBRID/build/fp32-vocab-mixed/fp32-b1/Vfp32_projection_kernel__ALL.a",
+              "/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/verilated.cpp",
+              "/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/verilated_dpi.cpp",
+              "/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/verilated_threads.cpp",
+              "-Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv,-U,_vlog_startup_routines",
+              "-o",
+              "$HYBRID/build/fp32-vocab-mixed/fp32-b1/Vfp32_projection_kernel"
+            ]
+          ],
+          "source_hashes": {
+            "rtl/fp32_projection_kernel.sv": "385ccd251f83c8fc5e8f552a7aaf55e7c15c466415b8731edf5a239daad7c4e2",
+            "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+            "tools/build_fp32_mixed_probe.py": "266158ffab137a8c2e02ff5ef69defd4441e11b6e3a4303b3509bb3f4b3196a9",
+            "tools/probe_fp32_projection.py": "ed54937516faedf117bbc65e6024e5628c0e6c3a63d14c9ba79b59e832b945ad",
+            "tools/fp32_rounding_oracle.py": "497383808159a47ee4bdf53034b9c64be7d6924b84871a05946c8eada672931e"
+          },
+          "compiler_binary_sha256": "70df52bf26b8852b199d5c8d4e94dd0514e0f499ae6d7ff786bfb297de05989f",
+          "compiler_git_head": "c607db496a5cb5207a14cfa70e1639edb742a4b1",
+          "compiler_patch_base": "bbb60a403932a9f695cb6ff001ceb73de6ad9234",
+          "compiler_patch_sha256": "6cf8b4f944ab0f6118c0fa96d4fd84574f1553741efd21b0c2c2d2881c94819b",
+          "runtime_headers": {
+            "verilated.h": {
+              "stock": "6a7461171978c893f50edaae440aaaca1f135aab979cf4b0a0cc342c46620da2",
+              "patched": "6a7461171978c893f50edaae440aaaca1f135aab979cf4b0a0cc342c46620da2"
+            },
+            "verilated_types.h": {
+              "stock": "cfefa84195f0ff462a5a35c1ee33fbc2e6146cc9855424eb6423268f43f51df4",
+              "patched": "cfefa84195f0ff462a5a35c1ee33fbc2e6146cc9855424eb6423268f43f51df4"
+            },
+            "verilated_threads.h": {
+              "stock": "25916863c4db8a163875a96ef90e0fb5493c74b658d1a7442533a528bfd1324f",
+              "patched": "25916863c4db8a163875a96ef90e0fb5493c74b658d1a7442533a528bfd1324f"
+            }
+          },
+          "stock_runtime_root": "/opt/homebrew/Cellar/verilator/5.054/share/verilator/include",
+          "link_policy": "Strict FP32 generated objects only; stock host/runtime and final link retain original default contraction. ThinLTO allows BF16 transport inlining."
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fp64",
+            "fp32"
+          ],
+          "seconds": {
+            "fp64": 0.028569292,
+            "fp32": 0.018928333
+          },
+          "throughput_ratio": 1.5093400987820746,
+          "max_absolute_error": 2.580530502171996e-06,
+          "rms_error": 2.28774098118021e-07,
+          "relative_l2_error": 2.21171052220952e-07
+        },
+        {
+          "order": [
+            "fp32",
+            "fp64"
+          ],
+          "seconds": {
+            "fp32": 0.019231833,
+            "fp64": 0.030061333
+          },
+          "throughput_ratio": 1.5631028514026717,
+          "max_absolute_error": 2.580530502171996e-06,
+          "rms_error": 2.28774098118021e-07,
+          "relative_l2_error": 2.21171052220952e-07
+        },
+        {
+          "order": [
+            "fp64",
+            "fp32"
+          ],
+          "seconds": {
+            "fp64": 0.030033917,
+            "fp32": 0.020109417
+          },
+          "throughput_ratio": 1.4935249987605308,
+          "max_absolute_error": 2.580530502171996e-06,
+          "rms_error": 2.28774098118021e-07,
+          "relative_l2_error": 2.21171052220952e-07
+        }
+      ],
+      "median_throughput_ratio": 1.5093400987820746
+    },
+    {
+      "batch": 1,
+      "name": "vocabulary",
+      "slot": 2,
+      "rows": 151936,
+      "width": 1024,
+      "reduction_lanes": 8,
+      "manifests": {
+        "fp64": {
+          "binary": "$HYBRID/build/fp32-vocab-mixed/fp64-b1/Vprojection_worker",
+          "binary_sha256": "e8d76615068e8d77f54a9b2ee7f7773b73504e86be0850dd02a3547c62277ea0",
+          "command": [
+            "/opt/homebrew/bin/verilator",
+            "--cc",
+            "--exe",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "projection_worker",
+            "--Mdir",
+            "$HYBRID/build/fp32-vocab-mixed/fp64-b1",
+            "-Wall",
+            "-Wno-BLKSEQ",
+            "-Wno-fatal",
+            "-CFLAGS",
+            "-std=c++17 -O3 -DKERNEL_BATCH=1 -DKERNEL_ROWS=151936 -flto=thin -DBASELINE_FP64",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-LDFLAGS",
+            "-flto=thin",
+            "-O3",
+            "+define+PARALLEL_ATTENTION",
+            "+define+BATCH_PREFILL",
+            "+define+BLOCK_UNROLL",
+            "+define+UNCHECKED_WEIGHTS",
+            "+define+MASK_ACTIVATION_INDEX",
+            "+define+UNSIGNED_PROJECTION_INDEX",
+            "+define+WIDE_BATCH=8",
+            "+define+WIDE_FOUR_LANES",
+            "$HYBRID/rtl/projection_worker.sv",
+            "$HYBRID/sim/fp32_projection_probe.cpp"
+          ],
+          "version": "Verilator 5.054 2026-11-01 rev vUNKNOWN-built20261101",
+          "compiler_binary_sha256": "ec2b6aea5b16b17eb4dc97c5a52be51018a46390410794757dd72341cb3d33a4",
+          "compiler_patch_base": null,
+          "compiler_git_head": null,
+          "compiler_patch_sha256": null,
+          "environment": {},
+          "source_hashes": {
+            "rtl/projection_worker.sv": "0c3a166902dd28e6e3daa05a137271d766a0bf380889f741a730a1549cba555e",
+            "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+            "tools/probe_fp32_projection.py": "ed54937516faedf117bbc65e6024e5628c0e6c3a63d14c9ba79b59e832b945ad",
+            "tools/fp32_rounding_oracle.py": "497383808159a47ee4bdf53034b9c64be7d6924b84871a05946c8eada672931e"
+          }
+        },
+        "fp32": {
+          "binary": "$HYBRID/build/fp32-vocab-mixed/fp32-b1/Vfp32_projection_kernel",
+          "binary_sha256": "20753f88488164e905cdaf4bdbdf932dc863bf81de8fa6563dce1ef5467fa9e5",
+          "command": [
+            [
+              "$COMPILER/bin/verilator",
+              "--cc",
+              "--build",
+              "-j",
+              "4",
+              "--top-module",
+              "fp32_projection_kernel",
+              "--Mdir",
+              "$HYBRID/build/fp32-vocab-mixed/fp32-b1",
+              "-Wall",
+              "-Wno-BLKSEQ",
+              "-Wno-fatal",
+              "-CFLAGS",
+              "-std=c++17 -O3 -flto=thin -fno-fast-math -ffp-contract=off",
+              "-MAKEFLAGS",
+              "OPT_FAST=-O3",
+              "-O3",
+              "+define+KERNEL_BATCH=1",
+              "+define+KERNEL_ROWS=151936",
+              "$HYBRID/rtl/fp32_projection_kernel.sv"
+            ],
+            [
+              "c++",
+              "-std=c++17",
+              "-O3",
+              "-flto=thin",
+              "-pthread",
+              "-DKERNEL_BATCH=1",
+              "-DKERNEL_ROWS=151936",
+              "-I$HYBRID/build/fp32-vocab-mixed/fp32-b1",
+              "-I/opt/homebrew/Cellar/verilator/5.054/share/verilator/include",
+              "-I/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/vltstd",
+              "$HYBRID/sim/fp32_projection_probe.cpp",
+              "$HYBRID/build/fp32-vocab-mixed/fp32-b1/Vfp32_projection_kernel__ALL.a",
+              "/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/verilated.cpp",
+              "/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/verilated_dpi.cpp",
+              "/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/verilated_threads.cpp",
+              "-Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv,-U,_vlog_startup_routines",
+              "-o",
+              "$HYBRID/build/fp32-vocab-mixed/fp32-b1/Vfp32_projection_kernel"
+            ]
+          ],
+          "source_hashes": {
+            "rtl/fp32_projection_kernel.sv": "385ccd251f83c8fc5e8f552a7aaf55e7c15c466415b8731edf5a239daad7c4e2",
+            "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+            "tools/build_fp32_mixed_probe.py": "266158ffab137a8c2e02ff5ef69defd4441e11b6e3a4303b3509bb3f4b3196a9",
+            "tools/probe_fp32_projection.py": "ed54937516faedf117bbc65e6024e5628c0e6c3a63d14c9ba79b59e832b945ad",
+            "tools/fp32_rounding_oracle.py": "497383808159a47ee4bdf53034b9c64be7d6924b84871a05946c8eada672931e"
+          },
+          "compiler_binary_sha256": "70df52bf26b8852b199d5c8d4e94dd0514e0f499ae6d7ff786bfb297de05989f",
+          "compiler_git_head": "c607db496a5cb5207a14cfa70e1639edb742a4b1",
+          "compiler_patch_base": "bbb60a403932a9f695cb6ff001ceb73de6ad9234",
+          "compiler_patch_sha256": "6cf8b4f944ab0f6118c0fa96d4fd84574f1553741efd21b0c2c2d2881c94819b",
+          "runtime_headers": {
+            "verilated.h": {
+              "stock": "6a7461171978c893f50edaae440aaaca1f135aab979cf4b0a0cc342c46620da2",
+              "patched": "6a7461171978c893f50edaae440aaaca1f135aab979cf4b0a0cc342c46620da2"
+            },
+            "verilated_types.h": {
+              "stock": "cfefa84195f0ff462a5a35c1ee33fbc2e6146cc9855424eb6423268f43f51df4",
+              "patched": "cfefa84195f0ff462a5a35c1ee33fbc2e6146cc9855424eb6423268f43f51df4"
+            },
+            "verilated_threads.h": {
+              "stock": "25916863c4db8a163875a96ef90e0fb5493c74b658d1a7442533a528bfd1324f",
+              "patched": "25916863c4db8a163875a96ef90e0fb5493c74b658d1a7442533a528bfd1324f"
+            }
+          },
+          "stock_runtime_root": "/opt/homebrew/Cellar/verilator/5.054/share/verilator/include",
+          "link_policy": "Strict FP32 generated objects only; stock host/runtime and final link retain original default contraction. ThinLTO allows BF16 transport inlining."
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fp64",
+            "fp32"
+          ],
+          "seconds": {
+            "fp64": 2.274749334,
+            "fp32": 1.594113458
+          },
+          "throughput_ratio": 1.4269682766833527,
+          "max_absolute_error": 1.290265252196221e-06,
+          "rms_error": 1.9963564961348188e-07,
+          "relative_l2_error": 2.2084320776066274e-07
+        },
+        {
+          "order": [
+            "fp32",
+            "fp64"
+          ],
+          "seconds": {
+            "fp32": 1.567703833,
+            "fp64": 2.376208458
+          },
+          "throughput_ratio": 1.5157253608628511,
+          "max_absolute_error": 1.290265252196221e-06,
+          "rms_error": 1.9963564961348188e-07,
+          "relative_l2_error": 2.2084320776066274e-07
+        },
+        {
+          "order": [
+            "fp64",
+            "fp32"
+          ],
+          "seconds": {
+            "fp64": 2.378071958,
+            "fp32": 1.702949709
+          },
+          "throughput_ratio": 1.3964428576087797,
+          "max_absolute_error": 1.290265252196221e-06,
+          "rms_error": 1.9963564961348188e-07,
+          "relative_l2_error": 2.2084320776066274e-07
+        }
+      ],
+      "median_throughput_ratio": 1.4269682766833527
+    }
+  ],
+  "vocabulary": true,
+  "candidate_no_lto": false,
+  "tiny_fixture_checks": [
+    {
+      "rows": 1,
+      "width": 8,
+      "batch": 1,
+      "exact_rational_rounding_match": true
+    },
+    {
+      "rows": 3,
+      "width": 16,
+      "batch": 1,
+      "exact_rational_rounding_match": true
+    },
+    {
+      "rows": 7,
+      "width": 24,
+      "batch": 1,
+      "exact_rational_rounding_match": true
+    }
+  ]
+}

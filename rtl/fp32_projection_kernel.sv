@@ -1,11 +1,14 @@
 // Isolated projection experiment. All conversions and arithmetic remain in SV.
 // Real ports preserve the existing transport ABI; only internal math is FP32.
+`ifndef KERNEL_ROWS
+`define KERNEL_ROWS 3072
+`endif
 module fp32_projection_kernel(
     input logic clk, start,
     input longint base,
     input int first_row, end_row, width,
     input real activation[4096*`KERNEL_BATCH],
-    output real result[3072*`KERNEL_BATCH]
+    output real result[`KERNEL_ROWS*`KERNEL_BATCH]
 );
     import "DPI-C" function real weight_value_unchecked(input longint index);
     localparam int B=`KERNEL_BATCH;

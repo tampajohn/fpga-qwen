@@ -42,7 +42,7 @@ int main(int argc,char** argv){
     while(offsets_file>>offset)offsets.push_back(offset);
     int slot=std::stoi(argv[3]),rows=std::stoi(argv[4]),width=std::stoi(argv[5]);
     int workers=std::stoi(argv[6]),reps=std::stoi(argv[7]);
-    if(slot<0 || slot>=int(offsets.size()) || rows<1 || rows>3072 || width<8 || width>3072 || width%8 || workers<1 || workers>32 || reps<1 || reps>10000)
+    if(slot<0 || slot>=int(offsets.size()) || rows<1 || rows>KERNEL_ROWS || width<8 || width>3072 || width%8 || workers<1 || workers>32 || reps<1 || reps>10000)
         throw std::runtime_error("Invalid probe shape");
     const int64_t base=offsets[slot],span=int64_t(rows)*width;
     if(base<0 || size_t(base)>words || size_t(span)>words-size_t(base))throw std::runtime_error("Weight span invalid");

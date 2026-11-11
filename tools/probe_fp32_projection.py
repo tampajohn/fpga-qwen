@@ -21,7 +21,7 @@ def sha(path):
     with Path(path).open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
 
 
-def build(directory,batch,kind,compiler_root):
+def build(directory,batch,kind,compiler_root,vocabulary=False,no_lto=False):
     destination=directory/f'{kind}-b{batch}';destination.mkdir(parents=True,exist_ok=True)
     baseline=kind=='fp64'
     env=os.environ.copy()
@@ -32,18 +32,19 @@ def build(directory,batch,kind,compiler_root):
         env['VERILATOR_ROOT']=str(compiler_root)
         env['VERILATOR_BIN']=str(compiler_root/'build-local/src/verilator_bin')
     top='projection_worker' if baseline else 'fp32_projection_kernel'
-    flags=f'-std=c++17 -O3 -flto=thin -DKERNEL_BATCH={batch}'
+    lto=baseline or not no_lto
+    flags=f'-std=c++17 -O3 -DKERNEL_BATCH={batch} -DKERNEL_ROWS={151936 if vocabulary else 3072}'+(' -flto=thin' if lto else '')
     defines=[]
     if baseline:
         flags+=' -DBASELINE_FP64'
         defines=['PARALLEL_ATTENTION','BATCH_PREFILL','BLOCK_UNROLL','UNCHECKED_WEIGHTS','MASK_ACTIVATION_INDEX','UNSIGNED_PROJECTION_INDEX','WIDE_BATCH=8','WIDE_FOUR_LANES']
     else:
         flags+=' -fno-fast-math -ffp-contract=off'
-        defines=[f'KERNEL_BATCH={batch}']
+        defines=[f'KERNEL_BATCH={batch}',f'KERNEL_ROWS={151936 if vocabulary else 3072}']
     source=ROOT/'rtl'/f'{top}.sv'
     command=[compiler,'--cc','--exe','--build','-j','4','--top-module',top,'--Mdir',str(destination),
              '-Wall','-Wno-BLKSEQ','-Wno-fatal','-CFLAGS',flags,'-MAKEFLAGS','OPT_FAST=-O3',
-             '-LDFLAGS','-flto=thin','-O3',*['+define+'+v for v in defines],str(source),str(ROOT/'sim/fp32_projection_probe.cpp')]
+             *(['-LDFLAGS','-flto=thin']if lto else []),'-O3',*['+define+'+v for v in defines],str(source),str(ROOT/'sim/fp32_projection_probe.cpp')]
     source_files=(source,ROOT/'sim/fp32_projection_probe.cpp',Path(__file__).resolve(),ROOT/'tools/fp32_rounding_oracle.py')
     before={str(p.relative_to(ROOT)):sha(p)for p in source_files}
     compiler_binary=(Path(compiler).resolve().parent/'verilator_bin') if baseline else compiler_root/'build-local/src/verilator_bin'
@@ -69,6 +70,9 @@ def build(directory,batch,kind,compiler_root):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--compiler-root',type=Path)
+    parser.add_argument('--candidate-no-lto',action='store_true')
+    parser.add_argument('--vocabulary',action='store_true')
+    parser.add_argument('--matrices',default='q,gate,down')
     mode=parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('--build-only',action='store_true');mode.add_argument('--run-only',action='store_true')
     parser.add_argument('--batches',default='1,4,8');parser.add_argument('--workers',type=int,default=8)
@@ -76,10 +80,11 @@ def main():
     parser.add_argument('--directory',type=Path,default=ROOT/'build/fp32-projection')
     args=parser.parse_args();batches=[int(b)for b in args.batches.split(',')]
     if any(b not in (1,4,8)for b in batches) or not 1<=args.workers<=32 or not 1<=args.repetitions<=10000 or not 1<=args.pairs<=10:parser.error('Invalid workload')
+    if args.vocabulary and batches!=[1]:parser.error('Vocabulary probe supports B1 only')
     if args.build_only:
         if not args.compiler_root:parser.error('Explicit reviewed compiler root required')
         for batch in batches:
-            for kind in ('fp64','fp32'):build(args.directory,batch,kind,args.compiler_root.resolve())
+            for kind in ('fp64','fp32'):build(args.directory,batch,kind,args.compiler_root.resolve(),args.vocabulary,args.candidate_no_lto)
         return
     model,layout=prepare_layout(locate_model(None))
     header,start,_=read_header(model/'model.safetensors')
@@ -92,6 +97,14 @@ def main():
         candidate='Original SV shortreal kernel, real ports/BF16 DPI, explicit FP32 conversions/add/mul; strict no contraction.',
         limitations='Synthetic deterministic activations with real full checkpoint matrices, warmed projection-only throughput. Excludes model layers, per-job dispatch barriers, input copying and output copies. FP32 conversion occurs inside each candidate SV tick. Candidate output capacity3072*B is smaller than production worker result151936 plus batch ports, potentially changing eval/cache costs. Vocabulary projection is not covered. Width must be8..3072 and divisible by8; full Q/gate/down tensor slots/shapes checked. Different compiler versions/layout/codegen and strict rounding mean this is not a pure arithmetic-width ablation; no full-model quality or speed claim.',
         model_provenance=model_provenance(model),runs=[])
+    matrices=[('q',4,2048,1024),('gate',11,3072,1024),('down',13,1024,3072)]+([('vocabulary',2,151936,1024)]if args.vocabulary else [])
+    selected=args.matrices.split(',')
+    if not set(selected)<={m[0]for m in matrices}:parser.error('Invalid matrix selection')
+    matrices=[m for m in matrices if m[0]in selected]
+    if args.vocabulary:
+        head='lm_head.weight'if 'lm_head.weight'in header else 'model.embed_tokens.weight'
+        if header[head]['shape']!=[151936,1024] or offsets[2]!=(start+header[head]['data_offsets'][0])//2:raise ValueError('Vocabulary mapping mismatch')
+    report['vocabulary']=args.vocabulary;report['candidate_no_lto']=args.candidate_no_lto
     for batch in batches:
         manifests={kind:json.loads((args.directory/f'{kind}-b{batch}'/'manifest.json').read_text())for kind in ('fp64','fp32')}
         for manifest in manifests.values():
@@ -107,11 +120,11 @@ def main():
             expected=np.asarray(projection_fixture(model/'model.safetensors',offsets[4],rows,width,batch),dtype=np.float64)
             if actual.shape!=expected.shape or not np.array_equal(actual.view(np.uint64),expected.view(np.uint64)):raise AssertionError('Exact-rational FP32 fixture mismatch')
             fixture_checks.append(dict(rows=rows,width=width,batch=batch,exact_rational_rounding_match=True))
-        for rows,width in ((0,8),(3073,8),(1,7),(1,9),(1,3080)):
+        for rows,width in ((0,8),(151937 if args.vocabulary else 3073,8),(1,7),(1,9),(1,3080)):
             run=subprocess.run([candidate,str(model/'model.safetensors'),str(layout),'4',str(rows),str(width),str(args.workers),'1',str(args.directory/'invalid.bin')],capture_output=True,text=True)
             if run.returncode!=1 or 'Invalid probe shape' not in run.stderr:raise AssertionError('Invalid shape accepted')
         report.setdefault('tiny_fixture_checks',[]).extend(fixture_checks)
-        for name,slot,rows,width in [('q',4,2048,1024),('gate',11,3072,1024),('down',13,1024,3072)]:
+        for name,slot,rows,width in matrices:
             record=dict(batch=batch,name=name,slot=slot,rows=rows,width=width,reduction_lanes=4 if batch==8 else 8,manifests=manifests,pairs=[])
             gold=None
             for pair in range(args.pairs):
