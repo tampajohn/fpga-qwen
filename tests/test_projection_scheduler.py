@@ -114,6 +114,14 @@ int main() {
             for(const auto& job:valid) for(int row=0;row<job.rows;++row) for(int t=0;t<tokens;++t)
                 assert(output[(job.output_offset+row)*4+t]==input[row*4+t]+job.base);
         }
+        pool.run_group(valid,3,1,input,output,true);
+        for(const auto& job:valid) for(int row=0;row<job.rows;++row)
+            assert(output[job.output_offset+row]==input[row]+job.base);
+        {
+            int before=worker_evaluations.load();auto counters=pool.group_stats();bool caught=false;
+            try {pool.run_group(valid,3,4,input,output,true);}catch(const std::runtime_error&){caught=true;}
+            assert(caught);assert(worker_evaluations.load()==before);assert(counters==pool.group_stats());
+        }
         auto reject=[&](std::array<ProjectionDescriptor,3> jobs,int count=3,int tokens=4,
                         const double* x=nullptr,double* y=nullptr) {
             int before=worker_evaluations.load();auto counters=pool.group_stats();bool caught=false;

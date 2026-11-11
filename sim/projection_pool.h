@@ -264,13 +264,14 @@ public:
     // Bounded immutable descriptors; every job reads the same normalized input.
     // Matrix reductions still execute in the existing SystemVerilog worker.
     void run_group(const std::array<ProjectionDescriptor,3>& jobs,int count,int tokens,
-                   const double* x,double* y) {
+                   const double* x,double* y,bool scalar=false) {
+        if(scalar && tokens!=1)throw std::runtime_error("Scalar group requires one token");
         validate_projection_group(jobs,count,tokens,x,y);
         std::unique_lock<std::mutex> lock(mutex);
         if(error) std::rethrow_exception(error);
         ++group_counters[0];group_counters[1]+=count;group_counters[2]+=count-1;
-        group_counters[3]+=uint64_t(count-1)*threads.size()*1024*(tokens>4?8:4)*sizeof(double);
-        group_jobs=jobs;group_count=count;operation=tokens>4?3:2;batch_count=tokens;
+        group_counters[3]+=uint64_t(count-1)*threads.size()*1024*(scalar?1:(tokens>4?8:4))*sizeof(double);
+        group_jobs=jobs;group_count=count;operation=scalar?0:(tokens>4?3:2);batch_count=tokens;
         base=jobs[0].base;rows=jobs[0].rows;width=1024;input=x;output=y;
 #ifdef PROJECTION_HYBRID_WAIT
         pending.store(threads.size(),std::memory_order_relaxed);

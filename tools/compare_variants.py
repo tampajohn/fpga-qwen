@@ -32,6 +32,8 @@ def main():
     parser.add_argument('--profiles',default='short,long')
     parser.add_argument('--pairs',type=int,default=3)
     parser.add_argument('--tokens',type=int,default=32)
+    parser.add_argument('--block-size',type=int,choices=[1,4],default=1)
+    parser.add_argument('--prefill-size',type=int,choices=[1,4,8])
     parser.add_argument('--model')
     parser.add_argument('--host-load-note',default='')
     parser.add_argument('--output',type=Path,default=ROOT/'build/compare-variants.json')
@@ -47,7 +49,7 @@ def main():
             parser.error(f'Missing binary: {path}')
     checkpoint=locate_model(args.model)
     protocol=ChatProtocol(checkpoint)
-    engines={name:SVEngine(checkpoint,args.workers,protocol.tokenizer,path,lanes)
+    engines={name:SVEngine(checkpoint,args.workers,protocol.tokenizer,path,lanes,block_size=args.block_size,prefill_size=args.prefill_size)
              for (name,path),lanes in zip(binaries.items(),(args.baseline_lanes,args.candidate_lanes))}
     report=dict(timestamp_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),gpu=False,pytorch=False,
                 workers=args.workers,tokens=args.tokens,host_load_note=args.host_load_note,completed=False,

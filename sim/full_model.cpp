@@ -101,6 +101,26 @@ extern "C" void dispatch_block_projection(int64_t base,int rows,int width,int co
     pool->run(base,rows,width,x,y,count>4?3:2,0,0,count);
 }
 #endif
+#ifdef SCALAR_GROUP
+extern "C" void dispatch_scalar_group(const svOpenArrayHandle bases,
+        const svOpenArrayHandle rows,const svOpenArrayHandle output_offsets,int count,
+        const svOpenArrayHandle input,const svOpenArrayHandle output) {
+    if(!pool || svSize(bases,1)!=3 || svSize(rows,1)!=3 || svSize(output_offsets,1)!=3 ||
+       svSize(input,1)!=1024 || svSize(output,1)!=6144)
+        throw std::runtime_error("Invalid scalar group array shape");
+    const auto* b=static_cast<const int64_t*>(svGetArrayPtr(bases));
+    const auto* r=static_cast<const int*>(svGetArrayPtr(rows));
+    const auto* o=static_cast<const int*>(svGetArrayPtr(output_offsets));
+    const auto* x=static_cast<const double*>(svGetArrayPtr(input));
+    auto* y=static_cast<double*>(svGetArrayPtr(output));
+    if(!b || !r || !o || !x || !y || count<2 || count>3)
+        throw std::runtime_error("Invalid scalar group storage/count");
+    std::array<ProjectionDescriptor,3> jobs{};
+    for(int i=0;i<count;++i)jobs[i]={b[i],r[i],1024,o[i]};
+    pool->run_group(jobs,count,1,x,y,true);
+}
+#endif
+
 #ifdef GROUP_PROJECTIONS
 extern "C" void dispatch_projection_group(const svOpenArrayHandle bases,
         const svOpenArrayHandle rows,const svOpenArrayHandle output_offsets,int count,int tokens,

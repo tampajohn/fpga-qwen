@@ -30,9 +30,11 @@ def main():
     parser.add_argument('--group-projections', action='store_true')
     parser.add_argument('--static-kv', action='store_true')
     parser.add_argument('--pool', choices=['cv', 'hybrid'], default='cv')
+    parser.add_argument('--scalar-group', action='store_true')
     parser.add_argument('--tag', default='', help='Extra alphanumeric/dash suffix for a reproducible experiment')
     parser.add_argument('--print-path', action='store_true', help='Print output path without compiling')
     args = parser.parse_args()
+    if args.scalar_group and not args.group_projections:parser.error('--scalar-group requires --group-projections')
     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
     if args.prefill_b8 and not args.batched_prefill:
@@ -61,6 +63,7 @@ def main():
     if args.static_kv: tag += '-static-kv'
     if args.prefill_b8: tag += '-prefill-b8'
     if args.pool != 'cv': tag += '-pool-'+args.pool
+    if args.scalar_group: tag += '-scalar-group'
     if args.tag: tag += '-'+args.tag
     directory = ROOT / 'build/variants' / tag
     projection, full = directory / 'projection', directory / 'full'
@@ -71,6 +74,7 @@ def main():
     projection.mkdir(parents=True, exist_ok=True)
     full.mkdir(parents=True, exist_ok=True)
     flags = '-std=c++17 -' + args.opt + (' -flto=thin' if args.lto else '')
+    if args.scalar_group: flags += ' -DSCALAR_GROUP'
     if args.cpu == 'native': flags += ' -mcpu=native'
     if args.fast_math: flags += ' -ffast-math'
     if args.fp_contract != 'on': flags += ' -ffp-contract='+args.fp_contract
@@ -87,6 +91,7 @@ def main():
     if args.block_unroll: defines += ['+define+BLOCK_UNROLL']
     if args.unsigned_indices: defines += ['+define+UNSIGNED_PROJECTION_INDEX']
     main_defines = []
+    if args.scalar_group: main_defines += ['+define+SCALAR_GROUP']
     if args.parallel_attention:
         defines += ['+define+PARALLEL_ATTENTION']
         main_defines += ['+define+PARALLEL_ATTENTION']

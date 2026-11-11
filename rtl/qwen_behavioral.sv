@@ -84,10 +84,33 @@ module qwen_behavioral (
         for (int j=0;j<H;j++) n[j]=x[j]*scale*weight_value(base+longint'(j));
     endtask
 
+`ifdef SCALAR_GROUP
+    import "DPI-C" function void dispatch_scalar_group(input longint bases[],
+        input int rows[], offsets[], input int count,
+        input real activation[], output real result[]);
+    longint scalar_bases[3];
+    int scalar_rows[3], scalar_offsets[3];
+    real scalar_input[H], scalar_output[6144];
+    task automatic scalar_group(input int slot0, rows0, slot1, rows1, slot2, rows2, jobs);
+        for(int j=0;j<H;j++) scalar_input[j]=n[j];
+        scalar_bases[0]=tensor_base(slot0);scalar_rows[0]=rows0;scalar_offsets[0]=0;
+        scalar_bases[1]=tensor_base(slot1);scalar_rows[1]=rows1;scalar_offsets[1]=rows0;
+        scalar_bases[2]=tensor_base(slot2);scalar_rows[2]=rows2;scalar_offsets[2]=rows0+rows1;
+        dispatch_scalar_group(scalar_bases,scalar_rows,scalar_offsets,jobs,scalar_input,scalar_output);
+    endtask
+`endif
+
     // Separate arrays keep the memory layout explicit and avoid host BLAS calls.
     task automatic project_qkv(input int layer);
         real sum;
         longint base;
+`ifdef SCALAR_GROUP
+        if(parallel_workers>0) begin
+            scalar_group(3+layer*11+1,Q,3+layer*11+2,H,3+layer*11+3,H,3);
+            for(int r=0;r<Q;r++)q[r]=scalar_output[r];
+            for(int r=0;r<H;r++)begin k[r]=scalar_output[Q+r];v[r]=scalar_output[Q+H+r];end
+        end else begin
+`endif
         base=tensor_base(3+layer*11+1);
         if (parallel_workers>0) begin
             for (int j=0;j<H;j++) projection_input[j]=n[j];
@@ -124,6 +147,9 @@ module qwen_behavioral (
             v[r]=sum;
         end
         end
+`ifdef SCALAR_GROUP
+        end
+`endif
     endtask
 
     task automatic attention(input int layer, input bit project_result);
@@ -220,14 +246,23 @@ module qwen_behavioral (
     task automatic mlp(input int layer);
         real sum, g, sigmoid;
         longint base;
+`ifdef SCALAR_GROUP
+        if(parallel_workers>0) scalar_group(3+layer*11+8,I,3+layer*11+9,I,0,0,2);
+`endif
         base=tensor_base(3+layer*11+8);
+`ifndef SCALAR_GROUP
         if (parallel_workers>0) begin
             for (int j=0;j<H;j++) projection_input[j]=n[j];
             dispatch_projection(base,I,H,projection_input,projection_output);
         end
+`endif
         for (int r=0;r<I;r++) begin
             sum=0.0;
+`ifdef SCALAR_GROUP
+            if (parallel_workers>0) sum=scalar_output[r];
+`else
             if (parallel_workers>0) sum=projection_output[r];
+`endif
             else for (int j=0;j<H;j++) sum+=n[j]*weight_value(base+longint'(r)*H+longint'(j));
             // Stable SiLU avoids exp overflow for large negative inputs.
             if (sum>=0.0) sigmoid=1.0/(1.0+$exp(-sum));
@@ -235,13 +270,19 @@ module qwen_behavioral (
             gate[r]=sum*sigmoid;
         end
         base=tensor_base(3+layer*11+9);
+`ifndef SCALAR_GROUP
         if (parallel_workers>0) begin
             for (int j=0;j<H;j++) projection_input[j]=n[j];
             dispatch_projection(base,I,H,projection_input,projection_output);
         end
+`endif
         for (int r=0;r<I;r++) begin
             sum=0.0;
+`ifdef SCALAR_GROUP
+            if (parallel_workers>0) sum=scalar_output[I+r];
+`else
             if (parallel_workers>0) sum=projection_output[r];
+`endif
             else for (int j=0;j<H;j++) sum+=n[j]*weight_value(base+longint'(r)*H+longint'(j));
             up[r]=gate[r]*sum;
         end
