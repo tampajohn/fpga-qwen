@@ -20,6 +20,7 @@ def main():
         page.on('pageerror', lambda e: errors.append(str(e)))
         page.goto(os.environ.get('CHAT_URL', 'http://127.0.0.1:8765'))
         expect(page.locator('#prompt')).to_be_enabled()
+        capabilities={entry['id']:entry for entry in page.request.get(os.environ.get('CHAT_URL','http://127.0.0.1:8765')+'/api/status').json()['backends']}
         page.screenshot(path=str(output / 'welcome.png'))
         page.locator('#reply-limit').select_option('128')
         expect(page.locator('#workers')).to_have_value('8')
@@ -45,7 +46,10 @@ def main():
         page.screenshot(path=str(output / 'conversation.png'))
         for backend in ['llama-q4', 'llama-q4', 'llama-f16', 'llama-f32', 'rtl']:
             page.locator('#backend').select_option(backend)
-            expect(page.locator('#suffix')).to_be_disabled()
+            if capabilities[backend].get('suffix_supported'):
+                expect(page.locator('#suffix')).to_be_enabled()
+            else:
+                expect(page.locator('#suffix')).to_be_disabled()
             page.locator('#prompt').fill('What word did you just say? Answer with that word only.')
             page.locator('#send').click()
             expect(page.locator('#backend')).to_be_disabled()

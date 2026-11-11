@@ -23,7 +23,8 @@ class BackendRouter:
 
     def catalog(self):
         return [dict(id='rtl', label='SystemVerilog · fast' if self.simulation.sim.lanes == 8 else 'SystemVerilog · reference', available=True,
-                     cpu_threads=self.simulation.threads, suffix_supported=False)] + [
+                     cpu_threads=self.simulation.threads, suffix_supported=self.simulation.sim.block_size == 4,
+                     max_draft=self.simulation.sim.block_size-1, prefill_block_size=self.simulation.sim.block_size)] + [
             dict(id=key, label=label, available=self.binary.is_file() and self.models[key].is_file(),
                  cpu_threads=6, suffix_supported=False)
             for key, label in [('llama-q4', 'llama.cpp · Q4_K_M'), ('llama-f16', 'llama.cpp · FP16'), ('llama-f32', 'llama.cpp · FP32')]]
@@ -32,7 +33,8 @@ class BackendRouter:
         status = self.simulation.status()
         if self.active != 'rtl':
             status.update(precision={'llama-q4': 'Q4_K_M', 'llama-f16': 'FP16', 'llama-f32': 'FP32'}[self.active],
-                          cpu_threads=6, rtl=None, inference='llama.cpp CPU', cached_tokens=None)
+                          cpu_threads=6, rtl=None, inference='llama.cpp CPU', cached_tokens=None,
+                          suffix_supported=False, max_verified_draft=0, prefill_block_size=None)
         return dict(status, backends=self.catalog(), active_backend=self.active)
 
     def prepare(self, payload):
@@ -41,8 +43,8 @@ class BackendRouter:
         if not entry or not entry['available']:
             raise ValueError('Unknown or unavailable backend')
         request = self.simulation.prepare(dict(payload, max_draft=payload.get('max_draft', 0)))
-        if request.max_draft:
-            raise ValueError('Suffix drafting is not yet supported by these backends')
+        if request.max_draft and not entry['suffix_supported']:
+            raise ValueError('Suffix drafting is unavailable for the selected backend')
         if backend == 'rtl':
             workers = payload.get('simulation_workers', self.simulation.sim.workers)
             if type(workers) is not int or workers not in (0, 1, 2, 4, 8):

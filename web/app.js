@@ -19,10 +19,12 @@ function backendChanged() {
   const rtl = $('backend').value === 'rtl';
   $('workers-row').hidden = !rtl;
   $('suffix').checked = false;
-  $('suffix-note').textContent = 'Not yet available in this backend';
+  $('suffix-note').textContent = backend?.suffix_supported
+    ? `Verified n-gram drafts · up to ${backend.max_draft} tokens; sampled and greedy`
+    : 'Unavailable in this backend';
   $('backend-tag').textContent = rtl ? 'Full SV simulation' : 'llama.cpp · CPU only';
   $('backend-about').textContent = rtl
-    ? 'All model math and KV data run in a behavioral SystemVerilog model via Verilator. It uses floating-point real arithmetic and is not synthesizable or cycle-accurate. Python only handles tokenization and HTTP.'
+    ? 'All model math and KV data run in a behavioral SystemVerilog model via Verilator. It uses floating-point real arithmetic and is not synthesizable or cycle-accurate. Python handles tokenization, suffix proposals, sampling random numbers, and HTTP; the model verifies every proposed token.'
     : 'llama.cpp runs Qwen3-0.6B on CPU with native prefix caching. This comparison backend does not use SystemVerilog. GPU support is disabled in the build.';
   $('connection').textContent = connectionLabel();
   ['rate', 'reused', 'accepted', 'rounds'].forEach(id => $(id).textContent = '—');
@@ -40,7 +42,7 @@ function controls() {
   $('send').disabled = !ready || busy || !$('prompt').value.trim();
   $('prompt').disabled = !ready || busy;
   $('new-chat').disabled = busy;
-  $('suffix').disabled = true;
+  $('suffix').disabled = !ready || busy || !selectedBackend()?.suffix_supported;
   $('backend').disabled = busy || !ready;
   $('workers').disabled = busy || !ready;
   $('reply-limit').disabled = busy;
@@ -158,8 +160,9 @@ async function send(event) {
         userStopped = event.finish_reason === 'stopped';
         const m = event.metrics;
         const end = userStopped ? 'Stopped' : event.finish_reason === 'length' ? 'Reply limit reached' : 'Complete';
+        const suffixLabel = m.effective_max_draft ? ` · ${m.accepted_tokens}/${m.proposed_tokens} drafts accepted` : '';
         const workerLabel = m.simulation_workers === undefined ? '' : m.simulation_workers ? ` · ${m.simulation_workers} workers` : ' · serial';
-        reply.meta.textContent = `${selectedBackend()?.label ?? "SystemVerilog"}${workerLabel} · ${$('decoding').value === 'chat' ? 'Sampled' : 'Greedy'} · ${end} · ${m.output_tokens} tokens · ${m.elapsed_seconds.toFixed(2)} s · ${m.reused_prefix_tokens} prefix tokens reused`;
+        reply.meta.textContent = `${selectedBackend()?.label ?? "SystemVerilog"}${workerLabel} · ${$('decoding').value === 'chat' ? 'Sampled' : 'Greedy'} · ${end} · ${m.output_tokens} tokens · ${m.elapsed_seconds.toFixed(2)} s · ${m.reused_prefix_tokens} prefix tokens reused${suffixLabel}`;
         if (event.text.trim()) messages = [...submitted, { role: 'assistant', content: event.text }];
         else {
           reply.content.textContent = userStopped ? 'Stopped before a reply was generated.' : 'The model returned an empty reply.';

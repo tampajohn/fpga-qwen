@@ -57,11 +57,14 @@ class SimulationCancelled(Exception):
 
 
 class RTLModel:
-    def __init__(self, model=None, workers=0, binary=None, lanes=1):
+    def __init__(self, model=None, workers=0, binary=None, lanes=1, block_size=1):
         if type(workers) is not int or not 0 <= workers <= 32:
             raise ValueError("Workers must be an integer from 0 to 32")
         if type(lanes) is not int or lanes not in (1, 8):
             raise ValueError('Reduction lanes must be 1 or 8')
+        if type(block_size) is not int or block_size not in (1, 4):
+            raise ValueError("Block size must be 1 or 4")
+        self.block_size = block_size
         self.lanes = lanes
         self.workers = workers
         self.binary = Path(binary).expanduser().resolve() if binary is not None else ROOT / 'build/full/Vqwen_behavioral'
@@ -157,3 +160,25 @@ class RTLModel:
         if len(response) != 3:
             raise RuntimeError('Invalid simulator token response')
         return int(response[0]), int(response[1]), float(response[2])
+
+    def block(self, tokens, logits=False, uniforms=None, presence_penalty=1.5, cancel=None):
+        """Transport an explicitly enabled, causal B<=4 SV block; no host math."""
+        tokens = list(tokens)
+        if self.block_size != 4:
+            raise ValueError('This simulator is not configured for block execution')
+        if not 1 <= len(tokens) <= 4 or any(type(token) is not int or not 0 <= token < 151936 for token in tokens):
+            raise ValueError('A block requires 1–4 valid token IDs')
+        sampled = uniforms is not None
+        uniforms = list(uniforms) if sampled else [0.0]*len(tokens)
+        if len(uniforms) != len(tokens) or any(not 0 <= value < 1 for value in uniforms):
+            raise ValueError('Provide one sampling uniform in [0, 1) per block token')
+        if not 0 <= presence_penalty <= 2:
+            raise ValueError('Invalid presence penalty')
+        command = ' '.join(['block', str(len(tokens)), str(int(logits)), str(int(sampled)),
+                            format(presence_penalty, '.17g'), *map(str, tokens),
+                            *(format(value, '.17g') for value in uniforms)])
+        response = self.command(command, cancel).split()
+        if len(response) != 2+3*len(tokens) or response[:2] != ['block', str(len(tokens))]:
+            raise RuntimeError('Invalid simulator block response')
+        return [(int(response[i]), int(response[i+1]), float(response[i+2]))
+                for i in range(2, len(response), 3)]
