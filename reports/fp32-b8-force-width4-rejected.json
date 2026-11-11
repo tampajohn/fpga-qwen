@@ -1,0 +1,156 @@
+{
+  "tiny": [
+    {
+      "workers": 1,
+      "rows": 1,
+      "width": 8,
+      "bit_exact": true
+    },
+    {
+      "workers": 1,
+      "rows": 3,
+      "width": 16,
+      "bit_exact": true
+    },
+    {
+      "workers": 1,
+      "rows": 7,
+      "width": 24,
+      "bit_exact": true
+    },
+    {
+      "workers": 3,
+      "rows": 1,
+      "width": 8,
+      "bit_exact": true
+    },
+    {
+      "workers": 3,
+      "rows": 3,
+      "width": 16,
+      "bit_exact": true
+    },
+    {
+      "workers": 3,
+      "rows": 7,
+      "width": 24,
+      "bit_exact": true
+    },
+    {
+      "workers": 8,
+      "rows": 1,
+      "width": 8,
+      "bit_exact": true
+    },
+    {
+      "workers": 8,
+      "rows": 3,
+      "width": 16,
+      "bit_exact": true
+    },
+    {
+      "workers": 8,
+      "rows": 7,
+      "width": 24,
+      "bit_exact": true
+    }
+  ],
+  "full": [
+    {
+      "matrix": "q",
+      "workers": 1,
+      "bit_exact": false,
+      "mismatched_outputs": 14789,
+      "max_absolute_difference": 2.86102294921875e-06
+    },
+    {
+      "matrix": "q",
+      "workers": 8,
+      "bit_exact": false,
+      "mismatched_outputs": 14789,
+      "max_absolute_difference": 2.86102294921875e-06
+    },
+    {
+      "matrix": "gate",
+      "workers": 1,
+      "bit_exact": false,
+      "mismatched_outputs": 22023,
+      "max_absolute_difference": 2.7418136596679688e-06
+    },
+    {
+      "matrix": "gate",
+      "workers": 8,
+      "bit_exact": false,
+      "mismatched_outputs": 22023,
+      "max_absolute_difference": 2.7418136596679688e-06
+    },
+    {
+      "matrix": "down",
+      "workers": 1,
+      "bit_exact": false,
+      "mismatched_outputs": 7693,
+      "max_absolute_difference": 3.7550926208496094e-06
+    },
+    {
+      "matrix": "down",
+      "workers": 8,
+      "bit_exact": false,
+      "mismatched_outputs": 7693,
+      "max_absolute_difference": 3.7550926208496094e-06
+    }
+  ],
+  "timing_claim": false,
+  "passed": false,
+  "decision": "rejected_before_scored_timing",
+  "reference": "Validated FP32 B8 unroll-count1",
+  "candidate": "Same source and strict arithmetic flags; final ThinLTO forced vector width4",
+  "reference_sha256": "5acf6e45464f1d25d446301cd675c1f3c35f3c80e6235ae45d8a909167776e0c",
+  "candidate_sha256": "1dd67b538efa419042df7e64952c39b1bdc17fc90665f0fc53d2f44e43e82611",
+  "candidate_manifest": {
+    "binary": "$PREFILL/build/fp32-vector4/fp32-b8/Vfp32_projection_kernel",
+    "binary_sha256": "1dd67b538efa419042df7e64952c39b1bdc17fc90665f0fc53d2f44e43e82611",
+    "command": [
+      "$COMPILER/bin/verilator",
+      "--unroll-count",
+      "1",
+      "--cc",
+      "--exe",
+      "--build",
+      "-j",
+      "4",
+      "--top-module",
+      "fp32_projection_kernel",
+      "--Mdir",
+      "$PREFILL/build/fp32-vector4/fp32-b8",
+      "-Wall",
+      "-Wno-BLKSEQ",
+      "-Wno-fatal",
+      "-CFLAGS",
+      "-std=c++17 -O3 -DKERNEL_BATCH=8 -DKERNEL_ROWS=3072 -flto=thin -fno-fast-math -ffp-contract=off",
+      "-MAKEFLAGS",
+      "OPT_FAST=-O3",
+      "-LDFLAGS",
+      "-flto=thin -Wl,-mllvm,-force-vector-width=4",
+      "-O3",
+      "+define+KERNEL_BATCH=8",
+      "+define+KERNEL_ROWS=3072",
+      "$PREFILL/rtl/fp32_projection_kernel.sv",
+      "$PREFILL/sim/fp32_projection_probe.cpp"
+    ],
+    "version": "rev v5.054 (mod)",
+    "compiler_binary_sha256": "70df52bf26b8852b199d5c8d4e94dd0514e0f499ae6d7ff786bfb297de05989f",
+    "compiler_patch_base": "bbb60a403932a9f695cb6ff001ceb73de6ad9234",
+    "compiler_git_head": "c607db496a5cb5207a14cfa70e1639edb742a4b1",
+    "compiler_patch_sha256": "6cf8b4f944ab0f6118c0fa96d4fd84574f1553741efd21b0c2c2d2881c94819b",
+    "environment": {
+      "VERILATOR_ROOT": "/Users/jadams/workspace/sandbox/verilator-shortreal",
+      "VERILATOR_BIN": "$COMPILER/build-local/src/verilator_bin"
+    },
+    "source_hashes": {
+      "rtl/fp32_projection_kernel.sv": "385ccd251f83c8fc5e8f552a7aaf55e7c15c466415b8731edf5a239daad7c4e2",
+      "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+      "tools/probe_fp32_projection.py": "e262bec0afac079d4f0dc403e50e2f1d2b9c761d798ab335a7f1ed0912a96268",
+      "tools/fp32_rounding_oracle.py": "497383808159a47ee4bdf53034b9c64be7d6924b84871a05946c8eada672931e"
+    }
+  }
+}

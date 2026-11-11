@@ -1,0 +1,48 @@
+--- !Analysis
+Pass:            loop-vectorize
+Name:            InterleavingNotBeneficial
+Function:        _ZN23Vfp32_projection_kernel7evalNbaEv
+Args:
+  - String:          the cost-model indicates that interleaving is not beneficial
+...
+--- !Passed
+Pass:            loop-vectorize
+Name:            Vectorized
+Function:        _ZN23Vfp32_projection_kernel7evalNbaEv
+Args:
+  - String:          'vectorized '
+  - String:          ''
+  - String:          'loop (vectorization width: '
+  - VectorizationFactor: '2'
+  - String:          ', interleaved count: '
+  - InterleaveCount: '1'
+  - String:          ')'
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            VectorizationNotBeneficial
+Function:        _ZN23Vfp32_projection_kernel7evalNbaEv
+Args:
+  - String:          the cost-model indicates that vectorization is not beneficial
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            InterleavingNotBeneficial
+Function:        _ZN23Vfp32_projection_kernel7evalNbaEv
+Args:
+  - String:          the cost-model indicates that interleaving is not beneficial
+...
+--- !Analysis
+Pass:            loop-vectorize
+Name:            CantIdentifyArrayBounds
+Function:        _ZN23Vfp32_projection_kernel7evalNbaEv
+Args:
+  - String:          'loop not vectorized: '
+  - String:          cannot identify array bounds
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            MissedDetails
+Function:        _ZN23Vfp32_projection_kernel7evalNbaEv
+Args:
+  - String:          loop not vectorized

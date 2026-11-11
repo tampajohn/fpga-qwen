@@ -1,0 +1,39 @@
+diff --git a/tools/probe_fp32_projection.py b/tools/probe_fp32_projection.py
+index d480f11..c7780c9 100644
+--- a/tools/probe_fp32_projection.py
++++ b/tools/probe_fp32_projection.py
+@@ -21,7 +21,7 @@ def sha(path):
+     with Path(path).open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
+ 
+ 
+-def build(directory,batch,kind,compiler_root,vocabulary=False,no_lto=False,unroll_count=None):
++def build(directory,batch,kind,compiler_root,vocabulary=False,no_lto=False,unroll_count=None,vector_width=None):
+     destination=directory/f'{kind}-b{batch}';destination.mkdir(parents=True,exist_ok=True)
+     baseline=kind=='fp64'
+     env=os.environ.copy()
+@@ -44,7 +44,7 @@ def build(directory,batch,kind,compiler_root,vocabulary=False,no_lto=False,unrol
+     source=ROOT/'rtl'/f'{top}.sv'
+     command=[compiler,*(['--unroll-count',str(unroll_count)]if not baseline and unroll_count is not None else []),'--cc','--exe','--build','-j','4','--top-module',top,'--Mdir',str(destination),
+              '-Wall','-Wno-BLKSEQ','-Wno-fatal','-CFLAGS',flags,'-MAKEFLAGS','OPT_FAST=-O3',
+-             *(['-LDFLAGS','-flto=thin']if lto else []),'-O3',*['+define+'+v for v in defines],str(source),str(ROOT/'sim/fp32_projection_probe.cpp')]
++             *(['-LDFLAGS','-flto=thin'+(f' -Wl,-mllvm,-force-vector-width={vector_width}'if not baseline and vector_width else '')]if lto else []),'-O3',*['+define+'+v for v in defines],str(source),str(ROOT/'sim/fp32_projection_probe.cpp')]
+     source_files=(source,ROOT/'sim/fp32_projection_probe.cpp',Path(__file__).resolve(),ROOT/'tools/fp32_rounding_oracle.py')
+     before={str(p.relative_to(ROOT)):sha(p)for p in source_files}
+     compiler_binary=(Path(compiler).resolve().parent/'verilator_bin') if baseline else compiler_root/'build-local/src/verilator_bin'
+@@ -72,6 +72,7 @@ def main():
+     parser.add_argument('--compiler-root',type=Path)
+     parser.add_argument('--candidate-no-lto',action='store_true')
+     parser.add_argument('--candidate-unroll-count',type=int,choices=range(0,65))
++    parser.add_argument('--candidate-vector-width',type=int,choices=[2,4,8])
+     parser.add_argument('--vocabulary',action='store_true')
+     parser.add_argument('--matrices',default='q,gate,down')
+     mode=parser.add_mutually_exclusive_group(required=True)
+@@ -85,7 +86,7 @@ def main():
+     if args.build_only:
+         if not args.compiler_root:parser.error('Explicit reviewed compiler root required')
+         for batch in batches:
+-            for kind in ('fp64','fp32'):build(args.directory,batch,kind,args.compiler_root.resolve(),args.vocabulary,args.candidate_no_lto,args.candidate_unroll_count)
++            for kind in ('fp64','fp32'):build(args.directory,batch,kind,args.compiler_root.resolve(),args.vocabulary,args.candidate_no_lto,args.candidate_unroll_count,args.candidate_vector_width)
+         return
+     model,layout=prepare_layout(locate_model(None))
+     header,start,_=read_header(model/'model.safetensors')
