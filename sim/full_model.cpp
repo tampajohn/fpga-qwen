@@ -236,6 +236,9 @@ int main(int argc,char** argv) {
                 std::ofstream out(path,std::ios::binary);
                 auto& logits=d->rootp->qwen_behavioral__DOT__logits;
                 out.write(reinterpret_cast<const char*>(logits.data()),151936*sizeof(double));
+                // The acknowledgement is the reader's synchronization boundary.
+                // Close (including buffered tail bytes) before publishing it.
+                out.close();
                 if(!out) throw std::runtime_error("Cannot write logits");
                 std::cout<<"dumped\n"<<std::flush;
             } else throw std::runtime_error("Unknown command");

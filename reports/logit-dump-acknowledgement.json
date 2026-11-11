@@ -1,0 +1,13 @@
+{
+  "change": "Close and check logit dump before sending acknowledgement",
+  "reason": "Historical command acknowledged before buffered file destructor flushed its tail; strict full-corpus evaluator observed a truncated read.",
+  "binary_sha256": "64288263dd5973bf7bf6c2c60c87fa4b48104b0d66fe4a800877fbed64b88f43",
+  "validation": {
+    "test": "tests.test_logit_dump.LogitDumpTests.test_acknowledgement_publishes_complete_file",
+    "consecutive_immediate_reads": 128,
+    "bytes_per_dump": 1215488,
+    "identical_contents": true,
+    "sleep_retry_or_second_command": false
+  },
+  "neural_arithmetic_changed": false
+}
