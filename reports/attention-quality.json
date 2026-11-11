@@ -1,0 +1,453 @@
+{
+  "cpu": "Apple M5 Max",
+  "threads_or_workers": 8,
+  "checkpoint": "$CHECKPOINT",
+  "timestamp_utc": "2026-11-11T21:20:17Z",
+  "decoding": "greedy, no penalties, identical EOS-respecting selection; performance requires requested count before EOS",
+  "gpu": false,
+  "pytorch": false,
+  "runs": [],
+  "quality": [
+    {
+      "engine": "rtl",
+      "case": "fact_recall",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "first_token_seconds": 3.238457124971319,
+        "request_seconds": 3.350310374982655,
+        "steady_decode_seconds": 0.11180520802736282,
+        "steady_decode_tokens_per_second": 35.77650872060498,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "corrected_fact",
+      "result": {
+        "output_token_ids": [
+          43,
+          7523,
+          13,
+          151645
+        ],
+        "output_token_count": 4,
+        "text": "Lima.",
+        "finish_reason": "eos",
+        "first_token_seconds": 4.440123291045893,
+        "request_seconds": 4.515519583015703,
+        "steady_decode_seconds": 0.07538037496851757,
+        "steady_decode_tokens_per_second": 39.79815703030056,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "assistant_quote",
+      "result": {
+        "output_token_ids": [
+          13936,
+          36506,
+          11,
+          50344,
+          0,
+          151645
+        ],
+        "output_token_count": 6,
+        "text": "Welcome aboard, Maya!",
+        "finish_reason": "eos",
+        "first_token_seconds": 2.9195879999897443,
+        "request_seconds": 3.0452539999969304,
+        "steady_decode_seconds": 0.1256496670539491,
+        "steady_decode_tokens_per_second": 39.79318144832962,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "verbatim_quote": true
+        },
+        "details": "quote target: \"Welcome aboard, Maya!\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "task_switch",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          13,
+          151645
+        ],
+        "output_token_count": 9,
+        "text": "9, 2, 5.",
+        "finish_reason": "eos",
+        "first_token_seconds": 4.571435249992646,
+        "request_seconds": 4.778111832973082,
+        "steady_decode_seconds": 0.20665995799936354,
+        "steady_decode_tokens_per_second": 38.710934026342144,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "json_extraction",
+      "result": {
+        "output_token_ids": [
+          73594,
+          2236,
+          198,
+          4913,
+          606,
+          788,
+          330,
+          44,
+          8832,
+          497,
+          330,
+          3423,
+          788,
+          330,
+          665,
+          278,
+          16707,
+          73594,
+          151645
+        ],
+        "output_token_count": 19,
+        "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+        "finish_reason": "eos",
+        "first_token_seconds": 2.0746522920089774,
+        "request_seconds": 2.532777874963358,
+        "steady_decode_seconds": 0.45810433296719566,
+        "steady_decode_tokens_per_second": 39.29235919558298,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "two_step_arithmetic",
+      "result": {
+        "output_token_ids": [
+          785,
+          2790,
+          1372,
+          315,
+          54208,
+          374,
+          220,
+          16,
+          22,
+          2518,
+          488,
+          220,
+          23,
+          6303,
+          284,
+          220
+        ],
+        "output_token_count": 16,
+        "text": "The total number of beads is 17 red + 8 blue = ",
+        "finish_reason": "length",
+        "first_token_seconds": 2.032797291991301,
+        "request_seconds": 2.381873332953546,
+        "steady_decode_seconds": 0.3490571249858476,
+        "steady_decode_tokens_per_second": 42.97290880570958,
+        "backend_timings": null,
+        "eos_observed": false
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "distractor_recall",
+      "result": {
+        "output_token_ids": [
+          34,
+          33215,
+          151645
+        ],
+        "output_token_count": 3,
+        "text": "Cedar",
+        "finish_reason": "eos",
+        "first_token_seconds": 3.5180341249797493,
+        "request_seconds": 3.5702838329598308,
+        "steady_decode_seconds": 0.052235291979741305,
+        "steady_decode_tokens_per_second": 38.28828985536581,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"Cedar\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "evidence_only",
+      "result": {
+        "output_token_ids": [
+          16088,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "unknown",
+        "finish_reason": "eos",
+        "first_token_seconds": 2.1512749169487506,
+        "request_seconds": 2.1739377919584513,
+        "steady_decode_seconds": 0.02265095803886652,
+        "steady_decode_tokens_per_second": 44.148243014009005,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"unknown\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "new_question_after_repetition",
+      "result": {
+        "output_token_ids": [
+          22,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "7",
+        "finish_reason": "eos",
+        "first_token_seconds": 7.081654208013788,
+        "request_seconds": 7.108952958020382,
+        "steady_decode_seconds": 0.02728595898952335,
+        "steady_decode_tokens_per_second": 36.648885985057646,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    }
+  ],
+  "sv_lanes": 8,
+  "limitations": [
+    "Same prompt token IDs, context, generated count and numeric worker count; NOT identical arithmetic or KV precision.",
+    "SV: BF16 stored weights / FP64 arithmetic and KV. Native: named stored weights / mixed arithmetic / FP16 KV.",
+    "Startup is process/model startup, not OS page-cache cold; no page-cache eviction is attempted.",
+    "Every timed request has empty logical KV. Warm repetitions retain the process and resident weight pages.",
+    "Both measurements include their existing transport (SV pipes, llama HTTP); steady decode excludes first-token prompt processing.",
+    "Fixed-count performance rejects any early EOS rather than masking it. Quality mode permits EOS and records objective checks separately."
+  ],
+  "generated_files": {
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral.cpp": "a0e54daf251f6a743ed05b22555a768776283ba8751fd89bfc5431634e4d5771",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral.h": "71ddb466dfa6d1859835ee4736711d62e8e57f5f4031c7c1f3c984572e6e892c",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral__ALL.cpp": "aeaec7f81d3ee7a786bfab0f852e36e29eb1121de88379a6548a63583fbc594b",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral__Dpi.cpp": "a249d1350f612b75604dfaf0fc5d694981f93ffd3d80f1584ccf2d40cee1d7c6",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral__Dpi.h": "e7efa28c1497085ec133aad664860da8d4d2122fe2856c72b4e12a4acc05ee7e",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral__Syms.h": "7a41528b124ccec3601f6841ffb2878a0e60a14ebdb697657813869afe256357",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral__Syms__Slow.cpp": "425a6c1127c75d98ee1ad67eaf5f9747ba65ecf51350434637f4a0409e82073a",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral___024root.h": "59d25f99be0823828824e66396fc202ead2d22aaa479eadd8dac2d92320cdc1a",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral___024root__0.cpp": "a94b7f2ffe2ce31661112982252cd38684788b790fcc2623538d487b3da3817c",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral___024root__0__Slow.cpp": "429d34b337152901e12102cab7fc3e0ea9b0b73a0896e6809d4210eaf29fafdc",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral___024root__Slow.cpp": "63b081e6090f78b1de0d67b24a4efd5d22b314d943f1b61649d95561ec6a7130",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral__pch.h": "22940ef1a44ae5bc904961b86eed4bf0de3765bdfdbb04d23c197020f67078ee",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker.cpp": "f4c2a54a652af87a64622d5364aebf8842d688d31d10fa79c604d59174e96ea8",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker.h": "895715bf42446cc9d47efb715e7178c278dde718c062b283fae20ab22f5b0942",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker__ALL.cpp": "c665fc8c0e88cb6051c4779b90898602f5adebce8c63113e4656a937619e7aff",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker__Dpi.cpp": "216d175bfae3b53178d97991174e20e144a82723befb32fdc6cda9be0af6037c",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker__Dpi.h": "ec3d8f6b57e74859336f20e5984cedc3610452195ed9188a0d89484af99da5e9",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker__Syms.h": "10eda60ff67374818610ee362c8e6ab0c826ac46a0830c89c67b50236009d7b8",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker__Syms__Slow.cpp": "9f2edb9ca32cc9e15bd4ae24b4dfa0adf507a1cc380f996dfe12cf2bf4ec9159",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker___024root.h": "f0d1dd752e35d3a3a5b2bf55be595c259ec1a4af2c3dd18dc032494134ae4ed7",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker___024root__0.cpp": "7a5340493fe6dcda0b36fada2d7ef0e25a6a7549a90dc5985880bf86dec101b3",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker___024root__0__Slow.cpp": "8be871eb6145ccf500d41b714bf0cbc1781ad50619b52cad57e379d6b117c2a3",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker___024root__Slow.cpp": "291c2d45264b8cbf7455c7f1c411539426ef7136792a90397004d74e9b661c6e",
+    "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/projection/Vprojection_worker__pch.h": "49c99af6aabc07d143be7841cba2e3a11a30cc297a70cde8fd49de9366abe779"
+  },
+  "generated_source_sha256": "e487e06cc3c5dae65c856ac0d353f69acdb0b7efef33d97cafc11fbb1812b718",
+  "sv_binary_sha256": "fe7bb377e3059069ada818f8385003f1015c28bdbf9166bd3cd8828d655a185a",
+  "native_binary_sha256": "e9c93f0fb1ea58180632b77a1943eee31126e365e1a80ac34bcc54475403fc96",
+  "numerical_gate": {
+    "reference_binary": "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral",
+    "candidate_binary": "$ATTENTION_WORKTREE/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral",
+    "reference_sha256": "becad933e07b45cc027717ae8f04b842c2db46d32b5a5b3e0bc736a6e85cb07e",
+    "candidate_sha256": "fe7bb377e3059069ada818f8385003f1015c28bdbf9166bd3cd8828d655a185a",
+    "prompt_tokens": 452,
+    "teacher_forced_generated_tokens": 16,
+    "candidate_reduction_lanes": 8,
+    "reference_reduction_lanes": 8,
+    "bit_identical_logits": true,
+    "require_bit_identical": true,
+    "absolute_error_tolerance": 1e-06,
+    "per_position_max_absolute_logit_errors": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max_absolute_logit_error": 0.0,
+    "greedy_choices": [
+      {
+        "reference": 10642,
+        "candidate": 10642
+      },
+      {
+        "reference": 33394,
+        "candidate": 33394
+      },
+      {
+        "reference": 19257,
+        "candidate": 19257
+      },
+      {
+        "reference": 311,
+        "candidate": 311
+      },
+      {
+        "reference": 279,
+        "candidate": 279
+      },
+      {
+        "reference": 4379,
+        "candidate": 4379
+      },
+      {
+        "reference": 518,
+        "candidate": 518
+      },
+      {
+        "reference": 892,
+        "candidate": 892
+      },
+      {
+        "reference": 821,
+        "candidate": 821
+      },
+      {
+        "reference": 374,
+        "candidate": 374
+      },
+      {
+        "reference": 22409,
+        "candidate": 22409
+      },
+      {
+        "reference": 1948,
+        "candidate": 1948
+      },
+      {
+        "reference": 264,
+        "candidate": 264
+      },
+      {
+        "reference": 17654,
+        "candidate": 17654
+      },
+      {
+        "reference": 323,
+        "candidate": 323
+      },
+      {
+        "reference": 4938,
+        "candidate": 4938
+      }
+    ],
+    "unchanged_greedy_sequence": true,
+    "all_logits_finite": true,
+    "passed": true
+  },
+  "llama_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb",
+  "quality_suite_sha256": "e83a1561ae3c1245ad1a2be15fc6521471ce63c2037da887af7ce0fec3136810",
+  "sanitization": "Absolute project, worktree and checkpoint paths replaced by placeholders; hashes and numeric evidence retained."
+}

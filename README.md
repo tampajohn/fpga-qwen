@@ -106,18 +106,22 @@ one read-only checkpoint mapping. The reference profile preserves serial accumul
 uses eight partial sums per row and changes floating-point association; it is
 validated with numerical tolerances and output checks rather than claiming
 bit-identical logits. There is no cross-worker floating-point reduction. Attention,
-normalization, nonlinearities, residuals, and KV state remain in the main SV model.
+normalization, nonlinearities, residuals, and KV state remain in SV. Attention
+heads run on the persistent SV workers, with the main model owning KV state.
 This is shared-memory execution on one machine, not a multi-machine service.
 
 The selected fast build is reproducible with
-`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --compact-projection`.
+`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --compact-projection`.
 Unsigned indices simplify generated projection address calculations without
 changing accumulation order; this incremental change passed bit-exact gates
 against the prior fast build. See the [paired comparison](docs/performance_iteration_3.md).
+Parallel attention preserves per-head arithmetic order and passed bit-exact
+long-context gates; see the [paired validation](docs/attention_paired_validation.md).
 These options preserve BF16 checkpoint storage and SV FP64 arithmetic; they do
 not implement FP16 inference. `make fast-test` checks full-logit tolerances,
 same-uniform sampling, KV truncation/reset/restart, invalid projection spans,
-worker scheduling, and the conversation recovery fixture. These short checks
+worker scheduling, attention head partitions against the preceding unsigned
+binary, and the conversation recovery fixture. These short checks
 complement the matched benchmark's quality suite; they are not a broad quality guarantee.
 
 The original parallel implementation measured the following on this Apple M5 Max,
