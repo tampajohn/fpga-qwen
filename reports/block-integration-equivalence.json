@@ -1,0 +1,41 @@
+{
+  "main_sha": "64a806a5d2237364b85c890919b7c1c762a4d0eab2384a31648fdddc4ddb6e92",
+  "scored_sha": "d576cde12f0fc64499b35647878fe2ddea21b9fdd3c5459f14dd96cf58a36272",
+  "source_hashes_identical": true,
+  "options_identical": true,
+  "sources": {
+    "rtl/projection_worker.sv": "5569accf59ee4127dac3b57a886fe8830e4946e206056d47246014625274a4d6",
+    "rtl/qwen_behavioral.sv": "58f1bb1833d621a0a3487321f45114d803f101fcb3cbae47b40a2a4c9e92b1b2",
+    "rtl/sampling.svh": "0dbc0e7afbe0f74c5deea579739171256629dcf8c374770a16de0ca49102c01a",
+    "sim/full_model.cpp": "1c5d2683f7a107c53ae4d46b215fcc02b5f846313342dbbb95c9953fb56fe1a8",
+    "sim/projection_pool.h": "dd4fdd4ff0733167bc46d6f126f27743b8084e208c4cefeddac3e10069a823bd",
+    "tools/build_projection_variant.py": "d52caee78c34bb65410f0548dc4f3326c64f02bf7d200d8659d3b77d4bbbb382"
+  },
+  "integration_checks": {
+    "fast_suite": {
+      "run": 21,
+      "passed": 20,
+      "skipped": 1,
+      "skip_reason": "Actual4096capacity already passed in separate block correctness report"
+    },
+    "chat_and_real_suffix": {
+      "run": 7,
+      "passed": 7
+    },
+    "browser_standard_passed": true,
+    "browser_suffix_passed": true,
+    "live_smoke": {
+      "prefill_block_size": 4,
+      "suffix_supported": true,
+      "effective_max_draft": 3,
+      "text": "blue",
+      "gpu_inference": false,
+      "pytorch_loaded": false
+    }
+  },
+  "limitations": [
+    "Integration timing fields are not performance measurements.",
+    "Scoredartifact shows roughly1.4x TTFT gain but some13\u201315%steadydecode regressions.",
+    "Suffix drafting stays unchecked by default; gain depends on acceptance."
+  ]
+}

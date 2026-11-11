@@ -1,6 +1,6 @@
 # Target-verified suffix chat and block prefill
 
-The opt-in block backend batches up to four prefill tokens and can verify n-gram suffix drafts in the same causal SystemVerilog block. Python proposes known tokens from the existing context, supplies random uniforms, and handles transport; all target logits, sampling, model arithmetic, and KV payload stay in SystemVerilog. The default remains token-only until a block-capable binary is explicitly selected.
+The opt-in block backend batches up to four prefill tokens and can verify n-gram suffix drafts in the same causal SystemVerilog block. Python proposes known tokens from the existing context, supplies random uniforms, and handles transport; all target logits, sampling, model arithmetic, and KV payload stay in SystemVerilog. The fast localhost server now selects the validated B4 binary by default. Reference and custom binaries remain token-only unless block size4 is explicitly selected. Suffix drafting itself remains unchecked by default.
 
 A request may ask for a draft length up to seven, but the initial block size limits the effective draft to **three** tokens. The UI shows that limit and exposes acceptance counts. Native backends and token-only simulator configurations explicitly reject suffix drafting.
 

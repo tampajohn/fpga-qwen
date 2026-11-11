@@ -111,7 +111,7 @@ heads run on the persistent SV workers, with the main model owning KV state.
 This is shared-memory execution on one machine, not a multi-machine service.
 
 The selected fast build is reproducible with
-`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --compact-projection`.
+`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --batched-prefill --block-unroll --compact-projection`.
 Unsigned indices simplify generated projection address calculations without
 changing accumulation order; this incremental change passed bit-exact gates
 against the prior fast build. See the [paired comparison](docs/performance_iteration_3.md).
@@ -150,6 +150,19 @@ change **Simulation workers** in the browser. The default server uses the fast
 profile; add `--simulator reference` for exact-order worker arithmetic. `0` selects
 the serial
 implementation. Resizing happens at request boundaries and does not clear KV.
+
+The fast profile now prefills uncached prompt tokens in blocks of four through
+all transformer layers. Measured prompt-to-first-token time improved about1.4×
+on the tested85/452-token contexts; some steady decode runs were13–15% slower.
+This is a prefill improvement, not an across-the-board throughput gain.
+
+The browser's **Suffix drafting** checkbox is available for this profile and
+starts off. It proposes up to three cached n-gram continuation tokens and verifies
+them with the SV block engine; sampled decoding preserves the same seeded target
+sequence. Acceptance does not guarantee a speedup, so enable it for experiments.
+The reference profile keeps single-token prefill and does not advertise suffix
+support. See [the block runtime](docs/batched-prefill-runtime.md) and
+[suffix verification](docs/suffix_chat.md) for protocol and validation limits.
 
 ### Validation without PyTorch
 

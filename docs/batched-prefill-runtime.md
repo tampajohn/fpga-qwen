@@ -1,6 +1,7 @@
 # Experimental four-token layer-first prefill and verification
 
-Build independently; the default single-token profile is unchanged:
+Build independently, or use `make chat` for the validated fast B4 profile.
+`make chat-reference` retains the single-token profile:
 
 ```sh
 python3 tools/build_projection_variant.py --lto --unchecked --masked-activation --unsigned-indices --fast-attention --compact-projection --parallel-attention --batched-prefill --block-unroll
@@ -79,5 +80,12 @@ exact short-suite logits and85/452-token prompts plus8 continuation positions
 1.131/1.233s at85 tokens and10.199/10.767s to7.408/7.684s at452 tokens, roughly
 1.4× faster. These results establish a modest prefill benefit on this CPU.
 Steady decode was13–15% slower in some runs, so this is not a decode improvement.
-Sampling/suffix integration and the full4096-token capacity gate remain separate
-promotion checks. No broad conversational-quality claim follows from these gates.
+The full4096-token capacity/crossing-boundary gate subsequently passed, as did
+optimized sampled suffix parity and browser checks. See the independent
+[block report](../reports/block-correctness.json) and
+[suffix report](../reports/suffix-optimized-correctness.json).
+The main-workspace rebuild has SHA256
+`64a806a5d2237364b85c890919b7c1c762a4d0eab2384a31648fdddc4ddb6e92`;
+its source hashes and build options match the scored artifact exactly
+([equivalence record](../reports/block-integration-equivalence.json)).
+No broad conversational-quality claim follows from these gates.

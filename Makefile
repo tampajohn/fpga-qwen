@@ -1,6 +1,7 @@
 PYTHON ?= python3
 VERILATOR ?= verilator
-FAST_BINARY = build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral
+FAST_BINARY = build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection/full/Vqwen_behavioral
+BLOCK_REFERENCE_BINARY = build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-compact-projection/full/Vqwen_behavioral
 ATTENTION_REFERENCE_BINARY = build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral
 
 .PHONY: all prepare test report clean block-test kv-test suffix-test setup check chat chat-test
@@ -84,8 +85,9 @@ chat-reference: build/full/Vqwen_behavioral
 	uv run --locked tools/chat_server.py --simulator reference $(if $(MODEL),--model "$(MODEL)",) $(if $(PORT),--port $(PORT),)
 
 $(FAST_BINARY): rtl/qwen_behavioral.sv rtl/sampling.svh rtl/projection_worker.sv sim/full_model.cpp sim/projection_pool.h tools/build_projection_variant.py
-	uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --compact-projection
+	uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --batched-prefill --block-unroll --compact-projection
 
 fast-test: $(FAST_BINARY)
+	test -f "$(BLOCK_REFERENCE_BINARY)" || uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --compact-projection
 	test -f "$(ATTENTION_REFERENCE_BINARY)" || uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --compact-projection
-	SV_TEST_BINARY="$(CURDIR)/$(FAST_BINARY)" SV_TEST_LANES=8 SV_ATTENTION_BINARY="$(CURDIR)/$(FAST_BINARY)" SV_ATTENTION_REFERENCE="$(CURDIR)/$(ATTENTION_REFERENCE_BINARY)" uv run --locked python -m unittest tests.test_fast_model tests.test_projection_span tests.test_sampling tests.test_projection_scheduler tests.test_conversation tests.test_parallel_attention -v
+	SV_TEST_BINARY="$(CURDIR)/$(FAST_BINARY)" SV_TEST_LANES=8 SV_TEST_BLOCK_SIZE=4 SV_BLOCK_BINARY="$(CURDIR)/$(FAST_BINARY)" SV_BLOCK_REFERENCE="$(CURDIR)/$(BLOCK_REFERENCE_BINARY)" SV_ATTENTION_BINARY="$(CURDIR)/$(FAST_BINARY)" SV_ATTENTION_REFERENCE="$(CURDIR)/$(ATTENTION_REFERENCE_BINARY)" uv run --locked python -m unittest tests.test_fast_model tests.test_projection_span tests.test_sampling tests.test_projection_scheduler tests.test_conversation tests.test_parallel_attention tests.test_suffix_chat tests.test_suffix_real tests.test_block_model -v
