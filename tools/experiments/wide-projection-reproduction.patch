@@ -1,0 +1,231 @@
+diff --git a/rtl/projection_worker.sv b/rtl/projection_worker.sv
+index a6e2193..3edc5c9 100644
+--- a/rtl/projection_worker.sv
++++ b/rtl/projection_worker.sv
+@@ -9,6 +9,11 @@ module projection_worker (
+     input int first_row, end_row, width, reduction_lanes,
+ `ifdef BATCH_PREFILL
+     input int batch_count,
++`ifdef WIDE_BATCH
++    // Probe-only ports: no public model/block protocol is changed.
++    input real wide_activation[4096*`WIDE_BATCH],
++    output real wide_result[3072*`WIDE_BATCH],
++`endif
+ `ifdef BLOCK_UNROLL
+     input real batch_activation[16384],
+ `else
+@@ -145,6 +150,34 @@ module projection_worker (
+             end
+         end
+     endtask
++`endif
++`ifdef WIDE_BATCH
++    task automatic project_wide_probe;
++        real lane_sums[`WIDE_BATCH], totals[`WIDE_BATCH], weight;
++        for (`PROJECTION_INDEX row=first_row;row<end_row;row++) begin
++            for (int t=0;t<`WIDE_BATCH;t++) totals[t]=0.0;
++            if (reduction_lanes==8 && width%8==0) begin
++                // Finish one lane at a time: preserve each lane's column order
++                // and the original lane0..7 final reduction, with O(B) live sums.
++                for (int lane=0;lane<8;lane++) begin
++                    for (int t=0;t<`WIDE_BATCH;t++) lane_sums[t]=0.0;
++                    for (`PROJECTION_INDEX column=lane;column<width && column<3072;column+=8) begin
++                        weight=projection_weight_value(base+longint'(row)*width+longint'(column));
++                        for (int t=0;t<`WIDE_BATCH;t++)
++                            lane_sums[t]+=wide_activation[(column*`WIDE_BATCH+t)&(4096*`WIDE_BATCH-1)]*weight;
++                    end
++                    for (int t=0;t<`WIDE_BATCH;t++) totals[t]+=lane_sums[t];
++                end
++            end else begin
++                for (`PROJECTION_INDEX column=0;column<width && column<3072;column++) begin
++                    weight=projection_weight_value(base+longint'(row)*width+longint'(column));
++                    for (int t=0;t<`WIDE_BATCH;t++)
++                        totals[t]+=wide_activation[(column*`WIDE_BATCH+t)&(4096*`WIDE_BATCH-1)]*weight;
++                end
++            end
++            for (int t=0;t<`WIDE_BATCH;t++) wide_result[row*`WIDE_BATCH+t]=totals[t];
++        end
++    endtask
+ `endif
+     always @(posedge clk) begin
+         real sum;
+@@ -152,6 +185,10 @@ module projection_worker (
+         if (start) begin
+ `ifdef PARALLEL_ATTENTION
+ `ifdef BATCH_PREFILL
++`ifdef WIDE_BATCH
++            if (operation==3) project_wide_probe();
++            else
++`endif
+             if (operation==2) project_block();
+             else
+ `endif
+diff --git a/sim/wide_projection_probe.cpp b/sim/wide_projection_probe.cpp
+new file mode 100644
+index 0000000..9951cf8
+--- /dev/null
++++ b/sim/wide_projection_probe.cpp
+@@ -0,0 +1,103 @@
++// Isolated projection microbenchmark; arithmetic stays in SystemVerilog.
++#include "Vprojection_worker.h"
++#include "verilated.h"
++#include <array>
++#include <atomic>
++#include <chrono>
++#include <condition_variable>
++#include <cstring>
++#include <fstream>
++#include <iomanip>
++#include <iostream>
++#include <memory>
++#include <mutex>
++#include <stdexcept>
++#include <thread>
++#include <vector>
++#include <fcntl.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++#include <unistd.h>
++static const uint16_t* weights;
++static size_t words;
++extern "C" double weight_value_unchecked(int64_t index) {
++    uint32_t bits=uint32_t(weights[index])<<16;float value;
++    std::memcpy(&value,&bits,4);return value;
++}
++extern "C" double weight_value(int64_t index) {
++    if(index<0 || size_t(index)>=words) throw std::runtime_error("Invalid weight address");
++    return weight_value_unchecked(index);
++}
++extern "C" double attention_key_value(int) {throw std::runtime_error("Unexpected attention");}
++extern "C" double attention_value_value(int) {throw std::runtime_error("Unexpected attention");}
++struct Result {double seconds;std::vector<double> values;};
++static Result run(int64_t base,int rows,int width,int workers,int repetitions,int operation,int token_offset) {
++    int tokens=operation==3?WIDE_BATCH:4;
++    Result result{0,std::vector<double>(rows*tokens)};
++    std::mutex mutex;std::condition_variable condition;int ready=0,done=0;bool go=false;
++    std::vector<std::thread> threads;
++    for(int worker=0;worker<workers;++worker) threads.emplace_back([&,worker] {
++        auto context=std::make_unique<VerilatedContext>();context->threads(1);
++        auto model=std::make_unique<Vprojection_worker>(context.get());
++        model->start=0;model->clk=0;model->eval();
++        model->operation=operation;model->reduction_lanes=8;model->batch_count=4;
++        model->base=base;model->width=width;
++        model->first_row=rows*worker/workers;model->end_row=rows*(worker+1)/workers;
++        // Deterministic input fixture, not host model arithmetic.
++        for(int column=0;column<width;++column) for(int t=0;t<tokens;++t) {
++            double value=double((column*17+(token_offset+t)*13)%31-15)/16;
++            if(operation==3) model->wide_activation[column*WIDE_BATCH+t]=value;
++            else model->batch_activation[column*4+t]=value;
++        }
++        auto tick=[&] {model->start=1;model->clk=0;model->eval();model->clk=1;model->eval();};
++        tick(); // per-thread initialization and warmup excluded from timed region
++        {std::unique_lock<std::mutex> lock(mutex);++ready;condition.notify_all();condition.wait(lock,[&]{return go;});}
++        for(int i=0;i<repetitions;++i) tick();
++        {std::lock_guard<std::mutex> lock(mutex);++done;condition.notify_all();}
++        const double* source=operation==3?model->wide_result.data():model->batch_result.data();
++        std::memcpy(result.values.data()+model->first_row*tokens,source+model->first_row*tokens,
++                    (model->end_row-model->first_row)*tokens*sizeof(double));
++        model->final();
++    });
++    std::unique_lock<std::mutex> lock(mutex);condition.wait(lock,[&]{return ready==workers;});
++    auto start=std::chrono::steady_clock::now();go=true;condition.notify_all();
++    condition.wait(lock,[&]{return done==workers;});
++    result.seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
++    lock.unlock();for(auto& thread:threads) thread.join();return result;
++}
++int main(int argc,char** argv) {
++    try {
++        if(argc!=8) throw std::runtime_error("checkpoint offsets slot rows width workers repetitions");
++        int fd=open(argv[1],O_RDONLY);struct stat info{};
++        if(fd<0 || fstat(fd,&info)) throw std::runtime_error("Checkpoint open failed");
++        void* mapping=mmap(nullptr,info.st_size,PROT_READ,MAP_PRIVATE,fd,0);close(fd);
++        if(mapping==MAP_FAILED) throw std::runtime_error("Checkpoint mmap failed");
++        weights=static_cast<const uint16_t*>(mapping);words=info.st_size/2;
++        std::ifstream file(argv[2]);std::vector<int64_t> offsets;int64_t offset;
++        while(file>>offset) offsets.push_back(offset);
++        int slot=std::stoi(argv[3]),rows=std::stoi(argv[4]),width=std::stoi(argv[5]);
++        int workers=std::stoi(argv[6]),repetitions=std::stoi(argv[7]);
++        if(rows<1 || rows>3072 || width<1 || width>3072 || workers<1 || workers>32 || repetitions<1 || repetitions>10000)
++            throw std::runtime_error("Invalid shape/worker/repetition count");
++        int64_t base=offsets.at(slot),elements=int64_t(rows)*width;
++        if(base<0 || size_t(base)>words || size_t(elements)>words-size_t(base)) throw std::runtime_error("Invalid full span");
++        auto wide=run(base,rows,width,workers,1,3,0);
++        for(int chunk=0;chunk<WIDE_BATCH/4;++chunk) {
++            auto reference=run(base,rows,width,workers,1,2,chunk*4);
++            for(int row=0;row<rows;++row) for(int t=0;t<4;++t)
++                if(std::memcmp(&reference.values[row*4+t],&wide.values[row*WIDE_BATCH+chunk*4+t],sizeof(double)))
++                    throw std::runtime_error("Full projection output bits differ");
++        }
++        std::cout<<std::setprecision(17)<<"{\"bit_identical\":true,\"batch\":"<<WIDE_BATCH<<",\"pairs\":[";
++        for(int pair=0;pair<3;++pair) {
++            double reference_time=0,wide_time=0;
++            auto reference=[&] {reference_time=run(base,rows,width,workers,repetitions,2,0).seconds;};
++            auto candidate=[&] {wide_time=run(base,rows,width,workers,repetitions,3,0).seconds;};
++            if(pair%2) {candidate();reference();} else {reference();candidate();}
++            if(pair) std::cout<<',';
++            std::cout<<"{\"baseline_b4_seconds\":"<<reference_time<<",\"wide_seconds\":"<<wide_time
++                     <<",\"throughput_ratio\":"<<(reference_time*(WIDE_BATCH/4))/wide_time<<'}';
++        }
++        std::cout<<"]}\n";munmap(mapping,info.st_size);
++    } catch(const std::exception& error) {std::cerr<<error.what()<<'\n';return 1;}
++}
+diff --git a/tools/probe_wide_projection.py b/tools/probe_wide_projection.py
+new file mode 100644
+index 0000000..0d6b391
+--- /dev/null
++++ b/tools/probe_wide_projection.py
+@@ -0,0 +1,54 @@
++"""Build/run isolated SV projection probes; no public model protocol changes."""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import statistics
++import subprocess
++try:
++    from .experiment import ROOT,locate_model
++    from .rtl_model import prepare_layout
++except ImportError:
++    from experiment import ROOT,locate_model
++    from rtl_model import prepare_layout
++
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--batch',type=int,choices=[4,8,16],required=True)
++    parser.add_argument('--workers',type=int,default=8)
++    parser.add_argument('--repetitions',type=int,default=100)
++    parser.add_argument('--build-only',action='store_true')
++    args=parser.parse_args()
++    directory=ROOT/f'build/wide-probe-b{args.batch}'
++    directory.mkdir(parents=True,exist_ok=True)
++    flags=f'-std=c++17 -O3 -flto=thin -DWIDE_BATCH={args.batch}'
++    command=['verilator','--cc','--exe','--build','-j','4','--top-module','projection_worker',
++        '--Mdir',str(directory),'-Wall','-Wno-BLKSEQ','-Wno-fatal','-CFLAGS',flags,
++        '-MAKEFLAGS','OPT_FAST=-O3','-LDFLAGS','-flto=thin','-O3',
++        '+define+PARALLEL_ATTENTION','+define+BATCH_PREFILL','+define+BLOCK_UNROLL',
++        '+define+UNCHECKED_WEIGHTS','+define+MASK_ACTIVATION_INDEX','+define+UNSIGNED_PROJECTION_INDEX',
++        f'+define+WIDE_BATCH={args.batch}',str(ROOT/'rtl/projection_worker.sv'),str(ROOT/'sim/wide_projection_probe.cpp')]
++    with (directory/'build.log').open('w') as log:
++        subprocess.run(command,check=True,stdout=log,stderr=subprocess.STDOUT)
++    binary=directory/'Vprojection_worker'
++    report=dict(batch=args.batch,workers=args.workers,repetitions=args.repetitions,
++                binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),command=command,
++                source_hashes={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in
++                               [ROOT/'rtl/projection_worker.sv',ROOT/'sim/wide_projection_probe.cpp']},
++                limitation='Projection-only warmed arithmetic throughput, excludes per-job pool barriers, input/result copies and all nonprojection model work; synthetic activations with real checkpoint matrices.',runs=[])
++    if args.build_only:
++        (directory/'report.json').write_text(json.dumps(report,indent=2)+'\n');return
++    model,layout=prepare_layout(locate_model(None))
++    for name,slot,rows,width in [('q',4,2048,1024),('o',7,1024,2048),('gate',11,3072,1024),('down',13,1024,3072),('tail',4,7,9)]:
++        result=subprocess.run([str(binary),str(model/'model.safetensors'),str(layout),str(slot),str(rows),str(width),str(args.workers),str(args.repetitions)],check=True,capture_output=True,text=True)
++        row=json.loads(result.stdout);row.update(name=name,rows=rows,width=width)
++        row['median_throughput_ratio']=statistics.median(p['throughput_ratio'] for p in row['pairs'])
++        report['runs'].append(row)
++        print(json.dumps(dict(batch=args.batch,name=name,bit_identical=row['bit_identical'],ratio=row['median_throughput_ratio'])),flush=True)
++    (directory/'report.json').write_text(json.dumps(report,indent=2)+'\n')
++    with (directory/'disassembly.txt').open('w') as assembly:
++        subprocess.run(['otool','-tvV',str(binary)],stdout=assembly,check=True)
++
++
++if __name__=='__main__':main()

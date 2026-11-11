@@ -1,0 +1,170 @@
+{
+  "batch": 4,
+  "workers": 8,
+  "repetitions": 100,
+  "binary_sha256": "408e1734a126a74836bcfc62c951ec87dcd7917ff8b5ac43e3a554075755f64f",
+  "command": [
+    "verilator",
+    "--cc",
+    "--exe",
+    "--build",
+    "-j",
+    "4",
+    "--top-module",
+    "projection_worker",
+    "--Mdir",
+    "$B8_WORKTREE/build/wide-probe-b4",
+    "-Wall",
+    "-Wno-BLKSEQ",
+    "-Wno-fatal",
+    "-CFLAGS",
+    "-std=c++17 -O3 -flto=thin -DWIDE_BATCH=4",
+    "-MAKEFLAGS",
+    "OPT_FAST=-O3",
+    "-LDFLAGS",
+    "-flto=thin",
+    "-O3",
+    "+define+PARALLEL_ATTENTION",
+    "+define+BATCH_PREFILL",
+    "+define+BLOCK_UNROLL",
+    "+define+UNCHECKED_WEIGHTS",
+    "+define+MASK_ACTIVATION_INDEX",
+    "+define+UNSIGNED_PROJECTION_INDEX",
+    "+define+WIDE_BATCH=4",
+    "$B8_WORKTREE/rtl/projection_worker.sv",
+    "$B8_WORKTREE/sim/wide_projection_probe.cpp"
+  ],
+  "source_hashes": {
+    "rtl/projection_worker.sv": "dff9bb129a0b8648279b68b49dd600fa7813c2cb059b6fdd669a3150485c3391",
+    "sim/wide_projection_probe.cpp": "80cfcb9f39b3b02df16157f81b806dd1b62b948a56b30491f6175be9e93f358d"
+  },
+  "limitation": "Projection-only warmed arithmetic throughput, excludes per-job pool barriers, input/result copies and all nonprojection model work; synthetic activations with real checkpoint matrices.",
+  "runs": [
+    {
+      "bit_identical": true,
+      "batch": 4,
+      "pairs": [
+        {
+          "baseline_b4_seconds": 0.018706958,
+          "wide_seconds": 0.019834875,
+          "throughput_ratio": 0.9431346554994675
+        },
+        {
+          "baseline_b4_seconds": 0.011223958,
+          "wide_seconds": 0.020611458,
+          "throughput_ratio": 0.5445494442945278
+        },
+        {
+          "baseline_b4_seconds": 0.011439917,
+          "wide_seconds": 0.017938375,
+          "throughput_ratio": 0.637734298675326
+        }
+      ],
+      "name": "q",
+      "rows": 2048,
+      "width": 1024,
+      "median_throughput_ratio": 0.637734298675326
+    },
+    {
+      "bit_identical": true,
+      "batch": 4,
+      "pairs": [
+        {
+          "baseline_b4_seconds": 0.011936584,
+          "wide_seconds": 0.021555625,
+          "throughput_ratio": 0.5537572675345763
+        },
+        {
+          "baseline_b4_seconds": 0.012037292,
+          "wide_seconds": 0.022087875,
+          "throughput_ratio": 0.5449728414344974
+        },
+        {
+          "baseline_b4_seconds": 0.012389708,
+          "wide_seconds": 0.021895166,
+          "throughput_ratio": 0.5658649950404577
+        }
+      ],
+      "name": "o",
+      "rows": 1024,
+      "width": 2048,
+      "median_throughput_ratio": 0.5537572675345763
+    },
+    {
+      "bit_identical": true,
+      "batch": 4,
+      "pairs": [
+        {
+          "baseline_b4_seconds": 0.018793208,
+          "wide_seconds": 0.027849541,
+          "throughput_ratio": 0.6748121270652181
+        },
+        {
+          "baseline_b4_seconds": 0.017970791,
+          "wide_seconds": 0.0276815,
+          "throughput_ratio": 0.6491985983418528
+        },
+        {
+          "baseline_b4_seconds": 0.0178845,
+          "wide_seconds": 0.027750125,
+          "throughput_ratio": 0.644483583407282
+        }
+      ],
+      "name": "gate",
+      "rows": 3072,
+      "width": 1024,
+      "median_throughput_ratio": 0.6491985983418528
+    },
+    {
+      "bit_identical": true,
+      "batch": 4,
+      "pairs": [
+        {
+          "baseline_b4_seconds": 0.018220917,
+          "wide_seconds": 0.036698458,
+          "throughput_ratio": 0.4965036133125811
+        },
+        {
+          "baseline_b4_seconds": 0.017412459,
+          "wide_seconds": 0.035759417,
+          "throughput_ratio": 0.486933525789864
+        },
+        {
+          "baseline_b4_seconds": 0.017494209,
+          "wide_seconds": 0.0347395,
+          "throughput_ratio": 0.5035826364800875
+        }
+      ],
+      "name": "down",
+      "rows": 1024,
+      "width": 3072,
+      "median_throughput_ratio": 0.4965036133125811
+    },
+    {
+      "bit_identical": true,
+      "batch": 4,
+      "pairs": [
+        {
+          "baseline_b4_seconds": 7.275e-05,
+          "wide_seconds": 6.3458e-05,
+          "throughput_ratio": 1.1464275583850736
+        },
+        {
+          "baseline_b4_seconds": 5.0666e-05,
+          "wide_seconds": 8.6375e-05,
+          "throughput_ratio": 0.5865817655571636
+        },
+        {
+          "baseline_b4_seconds": 5.8875e-05,
+          "wide_seconds": 4.6958e-05,
+          "throughput_ratio": 1.2537799735934239
+        }
+      ],
+      "name": "tail",
+      "rows": 7,
+      "width": 9,
+      "median_throughput_ratio": 1.1464275583850736
+    }
+  ],
+  "decision": "Reject this lane-major layout; do not infer that every B8 layout is slower."
+}
