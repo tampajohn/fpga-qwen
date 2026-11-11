@@ -1,0 +1,155 @@
+[
+  {
+    "name": "synthetic-7-b1",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 7,
+    "tokens": 1,
+    "fixture": 0,
+    "sha256": "08eb969355178cd739aac33594bc047263e513cf390301468ab73a727df3040a"
+  },
+  {
+    "name": "synthetic-7-b4",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 7,
+    "tokens": 4,
+    "fixture": 0,
+    "sha256": "0c622fb9789d95a59885b9b0ce85a3a57258215f9c7b868381267630c27ce6a0"
+  },
+  {
+    "name": "synthetic-8-b1",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 8,
+    "tokens": 1,
+    "fixture": 0,
+    "sha256": "bfdc621a6f9a36c7b42c956d80769f9344db24d84c6c4a809b5419f210b55d03"
+  },
+  {
+    "name": "synthetic-8-b4",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 8,
+    "tokens": 4,
+    "fixture": 0,
+    "sha256": "119d084468dc18e7d0a76f2920500d5944f16a55a8194da56c3b7e8de70e295e"
+  },
+  {
+    "name": "synthetic-63-b1",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 63,
+    "tokens": 1,
+    "fixture": 0,
+    "sha256": "a4cfae235067f5eb6d8baabc79da249aeb0cc449a4b12b77409450b748ddd33d"
+  },
+  {
+    "name": "synthetic-63-b4",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 63,
+    "tokens": 4,
+    "fixture": 0,
+    "sha256": "000332c1eaec22e6145c32c03c90179577d4d7c93f795a06eb9001b44b200170"
+  },
+  {
+    "name": "synthetic-64-b1",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 64,
+    "tokens": 1,
+    "fixture": 0,
+    "sha256": "77b849eee8328843308f4853f8a38abbf0356af790339d8d5f3514f4b4bc93fd"
+  },
+  {
+    "name": "synthetic-64-b4",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 64,
+    "tokens": 4,
+    "fixture": 0,
+    "sha256": "f158793745f4b4c225d896eafd76856682ce9bd66eeb34a55ec6bd448e89a1db"
+  },
+  {
+    "name": "synthetic-65-b1",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 65,
+    "tokens": 1,
+    "fixture": 0,
+    "sha256": "0660076aa4f7940c739df89af7e7d8890591c451ddaffe7782e285af0e13bc12"
+  },
+  {
+    "name": "synthetic-65-b4",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 65,
+    "tokens": 4,
+    "fixture": 0,
+    "sha256": "b92f20f0e765b9fda81bc9cc43896152b97529fa566121db09aac163c76d1edd"
+  },
+  {
+    "name": "synthetic-1024-b1",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 1024,
+    "tokens": 1,
+    "fixture": 0,
+    "sha256": "b5ede611e2368179e21004017c22dafdec6d777a7a362909b86e2f1f6fc0d17b"
+  },
+  {
+    "name": "synthetic-1024-b4",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 1024,
+    "tokens": 4,
+    "fixture": 0,
+    "sha256": "ce5af3d053c758f73e12b4d5072d425e0d252e461c92116a038aee2768851883"
+  },
+  {
+    "name": "synthetic-3072-b1",
+    "matrix": "model.layers.0.mlp.down_proj.weight",
+    "rows": 16,
+    "width": 3072,
+    "tokens": 1,
+    "fixture": 0,
+    "sha256": "524985814df3b3839e522a9b870f904c333b763ece7e8d26f6a15baec169e428"
+  },
+  {
+    "name": "synthetic-3072-b4",
+    "matrix": "model.layers.0.mlp.down_proj.weight",
+    "rows": 16,
+    "width": 3072,
+    "tokens": 4,
+    "fixture": 0,
+    "sha256": "f3cacdc29917b50758142cff30441aef11dafa8ce7a5d0dfca45d76442081755"
+  },
+  {
+    "name": "q-real-b1",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 1024,
+    "tokens": 1,
+    "fixture": 1,
+    "sha256": "1c5213d13bfeaeaf3d0be4472fafb6f0e6046fba9164d48a69b35de8adacdc9a"
+  },
+  {
+    "name": "q-real-b4",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 16,
+    "width": 1024,
+    "tokens": 4,
+    "fixture": 1,
+    "sha256": "cd1db1450da0bcfe839ca418cbdce88dd32b41621fc8b2cb9ef3be531cd6020f"
+  },
+  {
+    "name": "zero",
+    "matrix": "model.layers.0.self_attn.q_proj.weight",
+    "rows": 4,
+    "width": 65,
+    "tokens": 4,
+    "fixture": 2,
+    "sha256": "3f9b159a31e33a85955e864e73d88518ed1795714bb5f2cb70e0a45d6b710ffd"
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "base_commit": "418a3057d71a37b91c57c4f50433172995ef81c9",
+  "binary_sha256": "01d980b0bb124b8e39b4f203eb9f41a0ad1429aebd1899704743fc8a5b4daa79",
+  "compiler": "Apple clang 21.0.0 (clang-2100.1.1.101)",
+  "verilator": "5.054",
+  "native_target": "apple-m4",
+  "enabled_features": [
+    "dotprod",
+    "i8mm",
+    "neon",
+    "sme",
+    "sme2"
+  ],
+  "assembly_counts": {
+    "sdot": 0,
+    "udot": 0,
+    "smull": 3,
+    "smull2": 0,
+    "smlal": 0,
+    "smlal2": 0
+  },
+  "note": "smull matches are scalar general-purpose-register instructions, not vector integer dots; whole artifact also includes unchanged FP64 worker and runtime."
+}
