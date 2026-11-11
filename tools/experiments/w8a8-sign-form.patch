@@ -1,0 +1,43 @@
+diff --git a/rtl/w8a8_probe.sv b/rtl/w8a8_probe.sv
+index 35ee1ba..64b3e63 100644
+--- a/rtl/w8a8_probe.sv
++++ b/rtl/w8a8_probe.sv
+@@ -83,6 +83,12 @@ module w8a8_probe (
+         end
+     endtask
+ 
++    // Equivalent signed-byte interpretation, with no host arithmetic changes.
++    function automatic int signed decode_signed_byte(input byte unsigned value);
++        return int'(32'(value))-int'((32'(value)&32'd128)<<1);
++    endfunction
++
++    `define DECODE_BYTE(value) (int'(32'($unsigned(value)))-int'((32'($unsigned(value))&32'd128)<<1))
+     task automatic integer_projection;
+         int signed sum;
+         for (int r=0;r<rows;r++) begin
+@@ -91,7 +97,7 @@ module w8a8_probe (
+                 for (int g=0;g<(width+G-1)/G;g++) begin
+                     sum=0;
+                     for (int j=0;j<G;j++)
+-                        sum+=32'(wq[r][12'(g*G+j)])*32'(xq[t][12'(g*G+j)]);
++                        sum+=`DECODE_BYTE(wq[r][12'(g*G+j)])*`DECODE_BYTE(xq[t][12'(g*G+j)]);
+                     group_acc[r][t][g]=sum;
+                     result[r*B+t]+=(real'(sum)*sw[r][g])*sx[t][g];
+                 end
+@@ -229,6 +235,10 @@ module w8a8_probe (
+                 7: begin
+                     // Known answers, including ties, signed extrema and saturation.
+                     failures=0;
++                    for(int byte_value=0;byte_value<256;byte_value++) begin
++                        if(decode_signed_byte(8'(byte_value)) != (byte_value<128?byte_value:byte_value-256)) failures++;
++                        if(decode_signed_byte(8'(byte_value)) != 32'(signed'(8'(byte_value)))) failures++;
++                    end
+                     if(quantize(0.0,1.0)!=0 || quantize(-0.0,1.0)!=0) failures++;
+                     if(quantize(0.5,1.0)!=0 || quantize(-0.5,1.0)!=0) failures++;
+                     if(quantize(1.5,1.0)!=2 || quantize(-1.5,1.0)!=-2) failures++;
+@@ -242,4 +252,5 @@ module w8a8_probe (
+             endcase
+         end
+     end
++`undef DECODE_BYTE
+ endmodule

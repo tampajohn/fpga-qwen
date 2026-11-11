@@ -1,0 +1,21 @@
+{
+  "binary_sha256": "c15979e8718152afd3e1b162f520ebb10cebcdd9a543d1526274137f2c0e2448",
+  "baseline_commit": "c6bd0a4",
+  "all_256_byte_interpretations_exact": true,
+  "integer_oracle_fixtures": 17,
+  "assembly_counts": {
+    "sdot": 0,
+    "sdot.4s": 0,
+    "udot": 0,
+    "udot.4s": 0,
+    "mla.4s": 24,
+    "ushll.8h": 12,
+    "ushll.4s": 24,
+    "bic.4s": 60,
+    "neg.4s": 4,
+    "sub.4s": 60,
+    "sshll.8h": 0,
+    "sshll.4s": 0
+  },
+  "conclusion": "No packed signed-byte dot recognition from this formulation. INT32 vector MAC remains. This does not prove a unique cause of missing SDOT."
+}
