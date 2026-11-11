@@ -18,6 +18,8 @@ def main():
     parser.add_argument('--candidate-block-size',type=int,choices=(1,4),default=4)
     parser.add_argument('--disable-prefix-reuse',action='store_true',help='Reset each request; required for experimental hybrid precision')
     args=parser.parse_args()
+    if args.candidate_block_size == 1 and not args.disable_prefix_reuse:
+        parser.error("Hybrid candidate evaluation requires --disable-prefix-reuse")
     paths=[args.reference.resolve(),args.candidate.resolve()]
     engines=[RTLChatEngine(binary=p,workers=8,lanes=8,block_size=b,prefill_size=s,
                            reuse_prefix=not args.disable_prefix_reuse)

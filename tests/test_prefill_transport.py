@@ -1,6 +1,6 @@
 """Separate prefill capacity must not enlarge verified sampling blocks."""
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from tools.rtl_model import RTLModel
 from tests.test_suffix_chat import engine, cycle, run
 
@@ -14,7 +14,9 @@ class PrefillTransportTests(unittest.TestCase):
 
     def test_invalid_capacity_pair_rejected_before_model_load(self):
         with self.assertRaises(ValueError):RTLModel(block_size=1,prefill_size=4)
-        with self.assertRaises(ValueError):RTLModel(block_size=1,prefill_size=8)
+        with patch("tools.rtl_model.prepare_layout",return_value=(None,None)):
+            hybrid=RTLModel(block_size=1,prefill_size=8)
+            self.assertEqual((hybrid.prefill_size,hybrid.block_size),(8,1))
         with self.assertRaises(ValueError):RTLModel(block_size=4,prefill_size=1)
 
     def test_wire_and_positions(self):
