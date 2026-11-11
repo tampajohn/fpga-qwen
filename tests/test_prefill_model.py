@@ -76,7 +76,9 @@ class PrefillModelTests(unittest.TestCase):
     def test_actual_capacity_boundary(self):
         model=self.model()
         for start in range(0,4088,8):self.assertEqual(model.prefill([9707]*8)[-1][1],start+8)
-        self.assertEqual(model.prefill([9707]*7)[-1][1],4095)
+        self.assertEqual(model.prefill([9707]*8)[-1][1],4096)
+        self.assertEqual(model.command('truncate 4095'),'truncated')
         self.assertEqual(model.prefill([9707])[-1][1],4096)
-        with self.assertRaises(RuntimeError):model.command('prefill 1 9707')
+        self.assertEqual(model.command('truncate 4092'),'truncated')
+        with self.assertRaises(RuntimeError):model.command('prefill 5 9707 9707 9707 9707 9707')
         self.assertEqual(model.process.wait(timeout=2),1)
