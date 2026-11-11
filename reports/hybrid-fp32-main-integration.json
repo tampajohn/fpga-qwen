@@ -1,0 +1,51 @@
+{
+  "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1/full/Vqwen_behavioral",
+  "binary_sha256": "f79379076fe74bc83d1919d6b8c0a7e3cdf0def3dd9ac6ad5a29f0cd17f0d084",
+  "reference_binary_sha256": "d27a2ffc51aacad610dbef0f6b358e66118d486504bcb98128345e28f50b19d9",
+  "full_vocabulary_outputs": 151936,
+  "bit_identical": true,
+  "source_hashes_match": true,
+  "browser": {
+    "replies": [
+      "blue",
+      "blue",
+      "blue",
+      "blue",
+      "blue"
+    ],
+    "default_backend": "rtl",
+    "hybrid_precision_verified": true,
+    "hybrid_prefix_reused_tokens": 0,
+    "suffix_disabled": true,
+    "serial_disabled": true,
+    "worker_change": true,
+    "switch_back": true,
+    "cancel_restart": true,
+    "console_errors": []
+  },
+  "live_url": "http://127.0.0.1:8765",
+  "live_status": {
+    "ready": true,
+    "busy": false,
+    "model": "Qwen3-0.6B",
+    "device": "cpu",
+    "precision": "BF16 weights / FP64 arithmetic and KV",
+    "precision_profile": "fp64",
+    "precision_verified": false,
+    "gpu_inference": false,
+    "cpu_threads": 8,
+    "simulation_workers": 8,
+    "context_limit": 4096,
+    "rtl": "Full behavioral SystemVerilog; not synthesizable or cycle-accurate",
+    "inference": "Verilator: all model math and KV payload in SystemVerilog",
+    "reduction_lanes": 8,
+    "prefill_reduction_lanes": 4,
+    "prefill_block_size": 8,
+    "suffix_supported": true,
+    "max_verified_draft": 3,
+    "prefix_reuse_enabled": true,
+    "cached_tokens": 0,
+    "pytorch_loaded": false,
+    "active_backend": "rtl"
+  }
+}
