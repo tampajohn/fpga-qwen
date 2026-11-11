@@ -1,0 +1,19 @@
+This is an isolated **projection microkernel experiment**, not a model backend. `rtl/fp32_projection_kernel.sv` implements original SV arithmetic using real ports and the unchanged BF16-to-real DPI transport, with internal `shortreal` activations, weights, products and sums. All FP32 conversion happens in SV. B1 and B4 use eight independent partial sums; B8 uses four, matching the deployed worker's reduction layout. Widths must be divisible by eight and between 8 and 3,072; rows are bounded at 3,072. The harness validates the entire mapped weight span before starting workers.
+
+The primary FP64 reference is the untouched production `projection_worker.sv`, independently built with the installed compiler, original O3/thin-LTO flags and original contraction behavior. It is never embedded in the patched-compiler executable or compiled with the candidate's strict rounding flags. The candidate uses the reviewed compiler's internal-shortreal subset and `-fno-fast-math -ffp-contract=off`. Generated C++ is inspected but never edited.
+
+Real checkpoint matrices are layer-zero Q (slot4,2048×1024), gate (slot11,3072×1024) and down (slot13,1024×3072); tensor names, shapes and offsets are checked against the safetensors header. Vocabulary projection is not covered. Activations are deterministic synthetic doubles `(j*7+t*11)%61-30`, divided by17, identically supplied to both kernels. They are not captured model activations and supply no full-model quality evidence.
+
+Each subprocess initializes independent worker models and inputs, performs an untimed warmup, then releases all workers for a fixed repetition count. Measured wall time includes one initial wakeup and worker eval loops; initialization, input copies and final output copies are outside the interval. FP32 candidate input conversion occurs inside every SV tick. This is warmed arithmetic throughput, excluding full-model dispatch barriers, attention, activations, KV and sampling. Different compiler versions, strict contraction, and the candidate's smaller output port (3072×B versus the production worker's151936 scalar outputs plus batch ports) can affect eval/cache behavior; a timing difference cannot be attributed solely to precision.
+
+`tools/fp32_rounding_oracle.py` is a bounded test-only exact-rational IEEE binary32 oracle, not an inference kernel. It rounds each product/addition to nearest/ties-to-even independently of the compiler, with the same per-lane column order. Tiny checkpoint-slice fixtures use rows1/3/7 and widths8/16/24 for each batch1/4/8. Known halfway, subnormal, cancellation and multiplication cases have standalone tests. Negative-zero arithmetic and overflow are excluded from these bounded finite fixtures. Bad widths/rows must fail before worker execution. Actual kernels must match these oracle output bits; full-matrix comparisons against FP64 report descriptive error statistics without inventing a model-quality threshold.
+
+Build and scoring are separate commands so they can be coordinated into different CPU windows:
+
+```sh
+python -m unittest tests.test_fp32_rounding_oracle
+python tools/probe_fp32_projection.py --build-only --compiler-root REVIEWED_COMPILER_ROOT
+python tools/probe_fp32_projection.py --run-only --workers 8 --repetitions 20 --pairs 3
+```
+
+The builder records executable/compiler/source hashes, the candidate compiler Git base and tracked patch hash, exact command/environment and disassembly; source/compiler changes during builds invalidate the artifact. Run-only rechecks source and executable hashes. The report records checkpoint/tokenizer provenance. The compiler binary hash identifies the actual compiler even when development files outside its tracked patch exist. No global installs, production defaults, or generated-code replacements are involved. Build, SIMD inspection, tiny-oracle results and timing evidence remain pending until the compiler subset is approved and the experiment runs.
