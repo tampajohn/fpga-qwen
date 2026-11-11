@@ -1,0 +1,27 @@
+{
+  "replies": [
+    "blue",
+    "blue",
+    "blue",
+    "blue",
+    "blue"
+  ],
+  "default_backend": "rtl",
+  "hybrid_precision_verified": true,
+  "hybrid_prefix_reused_tokens": 0,
+  "suffix_disabled": true,
+  "serial_disabled": true,
+  "worker_change": true,
+  "switch_back": true,
+  "cancel_restart": true,
+  "console_errors": [],
+  "scope": "Isolated localhost:8766 browser correctness, not performance; live server unchanged",
+  "candidate_sha256": "d27a2ffc51aacad610dbef0f6b358e66118d486504bcb98128345e28f50b19d9",
+  "reference_sha256": "186615739651cb253804374653bb8d74e816e8870873ea88a17c2b9b4c6bb682",
+  "source_commit": "0ad0e59",
+  "browser_test_sha256": "38b3a7150f104c760ea9dd937ce7e4771cf8487858fa023227bcfea47aea6287",
+  "test_session": 61106,
+  "test_exit_code": 0,
+  "isolated_server_session": 70322,
+  "isolated_server_exit_code": 0
+}
