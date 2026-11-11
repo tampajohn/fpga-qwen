@@ -20,6 +20,8 @@ class TargetDouble:
         self.blocks=[]
         self.truncations=[]
         self.after_block=None
+        self.prefills=[]
+        self.resets=0
 
     def start(self,cancel=None):
         self.process=self
@@ -35,6 +37,7 @@ class TargetDouble:
         self.history=[]
 
     def reset(self,cancel=None):
+        self.resets+=1
         self.history=[]
 
     def command(self,command,cancel=None):
@@ -57,6 +60,10 @@ class TargetDouble:
         predicted=self.prediction(self.history,uniform) if logits else 0
         return predicted,len(self.history),0.0
 
+    def prefill(self,tokens,cancel=None):
+        self.prefills.append(list(tokens))
+        return [self.token(t,logits=False,cancel=cancel) for t in tokens]
+
     def block(self,tokens,logits=False,uniforms=None,cancel=None):
         self.blocks.append((list(tokens),logits,list(uniforms) if uniforms is not None else None))
         result=[self.token(token,logits,cancel,uniform) for token,uniform in
@@ -75,6 +82,7 @@ def engine(prediction,block_size=4):
     result=RTLChatEngine.__new__(RTLChatEngine)
     result.sim=TargetDouble(prediction,block_size)
     result.tokenizer=TokenizerDouble()
+    result.reuse_prefix=True
     result.cache_ids=[]
     result.cache_session=None
     result.eos={99}
@@ -91,6 +99,33 @@ def run(model,ids=None,max_new=12,draft=0,decoding='greedy',seed=42,session='s')
 
 
 class SuffixChatTests(unittest.TestCase):
+    def test_hybrid_prefill_tails_reset_and_suffix_rejection(self):
+        for tail in range(1,9):
+            with self.subTest(tail=tail):
+                model=engine(cycle,1)
+                model.sim.prefill_size=8
+                model.reuse_prefix=False
+                ids=[1,2,3]*6
+                ids=ids[:8+tail]+[2]
+                first=run(model,ids=ids,max_new=3,decoding='chat')
+                second=run(model,ids=ids,max_new=3,decoding='chat')
+                self.assertEqual(first['token_ids'],second['token_ids'])
+                self.assertEqual(model.sim.resets,2)
+                self.assertEqual(model.sim.prefills,[ids[:8],ids[8:-1]]*2)
+                self.assertEqual(second['metrics']['reused_prefix_tokens'],0)
+                self.assertEqual(model.sim.blocks,[])
+                self.assertEqual(model.cache_ids[:len(ids)],ids)
+                self.assertFalse(model.status()['suffix_supported'])
+                self.assertFalse(model.status()['prefix_reuse_enabled'])
+                with self.assertRaises(ValueError):run(model,ids=ids,draft=1)
+                self.assertEqual(model.sim.resets,2)
+
+    def test_prefill_result_count_mismatch_is_not_silently_zipped(self):
+        model=engine(cycle,1)
+        model.sim.prefill_size=8
+        model.sim.prefill=lambda *args,**kwargs: []
+        with self.assertRaises(RuntimeError):run(model)
+
     def test_real_ngram_drafts_accept_bonus_and_match_sequential(self):
         sequential=engine(cycle,1)
         blocked=engine(cycle)
@@ -175,6 +210,13 @@ class SuffixChatTests(unittest.TestCase):
 
 
 class BlockTransportTests(unittest.TestCase):
+    def test_supported_prefill_decode_pairs(self):
+        with patch('tools.rtl_model.prepare_layout',return_value=(None,None)):
+            for prefill,block in ((1,1),(4,4),(8,4),(8,1)):
+                model=RTLModel(prefill_size=prefill,block_size=block)
+                self.assertEqual((model.prefill_size,model.block_size),(prefill,block))
+            with self.assertRaises(ValueError):RTLModel(prefill_size=4,block_size=1)
+
     def test_wire_and_response_validation(self):
         model=RTLModel.__new__(RTLModel)
         model.block_size=4

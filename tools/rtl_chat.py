@@ -13,7 +13,10 @@ except ImportError:
 
 
 class RTLChatEngine(ChatProtocol):
-    def __init__(self, model=None, workers=8, binary=None, lanes=1, block_size=1, prefill_size=None):
+    def __init__(self, model=None, workers=8, binary=None, lanes=1, block_size=1, prefill_size=None, reuse_prefix=True):
+        if type(reuse_prefix) is not bool:
+            raise ValueError("reuse_prefix must be a boolean")
+        self.reuse_prefix = reuse_prefix
         self.sim = RTLModel(model, workers=workers, binary=binary, lanes=lanes, block_size=block_size, prefill_size=prefill_size)
         super().__init__(self.sim.model)
         self.cache_ids = []
@@ -33,7 +36,7 @@ class RTLChatEngine(ChatProtocol):
                     prefill_reduction_lanes=(4 if self.sim.prefill_size == 8 and self.sim.lanes == 8 else self.sim.lanes) if self.sim.workers else 1,
                     prefill_block_size=self.sim.prefill_size, suffix_supported=self.sim.block_size == 4,
                     max_verified_draft=self.sim.block_size-1,
-                    cached_tokens=len(self.cache_ids), pytorch_loaded=('torch' in sys.modules))
+                    prefix_reuse_enabled=self.reuse_prefix, cached_tokens=len(self.cache_ids), pytorch_loaded=('torch' in sys.modules))
 
     def close(self):
         self.sim.close()
@@ -76,7 +79,7 @@ class RTLChatEngine(ChatProtocol):
             if request.workers is not None:
                 self.sim.set_workers(request.workers, cancel)
             self.sim.start(cancel)
-            if self.cache_session != request.session:
+            if not self.reuse_prefix or self.cache_session != request.session:
                 self.sim.reset(cancel)
                 self.cache_ids = []
                 self.cache_session = request.session
@@ -97,6 +100,8 @@ class RTLChatEngine(ChatProtocol):
                     results = self.sim.block(chunk, logits=False, cancel=cancel)
                 else:
                     results = [self.sim.token(chunk[0], logits=False, cancel=cancel)]
+                if len(results) != len(chunk):
+                    raise RuntimeError("SystemVerilog prefill result count mismatch")
                 for token, (_, position, _) in zip(chunk, results):
                     self.cache_ids.append(token)
                     if position != len(self.cache_ids):

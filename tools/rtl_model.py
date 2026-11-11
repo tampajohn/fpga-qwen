@@ -68,8 +68,8 @@ class RTLModel:
             prefill_size = block_size
         if type(prefill_size) is not int or prefill_size not in (1, 4, 8) or prefill_size < block_size:
             raise ValueError('Prefill size must be 1, 4, or 8 and at least block size')
-        if prefill_size != block_size and (prefill_size, block_size) != (8, 4):
-            raise ValueError('Prefill must match block size, except B8 prefill with B4 verification')
+        if prefill_size != block_size and (prefill_size, block_size) not in ((8, 1), (8, 4)):
+            raise ValueError('Prefill must match block size, except B8 prefill with B1 or B4 decode')
         self.prefill_size = prefill_size
         self.block_size = block_size
         self.lanes = lanes
