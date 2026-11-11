@@ -84,8 +84,7 @@ class SVEngine:
             ):
                 raise RuntimeError('Simulator precision capabilities do not match the requested hybrid profile')
             self.metadata['verified_runtime_capabilities'] = capabilities
-        if self.lanes != 1 and self.model.command(f'lanes {self.lanes}') != 'configured':
-            raise RuntimeError('Simulator did not configure reduction lanes')
+        self.model.set_lanes(self.lanes)
         return time.perf_counter()-start
 
     def close(self):

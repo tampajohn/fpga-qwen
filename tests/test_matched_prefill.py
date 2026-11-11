@@ -4,9 +4,24 @@ import json
 from unittest.mock import Mock, patch
 from types import SimpleNamespace
 from tools.benchmark_matched import SVEngine
+from tools.rtl_model import RTLModel
 
 
 class MatchedPrefillTests(unittest.TestCase):
+    def test_start_keeps_adapter_lane_state_in_sync_with_runtime(self):
+        model = RTLModel.__new__(RTLModel)
+        model.lanes = 1
+        model.process = SimpleNamespace(poll=lambda: None)
+        model.command = Mock(return_value='configured')
+        model.start = Mock()
+        engine = SVEngine.__new__(SVEngine)
+        engine.model = model
+        engine.lanes = 8
+        engine.precision_profile = 'fp64'
+        engine.start()
+        self.assertEqual(model.lanes, 8)
+        model.command.assert_called_once_with('lanes 8', None)
+
     def test_hybrid_precision_requires_runtime_capabilities(self):
         expected = dict(precision_profile='fp32_b1_fp64_prefill', scalar_projection='fp32',
                         prefill_projection='fp64', attention_kv='fp64',
