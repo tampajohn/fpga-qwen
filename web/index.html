@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Qwen Lab · Local chat</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Qwen Lab home"><span class="mark">q.</span><span>Qwen Lab<small>LOCAL INFERENCE</small></span></a>
+    <button id="new-chat" class="secondary"><span aria-hidden="true">＋</span> New chat</button>
+    <section class="model-card" aria-label="Model">
+      <span class="eyebrow">ACTIVE MODEL</span>
+      <h2>Qwen3 <span>0.6B</span></h2>
+      <div class="pill"><span class="dot"></span> CPU only</div>
+      <p>Local weights. No GPU inference.</p>
+    </section>
+    <section class="settings" aria-label="Generation settings">
+      <span class="eyebrow">GENERATION</span>
+      <label class="backend-row" for="backend">Backend<select id="backend"><option value="rtl">SystemVerilog · behavioral</option></select></label>
+      <label class="select-row" id="workers-row" for="workers">Simulation workers<select id="workers"><option value="0">Serial baseline</option><option value="1">1 worker</option><option value="2">2 workers</option><option value="4">4 workers</option><option value="8" selected>8 workers</option></select></label>
+      <label class="select-row" for="decoding">Decoding<select id="decoding"><option value="chat" selected>Chat · sampled</option><option value="greedy">Greedy · testing</option></select></label>
+      <label class="toggle-row" for="suffix"><span>Suffix drafting<small id="suffix-note">Not yet available in this backend</small></span><input type="checkbox" id="suffix" disabled></label>
+      <label class="select-row" for="reply-limit">Reply limit<select id="reply-limit"><option value="128">128 tokens</option><option value="256" selected>256 tokens</option><option value="512">512 tokens</option></select></label>
+    </section>
+    <section class="measurements" aria-label="Last reply measurements">
+      <span class="eyebrow">LAST REPLY</span>
+      <dl>
+        <div><dt>Generation</dt><dd><span id="rate">—</span><small> tok/s</small></dd></div>
+        <div><dt>Prefix reused</dt><dd id="reused">—</dd></div>
+        <div><dt>Drafts accepted</dt><dd id="accepted">—</dd></div>
+        <div><dt>Tokens / round</dt><dd id="rounds">—</dd></div>
+      </dl>
+      <p class="measurement-note">Measured CPU run, not predicted FPGA speed.</p>
+    </section>
+    <details class="details"><summary>About this experiment</summary><p id="backend-about">All model math and KV data run in a behavioral SystemVerilog model via Verilator. This floating-point baseline is not synthesizable or cycle-accurate.</p><p>Sampled chat or greedy testing · 4,096-token context · one active reply at a time.</p></details>
+    <div class="local-note"><span class="dot" id="connection-dot"></span><span id="connection">Connecting to local engine</span></div>
+  </aside>
+  <main>
+    <header class="topbar"><div><span class="eyebrow">WORKBENCH / 01</span><h1>Local chat</h1></div><span class="header-tag" id="backend-tag">Full SV simulation</span></header>
+    <div class="conversation" id="conversation" role="log" aria-label="Conversation">
+      <section id="welcome" class="welcome">
+        <span class="welcome-mark" aria-hidden="true">↳</span>
+        <h2>Start a conversation.</h2>
+        <p>A small model, running right here.<br>Ask a question or try a repeating pattern.</p>
+        <div class="suggestions">
+          <button data-prompt="Explain memory bandwidth in three simple sentences."><span>Understand a concept</span><small>Explain memory bandwidth ↗</small></button>
+          <button data-prompt="Repeat this code exactly three times, without an introduction:&#10;def add(a, b):&#10;    return a + b"><span>Try suffix drafting</span><small>Repeat a short code pattern ↗</small></button>
+        </div>
+      </section>
+      <div id="messages"></div>
+    </div>
+    <section class="composer-area">
+      <div id="error" class="error" role="alert" hidden></div>
+      <div class="activity"><span id="activity" role="status" aria-live="polite">Loading local engine…</span><span id="context">0 / 4,096 context tokens</span></div>
+      <form id="chat-form" class="composer">
+        <label class="sr-only" for="prompt">Message</label>
+        <textarea id="prompt" rows="2" maxlength="12000" placeholder="Message Qwen…" disabled></textarea>
+        <div class="composer-bottom"><span>Enter to send · Shift + Enter for a new line</span><button id="stop" type="button" class="stop" hidden>■ Stop</button><button id="send" type="submit" disabled>Send <span aria-hidden="true">↑</span></button></div>
+      </form>
+      <p class="footer-note">Qwen3-0.6B is a small experimental model. Check important answers.</p>
+    </section>
+  </main>
+</body>
+</html>

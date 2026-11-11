@@ -1,0 +1,140 @@
+"""Transport for the full behavioral SystemVerilog model. No tensor framework."""
+import json
+import select
+import subprocess
+import time
+import threading
+from pathlib import Path
+
+try:
+    from .experiment import ROOT, locate_model, read_header
+except ImportError:
+    from experiment import ROOT, locate_model, read_header
+
+
+def prepare_layout(model):
+    model = locate_model(model)
+    config = json.loads((model / 'config.json').read_text())
+    expected = dict(model_type='qwen3', hidden_size=1024, intermediate_size=3072,
+                    num_hidden_layers=28, num_attention_heads=16, num_key_value_heads=8,
+                    head_dim=128, vocab_size=151936, rms_norm_eps=1e-6, rope_theta=1000000,
+                    attention_bias=False, hidden_act='silu', use_sliding_window=False)
+    if any(config.get(k) != v for k, v in expected.items()) or config.get('rope_scaling') is not None:
+        raise ValueError('The simulator supports the original Qwen3-0.6B configuration only')
+    header, start, _ = read_header(model / 'model.safetensors')
+    specs = [('model.embed_tokens.weight', [151936, 1024]), ('model.norm.weight', [1024]),
+             ('lm_head.weight' if 'lm_head.weight' in header else 'model.embed_tokens.weight', [151936, 1024])]
+    for layer in range(28):
+        for suffix, shape in [('input_layernorm.weight', [1024]),
+                              ('self_attn.q_proj.weight', [2048, 1024]),
+                              ('self_attn.k_proj.weight', [1024, 1024]),
+                              ('self_attn.v_proj.weight', [1024, 1024]),
+                              ('self_attn.o_proj.weight', [1024, 2048]),
+                              ('self_attn.q_norm.weight', [128]),
+                              ('self_attn.k_norm.weight', [128]),
+                              ('post_attention_layernorm.weight', [1024]),
+                              ('mlp.gate_proj.weight', [3072, 1024]),
+                              ('mlp.up_proj.weight', [3072, 1024]),
+                              ('mlp.down_proj.weight', [1024, 3072])]:
+            specs.append((f'model.layers.{layer}.{suffix}', shape))
+    offsets = []
+    for name, shape in specs:
+        tensor = header[name]
+        if tensor['dtype'] != 'BF16' or tensor['shape'] != shape:
+            raise ValueError(f'Unexpected checkpoint tensor: {name}')
+        offsets.append((start + tensor['data_offsets'][0]) // 2)
+    directory = ROOT / 'build/full'
+    directory.mkdir(parents=True, exist_ok=True)
+    path = directory / 'offsets.txt'
+    path.write_text(''.join(f'{offset}\n' for offset in offsets))
+    return model, path
+
+
+class SimulationCancelled(Exception):
+    pass
+
+
+class RTLModel:
+    def __init__(self, model=None, workers=0):
+        if type(workers) is not int or not 0 <= workers <= 32:
+            raise ValueError("Workers must be an integer from 0 to 32")
+        self.workers = workers
+        self.model, self.layout = prepare_layout(model)
+        self.process = None
+        self.log = None
+        self.lifecycle_lock = threading.Lock()
+
+    def close(self):
+        # Shutdown and cancellation may arrive together. Detach ownership once.
+        with self.lifecycle_lock:
+            process, log = self.process, self.log
+            self.process = None
+            self.log = None
+        if process:
+            process.terminate()
+            try:
+                process.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait()
+            process.stdin.close()
+            process.stdout.close()
+        if log:
+            log.close()
+
+    def read(self, cancel=None):
+        deadline = time.monotonic() + 300
+        while time.monotonic() < deadline:
+            if cancel is not None and cancel.is_set():
+                self.close()
+                raise SimulationCancelled()
+            readable, _, _ = select.select([self.process.stdout], [], [], .05)
+            if readable:
+                line = self.process.stdout.readline()
+                if not line:
+                    raise RuntimeError('SystemVerilog simulation exited; see build/full/runtime.log')
+                return line.strip()
+        self.close()
+        raise RuntimeError('SystemVerilog simulation timed out')
+
+    def start(self, cancel=None):
+        if self.process and self.process.poll() is None:
+            return
+        self.close()
+        self.log = (ROOT / 'build/full/runtime.log').open('w')
+        self.process = subprocess.Popen([str(ROOT / 'build/full/Vqwen_behavioral'),
+            str(self.model / 'model.safetensors'), str(self.layout), str(self.workers)],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.log, text=True, bufsize=1)
+        if self.read(cancel) != 'ready':
+            raise RuntimeError('Invalid simulator handshake')
+
+    def command(self, command, cancel=None):
+        self.process.stdin.write(command + '\n')
+        self.process.stdin.flush()
+        return self.read(cancel)
+
+    def set_workers(self, workers, cancel=None):
+        if type(workers) is not int or not 0 <= workers <= 32:
+            raise ValueError('Workers must be an integer from 0 to 32')
+        if workers == self.workers:
+            return
+        if self.process and self.process.poll() is None:
+            if self.command(f'workers {workers}', cancel) != 'configured':
+                raise RuntimeError('Invalid worker configuration response')
+        self.workers = workers
+
+    def reset(self, cancel=None):
+        if self.command('reset', cancel) != 'reset':
+            raise RuntimeError('Invalid reset response')
+
+    def token(self, token, logits=True, cancel=None, uniform=None, presence_penalty=1.5):
+        if uniform is None:
+            command = f'token {token} {int(logits)}'
+        else:
+            if not 0 <= uniform < 1 or not 0 <= presence_penalty <= 2:
+                raise ValueError('Invalid sampling parameters')
+            command = f'sample {token} {int(logits)} {uniform:.17g} {presence_penalty:.17g}'
+        response = self.command(command, cancel).split()
+        if len(response) != 3:
+            raise RuntimeError('Invalid simulator token response')
+        return int(response[0]), int(response[1]), float(response[2])
