@@ -7,7 +7,7 @@ let requestId = null;
 let backends = [];
 
 function connectionLabel() {
-  if ($('backend').value === 'rtl') {
+  if (selectedBackend()?.simulation === true) {
     const count = Number($('workers').value);
     return count ? `Local simulation · ${count} worker${count === 1 ? '' : 's'}` : 'Local simulation · serial baseline';
   }
@@ -16,14 +16,18 @@ function connectionLabel() {
 function selectedBackend() { return backends.find(b => b.id === $('backend').value); }
 function backendChanged() {
   const backend = selectedBackend();
-  const rtl = $('backend').value === 'rtl';
+  const rtl = selectedBackend()?.simulation === true;
   $('workers-row').hidden = !rtl;
+  for (const option of $('workers').options) option.disabled = Number(option.value) < (backend?.min_workers ?? 0);
+  if (Number($('workers').value) < (backend?.min_workers ?? 0)) $('workers').value = '8';
   $('suffix').checked = false;
   $('suffix-note').textContent = backend?.suffix_supported
     ? `Verified n-gram drafts · up to ${backend.max_draft} tokens; sampled and greedy`
     : 'Unavailable in this backend';
   $('backend-tag').textContent = rtl ? 'Full SV simulation' : 'llama.cpp · CPU only';
-  $('backend-about').textContent = rtl
+  $('backend-about').textContent = $('backend').value === 'rtl-fp32'
+    ? 'SystemVerilog uses FP32 scalar projections for decoding and FP64 for prefill, attention and KV storage. Prefix reuse and suffix drafting are disabled for this experimental backend. CPU only; not cycle-accurate FPGA timing.'
+    : rtl
     ? 'All model math and KV data run in a behavioral SystemVerilog model via Verilator. It uses floating-point real arithmetic and is not synthesizable or cycle-accurate. Python handles tokenization, suffix proposals, sampling random numbers, and HTTP; the model verifies every proposed token.'
     : 'llama.cpp runs Qwen3-0.6B on CPU with native prefix caching. This comparison backend does not use SystemVerilog. GPU support is disabled in the build.';
   $('connection').textContent = connectionLabel();

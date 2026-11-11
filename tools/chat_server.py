@@ -10,11 +10,11 @@ from urllib.parse import urlsplit
 try:
     from .rtl_chat import RTLChatEngine
     from .chat_backends import BackendRouter
-    from .rtl_model import FAST_BINARY
+    from .rtl_model import FAST_BINARY, HYBRID_BINARY
 except ImportError:
     from rtl_chat import RTLChatEngine
     from chat_backends import BackendRouter
-    from rtl_model import FAST_BINARY
+    from rtl_model import FAST_BINARY, HYBRID_BINARY
 
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / 'web'
@@ -184,9 +184,12 @@ def main():
     prefill_size = args.prefill_size if args.prefill_size is not None else (
         8 if args.simulator == 'fast' and args.sv_binary is None and block_size == 4 else block_size)
     print('Preparing full SystemVerilog chat; no PyTorch or GPU inference...', flush=True)
+    hybrid = (RTLChatEngine(args.model,workers=max(1,args.workers),binary=HYBRID_BINARY,
+              lanes=8,block_size=1,prefill_size=8,reuse_prefix=False,
+              precision_profile='fp32_b1_fp64_prefill') if HYBRID_BINARY.is_file() else None)
     engine = BackendRouter(RTLChatEngine(args.model, workers=args.workers, binary=binary,
                                          lanes=8 if args.simulator == 'fast' else 1, block_size=block_size,
-                                         prefill_size=prefill_size))
+                                         prefill_size=prefill_size),hybrid=hybrid)
     server = make_server(engine, args.port)
     print(f'Local chat ready: http://127.0.0.1:{server.server_port}', flush=True)
     print('Default: full behavioral SystemVerilog simulation; not synthesizable or cycle-accurate.', flush=True)

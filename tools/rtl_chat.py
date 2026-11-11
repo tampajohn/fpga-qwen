@@ -1,4 +1,5 @@
 """Browser chat through the full behavioral SystemVerilog model."""
+import json
 import time
 import sys
 import random
@@ -13,7 +14,13 @@ except ImportError:
 
 
 class RTLChatEngine(ChatProtocol):
-    def __init__(self, model=None, workers=8, binary=None, lanes=1, block_size=1, prefill_size=None, reuse_prefix=True):
+    def __init__(self, model=None, workers=8, binary=None, lanes=1, block_size=1, prefill_size=None, reuse_prefix=True, precision_profile="fp64"):
+        if precision_profile not in ('fp64','fp32_b1_fp64_prefill'):
+            raise ValueError('Unknown precision profile')
+        self.precision_profile = precision_profile
+        self.precision_verified = False
+        if precision_profile != 'fp64' and (workers < 1 or lanes != 8 or block_size != 1 or prefill_size != 8 or reuse_prefix is not False):
+            raise ValueError('Hybrid requires workers, eight lanes, B8 prefill, B1 decode and prefix reuse disabled')
         if type(reuse_prefix) is not bool:
             raise ValueError("reuse_prefix must be a boolean")
         self.reuse_prefix = reuse_prefix
@@ -28,7 +35,9 @@ class RTLChatEngine(ChatProtocol):
         return max(1, self.sim.workers)
 
     def status(self):
-        return dict(model='Qwen3-0.6B', device='cpu', precision='BF16 weights / SV real arithmetic',
+        return dict(model='Qwen3-0.6B', device='cpu', precision=('BF16 weights / FP32 scalar projections / FP64 prefill, attention and KV'
+                               if self.precision_profile != 'fp64' else 'BF16 weights / FP64 arithmetic and KV'),
+                    precision_profile=self.precision_profile, precision_verified=self.precision_verified,
                     gpu_inference=False, cpu_threads=self.threads, simulation_workers=self.sim.workers, context_limit=4096,
                     rtl='Full behavioral SystemVerilog; not synthesizable or cycle-accurate',
                     inference='Verilator: all model math and KV payload in SystemVerilog',
@@ -39,11 +48,25 @@ class RTLChatEngine(ChatProtocol):
                     prefix_reuse_enabled=self.reuse_prefix, cached_tokens=len(self.cache_ids), pytorch_loaded=('torch' in sys.modules))
 
     def close(self):
+        self.precision_verified = False
         self.sim.close()
         self.cache_ids = []
         self.cache_session = None
 
+    def verify_precision(self, cancel):
+        if self.precision_profile == 'fp64':
+            return
+        expected = dict(precision_profile='fp32_b1_fp64_prefill',scalar_projection='fp32',
+                        prefill_projection='fp64',attention_kv='fp64',
+                        max_verification_block=1,prefix_reuse_supported=False)
+        actual = json.loads(self.sim.command('precision',cancel))
+        if not isinstance(actual,dict) or any(type(actual.get(k)) is not type(v) or actual[k] != v for k,v in expected.items()):
+            raise RuntimeError('Simulator does not match the requested hybrid precision profile')
+        self.precision_verified = True
+
     def stream(self, request, cancel):
+        if self.precision_profile != 'fp64' and request.workers is not None and (type(request.workers) is not int or request.workers < 1):
+            raise ValueError('Hybrid requires at least one simulation worker')
         if request.max_draft and self.sim.block_size != 4:
             raise ValueError('Suffix drafting requires the block-enabled SystemVerilog backend')
         if not request.ids or len(request.ids)+request.max_new > 4096:
@@ -79,6 +102,7 @@ class RTLChatEngine(ChatProtocol):
             if request.workers is not None:
                 self.sim.set_workers(request.workers, cancel)
             self.sim.start(cancel)
+            self.verify_precision(cancel)
             if not self.reuse_prefix or self.cache_session != request.session:
                 self.sim.reset(cancel)
                 self.cache_ids = []

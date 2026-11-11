@@ -10,8 +10,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class BackendRouter:
-    def __init__(self, simulation):
+    def __init__(self, simulation, hybrid=None):
         self.simulation = simulation
+        self.simulations = {"rtl": simulation}
+        if hybrid is not None:
+            self.simulations["rtl-fp32"] = hybrid
         self.process = None
         self.loaded = None
         self.port = None
@@ -22,18 +25,28 @@ class BackendRouter:
                        for key, kind in [('llama-q4', 'q4_k_m'), ('llama-f32', 'f32'), ('llama-f16', 'f16')]}
 
     def catalog(self):
-        return [dict(id='rtl', label='SystemVerilog · fast' if self.simulation.sim.lanes == 8 else 'SystemVerilog · reference', available=True,
-                     cpu_threads=self.simulation.threads, suffix_supported=self.simulation.sim.block_size == 4,
-                     max_draft=self.simulation.sim.block_size-1, prefill_block_size=self.simulation.sim.prefill_size)] + [
+        simulations = [dict(id=key,
+            label=('SystemVerilog · FP32 hybrid' if key == 'rtl-fp32' else
+                   'SystemVerilog · fast' if engine.sim.lanes == 8 else 'SystemVerilog · reference'),
+            available=True, cpu_threads=engine.threads, simulation=True,
+            min_workers=1 if key == 'rtl-fp32' else 0,
+            precision=engine.status()['precision'],prefix_reuse_supported=engine.reuse_prefix,
+            suffix_supported=engine.sim.block_size == 4,max_draft=engine.sim.block_size-1,
+            prefill_block_size=engine.sim.prefill_size) for key,engine in self.simulations.items()]
+        if 'rtl-fp32' not in self.simulations:
+            simulations.append(dict(id='rtl-fp32',label='SystemVerilog · FP32 hybrid',
+                                    available=False,simulation=True,min_workers=1,suffix_supported=False))
+        return simulations + [
             dict(id=key, label=label, available=self.binary.is_file() and self.models[key].is_file(),
                  cpu_threads=6, suffix_supported=False)
             for key, label in [('llama-q4', 'llama.cpp · Q4_K_M'), ('llama-f16', 'llama.cpp · FP16'), ('llama-f32', 'llama.cpp · FP32')]]
 
     def status(self):
-        status = self.simulation.status()
-        if self.active != 'rtl':
+        status = self.simulations.get(self.active,self.simulation).status()
+        if self.active not in self.simulations:
             status.update(precision={'llama-q4': 'Q4_K_M', 'llama-f16': 'FP16', 'llama-f32': 'FP32'}[self.active],
                           cpu_threads=6, rtl=None, inference='llama.cpp CPU', cached_tokens=None,
+                          precision_profile=None,precision_verified=False,prefix_reuse_enabled=True,
                           suffix_supported=False, max_verified_draft=0, prefill_block_size=None,
                           reduction_lanes=None, prefill_reduction_lanes=None)
         return dict(status, backends=self.catalog(), active_backend=self.active)
@@ -43,18 +56,22 @@ class BackendRouter:
         entry = next((b for b in self.catalog() if b['id'] == backend), None)
         if not entry or not entry['available']:
             raise ValueError('Unknown or unavailable backend')
-        request = self.simulation.prepare(dict(payload, max_draft=payload.get('max_draft', 0)))
+        simulation = self.simulations.get(backend,self.simulation)
+        request = simulation.prepare(dict(payload, max_draft=payload.get('max_draft', 0)))
         if request.max_draft and not entry['suffix_supported']:
             raise ValueError('Suffix drafting is unavailable for the selected backend')
-        if backend == 'rtl':
-            workers = payload.get('simulation_workers', self.simulation.sim.workers)
+        if backend in self.simulations:
+            workers = payload.get('simulation_workers', simulation.sim.workers)
             if type(workers) is not int or workers not in (0, 1, 2, 4, 8):
                 raise ValueError('Choose serial (0), 1, 2, 4, or 8 simulation workers')
+            if workers < entry["min_workers"]:
+                raise ValueError("Hybrid requires at least one simulation worker")
             request.workers = workers
         return backend, request
 
     def close(self):
-        self.simulation.close()
+        for simulation in self.simulations.values():
+            simulation.close()
         self.close_native()
 
     def close_native(self):
@@ -113,9 +130,12 @@ class BackendRouter:
     def stream(self, prepared, cancel):
         backend, request = prepared
         self.active = backend
-        if backend == 'rtl':
+        if backend in self.simulations:
             self.close_native()
-            yield from self.simulation.stream(request, cancel)
+            for key,simulation in self.simulations.items():
+                if key != backend:
+                    simulation.close()
+            yield from self.simulations[backend].stream(request, cancel)
             return
         started = time.perf_counter()
         text = ''
