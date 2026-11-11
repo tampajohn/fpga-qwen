@@ -1,10 +1,39 @@
 """Keep the matched timing workload causal across prefill partitions."""
 import unittest
+import json
+from unittest.mock import Mock, patch
 from types import SimpleNamespace
 from tools.benchmark_matched import SVEngine
 
 
 class MatchedPrefillTests(unittest.TestCase):
+    def test_hybrid_precision_requires_runtime_capabilities(self):
+        expected = dict(precision_profile='fp32_b1_fp64_prefill', scalar_projection='fp32',
+                        prefill_projection='fp64', attention_kv='fp64',
+                        max_verification_block=1, prefix_reuse_supported=False)
+        for capabilities in (expected, dict(expected, scalar_projection='fp64'),
+                             dict(expected, prefix_reuse_supported=0), {}):
+            with self.subTest(capabilities=capabilities):
+                model = Mock(prefill_size=8)
+                model.command.side_effect = [json.dumps(capabilities), 'configured']
+                with patch('tools.benchmark_matched.RTLModel', return_value=model):
+                    engine = SVEngine(None, 8, None, lanes=8, block_size=1,
+                                      prefill_size=8, precision_profile='fp32_b1_fp64_prefill')
+                if capabilities == expected and type(capabilities['prefix_reuse_supported']) is bool:
+                    engine.start()
+                    self.assertEqual(engine.metadata['verified_runtime_capabilities'], expected)
+                    self.assertIn('FP32', engine.metadata['arithmetic'])
+                else:
+                    with self.assertRaises(RuntimeError): engine.start()
+                model.command.assert_any_call('precision')
+
+    def test_hybrid_rejects_incompatible_routing_before_model_load(self):
+        with patch('tools.benchmark_matched.RTLModel') as model:
+            with self.assertRaises(ValueError):
+                SVEngine(None, 8, None, lanes=8, block_size=4, prefill_size=8,
+                         precision_profile='fp32_b1_fp64_prefill')
+            model.assert_not_called()
+
     def test_prompt_tail_and_pending_decode_token(self):
         for size in (1, 4, 8):
             for length in (1, 2, 4, 5, 6, 8, 9, 17):

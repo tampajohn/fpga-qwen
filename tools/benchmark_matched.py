@@ -49,7 +49,12 @@ def timing_result(start, arrivals, ids, text, stopped, backend_timings=None):
 
 
 class SVEngine:
-    def __init__(self, checkpoint, threads, tokenizer, binary=None, lanes=1, block_size=1, prefill_size=None):
+    def __init__(self, checkpoint, threads, tokenizer, binary=None, lanes=1, block_size=1, prefill_size=None, precision_profile='fp64'):
+        if precision_profile not in ('fp64', 'fp32_b1_fp64_prefill'):
+            raise ValueError('Unknown simulator precision profile')
+        if precision_profile != 'fp64' and (not threads or lanes != 8 or block_size != 1 or prefill_size != 8):
+            raise ValueError('Hybrid timing requires workers, eight lanes, B8 prefill and B1 decode')
+        self.precision_profile = precision_profile
         kwargs = {'binary': binary} if binary is not None else {}
         self.model = RTLModel(checkpoint, workers=threads, block_size=block_size, prefill_size=prefill_size, **kwargs)
         self.lanes = lanes
@@ -60,10 +65,25 @@ class SVEngine:
                              wide_prefill_reduction_lanes=4 if self.model.prefill_size==8 and threads and lanes==8 else None,
                              executable=str(binary or ROOT/'build/full/Vqwen_behavioral'),
                              cpu_thread_note='Persistent projection workers plus coordinator; no GPU')
+        self.metadata['precision_profile'] = precision_profile
+        if precision_profile != 'fp64':
+            self.metadata['arithmetic'] = 'SV FP32 scalar projections; FP64 prefill, attention and other model arithmetic'
+            self.metadata['routing'] = 'Fresh FP64 B8 prompt[:-1], then FP32 B1 final prompt token and decode; no prefix reuse or suffix verification'
 
     def start(self):
         start = time.perf_counter()
         self.model.start()
+        if self.precision_profile != 'fp64':
+            capabilities = json.loads(self.model.command('precision'))
+            expected = dict(precision_profile=self.precision_profile, scalar_projection='fp32',
+                            prefill_projection='fp64', attention_kv='fp64',
+                            max_verification_block=1, prefix_reuse_supported=False)
+            if not isinstance(capabilities, dict) or any(
+                type(capabilities.get(key)) is not type(value) or capabilities[key] != value
+                for key, value in expected.items()
+            ):
+                raise RuntimeError('Simulator precision capabilities do not match the requested hybrid profile')
+            self.metadata['verified_runtime_capabilities'] = capabilities
         if self.lanes != 1 and self.model.command(f'lanes {self.lanes}') != 'configured':
             raise RuntimeError('Simulator did not configure reduction lanes')
         return time.perf_counter()-start
@@ -265,6 +285,8 @@ def main():
     parser.add_argument('--profiles', default='short,medium,long')
     parser.add_argument('--model')
     parser.add_argument('--sv-binary', type=Path, help='Trusted local simulator executable; never accepted through HTTP')
+    parser.add_argument('--sv-precision-profile', choices=['fp64', 'fp32_b1_fp64_prefill'], default='fp64',
+                        help='Hybrid profile requires matching runtime precision capabilities')
     parser.add_argument('--sv-lanes', type=int, choices=[1,8], default=1)
     parser.add_argument('--sv-block-size', type=int, choices=[1,4], default=1,
                         help='Explicitly enable B4 prefill for a block-capable SV executable')
@@ -306,7 +328,7 @@ def main():
         decoding='greedy, no penalties, identical EOS-respecting selection; performance requires requested count before EOS',
         gpu=False, pytorch=False, runs=[], quality=[], sv_lanes=args.sv_lanes, sv_block_size=args.sv_block_size, sv_prefill_size=args.sv_prefill_size or args.sv_block_size,
         limitations=['Same prompt token IDs, context, generated count and numeric worker count; NOT identical arithmetic or KV precision.',
-                     'SV: BF16 stored weights / FP64 arithmetic and KV. Native: named stored weights / mixed arithmetic / FP16 KV.',
+                     'SV: BF16 stored weights / declared per-engine arithmetic profile / FP64 KV. Native: named stored weights / mixed arithmetic / FP16 KV.',
                      'Startup is process/model startup, not OS page-cache cold; no page-cache eviction is attempted.',
                      'Every timed request has empty logical KV. Warm repetitions retain the process and resident weight pages.',
                      'Both measurements include their existing transport (SV pipes, llama HTTP); steady decode excludes first-token prompt processing.',
@@ -328,7 +350,7 @@ def main():
         report['llama_commit'] = (subprocess.check_output(['git','-C',str(ROOT/'build/llama.cpp'),'rev-parse','HEAD'],text=True).strip()
                                   if (ROOT/'build/llama.cpp/.git').exists() else None)
         for name in args.engines.split(','):
-            engine = SVEngine(checkpoint,args.threads,protocol.tokenizer,args.sv_binary,args.sv_lanes,args.sv_block_size,args.sv_prefill_size) if name=='rtl' else NativeEngine(name.removeprefix('llama-'),args.threads,args.output.parent)
+            engine = SVEngine(checkpoint,args.threads,protocol.tokenizer,args.sv_binary,args.sv_lanes,args.sv_block_size,args.sv_prefill_size,args.sv_precision_profile) if name=='rtl' else NativeEngine(name.removeprefix('llama-'),args.threads,args.output.parent)
             try:
                 startup = engine.start()
                 for profile in profiles:
