@@ -23,6 +23,8 @@ def main():
     parser.add_argument('--cpu', choices=['generic', 'native'], default='generic')
     parser.add_argument('--fast-attention', action='store_true')
     parser.add_argument('--parallel-attention', action='store_true')
+    parser.add_argument('--batched-prefill', action='store_true')
+    parser.add_argument('--block-unroll', action='store_true')
     parser.add_argument('--compact-projection', action='store_true')
     parser.add_argument('--static-kv', action='store_true')
     parser.add_argument('--pool', choices=['cv', 'hybrid'], default='cv')
@@ -31,6 +33,10 @@ def main():
     args = parser.parse_args()
     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
+    if args.block_unroll and not args.batched_prefill:
+        parser.error('--block-unroll requires --batched-prefill')
+    if args.batched_prefill and (not args.parallel_attention or args.storage!='scalar'):
+        parser.error('--batched-prefill requires --parallel-attention and scalar storage')
     if args.unchecked and args.storage != 'scalar':
         parser.error('--unchecked applies only to scalar projection reads')
     tag = f'{args.storage}-{args.opt}' + ('-lto' if args.lto else '') + ('-unchecked' if args.unchecked else '')
@@ -42,6 +48,8 @@ def main():
     if args.cpu == 'native': tag += '-cpu-native'
     if args.fast_attention: tag += '-fast-attention'
     if args.parallel_attention: tag += '-parallel-attention'
+    if args.batched_prefill: tag += '-batched-prefill'
+    if args.block_unroll: tag += '-block-unroll'
     if args.compact_projection: tag += '-compact-projection'
     if args.static_kv: tag += '-static-kv'
     if args.pool != 'cv': tag += '-pool-'+args.pool
@@ -61,15 +69,20 @@ def main():
     if args.unroll: flags += ' -funroll-loops'
     if args.pool == 'hybrid': flags += ' -DPROJECTION_HYBRID_WAIT'
     if args.parallel_attention: flags += ' -DPARALLEL_ATTENTION'
+    if args.batched_prefill: flags += ' -DBATCH_PREFILL'
     if args.static_kv: flags += ' -DSTATIC_KV'
     defines = {'scalar': [], 'row': ['+define+BULK_ROW_WEIGHTS']}[args.storage]
     if args.unchecked: defines += ['+define+UNCHECKED_WEIGHTS']
     if args.masked_activation: defines += ['+define+MASK_ACTIVATION_INDEX']
+    if args.block_unroll: defines += ['+define+BLOCK_UNROLL']
     if args.unsigned_indices: defines += ['+define+UNSIGNED_PROJECTION_INDEX']
     main_defines = []
     if args.parallel_attention:
         defines += ['+define+PARALLEL_ATTENTION']
         main_defines += ['+define+PARALLEL_ATTENTION']
+    if args.batched_prefill:
+        defines += ['+define+BATCH_PREFILL']
+        main_defines += ['+define+BATCH_PREFILL']
     if args.fast_attention: main_defines += ['+define+FAST_ATTENTION']
     if args.compact_projection: main_defines += ['+define+COMPACT_PROJECTION_BUFFER']
     if args.static_kv: main_defines += ['+define+STATIC_KV']

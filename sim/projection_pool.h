@@ -45,6 +45,9 @@ class ProjectionPool {
     int reduction_lanes=1;
 #ifdef PARALLEL_ATTENTION
     int operation=0, attention_layer=0, attention_position=0;
+#ifdef BATCH_PREFILL
+    int batch_count=1;
+#endif
 #endif
     const double* input=nullptr;
     double* output=nullptr;
@@ -82,17 +85,29 @@ class ProjectionPool {
                 model->operation=operation;
                 model->attention_layer=attention_layer;model->attention_position=attention_position;
                 int copy_scale=operation==1?128:1;
+#ifdef BATCH_PREFILL
+                model->batch_count=batch_count;
+                if(operation==2) copy_scale=4;
+#endif
 #else
                 int copy_scale=1;
 #endif
                 model->base=base;model->width=width;model->first_row=begin;model->end_row=end;
+#ifdef BATCH_PREFILL
+                if(operation==2) std::memcpy(model->batch_activation.data(),input,width*4*sizeof(double));
+                else
+#endif
                 std::memcpy(model->activation.data(),input,width*sizeof(double));
                 double* destination=output;
 #ifndef PROJECTION_HYBRID_WAIT
                 lock.unlock();
 #endif
                 model->start=1;model->clk=0;model->eval();model->clk=1;model->eval();
-                std::memcpy(destination+begin*copy_scale,model->result.data()+begin*copy_scale,
+                const double* source=model->result.data();
+#ifdef BATCH_PREFILL
+                if(operation==2) source=model->batch_result.data();
+#endif
+                std::memcpy(destination+begin*copy_scale,source+begin*copy_scale,
                             (end-begin)*copy_scale*sizeof(double));
 #ifdef PROJECTION_HYBRID_WAIT
                 // The release sequence carries every partition's writes to run().
@@ -139,24 +154,37 @@ public:
     void run(int64_t matrix_base,int matrix_rows,int matrix_width,const double* x,double* y
 #ifdef PARALLEL_ATTENTION
              ,int requested_operation=0,int layer=0,int position=0
+#ifdef BATCH_PREFILL
+             ,int requested_batch_count=1
+#endif
 #endif
              ) {
 #ifdef PARALLEL_ATTENTION
         if(requested_operation==1) {
             if(layer<0 || layer>=28 || position<0 || position>=4096 || matrix_rows!=16 || matrix_width!=2048)
                 throw std::runtime_error("Invalid attention job");
-        } else if(requested_operation!=0) throw std::runtime_error("Invalid worker operation");
+        }
+#ifdef BATCH_PREFILL
+        else if(requested_operation==2) {
+            if(requested_batch_count<1 || requested_batch_count>4 || matrix_rows>3072)
+                throw std::runtime_error("Invalid block projection job");
+        }
+#endif
+        else if(requested_operation!=0) throw std::runtime_error("Invalid worker operation");
 #endif
         if(matrix_rows<1 || matrix_rows>151936 || matrix_width<1 || matrix_width>3072)
             throw std::runtime_error("Invalid projection shape");
 #ifdef PARALLEL_ATTENTION
-        if(requested_operation==0)
+        if(requested_operation!=1)
 #endif
         validate_weight_span(matrix_base,int64_t(matrix_rows)*matrix_width);
         std::unique_lock<std::mutex> lock(mutex);
         if(error) std::rethrow_exception(error);
 #ifdef PARALLEL_ATTENTION
         operation=requested_operation;attention_layer=layer;attention_position=position;
+#ifdef BATCH_PREFILL
+        batch_count=requested_batch_count;
+#endif
 #endif
         base=matrix_base;rows=matrix_rows;width=matrix_width;input=x;output=y;
 #ifdef PROJECTION_HYBRID_WAIT

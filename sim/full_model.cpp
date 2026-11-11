@@ -87,6 +87,15 @@ extern "C" void dispatch_projection(int64_t base,int rows,int width,
     if(!pool || !x || !y) throw std::runtime_error("Invalid projection dispatch");
     pool->run(base,rows,width,x,y);
 }
+#ifdef BATCH_PREFILL
+extern "C" void dispatch_block_projection(int64_t base,int rows,int width,int count,
+                                          const svOpenArrayHandle input,const svOpenArrayHandle output) {
+    const auto* x=static_cast<const double*>(svGetArrayPtr(input));
+    auto* y=static_cast<double*>(svGetArrayPtr(output));
+    if(!pool || !x || !y) throw std::runtime_error("Invalid block projection dispatch");
+    pool->run(base,rows,width,x,y,2,0,0,count);
+}
+#endif
 int main(int argc,char** argv) {
     try {
         if(argc!=3 && argc!=4) throw std::runtime_error("usage: Vqwen_behavioral checkpoint.safetensors offsets.txt [workers: 0=serial]");
@@ -111,6 +120,9 @@ int main(int argc,char** argv) {
         AttentionLifetime attention_lifetime;
 #endif
         auto tick=[&](){d->clk=0;d->eval();d->clk=1;d->eval();};
+#ifdef BATCH_PREFILL
+        d->block_start=0;
+#endif
         d->sample_enabled=0;d->sample_uniform=0.0;d->presence_penalty=0.0;
         d->parallel_workers=count; d->rst_n=0; d->start=0; d->truncate_cache=0; tick(); d->rst_n=1;
         std::cout<<"ready\n"<<std::flush;
@@ -141,6 +153,34 @@ int main(int argc,char** argv) {
                 if(requested) pool=std::make_unique<ProjectionPool>(requested,reduction_lanes);
                 count=requested;d->parallel_workers=count;
                 std::cout<<"configured\n"<<std::flush;
+#ifdef BATCH_PREFILL
+            } else if(command=="block") {
+                int count,logits,sampled;
+                double penalty;
+                if(!(std::cin>>count>>logits>>sampled>>penalty) || count<1 || count>4 ||
+                   (logits!=0 && logits!=1) || (sampled!=0 && sampled!=1) ||
+                   !(penalty>=0 && penalty<=2) || d->position+count>4096)
+                    throw std::runtime_error("Invalid block request");
+                for(int t=0;t<count;++t) {
+                    int token;
+                    if(!(std::cin>>token) || token<0 || token>=151936)
+                        throw std::runtime_error("Invalid block token");
+                    d->block_tokens[t]=token;
+                }
+                for(int t=0;t<count;++t) {
+                    double uniform;
+                    if(!(std::cin>>uniform) || !(uniform>=0 && uniform<1))
+                        throw std::runtime_error("Invalid block uniform");
+                    d->block_uniforms[t]=uniform;
+                }
+                d->block_count=count;d->do_logits=logits;d->sample_enabled=sampled;
+                d->presence_penalty=penalty;d->start=0;d->block_start=1;tick();d->block_start=0;
+                if(!d->done) throw std::runtime_error("Block simulation did not finish");
+                std::cout<<"block "<<count<<std::setprecision(17);
+                for(int t=0;t<count;++t)
+                    std::cout<<' '<<d->block_ids[t]<<' '<<d->block_positions[t]<<' '<<d->block_logits[t];
+                std::cout<<std::setprecision(6)<<'\n'<<std::flush;
+#endif
             } else if(command=="token" || command=="sample") {
                 int token, logits;
                 if(!(std::cin>>token>>logits)) throw std::runtime_error("Malformed token command");

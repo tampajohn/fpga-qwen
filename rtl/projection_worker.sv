@@ -7,6 +7,15 @@ module projection_worker (
     input int operation, attention_layer, attention_position,
 `endif
     input int first_row, end_row, width, reduction_lanes,
+`ifdef BATCH_PREFILL
+    input int batch_count,
+`ifdef BLOCK_UNROLL
+    input real batch_activation[16384],
+`else
+    input real batch_activation[12288],
+`endif
+    output real batch_result[12288],
+`endif
 `ifdef MASK_ACTIVATION_INDEX
     input real activation[4096],
 `else
@@ -76,11 +85,76 @@ module projection_worker (
 `else
 `define PROJECTION_INDEX int
 `endif
+`ifdef BATCH_PREFILL
+    task automatic project_block;
+        real partial[8][4];
+        real sums[4];
+        real weight;
+        logic [2:0] lane;
+        for (`PROJECTION_INDEX row=first_row;row<end_row;row++) begin
+            for (int t=0;t<4;t++) begin
+                sums[t]=0.0;
+                for (int l=0;l<8;l++) partial[l][t]=0.0;
+            end
+`ifdef BLOCK_UNROLL
+            if (reduction_lanes==8 && width%8==0) begin
+                for (`PROJECTION_INDEX column=0;column<width && column<3065;column+=8) begin
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+0));
+                    for (int t=0;t<4;t++)
+                        partial[0][t]+=batch_activation[((column+0)*4+t)&16383]*weight;
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+1));
+                    for (int t=0;t<4;t++)
+                        partial[1][t]+=batch_activation[((column+1)*4+t)&16383]*weight;
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+2));
+                    for (int t=0;t<4;t++)
+                        partial[2][t]+=batch_activation[((column+2)*4+t)&16383]*weight;
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+3));
+                    for (int t=0;t<4;t++)
+                        partial[3][t]+=batch_activation[((column+3)*4+t)&16383]*weight;
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+4));
+                    for (int t=0;t<4;t++)
+                        partial[4][t]+=batch_activation[((column+4)*4+t)&16383]*weight;
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+5));
+                    for (int t=0;t<4;t++)
+                        partial[5][t]+=batch_activation[((column+5)*4+t)&16383]*weight;
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+6));
+                    for (int t=0;t<4;t++)
+                        partial[6][t]+=batch_activation[((column+6)*4+t)&16383]*weight;
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+7));
+                    for (int t=0;t<4;t++)
+                        partial[7][t]+=batch_activation[((column+7)*4+t)&16383]*weight;
+                end
+            end else begin
+`endif
+            for (`PROJECTION_INDEX column=0;column<width && column<3072;column++) begin
+                weight=projection_weight_value(base+longint'(row)*width+longint'(column));
+                lane=column[2:0];
+                for (int t=0;t<batch_count;t++) begin
+                    if (reduction_lanes==8 && width%8==0)
+                        partial[lane][t]+=batch_activation[column*4+t]*weight;
+                    else sums[t]+=batch_activation[column*4+t]*weight;
+                end
+            end
+`ifdef BLOCK_UNROLL
+            end
+`endif
+            for (int t=0;t<batch_count;t++) begin
+                if (reduction_lanes==8 && width%8==0)
+                    for (int l=0;l<8;l++) sums[t]+=partial[l][t];
+                batch_result[row*4+t]=sums[t];
+            end
+        end
+    endtask
+`endif
     always @(posedge clk) begin
         real sum;
         real partial[8];
         if (start) begin
 `ifdef PARALLEL_ATTENTION
+`ifdef BATCH_PREFILL
+            if (operation==2) project_block();
+            else
+`endif
             if (operation==1) attend_heads();
             else begin
 `endif
