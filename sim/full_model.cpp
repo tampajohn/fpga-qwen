@@ -24,6 +24,27 @@ extern "C" double weight_value(int64_t index) {
     float value; std::memcpy(&value,&bits,4);
     return value;
 }
+// Projection jobs validate their complete span before any worker is dispatched.
+// This accessor is used only by those validated SV worker loops.
+extern "C" void validate_weight_span(int64_t index,int64_t count) {
+    if(index<0 || count<0 || size_t(index)>words || size_t(count)>words-size_t(index))
+        throw std::runtime_error("Projection weight span out of bounds");
+}
+extern "C" double weight_value_unchecked(int64_t index) {
+    uint32_t bits=uint32_t(weights[index])<<16;
+    float value;std::memcpy(&value,&bits,4);return value;
+}
+// Row transport variant retained for direct comparison with resident/scalar modes.
+extern "C" void weight_row(int64_t index,int count,const svOpenArrayHandle output) {
+    auto* destination=static_cast<double*>(svGetArrayPtr(output));
+    if(!destination || index<0 || count<1 || count>3072 ||
+       size_t(index)>words || size_t(count)>words-size_t(index))
+        throw std::runtime_error("Weight row address out of bounds");
+    for(int i=0;i<count;i++) {
+        uint32_t bits=uint32_t(weights[index+i])<<16;
+        float value;std::memcpy(&value,&bits,4);destination[i]=value;
+    }
+}
 extern "C" int64_t tensor_base(int slot) { return offsets.at(slot); }
 static std::unique_ptr<ProjectionPool> pool;
 extern "C" void dispatch_projection(int64_t base,int rows,int width,
@@ -48,7 +69,8 @@ int main(int argc,char** argv) {
         if(offsets.size()!=311) throw std::runtime_error("Invalid tensor layout");
         int count=argc==4?std::stoi(argv[3]):0;
         if(count<0 || count>32) throw std::runtime_error("Invalid worker count");
-        if(count) pool=std::make_unique<ProjectionPool>(count);
+        int reduction_lanes=1;
+        if(count) pool=std::make_unique<ProjectionPool>(count,reduction_lanes);
         auto context=std::make_unique<VerilatedContext>();
         auto d=std::make_unique<Vqwen_behavioral>(context.get());
         auto tick=[&](){d->clk=0;d->eval();d->clk=1;d->eval();};
@@ -67,12 +89,19 @@ int main(int argc,char** argv) {
                     throw std::runtime_error("Invalid cache length");
                 d->start=0;d->truncate_cache=1;d->truncate_to=length;tick();d->truncate_cache=0;
                 std::cout<<"truncated\n"<<std::flush;
+            } else if(command=="lanes") {
+                int requested;
+                if(!(std::cin>>requested) || (requested!=1 && requested!=8))
+                    throw std::runtime_error("Reduction lanes must be 1 or 8");
+                pool.reset();reduction_lanes=requested;
+                if(count) pool=std::make_unique<ProjectionPool>(count,reduction_lanes);
+                std::cout<<"configured\n"<<std::flush;
             } else if(command=="workers") {
                 int requested;
                 if(!(std::cin>>requested) || requested<0 || requested>32)
                     throw std::runtime_error("Invalid worker count");
                 pool.reset();
-                if(requested) pool=std::make_unique<ProjectionPool>(requested);
+                if(requested) pool=std::make_unique<ProjectionPool>(requested,reduction_lanes);
                 count=requested;d->parallel_workers=count;
                 std::cout<<"configured\n"<<std::flush;
             } else if(command=="token" || command=="sample") {

@@ -164,15 +164,19 @@ def make_server(engine, port=8765):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--model')
+    parser.add_argument('--simulator', choices=['fast', 'reference'], default='fast')
     parser.add_argument('--workers', type=int, choices=[0, 1, 2, 4, 8], default=8)
     parser.add_argument('--port', type=int, default=8765)
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         raise ValueError('Invalid port')
-    if not (ROOT / 'build/full/Vqwen_behavioral').is_file():
-        raise RuntimeError('Build the full simulator first: make build/full/Vqwen_behavioral')
+    binary = ROOT / ('build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral'
+                     if args.simulator == 'fast' else 'build/full/Vqwen_behavioral')
+    if not binary.is_file():
+        raise RuntimeError('Build the simulator first: make chat (fast) or make chat-reference')
     print('Preparing full SystemVerilog chat; no PyTorch or GPU inference...', flush=True)
-    engine = BackendRouter(RTLChatEngine(args.model, workers=args.workers))
+    engine = BackendRouter(RTLChatEngine(args.model, workers=args.workers, binary=binary,
+                                         lanes=8 if args.simulator == 'fast' else 1))
     server = make_server(engine, args.port)
     print(f'Local chat ready: http://127.0.0.1:{server.server_port}', flush=True)
     print('Default: full behavioral SystemVerilog simulation; not synthesizable or cycle-accurate.', flush=True)

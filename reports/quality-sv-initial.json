@@ -1,0 +1,89 @@
+{
+  "cpu": "arm",
+  "threads_or_workers": 8,
+  "checkpoint": "$CHECKPOINT",
+  "timestamp_utc": "2026-11-11T19:47:11Z",
+  "decoding": "greedy, no penalties, fixed generated count ignores EOS for performance only",
+  "gpu": false,
+  "pytorch": false,
+  "runs": [],
+  "quality": [
+    {
+      "engine": "rtl",
+      "case": "fact_recall",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "first_token_seconds": 19.491418791993055,
+        "request_seconds": 20.151095875015017,
+        "steady_decode_seconds": 0.6596342080156319,
+        "steady_decode_tokens_per_second": 6.0639668946720375,
+        "backend_timings": null
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "task_switch",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          13,
+          151645
+        ],
+        "output_token_count": 9,
+        "text": "9, 2, 5.",
+        "finish_reason": "eos",
+        "first_token_seconds": 27.877993709000293,
+        "request_seconds": 29.25272866699379,
+        "steady_decode_seconds": 1.3747157499892637,
+        "steady_decode_tokens_per_second": 5.819384843784963,
+        "backend_timings": null
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    }
+  ],
+  "limitations": [
+    "Same prompt token IDs, context, generated count and numeric worker count; NOT identical arithmetic or KV precision.",
+    "SV: BF16 stored weights / FP64 arithmetic and KV. Native: named stored weights / mixed arithmetic / FP16 KV.",
+    "Startup is process/model startup, not OS page-cache cold; no page-cache eviction is attempted.",
+    "Every timed request has empty logical KV. Warm repetitions retain the process and resident weight pages.",
+    "Both measurements include their existing transport (SV pipes, llama HTTP); steady decode excludes first-token prompt processing.",
+    "Fixed-count throughput is not a quality score. Quality mode respects EOS and records objective case checks separately."
+  ],
+  "sv_binary_sha256": "a915e91014f0332a69bcc4c2d8f5bf5270e17aa1f0b50b41d6f0edb95c4f0b27",
+  "native_binary_sha256": "e9c93f0fb1ea58180632b77a1943eee31126e365e1a80ac34bcc54475403fc96",
+  "llama_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb",
+  "quality_suite_sha256": "dcf7c6e5f1be9b9cbdc55bc5a092593818fd68c5a5d1d61f9a01c5294beeab3f",
+  "artifact_note": "Synthetic benchmark/test conversations only; machine-specific directory prefixes replaced with $PROJECT and $CHECKPOINT. Observed measurements unchanged."
+}

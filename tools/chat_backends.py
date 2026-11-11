@@ -19,19 +19,19 @@ class BackendRouter:
         self.active = 'rtl'
         self.binary = ROOT / 'build/llama-cpu/bin/llama-server'
         self.models = {key: ROOT / f'build/bench/qwen3-0.6b-{kind}.gguf'
-                       for key, kind in [('llama-q4', 'q4_k_m'), ('llama-f32', 'f32')]}
+                       for key, kind in [('llama-q4', 'q4_k_m'), ('llama-f32', 'f32'), ('llama-f16', 'f16')]}
 
     def catalog(self):
-        return [dict(id='rtl', label='SystemVerilog · behavioral', available=True,
+        return [dict(id='rtl', label='SystemVerilog · fast' if self.simulation.sim.lanes == 8 else 'SystemVerilog · reference', available=True,
                      cpu_threads=self.simulation.threads, suffix_supported=False)] + [
             dict(id=key, label=label, available=self.binary.is_file() and self.models[key].is_file(),
                  cpu_threads=6, suffix_supported=False)
-            for key, label in [('llama-q4', 'llama.cpp · Q4_K_M'), ('llama-f32', 'llama.cpp · FP32')]]
+            for key, label in [('llama-q4', 'llama.cpp · Q4_K_M'), ('llama-f16', 'llama.cpp · FP16'), ('llama-f32', 'llama.cpp · FP32')]]
 
     def status(self):
         status = self.simulation.status()
         if self.active != 'rtl':
-            status.update(precision='Q4_K_M' if self.active == 'llama-q4' else 'FP32',
+            status.update(precision={'llama-q4': 'Q4_K_M', 'llama-f16': 'FP16', 'llama-f32': 'FP32'}[self.active],
                           cpu_threads=6, rtl=None, inference='llama.cpp CPU', cached_tokens=None)
         return dict(status, backends=self.catalog(), active_backend=self.active)
 

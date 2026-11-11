@@ -1,0 +1,1914 @@
+{
+  "cpu": "Apple M5 Max",
+  "threads_or_workers": 8,
+  "checkpoint": "$CHECKPOINT",
+  "timestamp_utc": "2026-11-11T19:58:38Z",
+  "decoding": "greedy, no penalties, identical EOS-respecting selection; performance requires requested count before EOS",
+  "gpu": false,
+  "pytorch": false,
+  "runs": [
+    {
+      "engine": "rtl",
+      "metadata": {
+        "weight_storage": "BF16 checkpoint",
+        "arithmetic": "SystemVerilog real / FP64",
+        "kv": "SystemVerilog real / FP64",
+        "parallel_workers": 8,
+        "reduction_lanes": 8,
+        "executable": "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral",
+        "cpu_thread_note": "Persistent projection workers plus coordinator; no GPU"
+      },
+      "startup_seconds": 0.12571366596966982,
+      "profile": "short",
+      "prompt_tokens": 85,
+      "prompt_ids_sha256": "58be84173178cdcfb224e0c441a55147e7df172e2ac71dd1361f4340a63f0dbb",
+      "first_request": {
+        "output_token_ids": [
+          10642,
+          33394,
+          19257,
+          311,
+          279,
+          4628,
+          518,
+          892,
+          821,
+          646,
+          387,
+          22409,
+          1948,
+          279,
+          13940,
+          323,
+          1887,
+          4938,
+          13,
+          356,
+          11829,
+          374,
+          264,
+          14762,
+          429,
+          10533,
+          13814,
+          1483,
+          821,
+          304,
+          264,
+          13340
+        ],
+        "output_token_count": 32,
+        "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+        "finish_reason": "length",
+        "first_token_seconds": 3.0807815830339678,
+        "request_seconds": 4.574627708003391,
+        "steady_decode_seconds": 1.4937889999710023,
+        "steady_decode_tokens_per_second": 20.752596250609542,
+        "backend_timings": null,
+        "eos_observed": false
+      },
+      "warm_requests": [
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 3.0553810000419617,
+          "request_seconds": 4.5471773340250365,
+          "steady_decode_seconds": 1.4917684589745477,
+          "steady_decode_tokens_per_second": 20.78070481615466,
+          "backend_timings": null,
+          "eos_observed": false
+        },
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 3.2207009170087986,
+          "request_seconds": 4.746007542009465,
+          "steady_decode_seconds": 1.5252768330392428,
+          "steady_decode_tokens_per_second": 20.3241794069801,
+          "backend_timings": null,
+          "eos_observed": false
+        },
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 3.3170669579994865,
+          "request_seconds": 4.857521291996818,
+          "steady_decode_seconds": 1.5404150420217775,
+          "steady_decode_tokens_per_second": 20.124446434457592,
+          "backend_timings": null,
+          "eos_observed": false
+        }
+      ],
+      "warm_median_ttft_seconds": 3.2207009170087986,
+      "warm_median_decode_tokens_per_second": 20.3241794069801,
+      "greedy_sequence_repeatable": true,
+      "warm_decode_rate_min": 20.124446434457592,
+      "warm_decode_rate_max": 20.78070481615466
+    },
+    {
+      "engine": "llama-f32",
+      "metadata": {
+        "weight_storage": "f32",
+        "arithmetic": "llama.cpp native kernels; mixed precision",
+        "kv": "FP16",
+        "cpu_threads": 8,
+        "cpu_thread_note": "Same numeric worker count as SV"
+      },
+      "startup_seconds": 0.2779724160209298,
+      "profile": "short",
+      "prompt_tokens": 85,
+      "prompt_ids_sha256": "58be84173178cdcfb224e0c441a55147e7df172e2ac71dd1361f4340a63f0dbb",
+      "first_request": {
+        "output_token_ids": [
+          10642,
+          33394,
+          19257,
+          311,
+          279,
+          4628,
+          518,
+          892,
+          821,
+          646,
+          387,
+          22409,
+          1948,
+          279,
+          13940,
+          323,
+          1887,
+          4938,
+          13,
+          356,
+          11829,
+          374,
+          264,
+          14762,
+          429,
+          10533,
+          13814,
+          1483,
+          821,
+          304,
+          264,
+          13340
+        ],
+        "output_token_count": 32,
+        "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+        "finish_reason": "length",
+        "first_token_seconds": 0.1306673749932088,
+        "request_seconds": 0.6505522499792278,
+        "steady_decode_seconds": 0.5196408749907278,
+        "steady_decode_tokens_per_second": 59.6565849454263,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 85,
+          "prompt_ms": 130.02,
+          "prompt_per_token_ms": 1.5296470588235296,
+          "prompt_per_second": 653.7455776034456,
+          "predicted_n": 32,
+          "predicted_ms": 519.771,
+          "predicted_per_token_ms": 16.7668064516129,
+          "predicted_per_second": 59.64164988042812
+        },
+        "eos_observed": false
+      },
+      "warm_requests": [
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 0.1551879580365494,
+          "request_seconds": 0.6498992080450989,
+          "steady_decode_seconds": 0.4944950829958543,
+          "steady_decode_tokens_per_second": 62.69020879275334,
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 85,
+            "prompt_ms": 154.553,
+            "prompt_per_token_ms": 1.818270588235294,
+            "prompt_per_second": 549.9731483698149,
+            "predicted_n": 32,
+            "predicted_ms": 494.494,
+            "predicted_per_token_ms": 15.95141935483871,
+            "predicted_per_second": 62.6903460911558
+          },
+          "eos_observed": false
+        },
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 0.18447879201266915,
+          "request_seconds": 0.5789081670227461,
+          "steady_decode_seconds": 0.3943520829780027,
+          "steady_decode_tokens_per_second": 78.60995627536524,
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 85,
+            "prompt_ms": 183.85,
+            "prompt_per_token_ms": 2.1629411764705884,
+            "prompt_per_second": 462.3334239869459,
+            "predicted_n": 32,
+            "predicted_ms": 394.405,
+            "predicted_per_token_ms": 12.722741935483871,
+            "predicted_per_second": 78.59940923669832
+          },
+          "eos_observed": false
+        },
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 0.13592824997613207,
+          "request_seconds": 0.511260624974966,
+          "steady_decode_seconds": 0.3752559580025263,
+          "steady_decode_tokens_per_second": 82.61028063354907,
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 85,
+            "prompt_ms": 135.18,
+            "prompt_per_token_ms": 1.5903529411764707,
+            "prompt_per_second": 628.7912413078857,
+            "predicted_n": 32,
+            "predicted_ms": 375.251,
+            "predicted_per_token_ms": 12.104870967741935,
+            "predicted_per_second": 82.61137212159329
+          },
+          "eos_observed": false
+        }
+      ],
+      "warm_median_ttft_seconds": 0.1551879580365494,
+      "warm_median_decode_tokens_per_second": 78.60995627536524,
+      "greedy_sequence_repeatable": true,
+      "warm_decode_rate_min": 62.69020879275334,
+      "warm_decode_rate_max": 82.61028063354907
+    },
+    {
+      "engine": "llama-f16",
+      "metadata": {
+        "weight_storage": "f16",
+        "arithmetic": "llama.cpp native kernels; mixed precision",
+        "kv": "FP16",
+        "cpu_threads": 8,
+        "cpu_thread_note": "Same numeric worker count as SV"
+      },
+      "startup_seconds": 0.27449129096930847,
+      "profile": "short",
+      "prompt_tokens": 85,
+      "prompt_ids_sha256": "58be84173178cdcfb224e0c441a55147e7df172e2ac71dd1361f4340a63f0dbb",
+      "first_request": {
+        "output_token_ids": [
+          10642,
+          33394,
+          19257,
+          311,
+          279,
+          4628,
+          518,
+          892,
+          821,
+          646,
+          387,
+          22409,
+          1948,
+          279,
+          13940,
+          323,
+          1887,
+          4938,
+          13,
+          356,
+          11829,
+          374,
+          264,
+          14762,
+          429,
+          10533,
+          13814,
+          1483,
+          821,
+          304,
+          264,
+          13340
+        ],
+        "output_token_count": 32,
+        "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+        "finish_reason": "length",
+        "first_token_seconds": 0.2246135410387069,
+        "request_seconds": 0.4382971660234034,
+        "steady_decode_seconds": 0.2135643339715898,
+        "steady_decode_tokens_per_second": 145.15532356692054,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 85,
+          "prompt_ms": 224.104,
+          "prompt_per_token_ms": 2.636517647058824,
+          "prompt_per_second": 379.2881876271731,
+          "predicted_n": 32,
+          "predicted_ms": 213.606,
+          "predicted_per_token_ms": 6.890516129032258,
+          "predicted_per_second": 145.12700954093052
+        },
+        "eos_observed": false
+      },
+      "warm_requests": [
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 0.2415739999851212,
+          "request_seconds": 0.4630242920247838,
+          "steady_decode_seconds": 0.22138429200276732,
+          "steady_decode_tokens_per_second": 140.02800162358628,
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 85,
+            "prompt_ms": 241.102,
+            "prompt_per_token_ms": 2.836494117647059,
+            "prompt_per_second": 352.547884297932,
+            "predicted_n": 32,
+            "predicted_ms": 221.407,
+            "predicted_per_token_ms": 7.142161290322581,
+            "predicted_per_second": 140.01364003848116
+          },
+          "eos_observed": false
+        },
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 0.23622716701356694,
+          "request_seconds": 0.4596946250530891,
+          "steady_decode_seconds": 0.22339837503386661,
+          "steady_decode_tokens_per_second": 138.76555724857212,
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 85,
+            "prompt_ms": 235.793,
+            "prompt_per_token_ms": 2.774035294117647,
+            "prompt_per_second": 360.48568023647863,
+            "predicted_n": 32,
+            "predicted_ms": 223.425,
+            "predicted_per_token_ms": 7.20725806451613,
+            "predicted_per_second": 138.7490209242475
+          },
+          "eos_observed": false
+        },
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 0.23737133399117738,
+          "request_seconds": 0.46211591694736853,
+          "steady_decode_seconds": 0.22462304099462926,
+          "steady_decode_tokens_per_second": 138.0089943699997,
+          "backend_timings": {
+            "cache_n": 0,
+            "prompt_n": 85,
+            "prompt_ms": 236.924,
+            "prompt_per_token_ms": 2.7873411764705884,
+            "prompt_per_second": 358.7648359811585,
+            "predicted_n": 32,
+            "predicted_ms": 224.635,
+            "predicted_per_token_ms": 7.246290322580645,
+            "predicted_per_second": 138.00164711643333
+          },
+          "eos_observed": false
+        }
+      ],
+      "warm_median_ttft_seconds": 0.23737133399117738,
+      "warm_median_decode_tokens_per_second": 138.76555724857212,
+      "greedy_sequence_repeatable": true,
+      "warm_decode_rate_min": 138.0089943699997,
+      "warm_decode_rate_max": 140.02800162358628
+    }
+  ],
+  "quality": [
+    {
+      "engine": "rtl",
+      "case": "fact_recall",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "first_token_seconds": 7.447342041996308,
+        "request_seconds": 7.687590042012744,
+        "steady_decode_seconds": 0.2402230409788899,
+        "steady_decode_tokens_per_second": 16.651192090901507,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "corrected_fact",
+      "result": {
+        "output_token_ids": [
+          43,
+          7523,
+          13,
+          151645
+        ],
+        "output_token_count": 4,
+        "text": "Lima.",
+        "finish_reason": "eos",
+        "first_token_seconds": 9.761833709024359,
+        "request_seconds": 9.948758792015724,
+        "steady_decode_seconds": 0.18690974998753518,
+        "steady_decode_tokens_per_second": 16.050527060252698,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "assistant_quote",
+      "result": {
+        "output_token_ids": [
+          13936,
+          36506,
+          11,
+          50344,
+          0,
+          151645
+        ],
+        "output_token_count": 6,
+        "text": "Welcome aboard, Maya!",
+        "finish_reason": "eos",
+        "first_token_seconds": 5.832739915989805,
+        "request_seconds": 6.095963207946625,
+        "steady_decode_seconds": 0.26320783398114145,
+        "steady_decode_tokens_per_second": 18.996395070665884,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "verbatim_quote": true
+        },
+        "details": "quote target: \"Welcome aboard, Maya!\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "task_switch",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          13,
+          151645
+        ],
+        "output_token_count": 9,
+        "text": "9, 2, 5.",
+        "finish_reason": "eos",
+        "first_token_seconds": 9.817176832992118,
+        "request_seconds": 10.352770041034091,
+        "steady_decode_seconds": 0.5355763330007903,
+        "steady_decode_tokens_per_second": 14.937179832381045,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "json_extraction",
+      "result": {
+        "output_token_ids": [
+          73594,
+          2236,
+          198,
+          4913,
+          606,
+          788,
+          330,
+          44,
+          8832,
+          497,
+          330,
+          3423,
+          788,
+          330,
+          665,
+          278,
+          16707,
+          73594,
+          151645
+        ],
+        "output_token_count": 19,
+        "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+        "finish_reason": "eos",
+        "first_token_seconds": 3.914543207967654,
+        "request_seconds": 4.814425291959196,
+        "steady_decode_seconds": 0.8998461670125835,
+        "steady_decode_tokens_per_second": 20.003419095242183,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "two_step_arithmetic",
+      "result": {
+        "output_token_ids": [
+          785,
+          2790,
+          1372,
+          315,
+          54208,
+          374,
+          220,
+          16,
+          22,
+          2518,
+          488,
+          220,
+          23,
+          6303,
+          284,
+          220
+        ],
+        "output_token_count": 16,
+        "text": "The total number of beads is 17 red + 8 blue = ",
+        "finish_reason": "length",
+        "first_token_seconds": 3.7614939580089413,
+        "request_seconds": 4.51025670801755,
+        "steady_decode_seconds": 0.7487417499651201,
+        "steady_decode_tokens_per_second": 20.033609720172237,
+        "backend_timings": null,
+        "eos_observed": false
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "distractor_recall",
+      "result": {
+        "output_token_ids": [
+          34,
+          33215,
+          151645
+        ],
+        "output_token_count": 3,
+        "text": "Cedar",
+        "finish_reason": "eos",
+        "first_token_seconds": 7.320644541003276,
+        "request_seconds": 7.435039333009627,
+        "steady_decode_seconds": 0.1143814169918187,
+        "steady_decode_tokens_per_second": 17.485357784499673,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"Cedar\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "evidence_only",
+      "result": {
+        "output_token_ids": [
+          16088,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "unknown",
+        "finish_reason": "eos",
+        "first_token_seconds": 4.214995625021402,
+        "request_seconds": 4.264167917019222,
+        "steady_decode_seconds": 0.04915783298201859,
+        "steady_decode_tokens_per_second": 20.34263797522949,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"unknown\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "new_question_after_repetition",
+      "result": {
+        "output_token_ids": [
+          22,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "7",
+        "finish_reason": "eos",
+        "first_token_seconds": 14.379871249955613,
+        "request_seconds": 14.448811207956169,
+        "steady_decode_seconds": 0.0689274170435965,
+        "steady_decode_tokens_per_second": 14.508014994490527,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "fact_recall",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.2330917920335196,
+        "request_seconds": 0.2809760000091046,
+        "steady_decode_seconds": 0.04782808298477903,
+        "steady_decode_tokens_per_second": 83.63287320700212,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 162,
+          "prompt_ms": 232.458,
+          "prompt_per_token_ms": 1.434925925925926,
+          "prompt_per_second": 696.9000851766771,
+          "predicted_n": 5,
+          "predicted_ms": 47.848,
+          "predicted_per_token_ms": 11.962,
+          "predicted_per_second": 83.59806052499582
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "corrected_fact",
+      "result": {
+        "output_token_ids": [
+          43,
+          7523,
+          13,
+          151645
+        ],
+        "output_token_count": 4,
+        "text": "Lima.",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.24061850004363805,
+        "request_seconds": 0.27447233302518725,
+        "steady_decode_seconds": 0.03373670799192041,
+        "steady_decode_tokens_per_second": 88.92391043958612,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 213,
+          "prompt_ms": 238.354,
+          "prompt_per_token_ms": 1.1190328638497653,
+          "prompt_per_second": 893.6288042155785,
+          "predicted_n": 4,
+          "predicted_ms": 33.757,
+          "predicted_per_token_ms": 11.252333333333333,
+          "predicted_per_second": 88.87045649791155
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "assistant_quote",
+      "result": {
+        "output_token_ids": [
+          13936,
+          36506,
+          11,
+          50344,
+          0,
+          151645
+        ],
+        "output_token_count": 6,
+        "text": "Welcome aboard, Maya!",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.23924791696481407,
+        "request_seconds": 0.2958229170180857,
+        "steady_decode_seconds": 0.056493125041015446,
+        "steady_decode_tokens_per_second": 88.50634473433489,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 146,
+          "prompt_ms": 236.157,
+          "prompt_per_token_ms": 1.617513698630137,
+          "prompt_per_second": 618.2327858162155,
+          "predicted_n": 6,
+          "predicted_ms": 56.569,
+          "predicted_per_token_ms": 11.3138,
+          "predicted_per_second": 88.38763280241828
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "verbatim_quote": true
+        },
+        "details": "quote target: \"Welcome aboard, Maya!\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "task_switch",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          13,
+          151645
+        ],
+        "output_token_count": 9,
+        "text": "9, 2, 5.",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.23820312501629815,
+        "request_seconds": 0.3291275420342572,
+        "steady_decode_seconds": 0.09081612498266622,
+        "steady_decode_tokens_per_second": 88.09008313806534,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 222,
+          "prompt_ms": 236.115,
+          "prompt_per_token_ms": 1.063581081081081,
+          "prompt_per_second": 940.2198081443364,
+          "predicted_n": 9,
+          "predicted_ms": 90.812,
+          "predicted_per_token_ms": 11.3515,
+          "predicted_per_second": 88.09408448222702
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "json_extraction",
+      "result": {
+        "output_token_ids": [
+          73594,
+          2236,
+          198,
+          4913,
+          606,
+          788,
+          330,
+          44,
+          8832,
+          497,
+          330,
+          3423,
+          788,
+          330,
+          665,
+          278,
+          16707,
+          73594,
+          151645
+        ],
+        "output_token_count": 19,
+        "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.14185287500731647,
+        "request_seconds": 0.32757129200035706,
+        "steady_decode_seconds": 0.18565833399770781,
+        "steady_decode_tokens_per_second": 96.952286560011,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 107,
+          "prompt_ms": 138.958,
+          "prompt_per_token_ms": 1.2986728971962618,
+          "prompt_per_second": 770.0168396206049,
+          "predicted_n": 19,
+          "predicted_ms": 185.677,
+          "predicted_per_token_ms": 10.315388888888888,
+          "predicted_per_second": 96.94254000226199
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "two_step_arithmetic",
+      "result": {
+        "output_token_ids": [
+          785,
+          2790,
+          1372,
+          315,
+          54208,
+          374,
+          220,
+          16,
+          22,
+          2518,
+          488,
+          220,
+          23,
+          6303,
+          284,
+          220
+        ],
+        "output_token_count": 16,
+        "text": "The total number of beads is 17 red + 8 blue = ",
+        "finish_reason": "length",
+        "first_token_seconds": 0.1279911250458099,
+        "request_seconds": 0.298200250021182,
+        "steady_decode_seconds": 0.17011795798316598,
+        "steady_decode_tokens_per_second": 88.17411270293007,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 103,
+          "prompt_ms": 127.534,
+          "prompt_per_token_ms": 1.2381941747572816,
+          "prompt_per_second": 807.6277698496087,
+          "predicted_n": 16,
+          "predicted_ms": 170.104,
+          "predicted_per_token_ms": 11.340266666666668,
+          "predicted_per_second": 88.18134788129613
+        },
+        "eos_observed": false
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "distractor_recall",
+      "result": {
+        "output_token_ids": [
+          34,
+          33215,
+          151645
+        ],
+        "output_token_count": 3,
+        "text": "Cedar",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.20658304198877886,
+        "request_seconds": 0.23065529199084267,
+        "steady_decode_seconds": 0.023953250027261674,
+        "steady_decode_tokens_per_second": 83.49597644260214,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 176,
+          "prompt_ms": 206.062,
+          "prompt_per_token_ms": 1.1708068181818183,
+          "prompt_per_second": 854.1118692432374,
+          "predicted_n": 3,
+          "predicted_ms": 23.942,
+          "predicted_per_token_ms": 11.971,
+          "predicted_per_second": 83.53521009105337
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"Cedar\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "evidence_only",
+      "result": {
+        "output_token_ids": [
+          16088,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "unknown",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.19179983297362924,
+        "request_seconds": 0.20312533294782043,
+        "steady_decode_seconds": 0.011279667029157281,
+        "steady_decode_tokens_per_second": 88.6550992520487,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 112,
+          "prompt_ms": 189.375,
+          "prompt_per_token_ms": 1.6908482142857142,
+          "prompt_per_second": 591.4191419141914,
+          "predicted_n": 2,
+          "predicted_ms": 11.304,
+          "predicted_per_token_ms": 11.304,
+          "predicted_per_second": 88.46426043878273
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"unknown\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "new_question_after_repetition",
+      "result": {
+        "output_token_ids": [
+          22,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "7",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.34315879101632163,
+        "request_seconds": 0.3570679160184227,
+        "steady_decode_seconds": 0.013853874988853931,
+        "steady_decode_tokens_per_second": 72.18197080633001,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 285,
+          "prompt_ms": 342.555,
+          "prompt_per_token_ms": 1.2019473684210527,
+          "prompt_per_second": 831.9831851819416,
+          "predicted_n": 2,
+          "predicted_ms": 13.858,
+          "predicted_per_token_ms": 13.858,
+          "predicted_per_second": 72.16048491845865
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "fact_recall",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.34052291698753834,
+        "request_seconds": 0.37253033299930394,
+        "steady_decode_seconds": 0.03186675003962591,
+        "steady_decode_tokens_per_second": 125.52268414651789,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 162,
+          "prompt_ms": 340.037,
+          "prompt_per_token_ms": 2.0989938271604935,
+          "prompt_per_second": 476.4187426662393,
+          "predicted_n": 5,
+          "predicted_ms": 31.851,
+          "predicted_per_token_ms": 7.96275,
+          "predicted_per_second": 125.58475401086308
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "corrected_fact",
+      "result": {
+        "output_token_ids": [
+          43,
+          7523,
+          13,
+          151645
+        ],
+        "output_token_count": 4,
+        "text": "Lima.",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.421350791992154,
+        "request_seconds": 0.44464237499050796,
+        "steady_decode_seconds": 0.023225874989293516,
+        "steady_decode_tokens_per_second": 129.16628550626905,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 213,
+          "prompt_ms": 419.095,
+          "prompt_per_token_ms": 1.9675821596244132,
+          "prompt_per_second": 508.2379890001073,
+          "predicted_n": 4,
+          "predicted_ms": 23.25,
+          "predicted_per_token_ms": 7.75,
+          "predicted_per_second": 129.03225806451613
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "assistant_quote",
+      "result": {
+        "output_token_ids": [
+          13936,
+          36506,
+          11,
+          50344,
+          0,
+          151645
+        ],
+        "output_token_count": 6,
+        "text": "Welcome aboard, Maya!",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.3369620839948766,
+        "request_seconds": 0.3754028339753859,
+        "steady_decode_seconds": 0.03837475000182167,
+        "steady_decode_tokens_per_second": 130.29400842383723,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 146,
+          "prompt_ms": 334.394,
+          "prompt_per_token_ms": 2.290369863013699,
+          "prompt_per_second": 436.61070473752517,
+          "predicted_n": 6,
+          "predicted_ms": 38.424,
+          "predicted_per_token_ms": 7.6848,
+          "predicted_per_second": 130.1270039558609
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "verbatim_quote": true
+        },
+        "details": "quote target: \"Welcome aboard, Maya!\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "task_switch",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          13,
+          151645
+        ],
+        "output_token_count": 9,
+        "text": "9, 2, 5.",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.42257354198955,
+        "request_seconds": 0.49014700000407174,
+        "steady_decode_seconds": 0.06747912499122322,
+        "steady_decode_tokens_per_second": 118.55518282195469,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 222,
+          "prompt_ms": 420.608,
+          "prompt_per_token_ms": 1.8946306306306306,
+          "prompt_per_second": 527.8073645769933,
+          "predicted_n": 9,
+          "predicted_ms": 67.546,
+          "predicted_per_token_ms": 8.44325,
+          "predicted_per_second": 118.4378053474669
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "json_extraction",
+      "result": {
+        "output_token_ids": [
+          73594,
+          2236,
+          198,
+          4913,
+          606,
+          788,
+          330,
+          44,
+          8832,
+          497,
+          330,
+          3423,
+          788,
+          330,
+          665,
+          278,
+          16707,
+          73594,
+          151645
+        ],
+        "output_token_count": 19,
+        "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.2747519169934094,
+        "request_seconds": 0.4087426250334829,
+        "steady_decode_seconds": 0.13393587502650917,
+        "steady_decode_tokens_per_second": 134.39267109306869,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 107,
+          "prompt_ms": 272.029,
+          "prompt_per_token_ms": 2.542327102803738,
+          "prompt_per_second": 393.34041591153886,
+          "predicted_n": 19,
+          "predicted_ms": 133.929,
+          "predicted_per_token_ms": 7.4405,
+          "predicted_per_second": 134.39956992137624
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "two_step_arithmetic",
+      "result": {
+        "output_token_ids": [
+          785,
+          2790,
+          1372,
+          315,
+          54208,
+          374,
+          220,
+          16,
+          22,
+          2518,
+          488,
+          220,
+          23,
+          6303,
+          284,
+          220
+        ],
+        "output_token_count": 16,
+        "text": "The total number of beads is 17 red + 8 blue = ",
+        "finish_reason": "length",
+        "first_token_seconds": 0.26783329097088426,
+        "request_seconds": 0.3836290409672074,
+        "steady_decode_seconds": 0.11572883400367573,
+        "steady_decode_tokens_per_second": 129.61333386909936,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 103,
+          "prompt_ms": 267.294,
+          "prompt_per_token_ms": 2.5950873786407764,
+          "prompt_per_second": 385.3434794645596,
+          "predicted_n": 16,
+          "predicted_ms": 115.745,
+          "predicted_per_token_ms": 7.716333333333334,
+          "predicted_per_second": 129.59523089550305
+        },
+        "eos_observed": false
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "distractor_recall",
+      "result": {
+        "output_token_ids": [
+          34,
+          33215,
+          151645
+        ],
+        "output_token_count": 3,
+        "text": "Cedar",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.2878455419559032,
+        "request_seconds": 0.30265204195166007,
+        "steady_decode_seconds": 0.014714375021867454,
+        "steady_decode_tokens_per_second": 135.9215051286747,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 176,
+          "prompt_ms": 287.323,
+          "prompt_per_token_ms": 1.6325170454545452,
+          "prompt_per_second": 612.5510314176032,
+          "predicted_n": 3,
+          "predicted_ms": 14.762,
+          "predicted_per_token_ms": 7.381,
+          "predicted_per_second": 135.48299688389108
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"Cedar\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "evidence_only",
+      "result": {
+        "output_token_ids": [
+          16088,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "unknown",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.2694408329552971,
+        "request_seconds": 0.2771267920034006,
+        "steady_decode_seconds": 0.007645584002602845,
+        "steady_decode_tokens_per_second": 130.79445594470772,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 112,
+          "prompt_ms": 267.314,
+          "prompt_per_token_ms": 2.386732142857143,
+          "prompt_per_second": 418.9829189642143,
+          "predicted_n": 2,
+          "predicted_ms": 7.671,
+          "predicted_per_token_ms": 7.671,
+          "predicted_per_second": 130.3611002476861
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"unknown\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "new_question_after_repetition",
+      "result": {
+        "output_token_ids": [
+          22,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "7",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.5111861669574864,
+        "request_seconds": 0.5193308749585412,
+        "steady_decode_seconds": 0.008076458005234599,
+        "steady_decode_tokens_per_second": 123.81665321009153,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 285,
+          "prompt_ms": 510.619,
+          "prompt_per_token_ms": 1.7916456140350878,
+          "prompt_per_second": 558.1460932711082,
+          "predicted_n": 2,
+          "predicted_ms": 8.179,
+          "predicted_per_token_ms": 8.179,
+          "predicted_per_second": 122.26433549333659
+        },
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    }
+  ],
+  "sv_lanes": 8,
+  "limitations": [
+    "Same prompt token IDs, context, generated count and numeric worker count; NOT identical arithmetic or KV precision.",
+    "SV: BF16 stored weights / FP64 arithmetic and KV. Native: named stored weights / mixed arithmetic / FP16 KV.",
+    "Startup is process/model startup, not OS page-cache cold; no page-cache eviction is attempted.",
+    "Every timed request has empty logical KV. Warm repetitions retain the process and resident weight pages.",
+    "Both measurements include their existing transport (SV pipes, llama HTTP); steady decode excludes first-token prompt processing.",
+    "Fixed-count performance rejects any early EOS rather than masking it. Quality mode permits EOS and records objective checks separately."
+  ],
+  "generated_files": {
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral.cpp": "a0e54daf251f6a743ed05b22555a768776283ba8751fd89bfc5431634e4d5771",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral.h": "71ddb466dfa6d1859835ee4736711d62e8e57f5f4031c7c1f3c984572e6e892c",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral__ALL.cpp": "aeaec7f81d3ee7a786bfab0f852e36e29eb1121de88379a6548a63583fbc594b",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral__Dpi.cpp": "a249d1350f612b75604dfaf0fc5d694981f93ffd3d80f1584ccf2d40cee1d7c6",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral__Dpi.h": "344aecff7273bd0d537d82bad2ad2d7ed83f6d54a35495b3f1105cb054498873",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral__Syms.h": "115220cbe94d4e9563803d9c7edbde3d7f5d509f646c30f4d8d170ce195718b2",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral__Syms__Slow.cpp": "a611a605b0a379e8856ee550c4c77daa52c29067ff07b70971226da0fc0530b6",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral___024root.h": "146efbd9a7ee84bde0e07192567fe7662857e260fe5937f655bfc8c0aa09b218",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral___024root__0.cpp": "6898422618a278f452cb5f93561c60fd9d79e4dc46afd2f36912c0ecc03fdd3a",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral___024root__0__Slow.cpp": "2c584f1b353e822278ade461a2e65c2efc456f3548223a279e7819fb3bb6abd9",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral___024root__Slow.cpp": "63b081e6090f78b1de0d67b24a4efd5d22b314d943f1b61649d95561ec6a7130",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral__pch.h": "22940ef1a44ae5bc904961b86eed4bf0de3765bdfdbb04d23c197020f67078ee",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker.cpp": "4f96c0cab761c8d28a9c441b7c5f5db4cb7d2b70959f94accafdaeacced7775f",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker.h": "47c08c173b23b0ff6a6da5976a231c80b087451165e5d504287ae51702dd29e1",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker__ALL.cpp": "c665fc8c0e88cb6051c4779b90898602f5adebce8c63113e4656a937619e7aff",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker__Dpi.cpp": "216d175bfae3b53178d97991174e20e144a82723befb32fdc6cda9be0af6037c",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker__Dpi.h": "2a83bb4ab533a75f382d9f7736a3079a9eeacdf43f823e57aa8ad1bc9c8191cf",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker__Syms.h": "10eda60ff67374818610ee362c8e6ab0c826ac46a0830c89c67b50236009d7b8",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker__Syms__Slow.cpp": "59b091b8036ab0b432237ea55f00dbbd04a81e999ef419e036a2a67f94e78faf",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker___024root.h": "fa1add27921d5af693235c1ed25d84f38b2888843d32a859309675a6098908d9",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker___024root__0.cpp": "0699a2cec8a2107c95138a0ad29b1117290a0ee5f1965193cce9487e1aca2366",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker___024root__0__Slow.cpp": "f556e8d68768804aacf063187f839dbd6dea7d5da4b4cda502decb7cc28432dc",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker___024root__Slow.cpp": "291c2d45264b8cbf7455c7f1c411539426ef7136792a90397004d74e9b661c6e",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked/projection/Vprojection_worker__pch.h": "49c99af6aabc07d143be7841cba2e3a11a30cc297a70cde8fd49de9366abe779"
+  },
+  "generated_source_sha256": "a6b8eef9efc31630f0d646b67f59506519bd3edb847f3a517573426e8fe5539d",
+  "sv_binary_sha256": "59b1a6939c1b60aad08a55f742418909f8c4c5738d3d889fb4aa0e5f02ca8b29",
+  "native_binary_sha256": "e9c93f0fb1ea58180632b77a1943eee31126e365e1a80ac34bcc54475403fc96",
+  "numerical_gate": {
+    "reference_binary": "$PROJECT/build/full/Vqwen_behavioral",
+    "candidate_binary": "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral",
+    "reference_sha256": "a915e91014f0332a69bcc4c2d8f5bf5270e17aa1f0b50b41d6f0edb95c4f0b27",
+    "candidate_sha256": "59b1a6939c1b60aad08a55f742418909f8c4c5738d3d889fb4aa0e5f02ca8b29",
+    "prompt_tokens": 85,
+    "teacher_forced_generated_tokens": 16,
+    "candidate_reduction_lanes": 8,
+    "absolute_error_tolerance": 1e-06,
+    "per_position_max_absolute_logit_errors": [
+      9.769962616701378e-14,
+      1.283417816466681e-13,
+      1.1102230246251565e-13,
+      9.237055564881302e-14,
+      1.2789769243681803e-13,
+      1.1368683772161603e-13,
+      1.0391687510491465e-13,
+      1.438849039914203e-13,
+      1.2612133559741778e-13,
+      1.0302869668521453e-13,
+      1.0658141036401503e-13,
+      9.947598300641403e-14,
+      9.947598300641403e-14,
+      1.062622212444353e-13,
+      1.1191048088221578e-13,
+      9.414691248821327e-14
+    ],
+    "max_absolute_logit_error": 1.438849039914203e-13,
+    "greedy_choices": [
+      {
+        "reference": 10642,
+        "candidate": 10642
+      },
+      {
+        "reference": 33394,
+        "candidate": 33394
+      },
+      {
+        "reference": 19257,
+        "candidate": 19257
+      },
+      {
+        "reference": 311,
+        "candidate": 311
+      },
+      {
+        "reference": 279,
+        "candidate": 279
+      },
+      {
+        "reference": 4628,
+        "candidate": 4628
+      },
+      {
+        "reference": 518,
+        "candidate": 518
+      },
+      {
+        "reference": 892,
+        "candidate": 892
+      },
+      {
+        "reference": 821,
+        "candidate": 821
+      },
+      {
+        "reference": 646,
+        "candidate": 646
+      },
+      {
+        "reference": 387,
+        "candidate": 387
+      },
+      {
+        "reference": 22409,
+        "candidate": 22409
+      },
+      {
+        "reference": 1948,
+        "candidate": 1948
+      },
+      {
+        "reference": 279,
+        "candidate": 279
+      },
+      {
+        "reference": 13940,
+        "candidate": 13940
+      },
+      {
+        "reference": 323,
+        "candidate": 323
+      }
+    ],
+    "unchanged_greedy_sequence": true,
+    "all_logits_finite": true,
+    "passed": true
+  },
+  "llama_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb",
+  "quality_suite_sha256": "e83a1561ae3c1245ad1a2be15fc6521471ce63c2037da887af7ce0fec3136810",
+  "artifact_note": "Synthetic benchmark/test conversations only; machine-specific directory prefixes replaced with $PROJECT and $CHECKPOINT. Measurements unchanged; repeatability/prompt/EOS assertions were checked after run."
+}

@@ -55,10 +55,14 @@ class SimulationCancelled(Exception):
 
 
 class RTLModel:
-    def __init__(self, model=None, workers=0):
+    def __init__(self, model=None, workers=0, binary=None, lanes=1):
         if type(workers) is not int or not 0 <= workers <= 32:
             raise ValueError("Workers must be an integer from 0 to 32")
+        if type(lanes) is not int or lanes not in (1, 8):
+            raise ValueError('Reduction lanes must be 1 or 8')
+        self.lanes = lanes
         self.workers = workers
+        self.binary = Path(binary).expanduser().resolve() if binary is not None else ROOT / 'build/full/Vqwen_behavioral'
         self.model, self.layout = prepare_layout(model)
         self.process = None
         self.log = None
@@ -102,16 +106,29 @@ class RTLModel:
             return
         self.close()
         self.log = (ROOT / 'build/full/runtime.log').open('w')
-        self.process = subprocess.Popen([str(ROOT / 'build/full/Vqwen_behavioral'),
+        self.process = subprocess.Popen([str(self.binary),
             str(self.model / 'model.safetensors'), str(self.layout), str(self.workers)],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.log, text=True, bufsize=1)
         if self.read(cancel) != 'ready':
             raise RuntimeError('Invalid simulator handshake')
+        if self.lanes != 1:
+            if self.command(f'lanes {self.lanes}', cancel) != 'configured':
+                raise RuntimeError('Invalid reduction configuration response')
 
     def command(self, command, cancel=None):
         self.process.stdin.write(command + '\n')
         self.process.stdin.flush()
         return self.read(cancel)
+
+    def set_lanes(self, lanes, cancel=None):
+        if type(lanes) is not int or lanes not in (1, 8):
+            raise ValueError('Reduction lanes must be 1 or 8')
+        if lanes == self.lanes:
+            return
+        if self.process and self.process.poll() is None:
+            if self.command(f'lanes {lanes}', cancel) != 'configured':
+                raise RuntimeError('Invalid reduction configuration response')
+        self.lanes = lanes
 
     def set_workers(self, workers, cancel=None):
         if type(workers) is not int or not 0 <= workers <= 32:

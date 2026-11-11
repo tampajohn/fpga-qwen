@@ -43,7 +43,7 @@ def main():
         assert '2 workers' in page.locator('.assistant .reply-meta').last.inner_text()
         page.locator('#workers').select_option('8')
         page.screenshot(path=str(output / 'conversation.png'))
-        for backend in ['llama-q4', 'llama-q4', 'llama-f32', 'rtl']:
+        for backend in ['llama-q4', 'llama-q4', 'llama-f16', 'llama-f32', 'rtl']:
             page.locator('#backend').select_option(backend)
             expect(page.locator('#suffix')).to_be_disabled()
             page.locator('#prompt').fill('What word did you just say? Answer with that word only.')
@@ -88,7 +88,7 @@ def main():
         report = dict(first_response=first, second_response=second, reused_prefix_tokens=reused,
                       first_reply_tokens_per_second=first_rate, worker_change_preserved_cache=True,
                       stop_passed=True, context_error_passed=True, mobile_passed=True,
-                      backends_tested=['rtl', 'llama-q4', 'llama-f32'],
+                      backends_tested=['rtl', 'llama-q4', 'llama-f16', 'llama-f32'],
                       console_errors=errors)
         (output / 'report.json').write_text(json.dumps(report, indent=2)+'\n')
         print(json.dumps(report, indent=2))

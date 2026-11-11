@@ -1,5 +1,6 @@
 """Regression for the reported cross-turn repetition, using actual model inference."""
 import json
+import os
 import threading
 import unittest
 from tools.rtl_chat import RTLChatEngine
@@ -8,7 +9,8 @@ from tools.experiment import ROOT
 
 class ConversationTests(unittest.TestCase):
     def test_recover_from_repetitive_history(self):
-        engine = RTLChatEngine()
+        engine = RTLChatEngine(binary=os.environ.get('SV_TEST_BINARY'),
+                               lanes=int(os.environ.get('SV_TEST_LANES', '1')))
         repeated = "Hello! I'm confused too. Could you clarify what you're asking?"
         messages = []
         for prompt, reply in [('hi', 'Hello! How can I assist you today?'),

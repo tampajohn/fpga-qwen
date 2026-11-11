@@ -11,10 +11,14 @@ make setup
 make chat
 # Open http://127.0.0.1:8765
 # Optional: make chat PORT=8766 MODEL=/path/to/local/checkpoint
+# Exact-order reference profile: make chat-reference
 ```
 
 The default backend is now **full-model behavioral SystemVerilog**, compiled by
-Verilator. PyTorch and Transformers are neither installed by the default setup
+Verilator. `make chat` builds the optimized CPU profile (thin LTO, validated
+projection spans, eight independent accumulators). `make chat-reference` retains
+the original accumulation order. Both are behavioral SystemVerilog, not FPGA
+implementations. PyTorch and Transformers are neither installed by the default setup
 nor imported by the chat server. Tokenization uses the local checkpoint's
 `tokenizers` data and Jinja chat template; Python handles HTTP and token transport.
 All model arithmetic executes in `rtl/qwen_behavioral.sv` and
@@ -42,7 +46,7 @@ turns reuse the exact matching token prefix, including correct cache truncation
 when the chat template retokenizes prior replies. Suffix drafting is disabled
 until it is implemented for the full simulator.
 
-The dropdown also retains **llama.cpp FP32** and **llama.cpp Q4_K_M** as optional
+The dropdown also retains **llama.cpp FP32**, **llama.cpp FP16**, and **llama.cpp Q4_K_M** as optional
 CPU comparison backends; neither uses PyTorch or SystemVerilog. Native GPU backends
 are compiled OFF and runtime offload is disabled. Changing backends preserves
 conversation messages, but switching engines clears the simulation's KV cache.
@@ -54,7 +58,7 @@ if desired. The server is single-user, with one active reply and no built-in aut
 There is no remote inference or automatic model download. Prompt bodies are not logged.
 
 `POST /api/chat` accepts a session ID, request ID, alternating user/assistant
-messages, `backend` (`rtl`, `llama-f32`, `llama-q4`), `max_new_tokens`, and
+messages, `backend` (`rtl`, `llama-f32`, `llama-f16`, `llama-q4`), `max_new_tokens`, and
 `max_draft` (must be zero), `simulation_workers` (0, 1, 2, 4, or 8),
 `decoding` (`chat` by default, or `greedy`), and an optional integer `seed`. Responses are NDJSON `loading`, `start`, `prefill`,
 `update`, `done`, or `error` events. `POST /api/stop` cancels by request ID.
@@ -96,12 +100,15 @@ Dense projections, including the vocabulary head, are split by output rows
 across persistent CPU threads. Every thread runs its own Verilated
 `projection_worker` instance. All dot-product arithmetic remains SystemVerilog;
 the C++ pool only partitions work and copies activations/results. Workers share
-one read-only checkpoint mapping. Each row preserves the serial accumulation
-order, and there is no cross-worker floating-point reduction. Attention,
+one read-only checkpoint mapping. The reference profile preserves serial accumulation order. The optimized profile
+uses eight partial sums per row and changes floating-point association; it is
+validated with numerical tolerances and output checks rather than claiming
+bit-identical logits. There is no cross-worker floating-point reduction. Attention,
 normalization, nonlinearities, residuals, and KV state remain in the main SV model.
 This is shared-memory execution on one machine, not a multi-machine service.
 
-Measured on this Apple M5 Max, with two warmup tokens and nine measured
+The original parallel implementation measured the following on this Apple M5 Max,
+with two warmup tokens and nine measured
 short-context token forward passes (including Python/process IPC):
 
 | Execution | Median tok/s | Relative to serial |
@@ -122,7 +129,9 @@ prefill. Longer-context performance will differ.
 Reproduce with `uv run --locked tools/benchmark_parallel.py`; raw samples and
 projection benchmarks are saved to `build/parallel-benchmark.json`. Start with a
 specific count using `uv run --locked tools/chat_server.py --workers 4`, or
-change **Simulation workers** in the browser. `0` selects the original serial
+change **Simulation workers** in the browser. The default server uses the fast
+profile; add `--simulator reference` for exact-order worker arithmetic. `0` selects
+the serial
 implementation. Resizing happens at request boundaries and does not clear KV.
 
 ### Validation without PyTorch
@@ -130,7 +139,7 @@ implementation. Resizing happens at request boundaries and does not clear KV.
 ```sh
 make check
 # Or the focused full-model and chat checks:
-make full-test chat-test
+make full-test fast-test chat-test conversation-test
 # With make chat running:
 uv run --locked python tests/browser_chat.py
 ```
@@ -145,7 +154,7 @@ sequence, not a broad model-quality evaluation.
 
 Chat tests cover framework isolation, input validation, prefix reuse, cancellation
 inside a token, restart after cancellation, HTTP concurrency, and origin checks.
-Browser tests cover actual replies, switching between all three engines while
+Browser tests cover actual replies, switching between simulator/native engines while
 preserving conversation, Stop, context errors, and a 390px mobile viewport.
 
 Historical PyTorch reference tools remain as optional experiments, isolated from
@@ -167,7 +176,9 @@ established. Simulated matrix cycles exclude CPU operations and transfers.
 
 ## Run
 
-Requires Python 3.12, uv, Verilator, Make, and a C++17 compiler. The primitive and
+Requires Python 3.12, uv, Verilator, Make, and a C++17 compiler. The optimized
+profile additionally requires Clang thin LTO; use `make chat-reference` for the
+portable exact-order build. The primitive and
 KV cursor tests also work with a standalone Python 3 standard library.
 
 ```sh
@@ -345,3 +356,17 @@ VULKAN and OPENCL are compiled OFF; the adapter checks the CMake configuration
 and also disables GPU layers, KV offload and operation offload at runtime.
 The GGUF files were converted from the same local Hugging Face checkpoint.
 `make clean` removes these optional build artifacts along with the simulators.
+
+## Coordinated performance and quality experiments
+
+See [the matched benchmark protocol](docs/BENCHMARK_PROTOCOL.md) for identical
+prompt/token workloads, separate TTFT and decode rates, precision disclosures,
+and measured comparisons with llama.cpp. [Projection experiments](docs/projection_optimization.md)
+explain the compiler and reduction changes. Tracked `reports/` contains raw
+synthetic benchmark/quality evidence; local binaries and model files remain ignored.
+
+[Conversation findings](docs/conversation-quality-findings.json) distinguish
+numerical agreement from answering correctly. The frozen objective suite includes
+recall, correction, quotation, task switching, extraction and arithmetic. Its low
+native-model pass rate is a model/decoding limitation, not evidence that matching
+those answers is high quality. No GPU or PyTorch is required for these experiments.

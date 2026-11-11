@@ -25,7 +25,7 @@ report:
 setup:
 	uv sync --locked --python python3.12
 
-chat: build/full/Vqwen_behavioral
+chat: build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral
 	uv run --locked tools/chat_server.py $(if $(MODEL),--model "$(MODEL)",) $(if $(PORT),--port $(PORT),)
 
 chat-test: build/full/Vqwen_behavioral
@@ -61,7 +61,7 @@ clean:
 build/full/Vqwen_behavioral: rtl/qwen_behavioral.sv rtl/sampling.svh sim/full_model.cpp sim/projection_pool.h build/projection/Vprojection_worker__ALL.a
 	mkdir -p build/full
 	$(VERILATOR) --cc --exe --build -j 4 --top-module qwen_behavioral \
-		--Mdir build/full -Irtl -Wno-fatal --public-flat-rw \
+		--Mdir build/full -MAKEFLAGS "OPT_FAST=-O3" -Irtl -Wno-fatal --public-flat-rw \
 		-CFLAGS "-std=c++17 -O3 -I$(CURDIR)/build/projection" -O3 \
 		rtl/qwen_behavioral.sv $(CURDIR)/sim/full_model.cpp $(CURDIR)/build/projection/Vprojection_worker__ALL.a
 
@@ -71,8 +71,18 @@ full-test: build/full/Vqwen_behavioral
 
 build/projection/Vprojection_worker__ALL.a: rtl/projection_worker.sv
 	mkdir -p build/projection
-	$(VERILATOR) --cc --build -j 4 --top-module projection_worker 		--Mdir build/projection -Wall -Wno-BLKSEQ -CFLAGS "-std=c++17 -O3" -O3 rtl/projection_worker.sv
+	$(VERILATOR) --cc --build -j 4 --top-module projection_worker 		--Mdir build/projection -MAKEFLAGS "OPT_FAST=-O3" -Wall -Wno-BLKSEQ -CFLAGS "-std=c++17 -O3" -O3 rtl/projection_worker.sv
 
 .PHONY: conversation-test
 conversation-test: build/full/Vqwen_behavioral
 	uv run --locked python -m unittest tests.test_conversation -v
+
+.PHONY: chat-reference fast-test
+chat-reference: build/full/Vqwen_behavioral
+	uv run --locked tools/chat_server.py --simulator reference $(if $(MODEL),--model "$(MODEL)",) $(if $(PORT),--port $(PORT),)
+
+build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral: rtl/qwen_behavioral.sv rtl/sampling.svh rtl/projection_worker.sv sim/full_model.cpp sim/projection_pool.h tools/build_projection_variant.py
+	uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked
+
+fast-test: build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral
+	SV_TEST_BINARY="$(CURDIR)/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral" SV_TEST_LANES=8 uv run --locked python -m unittest tests.test_fast_model tests.test_projection_span tests.test_conversation -v

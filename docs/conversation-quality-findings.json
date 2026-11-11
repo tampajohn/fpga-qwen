@@ -1,0 +1,95 @@
+{
+  "purpose": "Separate conversational behavior from numerical equivalence and performance.",
+  "suite_sha256": "e83a1561ae3c1245ad1a2be15fc6521471ce63c2037da887af7ce0fec3136810",
+  "general_suite_cases": 9,
+  "suite_definition": "tools/conversation_eval.py:CASES",
+  "scoring": "Strict declared instruction and answer gates; answer_present is recorded separately from exact formatting.",
+  "identity_regression_scope": "reported_recovery is an extra case excluded from the general suite because model identity is supplied by the system prompt.",
+  "ablation": [
+    {
+      "report": "build/quality-penalty0.json",
+      "backend": "rtl",
+      "decoding": "chat",
+      "presence_penalty": 0.0,
+      "seeds": [
+        42
+      ],
+      "passes": 2,
+      "total": 2,
+      "results": [
+        {
+          "case": "fact_recall",
+          "text": "7319",
+          "passed": true
+        },
+        {
+          "case": "distractor_recall",
+          "text": "Cedar",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "report": "build/quality-penalty15.json",
+      "backend": "rtl",
+      "decoding": "chat",
+      "presence_penalty": 1.5,
+      "seeds": [
+        42
+      ],
+      "passes": 2,
+      "total": 2,
+      "results": [
+        {
+          "case": "fact_recall",
+          "text": "7319",
+          "passed": true
+        },
+        {
+          "case": "distractor_recall",
+          "text": "Cedar",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "report": "build/quality-recovery-penalty0.json",
+      "backend": "rtl",
+      "decoding": "chat",
+      "presence_penalty": 0.0,
+      "seeds": [
+        42
+      ],
+      "passes": 1,
+      "total": 1,
+      "results": [
+        {
+          "case": "reported_recovery",
+          "text": "Hello! I'm an AI assistant. What can I help you with?",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "Presence penalties 0 and 1.5 both returned exactly 7319 and Cedar in the fixed retrieval cases at seed 42.",
+    "Presence penalty 0 recovered the supplied repetitive history on the identity question with current system prompts/reminders.",
+    "No improvement from changing the default presence penalty was demonstrated by this small ablation.",
+    "Do not change default decoding or add UI penalty controls based solely on these results."
+  ],
+  "limitations": [
+    "Only two general retrieval cases and one supplied-history regression were run in this ablation, each at one seed.",
+    "No sampled cached-versus-fresh or repeatability runs were executed in this window; the runner supports both.",
+    "Passing identity questions is not proof of general conversational quality; vague follow-ups remain a known weakness.",
+    "A report from the sibling matched-benchmark work found only 4/9 strict passes for native FP32, FP16, and Q4; consult build/matched-native-quality.json for its raw results.",
+    "These initial ablation artifacts lack a binary digest; future runner executions record binary and model-config SHA256 values.",
+    "Sampled token sequences must not be claimed equivalent across engines because RNG and penalty scope differ.",
+    "These are quality observations, not speed measurements or broad model capability scores."
+  ],
+  "next_evaluations": [
+    "Run all nine frozen cases at multiple seeds for presence penalties 0 and 1.5 before choosing a default.",
+    "Use --repeatability and --cache-check on longer histories to detect state/RNG regressions separately from semantic failures.",
+    "Compare every optimized numerical backend to the same greedy logits/prompts first, then evaluate sampled quality separately."
+  ],
+  "validation": "uv run --locked python -m unittest tests.test_conversation_eval -v (4 passing tests)"
+}

@@ -11,8 +11,8 @@ except ImportError:
 
 
 class RTLChatEngine(ChatProtocol):
-    def __init__(self, model=None, workers=8):
-        self.sim = RTLModel(model, workers=workers)
+    def __init__(self, model=None, workers=8, binary=None, lanes=1):
+        self.sim = RTLModel(model, workers=workers, binary=binary, lanes=lanes)
         super().__init__(self.sim.model)
         self.cache_ids = []
         self.cache_session = None
@@ -27,6 +27,7 @@ class RTLChatEngine(ChatProtocol):
                     gpu_inference=False, cpu_threads=self.threads, simulation_workers=self.sim.workers, context_limit=4096,
                     rtl='Full behavioral SystemVerilog; not synthesizable or cycle-accurate',
                     inference='Verilator: all model math and KV payload in SystemVerilog',
+                    reduction_lanes=self.sim.lanes if self.sim.workers else 1,
                     cached_tokens=len(self.cache_ids), pytorch_loaded=('torch' in sys.modules))
 
     def close(self):
@@ -52,6 +53,7 @@ class RTLChatEngine(ChatProtocol):
             m['kv_tokens'] = len(self.cache_ids)
             m['simulation_workers'] = self.sim.workers
             m['decoding'] = request.decoding
+            m['reduction_lanes'] = self.sim.lanes if self.sim.workers else 1
             if decoded_at is not None:
                 m['decode_tokens_per_second'] = len(generated)/max(time.perf_counter()-decoded_at, 1e-9)
             return dict(m)

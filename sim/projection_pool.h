@@ -13,6 +13,8 @@
 #include <cstring>
 #include <stdexcept>
 
+extern "C" void validate_weight_span(int64_t index,int64_t count);
+
 class ProjectionPool {
     std::mutex mutex;
     std::condition_variable work, complete;
@@ -23,6 +25,7 @@ class ProjectionPool {
     std::exception_ptr error;
     int64_t base=0;
     int rows=0, width=0;
+    int reduction_lanes=1;
     const double* input=nullptr;
     double* output=nullptr;
     void worker(int id, int count) {
@@ -30,6 +33,7 @@ class ProjectionPool {
             auto context=std::make_unique<VerilatedContext>();
             context->threads(1);
             auto model=std::make_unique<Vprojection_worker>(context.get());
+            model->reduction_lanes=reduction_lanes;
             model->start=0;model->clk=0;model->eval();
             std::unique_lock<std::mutex> lock(mutex);
             ++ready;complete.notify_one();
@@ -56,7 +60,8 @@ class ProjectionPool {
         }
     }
 public:
-    explicit ProjectionPool(int count) {
+    explicit ProjectionPool(int count,int lanes=1) : reduction_lanes(lanes) {
+        if(lanes!=1 && lanes!=8) throw std::runtime_error("Reduction lanes must be 1 or 8");
         if(count<1 || count>32) throw std::runtime_error("Workers must be 1..32");
         for(int i=0;i<count;i++) threads.emplace_back([this,i,count]{worker(i,count);});
         std::unique_lock<std::mutex> lock(mutex);
@@ -73,6 +78,7 @@ public:
     void run(int64_t matrix_base,int matrix_rows,int matrix_width,const double* x,double* y) {
         if(matrix_rows<1 || matrix_rows>151936 || matrix_width<1 || matrix_width>3072)
             throw std::runtime_error("Invalid projection shape");
+        validate_weight_span(matrix_base,int64_t(matrix_rows)*matrix_width);
         std::unique_lock<std::mutex> lock(mutex);
         if(error) std::rethrow_exception(error);
         base=matrix_base;rows=matrix_rows;width=matrix_width;input=x;output=y;

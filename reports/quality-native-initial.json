@@ -1,0 +1,1164 @@
+{
+  "cpu": "arm",
+  "threads_or_workers": 8,
+  "checkpoint": "$CHECKPOINT",
+  "timestamp_utc": "2026-11-11T19:47:03Z",
+  "decoding": "greedy, no penalties, fixed generated count ignores EOS for performance only",
+  "gpu": false,
+  "pytorch": false,
+  "runs": [],
+  "quality": [
+    {
+      "engine": "llama-f32",
+      "case": "fact_recall",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.1849494160269387,
+        "request_seconds": 0.23192975000711158,
+        "steady_decode_seconds": 0.04690633399877697,
+        "steady_decode_tokens_per_second": 85.27632963395295,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 162,
+          "prompt_ms": 184.521,
+          "prompt_per_token_ms": 1.1390185185185184,
+          "prompt_per_second": 877.9488513502529,
+          "predicted_n": 5,
+          "predicted_ms": 46.902,
+          "predicted_per_token_ms": 11.7255,
+          "predicted_per_second": 85.28420962858726
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "corrected_fact",
+      "result": {
+        "output_token_ids": [
+          43,
+          7523,
+          13,
+          151645
+        ],
+        "output_token_count": 4,
+        "text": "Lima.",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.20590766600798815,
+        "request_seconds": 0.24380991602083668,
+        "steady_decode_seconds": 0.037818708980921656,
+        "steady_decode_tokens_per_second": 79.32581732267501,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 213,
+          "prompt_ms": 203.998,
+          "prompt_per_token_ms": 0.957737089201878,
+          "prompt_per_second": 1044.127883606702,
+          "predicted_n": 4,
+          "predicted_ms": 37.805,
+          "predicted_per_token_ms": 12.601666666666667,
+          "predicted_per_second": 79.35458272715249
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "assistant_quote",
+      "result": {
+        "output_token_ids": [
+          13936,
+          36506,
+          11,
+          50344,
+          0,
+          151645
+        ],
+        "output_token_count": 6,
+        "text": "Welcome aboard, Maya!",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.156560166971758,
+        "request_seconds": 0.21764516696566716,
+        "steady_decode_seconds": 0.06100774998776615,
+        "steady_decode_tokens_per_second": 81.95680058685409,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 146,
+          "prompt_ms": 154.219,
+          "prompt_per_token_ms": 1.0562945205479453,
+          "prompt_per_second": 946.7056588358114,
+          "predicted_n": 6,
+          "predicted_ms": 61.024,
+          "predicted_per_token_ms": 12.2048,
+          "predicted_per_second": 81.9349764027268
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "verbatim_quote": true
+        },
+        "details": "quote target: \"Welcome aboard, Maya!\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "task_switch",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          13,
+          151645
+        ],
+        "output_token_count": 9,
+        "text": "9, 2, 5.",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.21810287499101833,
+        "request_seconds": 0.31432395800948143,
+        "steady_decode_seconds": 0.09615341702010483,
+        "steady_decode_tokens_per_second": 83.2003713225009,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 222,
+          "prompt_ms": 216.0,
+          "prompt_per_token_ms": 0.972972972972973,
+          "prompt_per_second": 1027.7777777777778,
+          "predicted_n": 9,
+          "predicted_ms": 96.171,
+          "predicted_per_token_ms": 12.021375,
+          "predicted_per_second": 83.18515976749747
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "json_extraction",
+      "result": {
+        "output_token_ids": [
+          73594,
+          2236,
+          198,
+          4913,
+          606,
+          788,
+          330,
+          44,
+          8832,
+          497,
+          330,
+          3423,
+          788,
+          330,
+          665,
+          278,
+          16707,
+          73594,
+          151645
+        ],
+        "output_token_count": 19,
+        "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.1391099159955047,
+        "request_seconds": 0.33756179100601,
+        "steady_decode_seconds": 0.19840445899171755,
+        "steady_decode_tokens_per_second": 90.72376745701776,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 107,
+          "prompt_ms": 136.451,
+          "prompt_per_token_ms": 1.2752429906542055,
+          "prompt_per_second": 784.1642787520796,
+          "predicted_n": 19,
+          "predicted_ms": 198.429,
+          "predicted_per_token_ms": 11.023833333333334,
+          "predicted_per_second": 90.71254705713378
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "two_step_arithmetic",
+      "result": {
+        "output_token_ids": [
+          785,
+          2790,
+          1372,
+          315,
+          54208,
+          374,
+          220,
+          16,
+          22,
+          2518,
+          488,
+          220,
+          23,
+          6303,
+          284,
+          220
+        ],
+        "output_token_count": 16,
+        "text": "The total number of beads is 17 red + 8 blue = ",
+        "finish_reason": "length",
+        "first_token_seconds": 0.13245066697709262,
+        "request_seconds": 0.3076366250170395,
+        "steady_decode_seconds": 0.17513262503780425,
+        "steady_decode_tokens_per_second": 85.64937570462436,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 103,
+          "prompt_ms": 131.941,
+          "prompt_per_token_ms": 1.280980582524272,
+          "prompt_per_second": 780.6519580721687,
+          "predicted_n": 16,
+          "predicted_ms": 175.159,
+          "predicted_per_token_ms": 11.677266666666666,
+          "predicted_per_second": 85.63647885635336
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "distractor_recall",
+      "result": {
+        "output_token_ids": [
+          34,
+          33215,
+          151645
+        ],
+        "output_token_count": 3,
+        "text": "Cedar",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.19653058296535164,
+        "request_seconds": 0.22025033296085894,
+        "steady_decode_seconds": 0.023637083009816706,
+        "steady_decode_tokens_per_second": 84.61280942193167,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 176,
+          "prompt_ms": 196.011,
+          "prompt_per_token_ms": 1.1136988636363636,
+          "prompt_per_second": 897.9087908331676,
+          "predicted_n": 3,
+          "predicted_ms": 23.622,
+          "predicted_per_token_ms": 11.811,
+          "predicted_per_second": 84.66683600033866
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"Cedar\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "evidence_only",
+      "result": {
+        "output_token_ids": [
+          16088,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "unknown",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.1440685410052538,
+        "request_seconds": 0.16219329100567847,
+        "steady_decode_seconds": 0.01807583397021517,
+        "steady_decode_tokens_per_second": 55.3224820303047,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 112,
+          "prompt_ms": 141.68,
+          "prompt_per_token_ms": 1.2650000000000001,
+          "prompt_per_second": 790.5138339920948,
+          "predicted_n": 2,
+          "predicted_ms": 18.072,
+          "predicted_per_token_ms": 18.072,
+          "predicted_per_second": 55.33421868083223
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"unknown\""
+      }
+    },
+    {
+      "engine": "llama-f32",
+      "case": "new_question_after_repetition",
+      "result": {
+        "output_token_ids": [
+          22,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "7",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.3273889160482213,
+        "request_seconds": 0.34031970804790035,
+        "steady_decode_seconds": 0.012838999973610044,
+        "steady_decode_tokens_per_second": 77.88768611694468,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 285,
+          "prompt_ms": 326.849,
+          "prompt_per_token_ms": 1.146838596491228,
+          "prompt_per_second": 871.9622822771372,
+          "predicted_n": 2,
+          "predicted_ms": 12.853,
+          "predicted_per_token_ms": 12.853,
+          "predicted_per_second": 77.80284758422158
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "fact_recall",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.32837683300022036,
+        "request_seconds": 0.35806549998233095,
+        "steady_decode_seconds": 0.029590208956506103,
+        "steady_decode_tokens_per_second": 135.17984972257204,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 162,
+          "prompt_ms": 327.794,
+          "prompt_per_token_ms": 2.0234197530864195,
+          "prompt_per_second": 494.21282878881254,
+          "predicted_n": 5,
+          "predicted_ms": 29.65,
+          "predicted_per_token_ms": 7.4125,
+          "predicted_per_second": 134.90725126475547
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "corrected_fact",
+      "result": {
+        "output_token_ids": [
+          43,
+          7523,
+          13,
+          151645
+        ],
+        "output_token_count": 4,
+        "text": "Lima.",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.40555125003447756,
+        "request_seconds": 0.42818854202050716,
+        "steady_decode_seconds": 0.022517999983392656,
+        "steady_decode_tokens_per_second": 133.2267520300445,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 213,
+          "prompt_ms": 403.394,
+          "prompt_per_token_ms": 1.893868544600939,
+          "prompt_per_second": 528.0197524008786,
+          "predicted_n": 4,
+          "predicted_ms": 22.513,
+          "predicted_per_token_ms": 7.504333333333334,
+          "predicted_per_second": 133.25634078088214
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "assistant_quote",
+      "result": {
+        "output_token_ids": [
+          13936,
+          36506,
+          11,
+          50344,
+          0,
+          151645
+        ],
+        "output_token_count": 6,
+        "text": "Welcome aboard, Maya!",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.329159457993228,
+        "request_seconds": 0.3664451660006307,
+        "steady_decode_seconds": 0.0372419580235146,
+        "steady_decode_tokens_per_second": 134.2571729671946,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 146,
+          "prompt_ms": 326.906,
+          "prompt_per_token_ms": 2.239082191780822,
+          "prompt_per_second": 446.61156418052894,
+          "predicted_n": 6,
+          "predicted_ms": 37.233,
+          "predicted_per_token_ms": 7.446599999999999,
+          "predicted_per_second": 134.28947439099724
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "verbatim_quote": true
+        },
+        "details": "quote target: \"Welcome aboard, Maya!\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "task_switch",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          13,
+          151645
+        ],
+        "output_token_count": 9,
+        "text": "9, 2, 5.",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.42584616696694866,
+        "request_seconds": 0.48949174996232614,
+        "steady_decode_seconds": 0.06354904104955494,
+        "steady_decode_tokens_per_second": 125.88702941656783,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 222,
+          "prompt_ms": 423.658,
+          "prompt_per_token_ms": 1.9083693693693695,
+          "prompt_per_second": 524.007572145457,
+          "predicted_n": 9,
+          "predicted_ms": 63.501,
+          "predicted_per_token_ms": 7.937625,
+          "predicted_per_second": 125.9822679957796
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "json_extraction",
+      "result": {
+        "output_token_ids": [
+          73594,
+          2236,
+          198,
+          4913,
+          606,
+          788,
+          330,
+          44,
+          8832,
+          497,
+          330,
+          3423,
+          788,
+          330,
+          665,
+          278,
+          16707,
+          73594,
+          151645
+        ],
+        "output_token_count": 19,
+        "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.2640974159585312,
+        "request_seconds": 0.3968159999931231,
+        "steady_decode_seconds": 0.13267466705292463,
+        "steady_decode_tokens_per_second": 135.67021044657835,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 107,
+          "prompt_ms": 261.377,
+          "prompt_per_token_ms": 2.4427757009345794,
+          "prompt_per_second": 409.37037306266427,
+          "predicted_n": 19,
+          "predicted_ms": 132.66,
+          "predicted_per_token_ms": 7.37,
+          "predicted_per_second": 135.68521031207598
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "two_step_arithmetic",
+      "result": {
+        "output_token_ids": [
+          785,
+          2790,
+          1372,
+          315,
+          54208,
+          374,
+          220,
+          16,
+          22,
+          2518,
+          488,
+          220,
+          23,
+          6303,
+          284,
+          220
+        ],
+        "output_token_count": 16,
+        "text": "The total number of beads is 17 red + 8 blue = ",
+        "finish_reason": "length",
+        "first_token_seconds": 0.2694696249673143,
+        "request_seconds": 0.3766872499836609,
+        "steady_decode_seconds": 0.10716666601365432,
+        "steady_decode_tokens_per_second": 139.9688966538235,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 103,
+          "prompt_ms": 268.979,
+          "prompt_per_token_ms": 2.6114466019417475,
+          "prompt_per_second": 382.9295223790705,
+          "predicted_n": 16,
+          "predicted_ms": 107.23,
+          "predicted_per_token_ms": 7.148666666666667,
+          "predicted_per_second": 139.88622586962603
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "distractor_recall",
+      "result": {
+        "output_token_ids": [
+          34,
+          33215,
+          151645
+        ],
+        "output_token_count": 3,
+        "text": "Cedar",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.339564582973253,
+        "request_seconds": 0.3547136659617536,
+        "steady_decode_seconds": 0.015091917011886835,
+        "steady_decode_tokens_per_second": 132.52126939372522,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 176,
+          "prompt_ms": 339.043,
+          "prompt_per_token_ms": 1.926380681818182,
+          "prompt_per_second": 519.1081957155877,
+          "predicted_n": 3,
+          "predicted_ms": 15.113,
+          "predicted_per_token_ms": 7.5565,
+          "predicted_per_second": 132.33639912657978
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"Cedar\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "evidence_only",
+      "result": {
+        "output_token_ids": [
+          16088,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "unknown",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.2580805000034161,
+        "request_seconds": 0.2650926670175977,
+        "steady_decode_seconds": 0.006924457964487374,
+        "steady_decode_tokens_per_second": 144.41563587050112,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 112,
+          "prompt_ms": 255.841,
+          "prompt_per_token_ms": 2.284294642857143,
+          "prompt_per_second": 437.77189738939416,
+          "predicted_n": 2,
+          "predicted_ms": 6.932,
+          "predicted_per_token_ms": 6.932,
+          "predicted_per_second": 144.25851125216386
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"unknown\""
+      }
+    },
+    {
+      "engine": "llama-f16",
+      "case": "new_question_after_repetition",
+      "result": {
+        "output_token_ids": [
+          22,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "7",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.4563141670078039,
+        "request_seconds": 0.464495167019777,
+        "steady_decode_seconds": 0.008067833026871085,
+        "steady_decode_tokens_per_second": 123.9490203465237,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 285,
+          "prompt_ms": 455.803,
+          "prompt_per_token_ms": 1.5993087719298245,
+          "prompt_per_second": 625.2701276648025,
+          "predicted_n": 2,
+          "predicted_ms": 8.091,
+          "predicted_per_token_ms": 8.091,
+          "predicted_per_second": 123.59411692003462
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    },
+    {
+      "engine": "llama-q4_k_m",
+      "case": "fact_recall",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.1326591660035774,
+        "request_seconds": 0.15085895801894367,
+        "steady_decode_seconds": 0.01809816696913913,
+        "steady_decode_tokens_per_second": 221.01685805091603,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 162,
+          "prompt_ms": 132.168,
+          "prompt_per_token_ms": 0.8158518518518519,
+          "prompt_per_second": 1225.712729253677,
+          "predicted_n": 5,
+          "predicted_ms": 18.182,
+          "predicted_per_token_ms": 4.5455,
+          "predicted_per_second": 219.9978000219998
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "engine": "llama-q4_k_m",
+      "case": "corrected_fact",
+      "result": {
+        "output_token_ids": [
+          43,
+          7523,
+          13,
+          151645
+        ],
+        "output_token_count": 4,
+        "text": "Lima.",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.17361399997025728,
+        "request_seconds": 0.18816849996801466,
+        "steady_decode_seconds": 0.01448870898457244,
+        "steady_decode_tokens_per_second": 207.05778570018876,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 213,
+          "prompt_ms": 171.384,
+          "prompt_per_token_ms": 0.8046197183098591,
+          "prompt_per_second": 1242.8231340148438,
+          "predicted_n": 4,
+          "predicted_ms": 14.556,
+          "predicted_per_token_ms": 4.851999999999999,
+          "predicted_per_second": 206.10057708161582
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "engine": "llama-q4_k_m",
+      "case": "assistant_quote",
+      "result": {
+        "output_token_ids": [
+          13936,
+          36506,
+          11,
+          50344,
+          0,
+          151645
+        ],
+        "output_token_count": 6,
+        "text": "Welcome aboard, Maya!",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.12230941600864753,
+        "request_seconds": 0.14328775001922622,
+        "steady_decode_seconds": 0.020877459028270096,
+        "steady_decode_tokens_per_second": 239.4927463744279,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 146,
+          "prompt_ms": 119.816,
+          "prompt_per_token_ms": 0.8206575342465754,
+          "prompt_per_second": 1218.5350871336047,
+          "predicted_n": 6,
+          "predicted_ms": 20.919,
+          "predicted_per_token_ms": 4.1838,
+          "predicted_per_second": 239.01716143219085
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "verbatim_quote": true
+        },
+        "details": "quote target: \"Welcome aboard, Maya!\""
+      }
+    },
+    {
+      "engine": "llama-q4_k_m",
+      "case": "task_switch",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          151645
+        ],
+        "output_token_count": 8,
+        "text": "9, 2, 5",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.1801652089925483,
+        "request_seconds": 0.2132163339992985,
+        "steady_decode_seconds": 0.03300749999471009,
+        "steady_decode_tokens_per_second": 212.0730137429932,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 222,
+          "prompt_ms": 178.207,
+          "prompt_per_token_ms": 0.8027342342342342,
+          "prompt_per_second": 1245.7423109081012,
+          "predicted_n": 8,
+          "predicted_ms": 33.068,
+          "predicted_per_token_ms": 4.723999999999999,
+          "predicted_per_second": 211.6850127011008
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": true,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "engine": "llama-q4_k_m",
+      "case": "json_extraction",
+      "result": {
+        "output_token_ids": [
+          73594,
+          2236,
+          198,
+          4913,
+          606,
+          788,
+          330,
+          44,
+          8832,
+          497,
+          330,
+          3423,
+          788,
+          330,
+          665,
+          278,
+          16707,
+          73594,
+          151645
+        ],
+        "output_token_count": 19,
+        "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.08873070799745619,
+        "request_seconds": 0.1582433749572374,
+        "steady_decode_seconds": 0.06945279199862853,
+        "steady_decode_tokens_per_second": 259.16884666573867,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 107,
+          "prompt_ms": 86.501,
+          "prompt_per_token_ms": 0.8084205607476636,
+          "prompt_per_second": 1236.979919307291,
+          "predicted_n": 19,
+          "predicted_ms": 69.516,
+          "predicted_per_token_ms": 3.862,
+          "predicted_per_second": 258.9331952356292
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "engine": "llama-q4_k_m",
+      "case": "two_step_arithmetic",
+      "result": {
+        "output_token_ids": [
+          3862,
+          525,
+          220,
+          16,
+          22,
+          2518,
+          54208,
+          323,
+          220,
+          23,
+          6303,
+          54208,
+          11,
+          773,
+          220,
+          16
+        ],
+        "output_token_count": 16,
+        "text": "There are 17 red beads and 8 blue beads, so 1",
+        "finish_reason": "length",
+        "first_token_seconds": 0.08420262497384101,
+        "request_seconds": 0.14407304098131135,
+        "steady_decode_seconds": 0.05982095800573006,
+        "steady_decode_tokens_per_second": 250.74824108572778,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 103,
+          "prompt_ms": 83.753,
+          "prompt_per_token_ms": 0.8131359223300971,
+          "prompt_per_second": 1229.8066934915764,
+          "predicted_n": 16,
+          "predicted_ms": 59.853,
+          "predicted_per_token_ms": 3.9902,
+          "predicted_per_second": 250.61400431056086
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "engine": "llama-q4_k_m",
+      "case": "distractor_recall",
+      "result": {
+        "output_token_ids": [
+          34,
+          33215,
+          151645
+        ],
+        "output_token_count": 3,
+        "text": "Cedar",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.14008450001711026,
+        "request_seconds": 0.1493984169792384,
+        "steady_decode_seconds": 0.00922691699815914,
+        "steady_decode_tokens_per_second": 216.75712487703308,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 176,
+          "prompt_ms": 139.651,
+          "prompt_per_token_ms": 0.7934715909090909,
+          "prompt_per_second": 1260.2845665265554,
+          "predicted_n": 3,
+          "predicted_ms": 9.226,
+          "predicted_per_token_ms": 4.613,
+          "predicted_per_second": 216.77866897897246
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"Cedar\""
+      }
+    },
+    {
+      "engine": "llama-q4_k_m",
+      "case": "evidence_only",
+      "result": {
+        "output_token_ids": [
+          16088,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "unknown",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.08866570802638307,
+        "request_seconds": 0.09298158303136006,
+        "steady_decode_seconds": 0.004273124970495701,
+        "steady_decode_tokens_per_second": 234.02077095910343,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 112,
+          "prompt_ms": 86.265,
+          "prompt_per_token_ms": 0.7702232142857143,
+          "prompt_per_second": 1298.3249289978553,
+          "predicted_n": 2,
+          "predicted_ms": 4.299,
+          "predicted_per_token_ms": 4.299,
+          "predicted_per_second": 232.61223540358222
+        }
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"unknown\""
+      }
+    },
+    {
+      "engine": "llama-q4_k_m",
+      "case": "new_question_after_repetition",
+      "result": {
+        "output_token_ids": [
+          22,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "7",
+        "finish_reason": "eos",
+        "first_token_seconds": 0.2372547909617424,
+        "request_seconds": 0.2421715829987079,
+        "steady_decode_seconds": 0.004801542032510042,
+        "steady_decode_tokens_per_second": 208.26642633330079,
+        "backend_timings": {
+          "cache_n": 0,
+          "prompt_n": 285,
+          "prompt_ms": 236.654,
+          "prompt_per_token_ms": 0.8303649122807018,
+          "prompt_per_second": 1204.289807060096,
+          "predicted_n": 2,
+          "predicted_ms": 4.847,
+          "predicted_per_token_ms": 4.847,
+          "predicted_per_second": 206.31318341242005
+        }
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    }
+  ],
+  "limitations": [
+    "Same prompt token IDs, context, generated count and numeric worker count; NOT identical arithmetic or KV precision.",
+    "SV: BF16 stored weights / FP64 arithmetic and KV. Native: named stored weights / mixed arithmetic / FP16 KV.",
+    "Startup is process/model startup, not OS page-cache cold; no page-cache eviction is attempted.",
+    "Every timed request has empty logical KV. Warm repetitions retain the process and resident weight pages.",
+    "Both measurements include their existing transport (SV pipes, llama HTTP); steady decode excludes first-token prompt processing.",
+    "Fixed-count throughput is not a quality score. Quality mode respects EOS and records objective case checks separately."
+  ],
+  "sv_binary_sha256": "a915e91014f0332a69bcc4c2d8f5bf5270e17aa1f0b50b41d6f0edb95c4f0b27",
+  "native_binary_sha256": "e9c93f0fb1ea58180632b77a1943eee31126e365e1a80ac34bcc54475403fc96",
+  "llama_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb",
+  "quality_suite_sha256": "e83a1561ae3c1245ad1a2be15fc6521471ce63c2037da887af7ce0fec3136810",
+  "artifact_note": "Synthetic benchmark/test conversations only; machine-specific directory prefixes replaced with $PROJECT and $CHECKPOINT. Observed measurements unchanged."
+}
