@@ -3,6 +3,12 @@
 // One coordinator owns run()/shutdown(); concurrent calls are not supported.
 #pragma once
 #include "Vprojection_worker.h"
+#ifdef FP32_PROJECTION_B1
+#include "Vfp32_projection_kernel.h"
+#if !defined(PARALLEL_ATTENTION) || !defined(BATCH_PREFILL) || !defined(PREFILL_B8)
+#error "FP32 B1 requires the FP64 parallel-attention and B8-prefill backend"
+#endif
+#endif
 #include "verilated.h"
 #include "svdpi.h"
 #include <condition_variable>
@@ -68,6 +74,12 @@ class ProjectionPool {
             auto model=std::make_unique<Vprojection_worker>(context.get());
             model->reduction_lanes=reduction_lanes;
             model->start=0;model->clk=0;model->eval();
+#ifdef FP32_PROJECTION_B1
+            auto fp32_context=std::make_unique<VerilatedContext>();
+            fp32_context->threads(1);
+            auto fp32=std::make_unique<Vfp32_projection_kernel>(fp32_context.get());
+            fp32->start=0;fp32->clk=0;fp32->eval();
+#endif
             std::unique_lock<std::mutex> lock(mutex);
             ++ready;complete.notify_one();
             uint64_t seen=0;
@@ -104,6 +116,11 @@ class ProjectionPool {
 #else
                 int copy_scale=1;
 #endif
+#ifdef FP32_PROJECTION_B1
+                // One copy per dispatch, including a multi-matrix scalar group.
+                if(operation==0) std::memcpy(fp32->activation.data(),input,width*sizeof(double));
+                else {
+#endif
 #ifdef BATCH_PREFILL
                 #ifdef PREFILL_B8
                 if(operation==3) std::memcpy(model->wide_activation.data(),input,width*8*sizeof(double));
@@ -117,6 +134,9 @@ class ProjectionPool {
                 else
 #endif
                 std::memcpy(model->activation.data(),input,width*sizeof(double));
+#ifdef FP32_PROJECTION_B1
+                }
+#endif
                 double* destination=output;
 #ifndef PROJECTION_HYBRID_WAIT
                 lock.unlock();
@@ -132,6 +152,14 @@ class ProjectionPool {
                     int output_offset=0;
 #endif
                 int begin=job_rows*id/count, end=job_rows*(id+1)/count;
+#ifdef FP32_PROJECTION_B1
+                if(operation==0) {
+                    fp32->base=job_base;fp32->width=width;fp32->first_row=begin;fp32->end_row=end;
+                    fp32->start=1;fp32->clk=0;fp32->eval();fp32->clk=1;fp32->eval();
+                    std::memcpy(destination+output_offset+begin,fp32->result.data()+begin,
+                                (end-begin)*sizeof(double));
+                } else {
+#endif
                 model->base=job_base;model->width=width;model->first_row=begin;model->end_row=end;
                 model->start=1;model->clk=0;model->eval();model->clk=1;model->eval();
                 const double* source=model->result.data();
@@ -149,6 +177,9 @@ class ProjectionPool {
 #endif
                 std::memcpy(destination+(output_offset+begin)*copy_scale,source+begin*copy_scale,
                             (end-begin)*copy_scale*sizeof(double));
+#ifdef FP32_PROJECTION_B1
+                }
+#endif
 #ifdef GROUP_PROJECTIONS
                 }
 #endif
@@ -166,6 +197,9 @@ class ProjectionPool {
 #ifndef PROJECTION_HYBRID_WAIT
             lock.unlock();
 #endif
+#ifdef FP32_PROJECTION_B1
+            fp32->final();
+#endif
             model->final();
         } catch(...) {
             std::lock_guard<std::mutex> lock(mutex);
@@ -176,6 +210,9 @@ class ProjectionPool {
     }
 public:
     explicit ProjectionPool(int count,int lanes=1) : reduction_lanes(lanes) {
+#ifdef FP32_PROJECTION_B1
+        if(lanes!=8) throw std::runtime_error("FP32 scalar projections require eight reduction lanes");
+#endif
         if(lanes!=1 && lanes!=8) throw std::runtime_error("Reduction lanes must be 1 or 8");
         if(count<1 || count>32) throw std::runtime_error("Workers must be 1..32");
         try {
@@ -227,6 +264,10 @@ public:
         if(requested_operation!=1)
 #endif
         validate_weight_span(matrix_base,int64_t(matrix_rows)*matrix_width);
+#ifdef FP32_PROJECTION_B1
+        if(requested_operation==0 && (matrix_width<8 || matrix_width%8))
+            throw std::runtime_error("FP32 scalar projection width must be a positive multiple of eight");
+#endif
         std::unique_lock<std::mutex> lock(mutex);
         if(error) std::rethrow_exception(error);
 #ifdef PARALLEL_ATTENTION

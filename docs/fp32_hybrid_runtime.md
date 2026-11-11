@@ -1,0 +1,19 @@
+This optional full-model experiment routes scalar projections through native FP32 SV while retaining the stock FP64 main model, normalization/nonlinearities, attention, KV storage and B8/B4 prefill kernels. It is not enabled in the production profile.
+
+`--fp32-projection-b1 --shortreal-compiler PATH` builds a separate FP32 model archive with the reviewed compiler, strict rounding and ThinLTO. The stock worker/main/runtime retain original O3/ThinLTO/default contraction. Each pool worker owns both models with separate contexts. Operation0 dispatches—including descriptor-group QKV/gate/up and151936-row vocabulary—use the FP32 model; attention and batch operations use the original worker. Copying a shared scalar-group input occurs once; every individual FP32 projection performs its own SV narrowing. Existing spans, row partitions, counters, error propagation and shutdown remain checked.
+
+The numerical policy is explicit: reset each request, prefill `prompt[:-1]` in FP64 chunks of8 (short tails use the existing FP64 smaller-batch route), then process the last prompt token and generated tokens through FP32 scalar projections. FP64 prefill and FP32 decode produce route-dependent KV, so prefix reuse and suffix verification are disabled for this experiment. `RTLChatEngine(..., block_size=1, prefill_size=8, reuse_prefix=False)` selects the safe host policy; there is no HTTP or default-profile exposure. Pure all-token FP32 is a separate diagnostic route, not the measured hybrid policy.
+
+The runtime rejects zero workers, non-eight scalar reduction lanes and block verification. `precision` reports the exact hybrid capability JSON required by the benchmark metadata guard. `fp32probe` is an experimental diagnostic command that validates a complete matrix span and writes all real outputs from the same linked FP32 scalar pool path; synthetic inputs are prepared by the host, all projection/conversion arithmetic stays in SV.
+
+The frozen initial artifact is SHA256 `d27a2ffc51aacad610dbef0f6b358e66118d486504bcb98128345e28f50b19d9`. Its final linked oracle passed all three tiny exact-rational fixtures, and all151936 vocabulary outputs matched the previously validated standalone strict mixed-link kernel bit-for-bit. Independent assembly review of this actual full executable confirms the FP32 `evalNba` has inlined BF16 loads, `fmul.4s`/`fadd.4s`, no FMA-family instructions and no branch-and-link calls. The stock FP64 worker in the same executable retains `fmla.2d`/`fmadd`. This demonstrates real precision separation after final ThinLTO, not merely before linking.
+
+Runtime capability/startup/reconfiguration rejection checks passed. Scheduler mock tests cover CV/hybrid waiting,1/3/17 workers, scalar/group routing, all unchanged FP64 routes, full vocabulary bounds with an output canary, byte counters and failure cleanup. The build manifest, final linked oracle and guard evidence are in `reports/hybrid-fp32-*.json`. Full model teacher-forced quality, canonical replay and conversation results are separate gates; projection errors alone do not establish maintained model quality. Scored end-to-end performance requires its own exclusive window after those gates.
+
+Reproduce using the normal selected build flags plus:
+
+```sh
+--fp32-projection-b1 --shortreal-compiler REVIEWED_COMPILER_ROOT
+```
+
+The reviewed compiler is pinned by source and binary hashes in the manifest; runtime ABI header hashes must match the installed stock compiler before linking. No generated C++ is edited, and strict flags never apply to the stock FP64 reference/worker/main.

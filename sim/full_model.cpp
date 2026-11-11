@@ -156,7 +156,12 @@ int main(int argc,char** argv) {
         if(offsets.size()!=311) throw std::runtime_error("Invalid tensor layout");
         int count=argc==4?std::stoi(argv[3]):0;
         if(count<0 || count>32) throw std::runtime_error("Invalid worker count");
+#ifdef FP32_PROJECTION_B1
+        if(count==0) throw std::runtime_error("FP32 scalar projections require workers");
+        int reduction_lanes=8;
+#else
         int reduction_lanes=1;
+#endif
         if(count) pool=std::make_unique<ProjectionPool>(count,reduction_lanes);
         auto context=std::make_unique<VerilatedContext>();
         auto d=std::make_unique<Vqwen_behavioral>(context.get());
@@ -187,6 +192,9 @@ int main(int argc,char** argv) {
                 int requested;
                 if(!(std::cin>>requested) || (requested!=1 && requested!=8))
                     throw std::runtime_error("Reduction lanes must be 1 or 8");
+#ifdef FP32_PROJECTION_B1
+                if(requested!=8) throw std::runtime_error("FP32 scalar projections require eight reduction lanes");
+#endif
                 pool.reset();reduction_lanes=requested;
                 if(count) pool=std::make_unique<ProjectionPool>(count,reduction_lanes);
                 std::cout<<"configured\n"<<std::flush;
@@ -194,6 +202,9 @@ int main(int argc,char** argv) {
                 int requested;
                 if(!(std::cin>>requested) || requested<0 || requested>32)
                     throw std::runtime_error("Invalid worker count");
+#ifdef FP32_PROJECTION_B1
+                if(requested==0) throw std::runtime_error("FP32 scalar projections require workers");
+#endif
                 pool.reset();
                 if(requested) pool=std::make_unique<ProjectionPool>(requested,reduction_lanes);
                 count=requested;d->parallel_workers=count;
@@ -215,6 +226,9 @@ int main(int argc,char** argv) {
                 std::cout<<"prefill "<<count<<' '<<d->position<<'\n'<<std::flush;
 #endif
             } else if(command=="block") {
+#ifdef FP32_PROJECTION_B1
+                throw std::runtime_error("FP32 B1 hybrid does not support block verification; use FP64 prefill");
+#else
                 int count,logits,sampled;
                 double penalty;
                 if(!(std::cin>>count>>logits>>sampled>>penalty) || count<1 || count>4 ||
@@ -240,6 +254,7 @@ int main(int argc,char** argv) {
                 for(int t=0;t<count;++t)
                     std::cout<<' '<<d->block_ids[t]<<' '<<d->block_positions[t]<<' '<<d->block_logits[t];
                 std::cout<<std::setprecision(6)<<'\n'<<std::flush;
+#endif // FP32_PROJECTION_B1
 #endif
             } else if(command=="token" || command=="sample") {
                 int token, logits;
@@ -259,6 +274,28 @@ int main(int argc,char** argv) {
                 if(!pool) throw std::runtime_error("Group statistics require workers");
                 const auto values=pool->group_stats();
                 std::cout<<values[0]<<' '<<values[1]<<' '<<values[2]<<' '<<values[3]<<'\n'<<std::flush;
+#endif
+#ifdef FP32_PROJECTION_B1
+            } else if(command=="precision") {
+                std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill","scalar_projection":"fp32","prefill_projection":"fp64","attention_kv":"fp64","max_verification_block":1,"prefix_reuse_supported":false})"<<'\n'<<std::flush;
+            } else if(command=="fp32probe") {
+                int slot,rows,width;
+                std::string path;
+                if(!(std::cin>>slot>>rows>>width>>path) || !pool || slot<0 ||
+                   size_t(slot)>=offsets.size() || rows<1 || rows>151936 ||
+                   width<8 || width>3072 || width%8)
+                    throw std::runtime_error("Invalid FP32 projection probe");
+                const int64_t base=tensor_base(slot);
+                validate_weight_span(base,int64_t(rows)*width);
+                // Synthetic fixture preparation only; all projection math is SV.
+                std::vector<double> input(width),output(rows);
+                for(int j=0;j<width;++j) input[j]=double((j*7)%61-30)/17.0;
+                pool->run(base,rows,width,input.data(),output.data());
+                std::ofstream out(path,std::ios::binary);
+                out.write(reinterpret_cast<const char*>(output.data()),rows*sizeof(double));
+                out.close();
+                if(!out) throw std::runtime_error("Cannot write FP32 probe outputs");
+                std::cout<<"probed\n"<<std::flush;
 #endif
             } else if(command=="bench") {
                 int slot,rows,width,repetitions;

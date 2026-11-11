@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -32,9 +33,16 @@ def main():
     parser.add_argument('--static-kv', action='store_true')
     parser.add_argument('--pool', choices=['cv', 'hybrid'], default='cv')
     parser.add_argument('--scalar-group', action='store_true')
+    parser.add_argument('--fp32-projection-b1', action='store_true', help='Experimental FP32 scalar projections with FP64 prefill/attention; no prefix reuse or block verification')
+    parser.add_argument('--shortreal-compiler', default='', help='Reviewed patched Verilator root for isolated FP32 archive')
     parser.add_argument('--tag', default='', help='Extra alphanumeric/dash suffix for a reproducible experiment')
     parser.add_argument('--print-path', action='store_true', help='Print output path without compiling')
     args = parser.parse_args()
+    if args.fp32_projection_b1:
+        if not (args.lto and args.parallel_attention and args.batched_prefill and args.prefill_b8 and args.scalar_group and args.storage=='scalar' and args.opt=='O3'):
+            parser.error('FP32 B1 requires scalar O3/LTO, parallel attention, B8 prefill and scalar grouping')
+        if args.fast_math or args.fp_contract!='on':parser.error('FP32 B1 retains original stock FP64 contraction flags')
+        if not args.shortreal_compiler and not args.print_path:parser.error('FP32 B1 needs explicit reviewed --shortreal-compiler')
     if args.scalar_group and not args.group_projections:parser.error('--scalar-group requires --group-projections')
     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
@@ -68,9 +76,11 @@ def main():
     if args.prefill_b8: tag += '-prefill-b8'
     if args.pool != 'cv': tag += '-pool-'+args.pool
     if args.scalar_group: tag += '-scalar-group'
+    if args.fp32_projection_b1: tag += '-fp32-b1'
     if args.tag: tag += '-'+args.tag
     directory = ROOT / 'build/variants' / tag
     projection, full = directory / 'projection', directory / 'full'
+    fp32 = directory / 'fp32'
     binary = full/'Vqwen_behavioral'
     if args.print_path:
         print(binary)
@@ -79,6 +89,7 @@ def main():
     full.mkdir(parents=True, exist_ok=True)
     flags = '-std=c++17 -' + args.opt + (' -flto=thin' if args.lto else '')
     if args.scalar_group: flags += ' -DSCALAR_GROUP'
+    if args.fp32_projection_b1: flags += ' -DFP32_PROJECTION_B1 -I'+str(fp32)
     if args.cpu == 'native': flags += ' -mcpu=native'
     if args.fast_math: flags += ' -ffast-math'
     if args.fp_contract != 'on': flags += ' -ffp-contract='+args.fp_contract
@@ -121,21 +132,45 @@ def main():
          '-MAKEFLAGS', f'OPT_FAST=-{args.opt}', '-O3', *main_defines,
          *(['-LDFLAGS', '-flto=thin'] if args.lto else []),
          str(ROOT/'rtl/qwen_behavioral.sv'), str(ROOT/'sim/full_model.cpp'),
-         str(projection/'Vprojection_worker__ALL.a')]]
+         str(projection/'Vprojection_worker__ALL.a'),
+         *([str(fp32/'Vfp32_projection_kernel__ALL.a')]if args.fp32_projection_b1 else [])]]
+    stock_env=os.environ.copy()
+    stock_env.pop('VERILATOR_ROOT',None);stock_env.pop('VERILATOR_BIN',None)
+    environments=[stock_env for _ in commands]
+    fp32_info=None
+    if args.fp32_projection_b1:
+        compiler_root=Path(args.shortreal_compiler).resolve();compiler_binary=compiler_root/'build-local/src/verilator_bin'
+        patched_env=stock_env.copy();patched_env['VERILATOR_ROOT']=str(compiler_root);patched_env['VERILATOR_BIN']=str(compiler_binary)
+        fp32.mkdir(parents=True,exist_ok=True)
+        command=[str(compiler_root/'bin/verilator'),'--cc','--build','-j','4','--top-module','fp32_projection_kernel','--Mdir',str(fp32),
+            '-Wall','-Wno-BLKSEQ','-Wno-fatal','-CFLAGS','-std=c++17 -O3 -flto=thin -fno-fast-math -ffp-contract=off',
+            '-MAKEFLAGS','OPT_FAST=-O3','-O3','+define+KERNEL_BATCH=1','+define+KERNEL_ROWS=151936',str(ROOT/'rtl/fp32_projection_kernel.sv')]
+        commands.insert(0,command);environments.insert(0,patched_env)
+        stock_include=Path(subprocess.check_output(['verilator','--getenv','VERILATOR_ROOT'],env=stock_env,text=True).strip())/'include'
+        headers={}
+        for name in ('verilated.h','verilated_types.h','verilated_threads.h'):
+            a=hashlib.sha256((stock_include/name).read_bytes()).hexdigest();b=hashlib.sha256((compiler_root/'include'/name).read_bytes()).hexdigest()
+            if a!=b:raise RuntimeError('Runtime ABI header differs: '+name)
+            headers[name]=a
+        fp32_info=dict(compiler_binary_sha256=hashlib.sha256(compiler_binary.read_bytes()).hexdigest(),
+            git_head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=compiler_root,text=True).strip(),runtime_header_hashes=headers,
+            policy='FP32 archive only uses strict flags; stock worker/main/runtime retain original O3 ThinLTO/contraction. B1 FP32, B8/attention/KV FP64; no prefix reuse or block verification.')
     sources = ['rtl/projection_worker.sv', 'rtl/qwen_behavioral.sv', 'rtl/sampling.svh',
                'sim/full_model.cpp', 'sim/projection_pool.h', 'sim/projection_descriptors.h', 'tools/build_projection_variant.py']
+    if args.fp32_projection_b1:sources.append('rtl/fp32_projection_kernel.sv')
     def source_hashes():
         return {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sources}
     before = source_hashes()
     with (directory/'build.log').open('w') as log:
-        for command in commands:
-            subprocess.run(command, check=True, stdout=log, stderr=subprocess.STDOUT, cwd=ROOT)
+        for command,environment in zip(commands,environments):
+            subprocess.run(command,env=environment,check=True,stdout=log,stderr=subprocess.STDOUT,cwd=ROOT)
     after = source_hashes()
     if before != after:
         raise RuntimeError('Source changed during build; rebuild before benchmarking this artifact')
-    manifest = dict(options=vars(args), commands=commands, sources=after,
+    if fp32_info and fp32_info['compiler_binary_sha256']!=hashlib.sha256(compiler_binary.read_bytes()).hexdigest():raise RuntimeError('FP32 compiler changed during build')
+    manifest = dict(fp32=fp32_info,options=vars(args), commands=commands, sources=after,
                     binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),
-                    verilator=subprocess.check_output(['verilator', '--version'], text=True).strip(),
+                    verilator=subprocess.check_output(['verilator', '--version'],env=stock_env,text=True).strip(),
                     compiler=subprocess.check_output(['c++', '--version'], text=True).splitlines()[0])
     (directory/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
     print(binary, flush=True)

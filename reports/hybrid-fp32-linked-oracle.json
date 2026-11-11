@@ -1,0 +1,36 @@
+{
+  "binary": "$HYBRID/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1/full/Vqwen_behavioral",
+  "sha256": "d27a2ffc51aacad610dbef0f6b358e66118d486504bcb98128345e28f50b19d9",
+  "fixtures": [
+    {
+      "rows": 1,
+      "width": 8,
+      "bit_exact": true
+    },
+    {
+      "rows": 3,
+      "width": 16,
+      "bit_exact": true
+    },
+    {
+      "rows": 7,
+      "width": 24,
+      "bit_exact": true
+    }
+  ],
+  "precision": {
+    "precision_profile": "fp32_b1_fp64_prefill",
+    "scalar_projection": "fp32",
+    "prefill_projection": "fp64",
+    "attention_kv": "fp64",
+    "max_verification_block": 1,
+    "prefix_reuse_supported": false
+  },
+  "full_vocabulary_matches_standalone_bits": true,
+  "token_smoke": [
+    11,
+    9,
+    20.4156
+  ],
+  "passed": true
+}

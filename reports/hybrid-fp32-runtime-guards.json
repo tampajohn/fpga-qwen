@@ -1,0 +1,41 @@
+{
+  "binary": "$HYBRID/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1/full/Vqwen_behavioral",
+  "checks": [
+    {
+      "workers": 8,
+      "command": "precision\nquit\n",
+      "exit_code": 0,
+      "stdout": "ready\n{\"precision_profile\":\"fp32_b1_fp64_prefill\",\"scalar_projection\":\"fp32\",\"prefill_projection\":\"fp64\",\"attention_kv\":\"fp64\",\"max_verification_block\":1,\"prefix_reuse_supported\":false}\n",
+      "stderr": ""
+    },
+    {
+      "workers": 0,
+      "command": "quit\n",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "FP32 scalar projections require workers\n"
+    },
+    {
+      "workers": 8,
+      "command": "workers 0\n",
+      "exit_code": 1,
+      "stdout": "ready\n",
+      "stderr": "FP32 scalar projections require workers\n"
+    },
+    {
+      "workers": 8,
+      "command": "lanes 1\n",
+      "exit_code": 1,
+      "stdout": "ready\n",
+      "stderr": "FP32 scalar projections require eight reduction lanes\n"
+    },
+    {
+      "workers": 8,
+      "command": "block 1 0 0 1\n",
+      "exit_code": 1,
+      "stdout": "ready\n",
+      "stderr": "FP32 B1 hybrid does not support block verification; use FP64 prefill\n"
+    }
+  ],
+  "binary_sha256": "d27a2ffc51aacad610dbef0f6b358e66118d486504bcb98128345e28f50b19d9"
+}
