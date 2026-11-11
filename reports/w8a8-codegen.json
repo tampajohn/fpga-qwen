@@ -17,7 +17,12 @@
     "smull": 3,
     "smull2": 0,
     "smlal": 0,
-    "smlal2": 0
+    "smlal2": 0,
+    "mul.4s": 6,
+    "mla.4s": 24,
+    "addv.4s": 4,
+    "ushll.8h": 12,
+    "ushll.4s": 12
   },
-  "note": "smull matches are scalar general-purpose-register instructions, not vector integer dots; whole artifact also includes unchanged FP64 worker and runtime."
+  "note": "Integer reduction uses vector INT32 MAC after unsigned widening plus mask/negation/OR sign extension. No packed byte-dot instructions. Initial scalar-only classification was incorrect because dotted Apple mnemonics were missed."
 }

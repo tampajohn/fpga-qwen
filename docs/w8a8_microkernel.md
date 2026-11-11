@@ -27,7 +27,7 @@ First-layer Q slice error relative to FP64 was 0.5646% relative RMSE at B1 and 0
 
 ## Code generation and bounded timings
 
-The original 3072-byte arrays left per-access generated bounds checks. Padding quantized rows to 4096 and using explicit 12-bit feature indices removed these guards without changing integer results. Neither variant produced SDOT/UDOT or vector widening integer multiply-accumulate instructions. The native target includes dotprod and i8mm; feature availability alone did not make Verilator's generated signed-extension/multiply expressions vectorize. The remaining integer dots are scalar. The recorded `smull` occurrences are scalar register arithmetic, not vector MACs.
+The original 3072-byte arrays left per-access generated bounds checks. Padding quantized rows to 4096 and using explicit 12-bit feature indices removed these guards without changing integer results. Neither variant produced SDOT/UDOT or vector widening integer multiply-accumulate instructions. The native target includes dotprod and i8mm; feature availability alone did not make Verilator's generated signed-extension/multiply expressions vectorize. The integer reduction does vectorize to four-lane INT32 `mul.4s`/`mla.4s` and `addv.4s`; it does not become a packed byte dot. The recorded `smull` occurrences are scalar register arithmetic, not vector MACs.
 
 Three warm repeats of 1000 invocations each gave:
 
@@ -38,6 +38,14 @@ Three warm repeats of 1000 invocations each gave:
 | 16×3072, B1, synthetic inputs | 17.5–20.7 µs | 8.2–8.6 µs | 0.40–0.49 |
 | 16×3072, B4, synthetic inputs | 59.2–61.7 µs | 19.6–21.3 µs | 0.32–0.36 |
 
-These are bounded exploratory timings in fixed phase order, not randomized full-model benchmarks. Weight preparation is separately reported and excluded from warm execution because reusable weight bytes/scales are prepared once. Activation preparation is included, not hidden behind a dot-only number. The tiny output-row count overweights activation quantization: a real 2048/3072-row projection would amortize it over many more rows. Conversely, these resident tiles cannot demonstrate reduced DRAM traffic for full weights. Even dot-only cost and the scalar code generation give no basis to promote this implementation.
+These are bounded exploratory timings in fixed phase order, not randomized full-model benchmarks. Weight preparation is separately reported and excluded from warm execution because reusable weight bytes/scales are prepared once. Activation preparation is included, not hidden behind a dot-only number. The tiny output-row count overweights activation quantization: a real 2048/3072-row projection would amortize it over many more rows. Conversely, these resident tiles cannot demonstrate reduced DRAM traffic for full weights. Even dot-only cost and the generated sign-extension overhead give no basis to promote this implementation.
 
 A useful next experiment would need an SV representation that actually emits packed integer SIMD, followed by realistic row counts and identical transport boundaries. Full-model adoption would additionally require held-out likelihood/logit and behavioral quality gates. The existing nine-case chat suite is insufficient to validate quantization. No full-vocabulary preparation/cache or full-model integration was attempted.
+
+## Diagnostic correction and bottleneck evidence
+
+The initial instruction scan incorrectly classified the dot as scalar because it searched tab-delimited mnemonics and missed Apple's dotted `mla.4s` spelling. The corrected assembly confirms vector INT32 MACs. This correction does not change the measured rejection.
+
+A separate non-LTO compilation of the unchanged generated hot C++ with `-Rpass=loop-vectorize -Rpass-analysis=loop-vectorize -Rpass-missed=loop-vectorize` reports both integer dot loops vectorized at width eight/interleave two (generated lines 11803 and 11906). Missed-reduction/dependent-memory remarks elsewhere refer to the preparation/oracle loops, not those integer dots. The diagnostic object is not the scored artifact.
+
+In the scored artifact, a typical group load expands four bytes using `ldr s4`, `ushll.8h`, `ushll.4s`, followed by `bic.4s #0x7f`, `neg.4s`, and `orr.16b`. This follows Verilator's `VL_EXTENDS_II(32,8,value)` implementation, which computes sign bits by unsigned masks/negation/OR; the compiler has not reduced that expression to the packed signed-byte pattern used by SDOT. Thus reduction legality is not the problem, and there are already contiguous four-byte loads. An evidence-led followup could express signed-byte interpretation through a mathematically equivalent SV subtract-sign-bit form, or separate preparation/storage from the inner dot via a pure SV helper, then inspect whether Clang recognizes signed widening/SDOT. No generated C++ arithmetic should be rewritten. This followup has not been implemented or measured.

@@ -1,0 +1,165 @@
+Vw8a8_probe___024root__0.cpp:164:21: remark: vectorized loop (vectorization width: 2, interleaved count: 4) [-Rpass=loop-vectorize]
+  164 |                     do {
+      |                     ^
+Vw8a8_probe___024root__0.cpp:1161:17: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 1161 |                 while (VL_LTS_III(32, __Vtask_w8a8_probe__DOT__deployed_worker__DOT__project_block__unnamedblk8__DOT__unnamedblk22__DOT__t_56, vlSelfRef.__VprimaryPorts.tokens)) {
+      |                 ^
+Vw8a8_probe___024root__0.cpp:1161:17: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1161:17: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1161:17: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1161:17: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1161:17: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:746:21: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+  746 |                     while (((__Vtask_w8a8_probe__DOT__deployed_worker__DOT__project_block__unnamedblk8__DOT__unnamedblk11__DOT__column_45 
+      |                     ^
+Vw8a8_probe___024root__0.cpp:746:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:746:21: remark: loop not vectorized: instruction cannot be vectorized [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:746:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1127:25: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 1127 |                         while (VL_LTS_III(32, __Vtask_w8a8_probe__DOT__deployed_worker__DOT__project_block__unnamedblk8__DOT__unnamedblk20__DOT__unnamedblk21__DOT__t_55, vlSelfRef.__VprimaryPorts.tokens)) {
+      |                         ^
+Vw8a8_probe___024root__0.cpp:1127:25: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1127:25: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1127:25: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1127:25: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1127:25: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1369:21: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+ 1369 |                     while (((vlSelfRef.w8a8_probe__DOT__deployed_worker__DOT__unnamedblk24__DOT__unnamedblk25__DOT__unnamedblk27__DOT__column 
+      |                     ^
+Vw8a8_probe___024root__0.cpp:1369:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1369:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1369:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1497:21: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+ 1497 |                     while (((vlSelfRef.w8a8_probe__DOT__deployed_worker__DOT__unnamedblk24__DOT__unnamedblk25__DOT__unnamedblk29__DOT__column 
+      |                     ^
+Vw8a8_probe___024root__0.cpp:1497:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1497:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1497:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+ 28052 |                     while (VL_LTS_III(32, vlSelfRef.w8a8_probe__DOT__unnamedblk15__DOT__unnamedblk30__DOT__unnamedblk31__DOT__t, vlSelfRef.__VprimaryPorts.tokens)) {
+       |                     ^
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28052:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:27784:29: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 27784 |                             while (VL_LTS_III(32, __Vtask_w8a8_probe__DOT__floating_projection__unnamedblk9__DOT__unnamedblk10__DOT__unnamedblk12__DOT__j_37, vlSelfRef.__VprimaryPorts.width)) {
+       |                             ^
+Vw8a8_probe___024root__0.cpp:27784:29: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:27784:29: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28010:29: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 28010 |                             while (VL_LTS_III(32, __Vtask_w8a8_probe__DOT__floating_projection__unnamedblk9__DOT__unnamedblk10__DOT__unnamedblk14__DOT__j_39, vlSelfRef.__VprimaryPorts.width)) {
+       |                             ^
+Vw8a8_probe___024root__0.cpp:28010:29: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:28010:29: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:27771:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 27771 |                     while (VL_LTS_III(32, __Vtask_w8a8_probe__DOT__floating_projection__unnamedblk9__DOT__unnamedblk10__DOT__t_35, vlSelfRef.__VprimaryPorts.tokens)) {
+       |                     ^
+Vw8a8_probe___024root__0.cpp:27771:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:27771:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+In file included from Vw8a8_probe___024root__0.cpp:5:
+In file included from ./Vw8a8_probe__pch.h:20:
+/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/verilated.h:1165:13: remark: loop not vectorized: Control flow cannot be substituted for a select [-Rpass-analysis=loop-vectorize]
+ 1165 |         if (VL_UNLIKELY(!t_s.t_contextp)) t_s.t_contextp = lastContextp();
+      |             ^
+Vw8a8_probe___024root__0.cpp:237:6: note: could not determine the original source location for Vw8a8_probe___024root__0.cpp:0:0
+  237 | void Vw8a8_probe___024root___nba_sequent__TOP__0(Vw8a8_probe___024root* vlSelf) {
+      |      ^
+Vw8a8_probe___024root__0.cpp:237:6: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+  237 | void Vw8a8_probe___024root___nba_sequent__TOP__0(Vw8a8_probe___024root* vlSelf) {
+      |      ^
+Vw8a8_probe___024root__0.cpp:237:6: note: could not determine the original source location for Vw8a8_probe___024root__0.cpp:0:0
+Vw8a8_probe___024root__0.cpp:22717:25: remark: loop not vectorized: instruction cannot be vectorized [-Rpass-analysis=loop-vectorize]
+ 22717 |                         do {
+       |                         ^
+Vw8a8_probe___024root__0.cpp:22717:25: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:22372:29: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 22372 |                             while (VL_LTS_III(32, __Vtask_w8a8_probe__DOT__floating_projection__unnamedblk9__DOT__unnamedblk10__DOT__unnamedblk12__DOT__j_21, vlSelfRef.__VprimaryPorts.width)) {
+       |                             ^
+Vw8a8_probe___024root__0.cpp:22372:29: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:22372:29: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:22598:29: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 22598 |                             while (VL_LTS_III(32, __Vtask_w8a8_probe__DOT__floating_projection__unnamedblk9__DOT__unnamedblk10__DOT__unnamedblk14__DOT__j_23, vlSelfRef.__VprimaryPorts.width)) {
+       |                             ^
+Vw8a8_probe___024root__0.cpp:22598:29: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:22598:29: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:22359:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 22359 |                     while (VL_LTS_III(32, __Vtask_w8a8_probe__DOT__floating_projection__unnamedblk9__DOT__unnamedblk10__DOT__t_19, vlSelfRef.__VprimaryPorts.tokens)) {
+       |                     ^
+Vw8a8_probe___024root__0.cpp:22359:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:22359:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:22639:21: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+ 22639 |                     while (VL_LTS_III(32, vlSelfRef.w8a8_probe__DOT__unnamedblk15__DOT__unnamedblk28__DOT__unnamedblk29__DOT__t, vlSelfRef.__VprimaryPorts.tokens)) {
+       |                     ^
+Vw8a8_probe___024root__0.cpp:22639:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:22639:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:22639:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:12034:29: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+ 12034 |                             do {
+       |                             ^
+Vw8a8_probe___024root__0.cpp:12089:45: remark: loop not vectorized: unsafe dependent memory operations in loop. Use #pragma clang loop distribute(enable) to allow loop distribution to attempt to isolate the offending operations into a separate loop
+Unknown data dependence. Memory location is the same as accessed at /opt/homebrew/Cellar/verilator/5.054/share/verilator/include/verilated_types.h:1628:48 [-Rpass-analysis=loop-vectorize]
+ 12089 |                                             = vlSelfRef.w8a8_probe__DOT__unnamedblk15__DOT__value;
+       |                                             ^
+Vw8a8_probe___024root__0.cpp:12034:29: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+ 12034 |                             do {
+       |                             ^
+Vw8a8_probe___024root__0.cpp:11906:29: remark: vectorized loop (vectorization width: 8, interleaved count: 2) [-Rpass=loop-vectorize]
+ 11906 |                             do {
+       |                             ^
+Vw8a8_probe___024root__0.cpp:11879:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 11879 |                     while (VL_LTS_III(32, __Vtask_w8a8_probe__DOT__integer_projection__unnamedblk5__DOT__unnamedblk6__DOT__t_14, vlSelfRef.__VprimaryPorts.tokens)) {
+       |                     ^
+Vw8a8_probe___024root__0.cpp:11879:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:11879:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+In file included from Vw8a8_probe___024root__0.cpp:5:
+In file included from ./Vw8a8_probe__pch.h:20:
+/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/verilated.h:1165:13: remark: loop not vectorized: Control flow cannot be substituted for a select [-Rpass-analysis=loop-vectorize]
+ 1165 |         if (VL_UNLIKELY(!t_s.t_contextp)) t_s.t_contextp = lastContextp();
+      |             ^
+Vw8a8_probe___024root__0.cpp:237:6: note: could not determine the original source location for Vw8a8_probe___024root__0.cpp:0:0
+  237 | void Vw8a8_probe___024root___nba_sequent__TOP__0(Vw8a8_probe___024root* vlSelf) {
+      |      ^
+Vw8a8_probe___024root__0.cpp:237:6: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+  237 | void Vw8a8_probe___024root___nba_sequent__TOP__0(Vw8a8_probe___024root* vlSelf) {
+      |      ^
+Vw8a8_probe___024root__0.cpp:237:6: note: could not determine the original source location for Vw8a8_probe___024root__0.cpp:0:0
+Vw8a8_probe___024root__0.cpp:6731:25: remark: loop not vectorized: instruction cannot be vectorized [-Rpass-analysis=loop-vectorize]
+ 6731 |                         do {
+      |                         ^
+Vw8a8_probe___024root__0.cpp:6731:25: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:11803:29: remark: vectorized loop (vectorization width: 8, interleaved count: 2) [-Rpass=loop-vectorize]
+ 11803 |                             do {
+       |                             ^
+Vw8a8_probe___024root__0.cpp:11776:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 11776 |                     while (VL_LTS_III(32, __Vtask_w8a8_probe__DOT__integer_projection__unnamedblk5__DOT__unnamedblk6__DOT__t_9, vlSelfRef.__VprimaryPorts.tokens)) {
+       |                     ^
+Vw8a8_probe___024root__0.cpp:11776:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:11776:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+In file included from Vw8a8_probe___024root__0.cpp:5:
+In file included from ./Vw8a8_probe__pch.h:20:
+/opt/homebrew/Cellar/verilator/5.054/share/verilator/include/verilated.h:1165:13: remark: loop not vectorized: Control flow cannot be substituted for a select [-Rpass-analysis=loop-vectorize]
+ 1165 |         if (VL_UNLIKELY(!t_s.t_contextp)) t_s.t_contextp = lastContextp();
+      |             ^
+Vw8a8_probe___024root__0.cpp:1650:25: remark: loop not vectorized: value that could not be identified as reduction is used outside the loop [-Rpass-analysis=loop-vectorize]
+ 1650 |                         do {
+      |                         ^
+Vw8a8_probe___024root__0.cpp:1650:25: remark: loop not vectorized: instruction cannot be vectorized [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1650:25: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1579:21: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 1579 |                     while (VL_LTS_III(32, vlSelfRef.w8a8_probe__DOT__unnamedblk15__DOT__unnamedblk16__DOT__unnamedblk18__DOT__j, vlSelfRef.__VprimaryPorts.width)) {
+      |                     ^
+Vw8a8_probe___024root__0.cpp:1579:21: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1579:21: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1557:25: remark: loop not vectorized: Cannot vectorize uncountable loop [-Rpass-analysis=loop-vectorize]
+ 1557 |                         while (VL_LTS_III(32, vlSelfRef.w8a8_probe__DOT__unnamedblk15__DOT__unnamedblk16__DOT__unnamedblk17__DOT__j, vlSelfRef.__VprimaryPorts.width)) {
+      |                         ^
+Vw8a8_probe___024root__0.cpp:1557:25: remark: loop not vectorized: could not determine number of loop iterations [-Rpass-analysis=loop-vectorize]
+Vw8a8_probe___024root__0.cpp:1557:25: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
