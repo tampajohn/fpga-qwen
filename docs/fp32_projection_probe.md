@@ -13,7 +13,7 @@ Build and scoring are separate commands so they can be coordinated into differen
 ```sh
 python -m unittest tests.test_fp32_rounding_oracle
 python tools/probe_fp32_projection.py --build-only --compiler-root REVIEWED_COMPILER_ROOT
-python tools/probe_fp32_projection.py --run-only --workers 8 --repetitions 20 --pairs 3
+python tools/probe_fp32_projection.py --run-only --workers 8 --repetitions 1000 --pairs 3
 ```
 
 The builder records executable/compiler/source hashes, the candidate compiler Git base and tracked patch hash, exact command/environment and disassembly; source/compiler changes during builds invalidate the artifact. Run-only rechecks source and executable hashes. The report records checkpoint/tokenizer provenance. The compiler binary hash identifies the actual compiler even when development files outside its tracked patch exist. No global installs, production defaults, or generated-code replacements are involved. Evidence from the subsequently approved bounded run is summarized below.
