@@ -397,8 +397,9 @@ measures approximately 55/42 tokens/s for short/long prompts, with bounded quali
 checks passed. It remains behind llama.cpp and is not the live default.
 When its fixed local artifact is built, choose **SystemVerilog · FP32 hybrid** in
 the browser backend selector. This option uses FP64 B8 prefill and FP32 scalar
-decode projections, verifies its runtime precision, and disables prefix reuse,
-suffix drafting and serial execution. See [the build and routing policy](docs/fp32_hybrid_runtime.md).
+decode projections and verifies its runtime precision. It reuses only complete
+FP64 prefill blocks through the [validated cache policy](docs/canonical_prefix_reuse.md);
+suffix drafting and serial execution remain disabled. See [the build and routing policy](docs/fp32_hybrid_runtime.md).
 
 The [current deployed-backend comparison](docs/current_native_comparison.md)
 measures B8 prefill and grouped decode against CPU-only llama.cpp: approximately

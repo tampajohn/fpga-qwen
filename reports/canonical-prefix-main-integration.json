@@ -1,0 +1,42 @@
+{
+  "binary_sha256": "fb49fdfd571067cdf7d71e39ca31283d5aef35dfda95981e4b08fc504ca59239",
+  "source_hashes_match_validated_candidate": true,
+  "host_and_real_tests_passed": 30,
+  "main_real_cases": 33,
+  "main_real_gate_completed": true,
+  "browser": {
+    "replies": [
+      "blue",
+      "blue",
+      "blue",
+      "blue",
+      "blue"
+    ],
+    "default_backend": "rtl",
+    "hybrid_precision_verified": true,
+    "hybrid_second_turn_reused_tokens": 136,
+    "canonical_prefix_policy": "fp64_b8_aligned_v1",
+    "suffix_disabled": true,
+    "serial_disabled": true,
+    "worker_change": true,
+    "switch_back": true,
+    "cancel_restart": true,
+    "console_errors": []
+  },
+  "live_url": "http://127.0.0.1:8765",
+  "live_default": "rtl",
+  "hybrid_catalog": {
+    "id": "rtl-fp32",
+    "label": "SystemVerilog \u00b7 FP32 hybrid",
+    "available": true,
+    "cpu_threads": 8,
+    "simulation": true,
+    "min_workers": 1,
+    "precision": "BF16 weights / FP32 scalar projections / FP64 prefill, attention and KV",
+    "prefix_reuse_supported": true,
+    "canonical_prefix_policy": "fp64_b8_aligned_v1",
+    "suffix_supported": false,
+    "max_draft": 0,
+    "prefill_block_size": 8
+  }
+}

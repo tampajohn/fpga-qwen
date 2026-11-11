@@ -1,6 +1,6 @@
 # Opt-in canonical prefix reuse for hybrid inference
 
-The hybrid engine can reuse completed FP64 B8 prompt blocks while preserving exact fresh-request behavior in the tested cases. This feature is opt-in; the existing UI hybrid profile still resets each request, and suffix drafting remains disabled.
+The hybrid engine can reuse completed FP64 B8 prompt blocks while preserving exact fresh-request behavior in the tested cases. The opt-in hybrid UI backend enables this policy with a capability-verified executable. FP64 remains the default backend, and hybrid suffix drafting remains disabled.
 
 `RTLChatEngine(..., precision_profile='fp32_b1_fp64_prefill', block_size=1, prefill_size=8, lanes=8, workers=8, reuse_prefix=False, canonical_prefix_reuse=True)` selects the narrow policy. The runtime must explicitly advertise `canonical_prefix_policy: "fp64_b8_aligned_v1"`; older hybrid binaries reject this request before prefill. General `prefix_reuse_supported` remains false. No runtime capability or filename silently turns caching on.
 
@@ -21,5 +21,18 @@ The canonical boundary belongs to a model-process epoch and session. Reset, proc
 Twenty-seven host/cache/suffix/transport tests pass, including route-aware mock histories, malformed/missing capability, bad acknowledgments, EOS, the 4096-token request budget and unchanged default behavior. The real checks make no speed claim.
 
 The tested policy-capable binary is `bf8242221d07675916cd6711869d3568cb24d8655824d875dee5d1eefda943a7`. Its [manifest](../reports/canonical-prefix-build-manifest.json) has the same model/worker/compiler source hashes as the validated `d27a2ffc` hybrid except for the capability JSON in `sim/full_model.cpp`; no neural arithmetic changed.
+
+## Paired latency measurement
+
+Twelve alternating greedy pairs compared the same hybrid executable with reuse off and on. Each pair first primed a fresh session, then measured either a repeated prompt or an appended turn, with an eight-token output budget and eight workers. All output IDs and full-vocabulary logits matched. The [raw report](../reports/canonical-prefix-paired.json) records individual timings and safe reuse boundaries.
+
+| Workload | Median first-token time, reuse off | Reuse on | Reused tokens |
+|---|---:|---:|---:|
+| Short repeated prompt | 0.810 s | 0.065 s | 80 |
+| Short appended turn | 1.605 s | 0.861 s | 80 |
+| Long repeated prompt | 5.865 s | 0.102 s | 448 |
+| Long appended turn | 7.311 s | 1.364 s | 448 |
+
+These measurements isolate warm-prefix reuse, not faster cold prefill or decode. They are not comparisons against native llama.cpp prefix caching. Priming is excluded from follow-up latency; end-to-end claims must account for whether a reusable prefix actually exists.
 
 Reproduce host checks with `uv run --locked python -m unittest tests.test_canonical_prefix tests.test_suffix_chat tests.test_hybrid_backend tests.test_prefill_transport`. Set `SV_CANONICAL_BINARY` to the explicitly policy-capable binary and run `uv run --locked python -m unittest tests.test_canonical_prefix_real` for both real gates. The ordinary hybrid binary/default remains usable without this option.
