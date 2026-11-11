@@ -1,0 +1,122 @@
+diff --git a/tools/benchmark_streaming_projection.py b/tools/benchmark_streaming_projection.py
+new file mode 100644
+index 0000000..6fad930
+--- /dev/null
++++ b/tools/benchmark_streaming_projection.py
+@@ -0,0 +1,39 @@
++"""Bounded projection-only streaming feasibility probe; no full-model claims."""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++from tools.rtl_model import RTLModel
++
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--binary',type=Path,required=True)
++    p.add_argument('--reference',type=Path,required=True)
++    args=p.parse_args()
++    paths=[args.reference.resolve(),args.binary.resolve()]
++    models=[RTLModel(binary=path,workers=8,lanes=8) for path in paths]
++    report=dict(binary_sha256=[hashlib.sha256(path.read_bytes()).hexdigest() for path in paths],
++                labels=['native_neon','native_streaming_annotation'],workers=8,lanes=8,runs=[],
++                limits=['Projection bench only; no full-model correctness or throughput claim.',
++                        'Existing bench exposes first/last outputs, not every projection element.',
++                        'Two paired samples per shape; startup excluded.'])
++    try:
++        for m in models:m.start()
++        for name,slot,rows,width in [('q',4,2048,1024),('down',13,1024,3072),('vocabulary',2,151936,1024)]:
++            command=f'bench {slot} {rows} {width} 5'
++            for m in models:m.command(command)
++            for pair,order in enumerate(((0,1),(1,0))):
++                samples={}
++                for i in order:
++                    values=models[i].command(command).split()
++                    samples[str(i)]=dict(seconds=float(values[0]),first=values[1],last=values[2])
++                assert (samples['0']['first'],samples['0']['last'])==(samples['1']['first'],samples['1']['last'])
++                row=dict(shape=name,pair=pair,order=order,samples=samples,baseline_over_candidate=samples['0']['seconds']/samples['1']['seconds'])
++                report['runs'].append(row);print(json.dumps(row),flush=True)
++    finally:
++        for m in models:m.close()
++        Path('build/streaming-projection.json').write_text(json.dumps(report,indent=2)+'\n')
++
++
++if __name__=='__main__':main()
+diff --git a/tools/build_projection_variant.py b/tools/build_projection_variant.py
+index e05c412..8298c43 100644
+--- a/tools/build_projection_variant.py
++++ b/tools/build_projection_variant.py
+@@ -13,6 +13,7 @@ def main():
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument('--storage', choices=['scalar', 'row'], default='scalar')
+     parser.add_argument('--lto', action='store_true')
++    parser.add_argument('--streaming-worker', action='store_true', help='Experimental generated worker locally-streaming annotation; requires native and LTO')
+     parser.add_argument('--unchecked', action='store_true', help='Validate each full projection span once, then omit per-weight checks')
+     parser.add_argument('--opt', choices=['O3', 'Os'], default='O3')
+     parser.add_argument('--fp-contract', choices=['on', 'off', 'fast'], default='on')
+@@ -33,6 +34,8 @@ def main():
+     args = parser.parse_args()
+     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
+         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
++    if args.streaming_worker and (args.cpu!='native' or not args.lto):
++        parser.error('--streaming-worker requires --cpu native --lto')
+     if args.block_unroll and not args.batched_prefill:
+         parser.error('--block-unroll requires --batched-prefill')
+     if args.batched_prefill and (not args.parallel_attention or args.storage!='scalar'):
+@@ -46,6 +49,7 @@ def main():
+     if args.masked_activation: tag += '-masked-activation'
+     if args.unsigned_indices: tag += '-unsigned-indices'
+     if args.cpu == 'native': tag += '-cpu-native'
++    if args.streaming_worker: tag += '-streaming-worker'
+     if args.fast_attention: tag += '-fast-attention'
+     if args.parallel_attention: tag += '-parallel-attention'
+     if args.batched_prefill: tag += '-batched-prefill'
+@@ -103,13 +107,45 @@ def main():
+     def source_hashes():
+         return {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sources}
+     before = source_hashes()
++    generated_annotation = None
++    if args.streaming_worker:
++        # Generate first, annotate exactly one function declaration, then compile.
++        # Removing the inserted keyword must reproduce the original bytes.
++        commands[0].remove('--build')
++        # Force regeneration on a repeated experiment build, avoiding duplicate
++        # attributes if Verilator otherwise reuses an already annotated source.
++        for source in projection.glob('*.cpp'):
++            if '__arm_locally_streaming' in source.read_text(): source.unlink()
++    executed_commands = []
+     with (directory/'build.log').open('w') as log:
+-        for command in commands:
++        for index,command in enumerate(commands):
+             subprocess.run(command, check=True, stdout=log, stderr=subprocess.STDOUT, cwd=ROOT)
++            executed_commands.append(command)
++            if args.streaming_worker and index==0:
++                symbol='Vprojection_worker___024root___nba_sequent__TOP__0'
++                pattern=re.compile(r'^(void '+re.escape(symbol)+r'\([^\n]*\) \{)',re.MULTILINE)
++                matches=[]
++                for source in projection.glob('*.cpp'):
++                    original=source.read_text()
++                    if pattern.search(original): matches.append((source,original))
++                if len(matches)!=1: raise RuntimeError('Expected exactly one generated worker hot function')
++                source,original=matches[0]
++                modified,count=pattern.subn(r'__arm_locally_streaming\n\1',original)
++                if count!=1 or modified.replace('__arm_locally_streaming\n','',1)!=original:
++                    raise RuntimeError('Generated annotation changed more than one function attribute')
++                source.write_text(modified)
++                generated_annotation=dict(file=source.name,symbol=symbol,attribute='__arm_locally_streaming',
++                    original_sha256=hashlib.sha256(original.encode()).hexdigest(),
++                    annotated_sha256=hashlib.sha256(modified.encode()).hexdigest(),
++                    arithmetic_unchanged=True)
++                build_command=['make','-C',str(projection),'-f','Vprojection_worker.mk','-j','4',f'OPT_FAST=-{args.opt}']
++                subprocess.run(build_command,check=True,stdout=log,stderr=subprocess.STDOUT,cwd=ROOT)
++                executed_commands.append(build_command)
+     after = source_hashes()
+     if before != after:
+         raise RuntimeError('Source changed during build; rebuild before benchmarking this artifact')
+-    manifest = dict(options=vars(args), commands=commands, sources=after,
++    manifest = dict(options=vars(args), commands=executed_commands, sources=after,
++                    generated_annotation=generated_annotation,
+                     binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),
+                     verilator=subprocess.check_output(['verilator', '--version'], text=True).strip(),
+                     compiler=subprocess.check_output(['c++', '--version'], text=True).splitlines()[0])

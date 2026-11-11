@@ -1,0 +1,61 @@
+{
+  "binary_sha256": "45403d4d1e02a21d28107de836a2625b21869afee9bb67b3fe252c60e33d29a4",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+  "verilator": "Verilator 5.054 2026-11-01 rev vUNKNOWN-built20261101",
+  "options": {
+    "storage": "scalar",
+    "lto": true,
+    "streaming_worker": true,
+    "unchecked": true,
+    "opt": "O3",
+    "fp_contract": "on",
+    "fast_math": false,
+    "unroll": false,
+    "masked_activation": true,
+    "unsigned_indices": true,
+    "cpu": "native",
+    "fast_attention": true,
+    "parallel_attention": true,
+    "batched_prefill": true,
+    "block_unroll": true,
+    "compact_projection": true,
+    "static_kv": false,
+    "pool": "cv",
+    "tag": "",
+    "print_path": false
+  },
+  "source_hashes": {
+    "rtl/projection_worker.sv": "5569accf59ee4127dac3b57a886fe8830e4946e206056d47246014625274a4d6",
+    "rtl/qwen_behavioral.sv": "58f1bb1833d621a0a3487321f45114d803f101fcb3cbae47b40a2a4c9e92b1b2",
+    "rtl/sampling.svh": "0dbc0e7afbe0f74c5deea579739171256629dcf8c374770a16de0ca49102c01a",
+    "sim/full_model.cpp": "1c5d2683f7a107c53ae4d46b215fcc02b5f846313342dbbb95c9953fb56fe1a8",
+    "sim/projection_pool.h": "dd4fdd4ff0733167bc46d6f126f27743b8084e208c4cefeddac3e10069a823bd",
+    "tools/build_projection_variant.py": "732975cad24ed7ebab21ab66b7d9fa5a4d490816bc308ffae59d451f62fba51a"
+  },
+  "annotation": {
+    "file": "Vprojection_worker___024root__0.cpp",
+    "symbol": "Vprojection_worker___024root___nba_sequent__TOP__0",
+    "attribute": "__arm_locally_streaming",
+    "original_sha256": "999981d8a916e58e264f882c2dd0a185859c6ca9e0bbe944e09645e4f3d80dd7",
+    "annotated_sha256": "71a11826aeb0c6e623845e68aa7be5e1957b6cb3f56d8016e22129a2e6b95c05",
+    "arithmetic_unchanged": true
+  },
+  "observed_codegen": {
+    "streaming_fp64_fmla_static_count": 26,
+    "predicate": "p1.d, vl2 (two active FP64 lanes)",
+    "sme_matrix_za_outer_product_observed": false,
+    "weight_callbacks_inlined": true,
+    "per_weight_mode_switches_observed": false,
+    "nonstreaming_calls": [
+      "attention_key_value",
+      "exp",
+      "attention_value_value"
+    ],
+    "kv_calls_switch_streaming_mode_per_read": true
+  },
+  "decision": "Reject: severe projection slowdown plus attention callback mode switching; no live integration.",
+  "limitations": [
+    "Assembly observations describe this installed compiler/artifact only.",
+    "Projection first/last outputs matched; no interior/full-model numerical claim."
+  ]
+}

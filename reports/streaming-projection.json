@@ -1,0 +1,145 @@
+{
+  "binary_sha256": [
+    "f3b5a414e95926f41e246b8088b83d9b5c0a493ec765864ddee4de355399e101",
+    "45403d4d1e02a21d28107de836a2625b21869afee9bb67b3fe252c60e33d29a4"
+  ],
+  "labels": [
+    "native_neon",
+    "native_streaming_annotation"
+  ],
+  "workers": 8,
+  "lanes": 8,
+  "runs": [
+    {
+      "shape": "q",
+      "pair": 0,
+      "order": [
+        0,
+        1
+      ],
+      "samples": {
+        "0": {
+          "seconds": 0.000307333,
+          "first": "0.21023885905742645",
+          "last": "0.94649806618690491"
+        },
+        "1": {
+          "seconds": 0.003701666,
+          "first": "0.21023885905742645",
+          "last": "0.94649806618690491"
+        }
+      },
+      "baseline_over_candidate": 0.08302558901856624
+    },
+    {
+      "shape": "q",
+      "pair": 1,
+      "order": [
+        1,
+        0
+      ],
+      "samples": {
+        "1": {
+          "seconds": 0.003978291,
+          "first": "0.21023885905742645",
+          "last": "0.94649806618690491"
+        },
+        "0": {
+          "seconds": 0.000364917,
+          "first": "0.21023885905742645",
+          "last": "0.94649806618690491"
+        }
+      },
+      "baseline_over_candidate": 0.09172707577198348
+    },
+    {
+      "shape": "down",
+      "pair": 0,
+      "order": [
+        0,
+        1
+      ],
+      "samples": {
+        "0": {
+          "seconds": 0.000389917,
+          "first": "-0.61423800978809595",
+          "last": "1.3600347079336643"
+        },
+        "1": {
+          "seconds": 0.005459333,
+          "first": "-0.61423800978809595",
+          "last": "1.3600347079336643"
+        }
+      },
+      "baseline_over_candidate": 0.07142209497020972
+    },
+    {
+      "shape": "down",
+      "pair": 1,
+      "order": [
+        1,
+        0
+      ],
+      "samples": {
+        "1": {
+          "seconds": 0.004974041,
+          "first": "-0.61423800978809595",
+          "last": "1.3600347079336643"
+        },
+        "0": {
+          "seconds": 0.000406875,
+          "first": "-0.61423800978809595",
+          "last": "1.3600347079336643"
+        }
+      },
+      "baseline_over_candidate": 0.08179968761817605
+    },
+    {
+      "shape": "vocabulary",
+      "pair": 0,
+      "order": [
+        0,
+        1
+      ],
+      "samples": {
+        "0": {
+          "seconds": 0.011976667,
+          "first": "0.1326676607131958",
+          "last": "0.0020595500245690346"
+        },
+        "1": {
+          "seconds": 0.250369333,
+          "first": "0.1326676607131958",
+          "last": "0.0020595500245690346"
+        }
+      },
+      "baseline_over_candidate": 0.047835998348887236
+    },
+    {
+      "shape": "vocabulary",
+      "pair": 1,
+      "order": [
+        1,
+        0
+      ],
+      "samples": {
+        "1": {
+          "seconds": 0.248111584,
+          "first": "0.1326676607131958",
+          "last": "0.0020595500245690346"
+        },
+        "0": {
+          "seconds": 0.012144208,
+          "first": "0.1326676607131958",
+          "last": "0.0020595500245690346"
+        }
+      },
+      "baseline_over_candidate": 0.04894655785197035
+    }
+  ],
+  "limits": [
+    "Projection bench only; no full-model correctness or throughput claim.",
+    "Existing bench exposes first/last outputs, not every projection element.",
+    "Two paired samples per shape; startup excluded."
+  ]
+}
