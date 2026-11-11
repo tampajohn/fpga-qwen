@@ -34,7 +34,8 @@ class BackendRouter:
         if self.active != 'rtl':
             status.update(precision={'llama-q4': 'Q4_K_M', 'llama-f16': 'FP16', 'llama-f32': 'FP32'}[self.active],
                           cpu_threads=6, rtl=None, inference='llama.cpp CPU', cached_tokens=None,
-                          suffix_supported=False, max_verified_draft=0, prefill_block_size=None)
+                          suffix_supported=False, max_verified_draft=0, prefill_block_size=None,
+                          reduction_lanes=None, prefill_reduction_lanes=None)
         return dict(status, backends=self.catalog(), active_backend=self.active)
 
     def prepare(self, payload):

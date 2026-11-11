@@ -1,8 +1,15 @@
 # CPU comparison protocol and results
 
-## Current grouped B4 profile
+## Selected B8 profile
 
-The current SV simulator still trails llama.cpp. A refreshed CPU-only comparison
+The fast profile now uses B8 prefill with B4 verification. Paired model runs
+reduced first-token wait by about 15–16% versus grouped B4, with unchanged timed
+output IDs; see [B8 evidence](b8_prefill.md). This is a prefill gain, not a claim
+of faster steady decode or parity with llama.cpp.
+
+## Matched grouped B4 comparison before B8 promotion
+
+The grouped B4 simulator trailed llama.cpp in this CPU-only comparison
 uses the actual B4 prefill path, eight workers/threads, identical 85/452-token
 prompts, empty logical KV, and 32 greedy outputs with EOS respected. Each row
 has one first request followed by two warm repetitions; engines ran sequentially

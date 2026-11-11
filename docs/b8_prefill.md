@@ -1,6 +1,6 @@
-# Opt-in B8 prefill with B4 verification
+# B8 prefill with B4 verification
 
-Eight-token prefill yields a measured first-token speed ratio of 1.18–1.20× against the current grouped B4 engine on this CPU (about 15–16% less waiting). The isolated implementation leaves the default at B4; independent numerical, behavioral and capacity gates have now passed for the measured candidate. It does not beat llama.cpp based on this comparison.
+Eight-token prefill yields a measured first-token speed ratio of 1.18–1.20× against the current grouped B4 engine on this CPU (about 15–16% less waiting). The fast profile now selects B8 after independent numerical, behavioral, capacity and browser checks. It does not beat llama.cpp based on this comparison.
 
 The new `prefill count tokens...` command accepts one through eight valid token IDs and returns `prefill count final_position`. Count, capacity and every token are validated before evaluating SV or mutating KV. It never computes vocabulary logits or samples. Existing `block` requests remain bounded to four positions, preserving sampled suffix verification; ordinary token decode is unchanged. `RTLModel(..., block_size=4, prefill_size=8)` explicitly declares the separate capability. No filename guessing or HTTP configuration enables it.
 
@@ -34,3 +34,16 @@ The [nine free-running conversation cases](../reports/b8-conversation-quality.js
 Build with `uv run --locked python tools/build_projection_variant.py --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --batched-prefill --block-unroll --compact-projection --group-projections --prefill-b8 --tag flushed`. The manifest records source hashes, flags, compiler and binary hash. Omitting `--prefill-b8` retains the old physical layout and wire commands.
 
 Run `uv run --locked python tools/benchmark_prefill_b8.py --reference BASELINE --candidate CANDIDATE --pairs 3 --output build/b8-prefill-paired.json`. The harness rejects output divergence and EOS. Run host/descriptor tests with `uv run --locked python -m unittest tests.test_prefill_transport tests.test_prefill_descriptors tests.test_suffix_chat tests.test_projection_scheduler`.
+
+## Browser and integration
+
+The main build passed 33 tests, with two expensive capacity tests skipped in the
+routine suite; the actual B8 4,096-token gate passed separately. Additional main
+checks covered serial execution and uneven 1/3/17-worker partitions. Browser
+checks passed conversation history, backend switching, Stop, context limits,
+mobile layout and sampled suffix drafting. `make chat` selects eight-token
+prefill with four-token verification; suffix drafts remain capped at three.
+Custom binaries require explicit `--block-size 4 --prefill-size 8`. The matched
+comparison tool likewise accepts `--sv-block-size 4 --sv-prefill-size 8`.
+The model arithmetic remains SV FP64; this optimization introduces no GPU or
+PyTorch execution and does not represent FPGA cycle performance.

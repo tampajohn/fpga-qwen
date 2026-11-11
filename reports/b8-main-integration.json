@@ -1,0 +1,150 @@
+{
+  "binary_sha256": "2a77181e4b03777d1d602405f1f44ba83ac03e320fdff02c6fb38877c27d8b21",
+  "scored_binary_sha256": "17b12348ced96818e18578af7fadaf88e40333ae48b29dcd4eeff520039ff184",
+  "source_hashes": {
+    "rtl/projection_worker.sv": "1e18c85b71151d286e202ef6196c62acd8ca4628d8096fc7f5a5d0be842cc7a5",
+    "rtl/qwen_behavioral.sv": "24cdea73064bb2d4835dff155e92deab52f7246530bc1dfdc7d38cf6aad1e48a",
+    "rtl/sampling.svh": "0dbc0e7afbe0f74c5deea579739171256629dcf8c374770a16de0ca49102c01a",
+    "sim/full_model.cpp": "80068281e71481c0cacc8ed60b9b0a0f184466dfaabf312ba9c9047e9b033a5a",
+    "sim/projection_pool.h": "8202fbba44f5f6417496498d4189009b8b73247a79ff2c3692f330a5f1754c5c",
+    "sim/projection_descriptors.h": "476090efcd9a0941acb9190c9ab0b7e609de438f86a323cba2c7ae19074f233c",
+    "tools/build_projection_variant.py": "0df9b4cb038edddf8eb139e5d64520a1c152a3018578de3635def6725ab62ff8"
+  },
+  "provenance": "All build source hashes match scored candidate except full_model.cpp comment wording; removing full-line comments yields identical source. Tag differs only in artifact directory name.",
+  "routine_suite": {
+    "tests_run": 35,
+    "passed": 33,
+    "skipped": 2,
+    "skip_note": "Full capacity gates are opt-in; independent actual B8 4096 boundary passed separately."
+  },
+  "extra_partition_workers": [
+    0,
+    1,
+    3,
+    17
+  ],
+  "browser": {
+    "first_response": "blue",
+    "second_response": "blue",
+    "reused_prefix_tokens": 77,
+    "first_reply_tokens_per_second": "31.5",
+    "worker_change_preserved_cache": true,
+    "stop_passed": true,
+    "context_error_passed": true,
+    "mobile_passed": true,
+    "backends_tested": [
+      "rtl",
+      "llama-q4",
+      "llama-f16",
+      "llama-f32"
+    ],
+    "console_errors": []
+  },
+  "suffix_browser": {
+    "first_response": "red blue red blue red blue red blue red blue",
+    "accepted": 5,
+    "proposed": 12,
+    "reused_prefix_tokens": 93,
+    "sampled_followup": true,
+    "stop": true,
+    "context_error": true,
+    "mobile_no_overflow": true,
+    "console_errors": []
+  },
+  "gpu": false,
+  "pytorch": false,
+  "timing_note": "Integration checks are correctness only, not scored timings.",
+  "live_status": {
+    "ready": true,
+    "busy": false,
+    "model": "Qwen3-0.6B",
+    "device": "cpu",
+    "precision": "BF16 weights / SV real arithmetic",
+    "gpu_inference": false,
+    "cpu_threads": 8,
+    "simulation_workers": 8,
+    "context_limit": 4096,
+    "rtl": "Full behavioral SystemVerilog; not synthesizable or cycle-accurate",
+    "inference": "Verilator: all model math and KV payload in SystemVerilog",
+    "reduction_lanes": 8,
+    "prefill_reduction_lanes": 4,
+    "prefill_block_size": 8,
+    "suffix_supported": true,
+    "max_verified_draft": 3,
+    "cached_tokens": 0,
+    "pytorch_loaded": false,
+    "backends": [
+      {
+        "id": "rtl",
+        "label": "SystemVerilog \u00b7 fast",
+        "available": true,
+        "cpu_threads": 8,
+        "suffix_supported": true,
+        "max_draft": 3,
+        "prefill_block_size": 8
+      },
+      {
+        "id": "llama-q4",
+        "label": "llama.cpp \u00b7 Q4_K_M",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-f16",
+        "label": "llama.cpp \u00b7 FP16",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-f32",
+        "label": "llama.cpp \u00b7 FP32",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      }
+    ],
+    "active_backend": "rtl"
+  },
+  "live_smoke": {
+    "type": "done",
+    "text": "blue",
+    "token_ids": [
+      12203,
+      151645
+    ],
+    "finish_reason": "eos",
+    "metrics": {
+      "prompt_tokens": 81,
+      "reused_prefix_tokens": 0,
+      "output_tokens": 2,
+      "rounds": 2,
+      "proposed_tokens": 0,
+      "accepted_tokens": 0,
+      "verified_tokens": 2,
+      "tokens_per_round": 1.0,
+      "decode_tokens_per_second": 40.99736339724542,
+      "first_token_ms": 1027.9962919885293,
+      "elapsed_seconds": 1.0498188749770634,
+      "kv_tokens": 82,
+      "context_limit": 4096,
+      "prefill_seconds": 0.81154433300253,
+      "decode_seconds": 0.04878362495219335,
+      "prefill_block_size": 8,
+      "requested_max_draft": 0,
+      "effective_max_draft": 0,
+      "simulation_workers": 8,
+      "decoding": "greedy",
+      "reduction_lanes": 8
+    }
+  },
+  "chat_protocol_tests": {
+    "run": 6,
+    "passed": 6
+  },
+  "scoring_transport_tests": {
+    "run": 15,
+    "passed": 15
+  }
+}

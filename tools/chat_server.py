@@ -169,6 +169,8 @@ def main():
     parser.add_argument('--simulator', choices=['fast', 'reference'], default='fast')
     parser.add_argument('--block-size', type=int, choices=[1, 4], default=None,
                         help='Default: 4 for the fast profile, 1 for reference or a custom binary')
+    parser.add_argument('--prefill-size', type=int, choices=[1, 4, 8], default=None,
+                        help='Default: 8 for fast profile; otherwise verification block size. Custom B8 requires --block-size 4')
     parser.add_argument('--sv-binary', type=Path, help='Trusted local simulator executable override')
     parser.add_argument('--workers', type=int, choices=[0, 1, 2, 4, 8], default=8)
     parser.add_argument('--port', type=int, default=8765)
@@ -179,9 +181,12 @@ def main():
     if not binary.is_file():
         raise RuntimeError('Build the simulator first: make chat (fast) or make chat-reference')
     block_size = args.block_size if args.block_size is not None else (4 if args.simulator == 'fast' and args.sv_binary is None else 1)
+    prefill_size = args.prefill_size if args.prefill_size is not None else (
+        8 if args.simulator == 'fast' and args.sv_binary is None and block_size == 4 else block_size)
     print('Preparing full SystemVerilog chat; no PyTorch or GPU inference...', flush=True)
     engine = BackendRouter(RTLChatEngine(args.model, workers=args.workers, binary=binary,
-                                         lanes=8 if args.simulator == 'fast' else 1, block_size=block_size))
+                                         lanes=8 if args.simulator == 'fast' else 1, block_size=block_size,
+                                         prefill_size=prefill_size))
     server = make_server(engine, args.port)
     print(f'Local chat ready: http://127.0.0.1:{server.server_port}', flush=True)
     print('Default: full behavioral SystemVerilog simulation; not synthesizable or cycle-accurate.', flush=True)

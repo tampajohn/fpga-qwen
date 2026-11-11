@@ -103,7 +103,8 @@ across persistent CPU threads. Every thread runs its own Verilated
 `projection_worker` instance. All dot-product arithmetic remains SystemVerilog;
 the C++ pool only partitions work and copies activations/results. Workers share
 one read-only checkpoint mapping. The reference profile preserves serial accumulation order. The optimized profile
-uses eight partial sums per row and changes floating-point association; it is
+uses eight partial sums per row for decode/B4 verification and four for wide
+prefill, changing floating-point association; it is
 validated with numerical tolerances and output checks rather than claiming
 bit-identical logits. There is no cross-worker floating-point reduction. Attention,
 normalization, nonlinearities, residuals, and KV state remain in SV. Attention
@@ -111,7 +112,7 @@ heads run on the persistent SV workers, with the main model owning KV state.
 This is shared-memory execution on one machine, not a multi-machine service.
 
 The selected fast build is reproducible with
-`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --batched-prefill --block-unroll --compact-projection --group-projections`.
+`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --batched-prefill --block-unroll --compact-projection --group-projections --prefill-b8`.
 Unsigned indices simplify generated projection address calculations without
 changing accumulation order; this incremental change passed bit-exact gates
 against the prior fast build. See the [paired comparison](docs/performance_iteration_3.md).
@@ -151,12 +152,14 @@ profile; add `--simulator reference` for exact-order worker arithmetic. `0` sele
 the serial
 implementation. Resizing happens at request boundaries and does not clear KV.
 
-The fast profile now prefills uncached prompt tokens in blocks of four through
-all transformer layers. Measured prompt-to-first-token time improved about1.4×
-on the tested85/452-token contexts; some steady decode runs were13–15% slower.
-This is a prefill improvement, not an across-the-board throughput gain.
+The fast profile prefills uncached prompts in blocks of up to eight through all
+transformer layers. Compared with the previous grouped B4 build, measured
+first-token wait fell about 15–16% and total 32-token request latency fell about
+11–14% on the tested 85/452-token contexts. Decode and suffix verification retain
+their existing paths; this is not a claim of improved steady decode throughput or
+parity with llama.cpp. See [B8 measurements and validation](docs/b8_prefill.md).
 
-The fast profile also groups Q/K/V and gate/up projections sharing an input.
+The fast profile continues to group Q/K/V and gate/up projections sharing an input.
 This removes repeated worker dispatches and activation copies while preserving
 the same SV arithmetic. Four matched pairs showed about 4–12% faster short
 prefill and 6–11% faster long prefill, with bit-identical outputs; see

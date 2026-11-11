@@ -6,15 +6,19 @@ from tools.benchmark_matched import SVEngine
 
 class MatchedPrefillTests(unittest.TestCase):
     def test_prompt_tail_and_pending_decode_token(self):
-        for size in (1, 4):
-            for length in (1, 2, 4, 5, 6, 8, 9):
+        for size in (1, 4, 8):
+            for length in (1, 2, 4, 5, 6, 8, 9, 17):
                 with self.subTest(block_size=size, prompt_length=length):
                     calls = []
                     class Transport:
-                        block_size = size
+                        block_size = min(size, 4)
+                        prefill_size = size
                         def reset(self): calls.append(('reset',))
                         def block(self, tokens, logits):
                             assert 1 <= len(tokens) <= 4 and logits is False
+                            calls.append(('prefill', list(tokens)))
+                        def prefill(self, tokens):
+                            assert 1 <= len(tokens) <= 8
                             calls.append(('prefill', list(tokens)))
                         def token(self, token, logits=True):
                             calls.append(('decode' if logits else 'prefill', [token]))

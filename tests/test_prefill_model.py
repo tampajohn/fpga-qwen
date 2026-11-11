@@ -18,8 +18,8 @@ REFERENCE=os.environ.get('SV_PREFILL_REFERENCE')
 
 @unittest.skipUnless(BINARY and REFERENCE,'Set SV_PREFILL_BINARY and SV_PREFILL_REFERENCE')
 class PrefillModelTests(unittest.TestCase):
-    def model(self,reference=False):
-        model=PrefillProtocolModel(binary=REFERENCE if reference else BINARY,workers=8,lanes=8)
+    def model(self,reference=False,workers=8):
+        model=PrefillProtocolModel(binary=REFERENCE if reference else BINARY,workers=workers,lanes=8)
         self.addCleanup(model.close);model.start();return model
 
     def compare(self,a,b):
@@ -28,6 +28,18 @@ class PrefillModelTests(unittest.TestCase):
         result=compare_logits(*arrays,1e-6)
         print(json.dumps(dict(gate=self.id(),**result)),flush=True)
         return result
+
+    def test_serial_and_uneven_worker_partitions(self):
+        tokens=[9707,11,1917,0,358,11,9707,0]
+        for workers in (0,1,3,17):
+            with self.subTest(workers=workers):
+                a,b=self.model(True,workers),self.model(False,workers)
+                try:
+                    prefill(a,tokens,4);b.prefill(tokens)
+                    self.assertEqual(a.token(1917)[:2],b.token(1917)[:2])
+                    self.compare(a,b)
+                finally:
+                    a.close();b.close()
 
     def test_sizes_tails_and_truncated_prefix_causality(self):
         a,b=self.model(True),self.model()
