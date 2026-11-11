@@ -1,6 +1,6 @@
 # Opt-in B8 prefill with B4 verification
 
-Eight-token prefill yields a measured first-token speed ratio of 1.18–1.20× against the current grouped B4 engine on this CPU (about 15–16% less waiting). This is an isolated candidate; the default remains B4 until independent full-vocabulary, quality and cache gates pass. It does not beat llama.cpp based on this comparison.
+Eight-token prefill yields a measured first-token speed ratio of 1.18–1.20× against the current grouped B4 engine on this CPU (about 15–16% less waiting). The isolated implementation leaves the default at B4; independent numerical, behavioral and capacity gates have now passed for the measured candidate. It does not beat llama.cpp based on this comparison.
 
 The new `prefill count tokens...` command accepts one through eight valid token IDs and returns `prefill count final_position`. Count, capacity and every token are validated before evaluating SV or mutating KV. It never computes vocabulary logits or samples. Existing `block` requests remain bounded to four positions, preserving sampled suffix verification; ordinary token decode is unchanged. `RTLModel(..., block_size=4, prefill_size=8)` explicitly declares the separate capability. No filename guessing or HTTP configuration enables it.
 
@@ -19,11 +19,15 @@ Every pair improved all three measures. Short candidate TTFT ranged 0.799–0.90
 
 [Raw paired evidence](../reports/b8-prefill-paired.json) contains every timing, prompt/output token ID, checkpoint hash and both executable hashes. Candidate SHA256 is `17b12348ced96818e18578af7fadaf88e40333ae48b29dcd4eeff520039ff184`; baseline is `64288263dd5973bf7bf6c2c60c87fa4b48104b0d66fe4a800877fbed64b88f43`. Both include explicit logit-dump close before ACK. The [microkernel evidence](wide_projection_four_lanes.md) motivated this candidate but is not substituted for these model measurements.
 
-## Validation and pending promotion gates
+## Validation
 
 Initial eight-token full-vocabulary comparison had maximum absolute error 4.80e-14 and the same greedy ID; B4 sampled output triples matched exactly. Host tests cover distinct capacities, malformed inputs/responses, sampled suffix RNG/output/cache parity, and verification staying at four while prefill uses eight. Descriptor tests cover the opt-in eight-token ceiling, wrong widths, output gaps, oversized rows and invalid spans; existing scheduler tests still pass. All 15 host/descriptor/scheduler tests pass; a separate non-B8 grouped build compiles successfully. The [candidate build manifest](../reports/b8-prefill-build-manifest.json) records exact sources and flags.
 
-Independent validation is in progress: 85/452-context full-vocabulary tolerance, held-out NLL/KL/greedy agreement, causal prefix truncation/replacement, reset/cancel/malformed wire, and actual 4096-token capacity. This document does not claim those unfinished gates passed. Arithmetic reassociation prevents a blanket bit-exact claim even when text matches.
+Independent validation passed sizes 1–8 and tails, prefix causality/truncation/replacement, reset/cancel/malformed requests, sampled B4 preservation, and 85/452-context full-vocabulary checks (33 comparisons, maximum absolute error 6.75e-14). The real capacity test filled 4088 positions, appended eight to reach 4096, exercised truncation/refill, and rejected a crossing request. See [independent gates](../reports/b8-independent-gates.json).
+
+The [held-out corpus](../reports/projection-quality-b8.json) covered 292 target tokens: 100% top-1 agreement, maximum logit error 1.3145e-13, aggregate weighted NLL delta zero at reported precision, and mean KL −1.4143e-17 from floating-point roundoff. Arithmetic reassociation still prevents a blanket bit-exact claim.
+
+The [nine free-running conversation cases](../reports/b8-conversation-quality.json) explicitly use B4 versus B8 prefill, with B4 verification, identical greedy settings/prompt IDs, no suffix drafts and fresh per-case sessions. Every complete output token sequence and text matched. Both engines pass only **4 of 9** strict objective cases; this supports no observed regression, not a claim of strong conversational quality. The failures are preserved in the raw report. Reproduce with `uv run --locked python tools/evaluate_prefill_conversations.py --reference BASELINE --candidate CANDIDATE --output build/b8-conversation-quality.json`. These correctness runs overlapped other validation work and make no speed claim.
 
 ## Reproduction
 
