@@ -49,13 +49,14 @@ def timing_result(start, arrivals, ids, text, stopped, backend_timings=None):
 
 
 class SVEngine:
-    def __init__(self, checkpoint, threads, tokenizer, binary=None, lanes=1):
+    def __init__(self, checkpoint, threads, tokenizer, binary=None, lanes=1, block_size=1):
         kwargs = {'binary': binary} if binary is not None else {}
-        self.model = RTLModel(checkpoint, workers=threads, **kwargs)
+        self.model = RTLModel(checkpoint, workers=threads, block_size=block_size, **kwargs)
         self.lanes = lanes
         self.tokenizer = tokenizer
         self.metadata = dict(weight_storage='BF16 checkpoint', arithmetic='SystemVerilog real / FP64',
                              kv='SystemVerilog real / FP64', parallel_workers=threads, reduction_lanes=lanes,
+                             prefill_block_size=block_size,
                              executable=str(binary or ROOT/'build/full/Vqwen_behavioral'),
                              cpu_thread_note='Persistent projection workers plus coordinator; no GPU')
 
@@ -69,11 +70,18 @@ class SVEngine:
     def close(self):
         self.model.close()
 
+    def prefill(self, tokens):
+        for offset in range(0, len(tokens), self.model.block_size):
+            chunk = tokens[offset:offset+self.model.block_size]
+            if self.model.block_size == 4:
+                self.model.block(chunk, logits=False)
+            else:
+                self.model.token(chunk[0], logits=False)
+
     def generate(self, prompt, count, fixed_count):
         self.model.reset()
         start = time.perf_counter()
-        for token in prompt[:-1]:
-            self.model.token(token, logits=False)
+        self.prefill(prompt[:-1])
         pending, output, arrivals = prompt[-1], [], []
         reason = 'length'
         for _ in range(count):
@@ -192,7 +200,7 @@ def make_prompt(protocol, profile):
     return request.ids
 
 
-def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, workers, lanes, count, atol, profile='short', reference_lanes=1, require_bit_identical=False):
+def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, workers, lanes, count, atol, profile='short', reference_lanes=1, require_bit_identical=False, candidate_block_size=1):
     """Teacher-force both engines from the same prompt; test every output logit.
 
     Reassociation may change low bits. Exact sampled text is not required, but
@@ -201,14 +209,13 @@ def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, 
     """
     import numpy as np
     reference = SVEngine(checkpoint,workers,protocol.tokenizer,reference_binary,reference_lanes)
-    candidate = SVEngine(checkpoint,workers,protocol.tokenizer,candidate_binary,lanes)
+    candidate = SVEngine(checkpoint,workers,protocol.tokenizer,candidate_binary,lanes,candidate_block_size)
     prompt = make_prompt(protocol,profile)
     errors, choices, finite, bit_identical = [], [], True, True
     try:
         reference.start(); candidate.start()
-        for token in prompt[:-1]:
-            reference.model.token(token,logits=False)
-            candidate.model.token(token,logits=False)
+        reference.prefill(prompt[:-1])
+        candidate.prefill(prompt[:-1])
         pending=prompt[-1]
         with tempfile.TemporaryDirectory() as directory:
             ref_path, cand_path = Path(directory)/'reference.bin', Path(directory)/'candidate.bin'
@@ -234,6 +241,7 @@ def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, 
             candidate_sha256=hashlib.sha256(candidate_binary.read_bytes()).hexdigest(),
             prompt_tokens=len(prompt),teacher_forced_generated_tokens=count,
             candidate_reduction_lanes=lanes,reference_reduction_lanes=reference_lanes,
+            candidate_prefill_block_size=candidate_block_size,reference_prefill_block_size=1,
             bit_identical_logits=bit_identical,require_bit_identical=require_bit_identical,absolute_error_tolerance=atol,
             per_position_max_absolute_logit_errors=errors,max_absolute_logit_error=maximum,
             greedy_choices=choices,unchanged_greedy_sequence=matched,all_logits_finite=finite,
@@ -255,6 +263,8 @@ def main():
     parser.add_argument('--model')
     parser.add_argument('--sv-binary', type=Path, help='Trusted local simulator executable; never accepted through HTTP')
     parser.add_argument('--sv-lanes', type=int, choices=[1,8], default=1)
+    parser.add_argument('--sv-block-size', type=int, choices=[1,4], default=1,
+                        help='Explicitly enable B4 prefill for a block-capable SV executable')
     parser.add_argument('--reference-sv-binary', type=Path, help='Optional baseline for a separate numerical gate before timing')
     parser.add_argument('--reference-sv-lanes', type=int, choices=[1,8], default=1)
     parser.add_argument('--require-bit-identical', action='store_true', help='Require exact logit bit patterns as well as the numerical/greedy gate')
@@ -289,7 +299,7 @@ def main():
                   if platform.system()=='Darwin' else platform.processor() or platform.machine()), threads_or_workers=args.threads,
         checkpoint=str(checkpoint), timestamp_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
         decoding='greedy, no penalties, identical EOS-respecting selection; performance requires requested count before EOS',
-        gpu=False, pytorch=False, runs=[], quality=[], sv_lanes=args.sv_lanes,
+        gpu=False, pytorch=False, runs=[], quality=[], sv_lanes=args.sv_lanes, sv_block_size=args.sv_block_size,
         limitations=['Same prompt token IDs, context, generated count and numeric worker count; NOT identical arithmetic or KV precision.',
                      'SV: BF16 stored weights / FP64 arithmetic and KV. Native: named stored weights / mixed arithmetic / FP16 KV.',
                      'Startup is process/model startup, not OS page-cache cold; no page-cache eviction is attempted.',
@@ -305,7 +315,7 @@ def main():
         report[key] = hashlib.sha256(binary.read_bytes()).hexdigest() if binary.is_file() else None
     if args.reference_sv_binary:
         report['numerical_gate'] = compare_sv_logits(checkpoint, protocol, args.reference_sv_binary,
-            sv_binary, args.threads, args.sv_lanes, args.gate_tokens, args.logit_atol, args.gate_profile, args.reference_sv_lanes, args.require_bit_identical)
+            sv_binary, args.threads, args.sv_lanes, args.gate_tokens, args.logit_atol, args.gate_profile, args.reference_sv_lanes, args.require_bit_identical, args.sv_block_size)
         args.output.write_text(json.dumps(report,indent=2)+'\n')
         if not report['numerical_gate']['passed']:
             raise RuntimeError('Numerical gate failed; candidate timing skipped')
@@ -313,7 +323,7 @@ def main():
         report['llama_commit'] = (subprocess.check_output(['git','-C',str(ROOT/'build/llama.cpp'),'rev-parse','HEAD'],text=True).strip()
                                   if (ROOT/'build/llama.cpp/.git').exists() else None)
         for name in args.engines.split(','):
-            engine = SVEngine(checkpoint,args.threads,protocol.tokenizer,args.sv_binary,args.sv_lanes) if name=='rtl' else NativeEngine(name.removeprefix('llama-'),args.threads,args.output.parent)
+            engine = SVEngine(checkpoint,args.threads,protocol.tokenizer,args.sv_binary,args.sv_lanes,args.sv_block_size) if name=='rtl' else NativeEngine(name.removeprefix('llama-'),args.threads,args.output.parent)
             try:
                 startup = engine.start()
                 for profile in profiles:

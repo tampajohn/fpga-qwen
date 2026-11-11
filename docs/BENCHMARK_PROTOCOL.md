@@ -1,5 +1,45 @@
 # CPU comparison protocol and results
 
+## Current grouped B4 profile
+
+The current SV simulator still trails llama.cpp. A refreshed CPU-only comparison
+uses the actual B4 prefill path, eight workers/threads, identical 85/452-token
+prompts, empty logical KV, and 32 greedy outputs with EOS respected. Each row
+has one first request followed by two warm repetitions; engines ran sequentially
+in the order SV, FP16, FP32. These are current measurements, not an alternating
+paired speedup experiment or a confidence interval.
+
+| Engine | Prompt tokens | Median warm TTFT (s) | Median decode (tok/s) |
+| --- | ---: | ---: | ---: |
+| SV grouped B4 | 85 | 1.015 | 41.50 |
+| llama.cpp FP16 | 85 | 0.214 | 139.01 |
+| llama.cpp FP32 | 85 | 0.131 | 81.22 |
+| SV grouped B4 | 452 | 7.201 | 29.75 |
+| llama.cpp FP16 | 452 | 0.637 | 123.10 |
+| llama.cpp FP32 | 452 | 0.504 | 77.45 |
+
+All three engines generated identical token IDs on both timed prompts, and each
+engine repeated its own sequence. The separate 452-token SV gate compared eight
+subsequent full-vocabulary logit positions against the prior fast executable:
+bit-identical, maximum error zero. This verifies the exact prefill optimization,
+not broad model quality. The prior nine-case suite's 4/9 strict score remains a
+limitation; it was not rerun here. Suffix drafting was disabled.
+
+The SV path still uses BF16 weight storage and FP64 arithmetic/KV; native engines
+use their named weight formats, mixed arithmetic and FP16 KV. Same worker count
+does not imply identical memory formats, kernels, or CPU utilization. Background
+user applications and idle localhost servers remained present; other agent heavy
+work was held during scoring. Raw timings, IDs, hashes and limitations:
+[current report](../reports/grouped-matched-current.json).
+
+`tools/benchmark_matched.py --sv-block-size 4 --sv-lanes 8 --sv-binary PATH`
+explicitly selects block prefill for a compatible executable. The default remains
+single-token prefill for reference executable compatibility. Before this option,
+the comparison tool always used single-token prefill even with a B4-capable
+binary; historical timings below describe their recorded execution path.
+
+## Historical scalar optimization comparison
+
 The optimized SystemVerilog candidate is **3.20× faster than its original
 simulator baseline** on the matched workload, but still does **not** beat
 llama.cpp. All rows below use the same 85 prompt token IDs, 32 greedy decoding
