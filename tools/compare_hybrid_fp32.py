@@ -49,9 +49,6 @@ def main():
     args.output.parent.mkdir(parents=True,exist_ok=True)
     try:
         report['startup_seconds']=[engine.start()for engine in engines]
-        # SVEngine configures the wire directly; synchronize the adapter state so
-        # historical dump barriers retain the actual eight-lane configuration.
-        for engine in engines:engine.model.set_lanes(8)
         report['engines']=[engine.metadata for engine in engines]
         models=[engine.model for engine in engines]
         with tempfile.TemporaryDirectory()as directory:
