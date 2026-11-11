@@ -26,6 +26,7 @@ def main():
     parser.add_argument('--batched-prefill', action='store_true')
     parser.add_argument('--block-unroll', action='store_true')
     parser.add_argument('--compact-projection', action='store_true')
+    parser.add_argument('--prefill-b8', action='store_true')
     parser.add_argument('--group-projections', action='store_true')
     parser.add_argument('--static-kv', action='store_true')
     parser.add_argument('--pool', choices=['cv', 'hybrid'], default='cv')
@@ -34,6 +35,8 @@ def main():
     args = parser.parse_args()
     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
+    if args.prefill_b8 and not args.batched_prefill:
+        parser.error('--prefill-b8 requires --batched-prefill')
     if args.group_projections and not args.batched_prefill:
         parser.error('--group-projections requires --batched-prefill')
     if args.block_unroll and not args.batched_prefill:
@@ -56,6 +59,7 @@ def main():
     if args.compact_projection: tag += '-compact-projection'
     if args.group_projections: tag += '-group-projections'
     if args.static_kv: tag += '-static-kv'
+    if args.prefill_b8: tag += '-prefill-b8'
     if args.pool != 'cv': tag += '-pool-'+args.pool
     if args.tag: tag += '-'+args.tag
     directory = ROOT / 'build/variants' / tag
@@ -76,6 +80,7 @@ def main():
     if args.batched_prefill: flags += ' -DBATCH_PREFILL'
     if args.group_projections: flags += ' -DGROUP_PROJECTIONS'
     if args.static_kv: flags += ' -DSTATIC_KV'
+    if args.prefill_b8: flags += ' -DPREFILL_B8 -DWIDE_BATCH=8 -DWIDE_FOUR_LANES'
     defines = {'scalar': [], 'row': ['+define+BULK_ROW_WEIGHTS']}[args.storage]
     if args.unchecked: defines += ['+define+UNCHECKED_WEIGHTS']
     if args.masked_activation: defines += ['+define+MASK_ACTIVATION_INDEX']
@@ -92,6 +97,9 @@ def main():
     if args.compact_projection: main_defines += ['+define+COMPACT_PROJECTION_BUFFER']
     if args.group_projections: main_defines += ['+define+GROUP_PROJECTIONS']
     if args.static_kv: main_defines += ['+define+STATIC_KV']
+    if args.prefill_b8:
+        defines += ['+define+WIDE_BATCH=8', '+define+WIDE_FOUR_LANES']
+        main_defines += ['+define+PREFILL_B8']
     commands = [
         ['verilator', '--cc', '--build', '-j', '4', '--top-module',
          'projection_worker', '--Mdir', str(projection), '-Wall', '-Wno-BLKSEQ',

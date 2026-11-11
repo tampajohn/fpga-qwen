@@ -12,6 +12,7 @@ class TargetDouble:
     def __init__(self, prediction, block_size=4):
         self.prediction=prediction
         self.block_size=block_size
+        self.prefill_size=block_size
         self.workers=8
         self.lanes=8
         self.process=None

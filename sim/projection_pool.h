@@ -97,12 +97,23 @@ class ProjectionPool {
 #ifdef BATCH_PREFILL
                 model->batch_count=batch_count;
                 if(operation==2) copy_scale=4;
+#ifdef PREFILL_B8
+                if(operation==3) copy_scale=8;
+#endif
 #endif
 #else
                 int copy_scale=1;
 #endif
 #ifdef BATCH_PREFILL
+                #ifdef PREFILL_B8
+                if(operation==3) std::memcpy(model->wide_activation.data(),input,width*8*sizeof(double));
+                else if(operation==2) {
+                    for(int j=0;j<width;++j) for(int t=0;t<4;++t)
+                        model->batch_activation[j*4+t]=t<batch_count?input[j*8+t]:0.0;
+                }
+#else
                 if(operation==2) std::memcpy(model->batch_activation.data(),input,width*4*sizeof(double));
+#endif
                 else
 #endif
                 std::memcpy(model->activation.data(),input,width*sizeof(double));
@@ -126,6 +137,15 @@ class ProjectionPool {
                 const double* source=model->result.data();
 #ifdef BATCH_PREFILL
                 if(operation==2) source=model->batch_result.data();
+#ifdef PREFILL_B8
+                if(operation==3) source=model->wide_result.data();
+#endif
+#endif
+                #ifdef PREFILL_B8
+                if(operation==2) {
+                    for(int r=begin;r<end;++r) for(int t=0;t<batch_count;++t)
+                        destination[(output_offset+r)*8+t]=source[r*4+t];
+                } else
 #endif
                 std::memcpy(destination+(output_offset+begin)*copy_scale,source+begin*copy_scale,
                             (end-begin)*copy_scale*sizeof(double));
@@ -193,6 +213,12 @@ public:
                 throw std::runtime_error("Invalid block projection job");
         }
 #endif
+        #ifdef PREFILL_B8
+        else if(requested_operation==3) {
+            if(requested_batch_count<5 || requested_batch_count>8 || matrix_rows>3072)
+                throw std::runtime_error("Invalid wide prefill projection job");
+        }
+#endif
         else if(requested_operation!=0) throw std::runtime_error("Invalid worker operation");
 #endif
         if(matrix_rows<1 || matrix_rows>151936 || matrix_width<1 || matrix_width>3072)
@@ -243,8 +269,8 @@ public:
         std::unique_lock<std::mutex> lock(mutex);
         if(error) std::rethrow_exception(error);
         ++group_counters[0];group_counters[1]+=count;group_counters[2]+=count-1;
-        group_counters[3]+=uint64_t(count-1)*threads.size()*1024*4*sizeof(double);
-        group_jobs=jobs;group_count=count;operation=2;batch_count=tokens;
+        group_counters[3]+=uint64_t(count-1)*threads.size()*1024*(tokens>4?8:4)*sizeof(double);
+        group_jobs=jobs;group_count=count;operation=tokens>4?3:2;batch_count=tokens;
         base=jobs[0].base;rows=jobs[0].rows;width=1024;input=x;output=y;
 #ifdef PROJECTION_HYBRID_WAIT
         pending.store(threads.size(),std::memory_order_relaxed);

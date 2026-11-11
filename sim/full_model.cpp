@@ -1,3 +1,8 @@
+#ifdef PREFILL_B8
+static constexpr int block_capacity=8;
+#else
+static constexpr int block_capacity=4;
+#endif
 // Transport-only harness: map checkpoint bytes, supply tensor addresses, clock
 // Verilator, and exchange integer token IDs. No neural-network arithmetic here.
 #include "Vqwen_behavioral.h"
@@ -93,7 +98,7 @@ extern "C" void dispatch_block_projection(int64_t base,int rows,int width,int co
     const auto* x=static_cast<const double*>(svGetArrayPtr(input));
     auto* y=static_cast<double*>(svGetArrayPtr(output));
     if(!pool || !x || !y) throw std::runtime_error("Invalid block projection dispatch");
-    pool->run(base,rows,width,x,y,2,0,0,count);
+    pool->run(base,rows,width,x,y,count>4?3:2,0,0,count);
 }
 #endif
 #ifdef GROUP_PROJECTIONS
@@ -101,7 +106,7 @@ extern "C" void dispatch_projection_group(const svOpenArrayHandle bases,
         const svOpenArrayHandle rows,const svOpenArrayHandle output_offsets,int count,int tokens,
         const svOpenArrayHandle input,const svOpenArrayHandle output) {
     if(!pool || svSize(bases,1)!=3 || svSize(rows,1)!=3 || svSize(output_offsets,1)!=3 ||
-       svSize(input,1)<4096 || svSize(output,1)!=24576)
+       svSize(input,1)<1024*block_capacity || svSize(output,1)!=6144*block_capacity)
         throw std::runtime_error("Invalid group array shape");
     const auto* b=static_cast<const int64_t*>(svGetArrayPtr(bases));
     const auto* r=static_cast<const int*>(svGetArrayPtr(rows));
@@ -174,6 +179,21 @@ int main(int argc,char** argv) {
                 count=requested;d->parallel_workers=count;
                 std::cout<<"configured\n"<<std::flush;
 #ifdef BATCH_PREFILL
+#ifdef PREFILL_B8
+            } else if(command=="prefill") {
+                int count;
+                if(!(std::cin>>count) || count<1 || count>8 || d->position+count>4096)
+                    throw std::runtime_error("Invalid prefill request");
+                std::array<int,8> tokens{};
+                for(int t=0;t<count;++t)
+                    if(!(std::cin>>tokens[t]) || tokens[t]<0 || tokens[t]>=151936)
+                        throw std::runtime_error("Invalid prefill token");
+                for(int t=0;t<8;++t) {d->block_tokens[t]=tokens[t];d->block_uniforms[t]=0.0;}
+                d->block_count=count;d->do_logits=0;d->sample_enabled=0;
+                d->start=0;d->block_start=1;tick();d->block_start=0;
+                if(!d->done) throw std::runtime_error("Prefill simulation did not finish");
+                std::cout<<"prefill "<<count<<' '<<d->position<<'\n'<<std::flush;
+#endif
             } else if(command=="block") {
                 int count,logits,sampled;
                 double penalty;

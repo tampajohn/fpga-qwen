@@ -57,13 +57,20 @@ class SimulationCancelled(Exception):
 
 
 class RTLModel:
-    def __init__(self, model=None, workers=0, binary=None, lanes=1, block_size=1):
+    def __init__(self, model=None, workers=0, binary=None, lanes=1, block_size=1, prefill_size=None):
         if type(workers) is not int or not 0 <= workers <= 32:
             raise ValueError("Workers must be an integer from 0 to 32")
         if type(lanes) is not int or lanes not in (1, 8):
             raise ValueError('Reduction lanes must be 1 or 8')
         if type(block_size) is not int or block_size not in (1, 4):
             raise ValueError("Block size must be 1 or 4")
+        if prefill_size is None:
+            prefill_size = block_size
+        if type(prefill_size) is not int or prefill_size not in (1, 4, 8) or prefill_size < block_size:
+            raise ValueError('Prefill size must be 1, 4, or 8 and at least block size')
+        if prefill_size != block_size and (prefill_size, block_size) != (8, 4):
+            raise ValueError('Prefill must match block size, except B8 prefill with B4 verification')
+        self.prefill_size = prefill_size
         self.block_size = block_size
         self.lanes = lanes
         self.workers = workers
@@ -182,3 +189,20 @@ class RTLModel:
             raise RuntimeError('Invalid simulator block response')
         return [(int(response[i]), int(response[i+1]), float(response[i+2]))
                 for i in range(2, len(response), 3)]
+
+    def prefill(self, tokens, cancel=None):
+        """No-logits prefill; wider capacity is explicitly configured by caller."""
+        tokens = list(tokens)
+        if not 1 <= len(tokens) <= self.prefill_size or any(type(t) is not int or not 0 <= t < 151936 for t in tokens):
+            raise ValueError('Invalid prefill tokens or capacity')
+        if self.prefill_size != 8:
+            if self.block_size == 4:
+                return self.block(tokens, logits=False, cancel=cancel)
+            return [self.token(tokens[0], logits=False, cancel=cancel)]
+        response = self.command(' '.join(['prefill', str(len(tokens)), *map(str, tokens)]), cancel).split()
+        if len(response) != 3 or response[:2] != ['prefill', str(len(tokens))]:
+            raise RuntimeError('Invalid simulator prefill response')
+        end = int(response[2])
+        if not len(tokens) <= end <= 4096:
+            raise RuntimeError('Invalid simulator prefill position')
+        return [(0, end-len(tokens)+i+1, 0.0) for i in range(len(tokens))]

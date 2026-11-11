@@ -1,0 +1,178 @@
+{
+  "batch": 8,
+  "candidate_reduction_lanes": 4,
+  "absolute_tolerance": 1e-10,
+  "activation_denominator": 17,
+  "workers": 8,
+  "repetitions": 100,
+  "binary_sha256": "46fd12e890690eae6a8abc8a4149a89a65ab97d3a78adbdc34bc61e06c7f659e",
+  "command": [
+    "verilator",
+    "--cc",
+    "--exe",
+    "--build",
+    "-j",
+    "4",
+    "--top-module",
+    "projection_worker",
+    "--Mdir",
+    "$B8_WORKTREE/build/wide-probe-b8-four-lanes",
+    "-Wall",
+    "-Wno-BLKSEQ",
+    "-Wno-fatal",
+    "-CFLAGS",
+    "-std=c++17 -O3 -flto=thin -DWIDE_BATCH=8 -DWIDE_FOUR_LANES",
+    "-MAKEFLAGS",
+    "OPT_FAST=-O3",
+    "-LDFLAGS",
+    "-flto=thin",
+    "-O3",
+    "+define+PARALLEL_ATTENTION",
+    "+define+BATCH_PREFILL",
+    "+define+BLOCK_UNROLL",
+    "+define+UNCHECKED_WEIGHTS",
+    "+define+MASK_ACTIVATION_INDEX",
+    "+define+UNSIGNED_PROJECTION_INDEX",
+    "+define+WIDE_BATCH=8",
+    "+define+WIDE_FOUR_LANES",
+    "$B8_WORKTREE/rtl/projection_worker.sv",
+    "$B8_WORKTREE/sim/wide_projection_probe.cpp"
+  ],
+  "source_hashes": {
+    "rtl/projection_worker.sv": "1e18c85b71151d286e202ef6196c62acd8ca4628d8096fc7f5a5d0be842cc7a5",
+    "sim/wide_projection_probe.cpp": "21456b2e0ef840cb506f8cd966d0b90f8dd8efe5aafe123cb328be2830cfd365"
+  },
+  "limitation": "Projection-only warmed arithmetic throughput, excludes per-job pool barriers, input/result copies and all nonprojection model work; synthetic activations with real checkpoint matrices.",
+  "runs": [
+    {
+      "bit_identical": false,
+      "max_absolute_error": 4.884981308350689e-15,
+      "batch": 8,
+      "pairs": [
+        {
+          "baseline_b4_seconds": 0.024778084,
+          "wide_seconds": 0.020411542,
+          "throughput_ratio": 2.4278502819630186
+        },
+        {
+          "baseline_b4_seconds": 0.011741417,
+          "wide_seconds": 0.017587083,
+          "throughput_ratio": 1.3352318858107397
+        },
+        {
+          "baseline_b4_seconds": 0.011603125,
+          "wide_seconds": 0.017104,
+          "throughput_ratio": 1.3567732694106642
+        }
+      ],
+      "name": "q",
+      "rows": 2048,
+      "width": 1024,
+      "median_throughput_ratio": 1.3567732694106642
+    },
+    {
+      "bit_identical": false,
+      "max_absolute_error": 3.219646771412954e-15,
+      "batch": 8,
+      "pairs": [
+        {
+          "baseline_b4_seconds": 0.0120235,
+          "wide_seconds": 0.018898583,
+          "throughput_ratio": 1.2724234404240784
+        },
+        {
+          "baseline_b4_seconds": 0.012322875,
+          "wide_seconds": 0.017936625,
+          "throughput_ratio": 1.37404612071669
+        },
+        {
+          "baseline_b4_seconds": 0.012319708,
+          "wide_seconds": 0.019646209,
+          "throughput_ratio": 1.2541562598667253
+        }
+      ],
+      "name": "o",
+      "rows": 1024,
+      "width": 2048,
+      "median_throughput_ratio": 1.2724234404240784
+    },
+    {
+      "bit_identical": false,
+      "max_absolute_error": 3.9968028886505635e-15,
+      "batch": 8,
+      "pairs": [
+        {
+          "baseline_b4_seconds": 0.017354625,
+          "wide_seconds": 0.027505042,
+          "throughput_ratio": 1.2619231775759512
+        },
+        {
+          "baseline_b4_seconds": 0.016586541,
+          "wide_seconds": 0.027895416,
+          "throughput_ratio": 1.1891947408133294
+        },
+        {
+          "baseline_b4_seconds": 0.017827334,
+          "wide_seconds": 0.027718583,
+          "throughput_ratio": 1.2863091883160116
+        }
+      ],
+      "name": "gate",
+      "rows": 3072,
+      "width": 1024,
+      "median_throughput_ratio": 1.2619231775759512
+    },
+    {
+      "bit_identical": false,
+      "max_absolute_error": 3.774758283725532e-15,
+      "batch": 8,
+      "pairs": [
+        {
+          "baseline_b4_seconds": 0.018192834,
+          "wide_seconds": 0.027280125,
+          "throughput_ratio": 1.3337793723452516
+        },
+        {
+          "baseline_b4_seconds": 0.017392,
+          "wide_seconds": 0.027171875,
+          "throughput_ratio": 1.280147211040828
+        },
+        {
+          "baseline_b4_seconds": 0.017368208,
+          "wide_seconds": 0.026601375,
+          "throughput_ratio": 1.3058128010300218
+        }
+      ],
+      "name": "down",
+      "rows": 1024,
+      "width": 3072,
+      "median_throughput_ratio": 1.3058128010300218
+    },
+    {
+      "bit_identical": true,
+      "max_absolute_error": 0,
+      "batch": 8,
+      "pairs": [
+        {
+          "baseline_b4_seconds": 5.6041e-05,
+          "wide_seconds": 4.2708e-05,
+          "throughput_ratio": 2.6243795073522524
+        },
+        {
+          "baseline_b4_seconds": 5.6167e-05,
+          "wide_seconds": 4.2458e-05,
+          "throughput_ratio": 2.6457675820811155
+        },
+        {
+          "baseline_b4_seconds": 7.6708e-05,
+          "wide_seconds": 6.4833e-05,
+          "throughput_ratio": 2.3663257908781024
+        }
+      ],
+      "name": "tail",
+      "rows": 7,
+      "width": 9,
+      "median_throughput_ratio": 2.6243795073522524
+    }
+  ]
+}

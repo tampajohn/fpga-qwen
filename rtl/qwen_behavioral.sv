@@ -1,3 +1,8 @@
+`ifdef PREFILL_B8
+`define BLOCK_CAPACITY 8
+`else
+`define BLOCK_CAPACITY 4
+`endif
 // Full Qwen3-0.6B functional SystemVerilog model. NOT synthesizable RTL.
 // real arithmetic and transcendental functions establish a correctness baseline.
 // A clock edge executes one token; that edge is NOT a hardware latency estimate.
@@ -9,10 +14,10 @@ module qwen_behavioral (
 `ifdef BATCH_PREFILL
     input logic block_start,
     input int block_count,
-    input int block_tokens[4],
-    input real block_uniforms[4],
-    output int block_ids[4], block_positions[4],
-    output real block_logits[4],
+    input int block_tokens[`BLOCK_CAPACITY],
+    input real block_uniforms[`BLOCK_CAPACITY],
+    output int block_ids[`BLOCK_CAPACITY], block_positions[`BLOCK_CAPACITY],
+    output real block_logits[`BLOCK_CAPACITY],
 `endif
     input logic sample_enabled,
     input real sample_uniform, presence_penalty,
@@ -33,10 +38,10 @@ module qwen_behavioral (
 `ifdef BATCH_PREFILL
     import "DPI-C" function void dispatch_block_projection(input longint base,
         input int rows, width, count, input real activation[], output real result[]);
-    real block_x[1024][4], block_n[1024][4], block_q[2048][4];
-    real block_k[1024][4], block_v[1024][4], block_a[2048][4];
-    real block_gate[3072][4], block_up[3072][4];
-    real block_input[12288], block_output[12288];
+    real block_x[1024][`BLOCK_CAPACITY], block_n[1024][`BLOCK_CAPACITY], block_q[2048][`BLOCK_CAPACITY];
+    real block_k[1024][`BLOCK_CAPACITY], block_v[1024][`BLOCK_CAPACITY], block_a[2048][`BLOCK_CAPACITY];
+    real block_gate[3072][`BLOCK_CAPACITY], block_up[3072][`BLOCK_CAPACITY];
+    real block_input[3072*`BLOCK_CAPACITY], block_output[3072*`BLOCK_CAPACITY];
 `endif
     real projection_input[3072];
 `ifdef COMPACT_PROJECTION_BUFFER
@@ -293,7 +298,7 @@ module qwen_behavioral (
         input real activation[], output real result[]);
     longint group_bases[3];
     int group_rows[3], group_offsets[3];
-    real group_output[24576];
+    real group_output[6144*`BLOCK_CAPACITY];
     task automatic block_group(input int slot0, rows0, slot1, rows1, slot2, rows2, jobs);
         group_bases[0]=tensor_base(slot0);group_rows[0]=rows0;group_offsets[0]=0;
         group_bases[1]=tensor_base(slot1);group_rows[1]=rows1;group_offsets[1]=rows0;
@@ -313,8 +318,8 @@ module qwen_behavioral (
                 for (int t=0;t<block_count;t++) begin
                     sum=0.0;
                     for (int j=0;j<width;j++)
-                        sum+=block_input[j*4+t]*weight_value(base+longint'(r)*width+longint'(j));
-                    block_output[r*4+t]=sum;
+                        sum+=block_input[j*`BLOCK_CAPACITY+t]*weight_value(base+longint'(r)*width+longint'(j));
+                    block_output[r*`BLOCK_CAPACITY+t]=sum;
                 end
             end
         end
@@ -325,7 +330,7 @@ module qwen_behavioral (
             for (int j=0;j<H;j++) x[j]=block_x[j][t];
             normalize_hidden(slot);
             for (int j=0;j<H;j++) begin
-                block_n[j][t]=n[j];block_input[j*4+t]=n[j];
+                block_n[j][t]=n[j];block_input[j*`BLOCK_CAPACITY+t]=n[j];
             end
         end
     endtask
@@ -335,8 +340,13 @@ module qwen_behavioral (
         real angle, sum, g, sigmoid;
         longint base;
         initial_position=position;
-        if (block_count<1 || block_count>4 || position+block_count>C)
+        if (block_count<1 || block_count>`BLOCK_CAPACITY || position+block_count>C)
             $fatal(1,"Invalid block count or context full");
+        if (block_count>4 && (do_logits || sample_enabled)) $fatal(1,"Wide blocks are prefill only");
+`ifdef PREFILL_B8
+        // Wide kernel computes eight outputs; inactive inputs are defined zeros.
+        for (int j=0;j<3072;j++) for (int t=block_count;t<8;t++) block_input[j*8+t]=0.0;
+`endif
         for (int t=0;t<block_count;t++) begin
             if (block_tokens[t]<0 || block_tokens[t]>=V) $fatal(1,"Invalid block token");
             token_history[initial_position+t]=block_tokens[t];
@@ -349,19 +359,19 @@ module qwen_behavioral (
 `ifdef GROUP_PROJECTIONS
             if (parallel_workers>0) begin
                 block_group(3+layer*11+1,Q,3+layer*11+2,H,3+layer*11+3,H,3);
-                for (int j=0;j<Q;j++) for (int t=0;t<block_count;t++) block_q[j][t]=group_output[j*4+t];
+                for (int j=0;j<Q;j++) for (int t=0;t<block_count;t++) block_q[j][t]=group_output[j*`BLOCK_CAPACITY+t];
                 for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) begin
-                    block_k[j][t]=group_output[(Q+j)*4+t];
-                    block_v[j][t]=group_output[(Q+H+j)*4+t];
+                    block_k[j][t]=group_output[(Q+j)*`BLOCK_CAPACITY+t];
+                    block_v[j][t]=group_output[(Q+H+j)*`BLOCK_CAPACITY+t];
                 end
             end else begin
 `endif
             block_project(3+layer*11+1,Q,H);
-            for (int j=0;j<Q;j++) for (int t=0;t<block_count;t++) block_q[j][t]=block_output[j*4+t];
+            for (int j=0;j<Q;j++) for (int t=0;t<block_count;t++) block_q[j][t]=block_output[j*`BLOCK_CAPACITY+t];
             block_project(3+layer*11+2,H,H);
-            for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_k[j][t]=block_output[j*4+t];
+            for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_k[j][t]=block_output[j*`BLOCK_CAPACITY+t];
             block_project(3+layer*11+3,H,H);
-            for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_v[j][t]=block_output[j*4+t];
+            for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_v[j][t]=block_output[j*`BLOCK_CAPACITY+t];
 `ifdef GROUP_PROJECTIONS
             end
 `endif
@@ -377,9 +387,9 @@ module qwen_behavioral (
                 attention(layer,0);
                 for (int j=0;j<Q;j++) block_a[j][t]=a[j];
             end
-            for (int j=0;j<Q;j++) for (int t=0;t<block_count;t++) block_input[j*4+t]=block_a[j][t];
+            for (int j=0;j<Q;j++) for (int t=0;t<block_count;t++) block_input[j*`BLOCK_CAPACITY+t]=block_a[j][t];
             block_project(3+layer*11+4,H,Q);
-            for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_x[j][t]+=block_output[j*4+t];
+            for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_x[j][t]+=block_output[j*`BLOCK_CAPACITY+t];
             block_normalize(3+layer*11+7);
 `ifdef GROUP_PROJECTIONS
             if (parallel_workers>0) block_group(3+layer*11+8,I,3+layer*11+9,I,0,0,2);
@@ -389,10 +399,10 @@ module qwen_behavioral (
             for (int j=0;j<I;j++) begin
                 for (int t=0;t<block_count;t++) begin
 `ifdef GROUP_PROJECTIONS
-                    if (parallel_workers>0) sum=group_output[j*4+t];
+                    if (parallel_workers>0) sum=group_output[j*`BLOCK_CAPACITY+t];
                     else
 `endif
-                    sum=block_output[j*4+t];
+                    sum=block_output[j*`BLOCK_CAPACITY+t];
                     if (sum>=0.0) sigmoid=1.0/(1.0+$exp(-sum));
                     else begin g=$exp(sum);sigmoid=g/(1.0+g);end
                     block_gate[j][t]=sum*sigmoid;
@@ -404,14 +414,14 @@ module qwen_behavioral (
             block_project(3+layer*11+9,I,H);
             for (int j=0;j<I;j++) for (int t=0;t<block_count;t++) begin
 `ifdef GROUP_PROJECTIONS
-                if (parallel_workers>0) block_up[j][t]=block_gate[j][t]*group_output[(I+j)*4+t];
+                if (parallel_workers>0) block_up[j][t]=block_gate[j][t]*group_output[(I+j)*`BLOCK_CAPACITY+t];
                 else
 `endif
-                block_up[j][t]=block_gate[j][t]*block_output[j*4+t];
-                block_input[j*4+t]=block_up[j][t];
+                block_up[j][t]=block_gate[j][t]*block_output[j*`BLOCK_CAPACITY+t];
+                block_input[j*`BLOCK_CAPACITY+t]=block_up[j][t];
             end
             block_project(3+layer*11+10,H,I);
-            for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_x[j][t]+=block_output[j*4+t];
+            for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_x[j][t]+=block_output[j*`BLOCK_CAPACITY+t];
         end
         // Vocabulary projection stays single-position initially; no huge BxV ports.
         for (int t=0;t<block_count;t++) begin

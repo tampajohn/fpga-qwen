@@ -13,8 +13,8 @@ except ImportError:
 
 
 class RTLChatEngine(ChatProtocol):
-    def __init__(self, model=None, workers=8, binary=None, lanes=1, block_size=1):
-        self.sim = RTLModel(model, workers=workers, binary=binary, lanes=lanes, block_size=block_size)
+    def __init__(self, model=None, workers=8, binary=None, lanes=1, block_size=1, prefill_size=None):
+        self.sim = RTLModel(model, workers=workers, binary=binary, lanes=lanes, block_size=block_size, prefill_size=prefill_size)
         super().__init__(self.sim.model)
         self.cache_ids = []
         self.cache_session = None
@@ -30,7 +30,8 @@ class RTLChatEngine(ChatProtocol):
                     rtl='Full behavioral SystemVerilog; not synthesizable or cycle-accurate',
                     inference='Verilator: all model math and KV payload in SystemVerilog',
                     reduction_lanes=self.sim.lanes if self.sim.workers else 1,
-                    prefill_block_size=self.sim.block_size, suffix_supported=self.sim.block_size == 4,
+                    prefill_reduction_lanes=(4 if self.sim.prefill_size == 8 and self.sim.lanes == 8 else self.sim.lanes) if self.sim.workers else 1,
+                    prefill_block_size=self.sim.prefill_size, suffix_supported=self.sim.block_size == 4,
                     max_verified_draft=self.sim.block_size-1,
                     cached_tokens=len(self.cache_ids), pytorch_loaded=('torch' in sys.modules))
 
@@ -55,7 +56,7 @@ class RTLChatEngine(ChatProtocol):
         m = dict(prompt_tokens=len(request.ids), reused_prefix_tokens=0, output_tokens=0,
                  rounds=0, proposed_tokens=0, accepted_tokens=0, verified_tokens=0, tokens_per_round=0,
                  decode_tokens_per_second=0, first_token_ms=None, elapsed_seconds=0,
-                 kv_tokens=0, context_limit=4096, prefill_seconds=0, decode_seconds=0, prefill_block_size=self.sim.block_size,
+                 kv_tokens=0, context_limit=4096, prefill_seconds=0, decode_seconds=0, prefill_block_size=self.sim.prefill_size,
                  requested_max_draft=request.max_draft, effective_max_draft=draft_limit)
         def metrics():
             m['elapsed_seconds'] = time.perf_counter()-started
@@ -88,9 +89,11 @@ class RTLChatEngine(ChatProtocol):
             yield dict(type='start', metrics=metrics())
             prefill_started = time.perf_counter()
             prefill = request.ids[reused:-1]
-            for offset in range(0, len(prefill), self.sim.block_size):
-                chunk = prefill[offset:offset+self.sim.block_size]
-                if self.sim.block_size == 4:
+            for offset in range(0, len(prefill), self.sim.prefill_size):
+                chunk = prefill[offset:offset+self.sim.prefill_size]
+                if self.sim.prefill_size == 8:
+                    results = self.sim.prefill(chunk, cancel=cancel)
+                elif self.sim.block_size == 4:
                     results = self.sim.block(chunk, logits=False, cancel=cancel)
                 else:
                     results = [self.sim.token(chunk[0], logits=False, cancel=cancel)]

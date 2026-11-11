@@ -24,7 +24,7 @@ class BackendRouter:
     def catalog(self):
         return [dict(id='rtl', label='SystemVerilog · fast' if self.simulation.sim.lanes == 8 else 'SystemVerilog · reference', available=True,
                      cpu_threads=self.simulation.threads, suffix_supported=self.simulation.sim.block_size == 4,
-                     max_draft=self.simulation.sim.block_size-1, prefill_block_size=self.simulation.sim.block_size)] + [
+                     max_draft=self.simulation.sim.block_size-1, prefill_block_size=self.simulation.sim.prefill_size)] + [
             dict(id=key, label=label, available=self.binary.is_file() and self.models[key].is_file(),
                  cpu_threads=6, suffix_supported=False)
             for key, label in [('llama-q4', 'llama.cpp · Q4_K_M'), ('llama-f16', 'llama.cpp · FP16'), ('llama-f32', 'llama.cpp · FP32')]]

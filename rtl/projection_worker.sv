@@ -9,6 +9,11 @@ module projection_worker (
     input int first_row, end_row, width, reduction_lanes,
 `ifdef BATCH_PREFILL
     input int batch_count,
+`ifdef WIDE_BATCH
+    // Probe-only ports: no public model/block protocol is changed.
+    input real wide_activation[4096*`WIDE_BATCH],
+    output real wide_result[3072*`WIDE_BATCH],
+`endif
 `ifdef BLOCK_UNROLL
     input real batch_activation[16384],
 `else
@@ -146,12 +151,78 @@ module projection_worker (
         end
     endtask
 `endif
+`ifdef WIDE_BATCH
+    task automatic project_wide_probe;
+`ifdef WIDE_FOUR_LANES
+        real partial4[4][`WIDE_BATCH], totals[`WIDE_BATCH], weight;
+        for (`PROJECTION_INDEX row=first_row;row<end_row;row++) begin
+            for (int t=0;t<`WIDE_BATCH;t++) begin
+                totals[t]=0.0;
+                for (int lane=0;lane<4;lane++) partial4[lane][t]=0.0;
+            end
+            if (reduction_lanes==8 && width%8==0) begin
+                for (`PROJECTION_INDEX column=0;column<width && column<3069;column+=4) begin
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+0));
+                    for (int t=0;t<`WIDE_BATCH;t++)
+                        partial4[0][t]+=wide_activation[((column+0)*`WIDE_BATCH+t)&(4096*`WIDE_BATCH-1)]*weight;
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+1));
+                    for (int t=0;t<`WIDE_BATCH;t++)
+                        partial4[1][t]+=wide_activation[((column+1)*`WIDE_BATCH+t)&(4096*`WIDE_BATCH-1)]*weight;
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+2));
+                    for (int t=0;t<`WIDE_BATCH;t++)
+                        partial4[2][t]+=wide_activation[((column+2)*`WIDE_BATCH+t)&(4096*`WIDE_BATCH-1)]*weight;
+                    weight=projection_weight_value(base+longint'(row)*width+(longint'(column)+3));
+                    for (int t=0;t<`WIDE_BATCH;t++)
+                        partial4[3][t]+=wide_activation[((column+3)*`WIDE_BATCH+t)&(4096*`WIDE_BATCH-1)]*weight;
+                end
+                for (int lane=0;lane<4;lane++) for (int t=0;t<`WIDE_BATCH;t++) totals[t]+=partial4[lane][t];
+            end else begin
+                for (`PROJECTION_INDEX column=0;column<width && column<3072;column++) begin
+                    weight=projection_weight_value(base+longint'(row)*width+longint'(column));
+                    for (int t=0;t<`WIDE_BATCH;t++)
+                        totals[t]+=wide_activation[(column*`WIDE_BATCH+t)&(4096*`WIDE_BATCH-1)]*weight;
+                end
+            end
+            for (int t=0;t<`WIDE_BATCH;t++) wide_result[row*`WIDE_BATCH+t]=totals[t];
+        end
+`else
+        real lane_sums[`WIDE_BATCH], totals[`WIDE_BATCH], weight;
+        for (`PROJECTION_INDEX row=first_row;row<end_row;row++) begin
+            for (int t=0;t<`WIDE_BATCH;t++) totals[t]=0.0;
+            if (reduction_lanes==8 && width%8==0) begin
+                // Finish one lane at a time: preserve each lane's column order
+                // and the original lane0..7 final reduction, with O(B) live sums.
+                for (int lane=0;lane<8;lane++) begin
+                    for (int t=0;t<`WIDE_BATCH;t++) lane_sums[t]=0.0;
+                    for (`PROJECTION_INDEX column=lane;column<width && column<3072;column+=8) begin
+                        weight=projection_weight_value(base+longint'(row)*width+longint'(column));
+                        for (int t=0;t<`WIDE_BATCH;t++)
+                            lane_sums[t]+=wide_activation[(column*`WIDE_BATCH+t)&(4096*`WIDE_BATCH-1)]*weight;
+                    end
+                    for (int t=0;t<`WIDE_BATCH;t++) totals[t]+=lane_sums[t];
+                end
+            end else begin
+                for (`PROJECTION_INDEX column=0;column<width && column<3072;column++) begin
+                    weight=projection_weight_value(base+longint'(row)*width+longint'(column));
+                    for (int t=0;t<`WIDE_BATCH;t++)
+                        totals[t]+=wide_activation[(column*`WIDE_BATCH+t)&(4096*`WIDE_BATCH-1)]*weight;
+                end
+            end
+            for (int t=0;t<`WIDE_BATCH;t++) wide_result[row*`WIDE_BATCH+t]=totals[t];
+        end
+`endif
+    endtask
+`endif
     always @(posedge clk) begin
         real sum;
         real partial[8];
         if (start) begin
 `ifdef PARALLEL_ATTENTION
 `ifdef BATCH_PREFILL
+`ifdef WIDE_BATCH
+            if (operation==3) project_wide_probe();
+            else
+`endif
             if (operation==2) project_block();
             else
 `endif
