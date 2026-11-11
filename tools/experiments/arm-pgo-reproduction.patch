@@ -1,0 +1,220 @@
+diff --git a/tools/benchmark_blocks.py b/tools/benchmark_blocks.py
+index 32299bf..8759a57 100644
+--- a/tools/benchmark_blocks.py
++++ b/tools/benchmark_blocks.py
+@@ -91,6 +91,7 @@ def main():
+     parser.add_argument('--workers',type=int,default=8)
+     parser.add_argument('--lanes',type=int,choices=[1,8],default=8)
+     parser.add_argument('--block-size',type=int,choices=[2,3,4],default=4)
++    parser.add_argument('--reference-block-size',type=int,choices=[1,2,3,4],default=1)
+     parser.add_argument('--profiles',default='short,long')
+     parser.add_argument('--pairs',type=int,default=3)
+     parser.add_argument('--tokens',type=int,default=32)
+@@ -109,7 +110,7 @@ def main():
+     protocol=ChatProtocol(models[0].model)
+     report=dict(timestamp_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
+                 completed=False,gpu=False,pytorch=False,workers=args.workers,lanes=args.lanes,
+-                block_size=args.block_size,arithmetic='SystemVerilog real / FP64',
++                block_size=args.block_size,reference_block_size=args.reference_block_size,arithmetic='SystemVerilog real / FP64',
+                 batching='Declared layer-first RTL block execution; inspect engine implementation, not inferred from IPC counts.',
+                 limitation='Two resident processes, sequential inference, no OS cache eviction; timings include protocol overhead.',
+                 binaries=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in (reference,candidate)],
+@@ -124,7 +125,7 @@ def main():
+             for profile in profiles:
+                 prompt=make_prompt(protocol,profile)
+                 for m in models:m.reset()
+-                prefill(models[0],prompt[:-1],1);prefill(models[1],prompt[:-1],args.block_size)
++                prefill(models[0],prompt[:-1],args.reference_block_size);prefill(models[1],prompt[:-1],args.block_size)
+                 pending=prompt[-1];gates=[]
+                 for _ in range(args.gate_tokens):
+                     outputs=[m.token(pending) for m in models]
+@@ -133,13 +134,13 @@ def main():
+                     gates.append(compare_logits(*arrays,args.logit_atol));pending=outputs[0][0]
+                 record=dict(profile=profile,prompt_tokens=len(prompt),prompt_ids=prompt,gate=gates,pairs=[])
+                 report['profiles'].append(record)
+-                warm=[request(m,prompt,b,args.tokens) for m,b in zip(models,(1,args.block_size))]
++                warm=[request(m,prompt,b,args.tokens) for m,b in zip(models,(args.reference_block_size,args.block_size))]
+                 expected=warm[0]['output_token_ids']
+                 if warm[1]['output_token_ids']!=expected:raise AssertionError('Warm greedy trajectories differ')
+                 record['warmup']=warm
+                 for index in range(args.pairs):
+                     order=[0,1] if index%2==0 else [1,0]
+-                    results={i:request(models[i],prompt,1 if i==0 else args.block_size,args.tokens) for i in order}
++                    results={i:request(models[i],prompt,args.reference_block_size if i==0 else args.block_size,args.tokens) for i in order}
+                     if any(r['output_token_ids']!=expected for r in results.values()):raise AssertionError('Timed greedy trajectories differ')
+                     pair=dict(index=index,order=order,serial=results[0],block=results[1],
+                               prefill_speed_ratio=results[0]['prefill_seconds']/results[1]['prefill_seconds'],
+diff --git a/tools/build_projection_variant.py b/tools/build_projection_variant.py
+index e05c412..ad2a439 100644
+--- a/tools/build_projection_variant.py
++++ b/tools/build_projection_variant.py
+@@ -28,6 +28,10 @@ def main():
+     parser.add_argument('--compact-projection', action='store_true')
+     parser.add_argument('--static-kv', action='store_true')
+     parser.add_argument('--pool', choices=['cv', 'hybrid'], default='cv')
++    pgo = parser.add_mutually_exclusive_group()
++    pgo.add_argument('--pgo-generate', help='Raw instrumentation profile directory (isolated training binary)')
++    pgo.add_argument('--pgo-use', help='Merged profdata file with a matching .manifest.json sidecar')
++    parser.add_argument('--pgo-update', choices=['single', 'atomic'], default='single')
+     parser.add_argument('--tag', default='', help='Extra alphanumeric/dash suffix for a reproducible experiment')
+     parser.add_argument('--print-path', action='store_true', help='Print output path without compiling')
+     args = parser.parse_args()
+@@ -39,6 +43,12 @@ def main():
+         parser.error('--batched-prefill requires --parallel-attention and scalar storage')
+     if args.unchecked and args.storage != 'scalar':
+         parser.error('--unchecked applies only to scalar projection reads')
++    profile = Path(args.pgo_use).expanduser().resolve() if args.pgo_use else None
++    profile_sha = hashlib.sha256(profile.read_bytes()).hexdigest() if profile else None
++    profile_dir = Path(args.pgo_generate).expanduser().resolve() if args.pgo_generate else None
++    for path in (profile, profile_dir):
++        if path and any(c.isspace() for c in str(path)):
++            parser.error('PGO paths may not contain whitespace')
+     tag = f'{args.storage}-{args.opt}' + ('-lto' if args.lto else '') + ('-unchecked' if args.unchecked else '')
+     if args.fp_contract != 'on': tag += '-contract-'+args.fp_contract
+     if args.fast_math: tag += '-fast-math'
+@@ -53,6 +63,8 @@ def main():
+     if args.compact_projection: tag += '-compact-projection'
+     if args.static_kv: tag += '-static-kv'
+     if args.pool != 'cv': tag += '-pool-'+args.pool
++    if profile_dir: tag += '-pgo-generate-'+args.pgo_update
++    if profile: tag += '-pgo-use-'+profile_sha[:12]
+     if args.tag: tag += '-'+args.tag
+     directory = ROOT / 'build/variants' / tag
+     projection, full = directory / 'projection', directory / 'full'
+@@ -62,7 +74,18 @@ def main():
+         return
+     projection.mkdir(parents=True, exist_ok=True)
+     full.mkdir(parents=True, exist_ok=True)
++    link_flags = ['-flto=thin'] if args.lto else []
++    pgo_flags = []
++    if profile_dir:
++        profile_dir.mkdir(parents=True, exist_ok=True)
++        pgo_flags = ['-fprofile-instr-generate='+str(profile_dir/'%m-%p.profraw'),
++                     '-fprofile-update='+args.pgo_update]
++        link_flags += [pgo_flags[0]]
++    if profile:
++        pgo_flags = ['-fprofile-instr-use='+str(profile), '-Werror=profile-instr-out-of-date']
++        link_flags += [pgo_flags[0]]
+     flags = '-std=c++17 -' + args.opt + (' -flto=thin' if args.lto else '')
++    if pgo_flags: flags += ' '+' '.join(pgo_flags)
+     if args.cpu == 'native': flags += ' -mcpu=native'
+     if args.fast_math: flags += ' -ffast-math'
+     if args.fp_contract != 'on': flags += ' -ffp-contract='+args.fp_contract
+@@ -95,7 +118,7 @@ def main():
+          'qwen_behavioral', '--Mdir', str(full), '-I'+str(ROOT/'rtl'),
+          '-Wno-fatal', '--public-flat-rw', '-CFLAGS', flags+' -I'+str(projection),
+          '-MAKEFLAGS', f'OPT_FAST=-{args.opt}', '-O3', *main_defines,
+-         *(['-LDFLAGS', '-flto=thin'] if args.lto else []),
++         *(['-LDFLAGS', ' '.join(link_flags)] if link_flags else []),
+          str(ROOT/'rtl/qwen_behavioral.sv'), str(ROOT/'sim/full_model.cpp'),
+          str(projection/'Vprojection_worker__ALL.a')]]
+     sources = ['rtl/projection_worker.sv', 'rtl/qwen_behavioral.sv', 'rtl/sampling.svh',
+@@ -103,13 +126,27 @@ def main():
+     def source_hashes():
+         return {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sources}
+     before = source_hashes()
++    profile_manifest = None
++    if profile:
++        profile_manifest = json.loads(Path(str(profile)+'.manifest.json').read_text())
++        if profile_manifest['build_sources'] != before:
++            raise RuntimeError('PGO training source hashes differ from this build')
++        if profile_manifest['compiler'] != subprocess.check_output(['c++', '--version'], text=True).splitlines()[0]:
++            raise RuntimeError('PGO training compiler differs from current compiler')
++        if profile_manifest['verilator'] != subprocess.check_output(['verilator', '--version'], text=True).strip():
++            raise RuntimeError('PGO training Verilator differs from current Verilator')
++        if profile_manifest['profile_sha256'] != profile_sha:
++            raise RuntimeError('PGO profile digest differs from its manifest')
+     with (directory/'build.log').open('w') as log:
+         for command in commands:
+             subprocess.run(command, check=True, stdout=log, stderr=subprocess.STDOUT, cwd=ROOT)
+     after = source_hashes()
+     if before != after:
+         raise RuntimeError('Source changed during build; rebuild before benchmarking this artifact')
++    if profile and hashlib.sha256(profile.read_bytes()).hexdigest()!=profile_sha:
++        raise RuntimeError('PGO profile changed during compilation')
+     manifest = dict(options=vars(args), commands=commands, sources=after,
++                    pgo_profile_sha256=profile_sha, pgo_training=profile_manifest,
+                     binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),
+                     verilator=subprocess.check_output(['verilator', '--version'], text=True).strip(),
+                     compiler=subprocess.check_output(['c++', '--version'], text=True).splitlines()[0])
+diff --git a/tools/train_pgo.py b/tools/train_pgo.py
+new file mode 100644
+index 0000000..7dd87c1
+--- /dev/null
++++ b/tools/train_pgo.py
+@@ -0,0 +1,75 @@
++"""Bounded instrumentation training; its elapsed time is not a performance result."""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import subprocess
++import threading
++import time
++
++try:
++    from .rtl_chat import RTLChatEngine
++except ImportError:
++    from rtl_chat import RTLChatEngine
++
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--binary',type=Path,required=True)
++    parser.add_argument('--output',type=Path,required=True)
++    parser.add_argument('--model')
++    args=parser.parse_args()
++    binary=args.binary.resolve()
++    build=json.loads((binary.parent.parent/'manifest.json').read_text())
++    if not build['options'].get('pgo_generate') or build['options'].get('cpu')!='generic':
++        parser.error('Use a generic-target instrumentation build')
++    raw_directory=Path(build['options']['pgo_generate']).resolve()
++    previous=set(raw_directory.glob('*.profraw'))
++    engine=RTLChatEngine(args.model,workers=1,binary=binary,lanes=8,block_size=4)
++    cases=[
++        ('greedy','Describe how a queue and a stack differ. Give two examples.',24,'greedy',0),
++        ('sampled_suffix','Continue the pattern without explanation: red blue green red blue green red blue green',24,'chat',3),
++        ('long_code',('A queue holds pending requests in arrival order. A worker takes the oldest request. '*8)+
++         'Write a short Python function to reverse a list without modifying its input.',16,'chat',3),
++    ]
++    records=[]
++    started=time.perf_counter()
++    try:
++        for label,prompt,count,decoding,draft in cases:
++            request=engine.prepare(dict(session='pgo-training-'+label,messages=[dict(role='user',content=prompt)],
++                max_new_tokens=count,decoding=decoding,seed=42,max_draft=draft))
++            done=None
++            for event in engine.stream(request,threading.Event()):
++                if event['type']=='error':raise RuntimeError(event)
++                if event['type']=='done':done=event
++            if done is None:raise RuntimeError('Missing completion')
++            records.append(dict(label=label,prompt=prompt,prompt_ids=request.ids,decoding=decoding,
++                                requested_max_draft=draft,metrics=done['metrics'],text=done['text']))
++            print(json.dumps(dict(training_case=label,prompt_tokens=len(request.ids),metrics=done['metrics'])),flush=True)
++        # The profile runtime writes at normal exit; SIGTERM would discard data.
++        process=engine.sim.process
++        process.stdin.write('quit\n');process.stdin.flush()
++        if process.wait(timeout=60)!=0:raise RuntimeError('Instrumented model did not exit cleanly')
++    finally:
++        engine.close()
++    raw=sorted(set(raw_directory.glob('*.profraw'))-previous)
++    if not raw:raise RuntimeError('No new raw profiles; require normal process exit')
++    output=args.output.resolve();output.parent.mkdir(parents=True,exist_ok=True)
++    command=['xcrun','llvm-profdata','merge','-o',str(output),*map(str,raw)]
++    subprocess.run(command,check=True)
++    with (engine.sim.model/'model.safetensors').open('rb') as checkpoint:
++        checkpoint_sha=hashlib.file_digest(checkpoint,'sha256').hexdigest()
++    profile=dict(checkpoint_sha256=checkpoint_sha,profile_sha256=hashlib.sha256(output.read_bytes()).hexdigest(),
++                 build_sources=build['sources'],training_binary_sha256=build['binary_sha256'],
++                 compiler=build['compiler'],verilator=build['verilator'],training_workers=1,
++                 counter_update=build['options']['pgo_update'],
++                 limitation='Single projection worker avoids contended non-atomic shared counters; eight-worker scheduling frequencies are not representative.',
++                 training_seconds_not_benchmark=time.perf_counter()-started,training_cases=records,
++                 training_script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
++                 raw_profiles=[dict(name=p.name,sha256=hashlib.sha256(p.read_bytes()).hexdigest())for p in raw],
++                 merge_command=command,llvm_profdata=subprocess.check_output(['xcrun','llvm-profdata','--version'],text=True).strip())
++    Path(str(output)+'.manifest.json').write_text(json.dumps(profile,indent=2)+'\n')
++    print(output,flush=True)
++
++
++if __name__=='__main__':main()
