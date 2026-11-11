@@ -93,3 +93,5 @@ explicitly record the small selected coverage. This is a harness identity check,
 not evidence that an approximate candidate maintains quality. The full corpus
 contains 292 target tokens across 16 cases; a full exact identity run is separate
 from this initial smoke.
+
+Historical simulator binaries acknowledged `dump` before their file stream closed. The evaluator follows each dump with an explicit same-lane configuration round trip before reading, guaranteeing completion of the previous command without sleeps or retries. Exact byte-count and finite-value validation remain mandatory. This compatibility barrier adds host/worker setup overhead, so evaluation duration is never an inference speed measurement.

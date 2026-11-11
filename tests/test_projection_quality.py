@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 
 from tools.evaluate_projection_quality import (
-    DEFAULT_CORPUS,aggregate,load_corpus,model_provenance,score_logits,teacher_force,validate_logits,
+    DEFAULT_CORPUS,read_dump_logits,aggregate,load_corpus,model_provenance,score_logits,teacher_force,validate_logits,
 )
 
 
@@ -24,6 +24,26 @@ class StubTransport:
 
 
 class ProjectionQualityTests(unittest.TestCase):
+    def test_dump_barrier_flushes_before_exact_byte_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'logits.bin'
+            class DelayedDump:
+                lanes=8
+                def __init__(self,complete):self.calls=[];self.complete=complete
+                def command(self,command):
+                    self.calls.append(command)
+                    if command.startswith('dump '):
+                        path.write_bytes(b'partial');return 'dumped'
+                    if command=='lanes 8':
+                        if self.complete:np.array([1.,2.,3.]).tofile(path)
+                        return 'configured'
+                    raise AssertionError(command)
+            model=DelayedDump(True)
+            np.testing.assert_array_equal(read_dump_logits(model,path,3),[1,2,3])
+            self.assertEqual(model.calls,[f'dump {path}','lanes 8'])
+            with self.assertRaisesRegex(ValueError,'expected 24, got 7'):
+                read_dump_logits(DelayedDump(False),path,3)
+
     def test_raw_tokenizers_encoding_exposes_sliceable_ids(self):
         from tokenizers import Tokenizer,models,pre_tokenizers
         tokenizer=Tokenizer(models.WordLevel({'[UNK]':0,'amber':1,'72':2},unk_token='[UNK]'))

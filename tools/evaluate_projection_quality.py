@@ -45,6 +45,18 @@ def validate_logits(values,vocab_size=VOCAB):
     return values
 
 
+def read_dump_logits(model,path,vocab_size=VOCAB):
+    path=Path(path)
+    if model.command(f'dump {path}')!='dumped':raise RuntimeError('Invalid dump acknowledgement')
+    # Historical binaries acknowledged before the output stream destructor ran.
+    # A completed next command guarantees closure, without sleeps or retries.
+    if model.command(f'lanes {model.lanes}')!='configured':raise RuntimeError('Invalid dump barrier acknowledgement')
+    actual=path.stat().st_size
+    if actual!=vocab_size*8:
+        raise ValueError(f'Wrong full-vocabulary dump byte count: expected {vocab_size*8}, got {actual}')
+    return validate_logits(np.fromfile(path,dtype=np.float64),vocab_size)
+
+
 def log_softmax(values):
     # Subtract first: no exp(raw_logits), and low-probability log values survive
     # even if their probabilities underflow during the KL-weight calculation.
@@ -197,9 +209,7 @@ def main():
         with tempfile.TemporaryDirectory() as directory:
             def fetch(model,slot):
                 path=Path(directory)/f'logits-{slot}.bin'
-                if model.command(f'dump {path}')!='dumped':raise RuntimeError('Invalid dump acknowledgement')
-                if path.stat().st_size!=VOCAB*8:raise ValueError('Wrong full-vocabulary dump byte count')
-                return np.fromfile(path,dtype=np.float64)
+                return read_dump_logits(model,path)
             for case in selected:
                 request=protocol.prepare(dict(session='heldout-quality-'+case['id'],messages=case['messages'],max_new_tokens=128,decoding='greedy'))
                 all_targets=protocol.tokenizer.encode(case['target'],add_special_tokens=False).ids
