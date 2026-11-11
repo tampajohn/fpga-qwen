@@ -392,6 +392,10 @@ tokens/round into tokens/sec without accounting for those components.
 
 ### Local llama.cpp comparison
 
+The [experimental hybrid FP32 comparison](docs/fp32_hybrid_performance.md)
+measures approximately 55/42 tokens/s for short/long prompts, with bounded quality
+checks passed. It remains behind llama.cpp and is not the live default.
+
 The [current deployed-backend comparison](docs/current_native_comparison.md)
 measures B8 prefill and grouped decode against CPU-only llama.cpp: approximately
 50/33 tokens/s for short/long prompts versus 120/122 with native FP16. It includes
