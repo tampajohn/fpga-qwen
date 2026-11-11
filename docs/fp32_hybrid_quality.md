@@ -59,4 +59,12 @@ regressions only support this bounded evaluation, not general model equivalence.
 Measure hybrid TTFT and decode separately after correctness, using exclusive
 paired timing windows. Include startup cost and retained FP64 B8 prefill benefits.
 All-token B1 performance is an isolation measurement, not the final candidate.
-No inference results have been produced by this acceptance-plan change.
+The frozen candidate `d27a2ffc51aacad610dbef0f6b358e66118d486504bcb98128345e28f50b19d9`
+completed these checks. The 292 teacher-forced top predictions matched the deployed
+FP64 reference; mean NLL delta was +1.97177e-8 nats, mean KL 6.29422e-13 and maximum
+absolute logit difference 4.44251e-5. All nine conversation texts and IDs matched,
+with the same four strict passes and five failures. All eight prefill-tail replay,
+sampled determinism, restart and suffix-rejection checks passed. Raw reports are
+`reports/fp32-hybrid-teacher-forced.json`, `reports/fp32-hybrid-conversations.json`
+and `reports/fp32-hybrid-replay-summary.json`. These results support the bounded
+experiment only; they do not fix the model's existing conversation failures.

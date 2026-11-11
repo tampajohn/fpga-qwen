@@ -1,0 +1,71 @@
+{
+  "candidate_sha256": "d27a2ffc51aacad610dbef0f6b358e66118d486504bcb98128345e28f50b19d9",
+  "baseline_sha256": "186615739651cb253804374653bb8d74e816e8870873ea88a17c2b9b4c6bb682",
+  "precision_profile": "fp32_b1_fp64_prefill",
+  "prefix_reuse": false,
+  "suffix_drafting": false,
+  "canonical_route": "Reset each request; FP64 B8 prompt[:-1] including all tails; FP32 B1 last prompt ID and decode",
+  "execution": {
+    "session_id": 95058,
+    "exit_code": 0,
+    "real_replay_test": "tests.test_suffix_real.RealHybridRouteTests",
+    "replay_test_seconds": 5.927,
+    "tail_lengths": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "replays_per_tail": 3,
+    "process_restart_on_replay": 3,
+    "assertions": [
+      "seeded token IDs identical within route",
+      "full-vocabulary uint64 logit dumps identical within route",
+      "zero reported prefix tokens reused",
+      "all prompt IDs consumed",
+      "suffix rejected without modifying state"
+    ]
+  },
+  "sources": {
+    "tests/test_suffix_real.py": "1ffb6d34256248f66786ae1c9b42297fa66f89e90805c789983e5a4db090dc4d",
+    "tools/rtl_chat.py": "11e2a41804c248093c50e388a6ae6adf490cc2d6003f1cc1a9c431c39fc70a99",
+    "tools/rtl_model.py": "b59e72aa03802a8d43181248dd9cf3af20dea66803e6759655f5fccb53fad88b",
+    "tools/evaluate_prefill_conversations.py": "7488bdb55657ccda764b3017da2261ffbec3b417de2d8cf41853665af78b6c7b",
+    "tools/evaluate_projection_quality.py": "581fe48416f9ea9d83c7893060d9a4d30b14ef249dee624f20f54e3982d6a8cb"
+  },
+  "teacher_forced": {
+    "scored_tokens": 292,
+    "reference_mean_nll_nats": 0.9173218005465292,
+    "candidate_mean_nll_nats": 0.9173218202642286,
+    "delta_mean_nll_nats": 1.971769936215395e-08,
+    "reference_perplexity": 2.502579001016034,
+    "candidate_perplexity": 2.5025790503611347,
+    "perplexity_ratio_candidate_over_reference": 1.0000000197176995,
+    "top1_agreement": 1.0,
+    "reference_target_top1_rate": 0.791095890410959,
+    "candidate_target_top1_rate": 0.791095890410959,
+    "mean_kl_reference_to_candidate_nats": 6.29422114361617e-13,
+    "max_kl_reference_to_candidate_nats": 1.6732202453313123e-11,
+    "max_absolute_logit_error": 4.4425118328916824e-05,
+    "all_logits_bit_identical": false,
+    "delta_nll_quantiles_nats": {
+      "0.5": -9.398024343513256e-13,
+      "0.9": 7.616818824551802e-07,
+      "0.99": 5.755423828110992e-06
+    }
+  },
+  "conversation": {
+    "cases": 9,
+    "passed_counts": [
+      4,
+      4
+    ],
+    "all_output_ids_identical": true,
+    "baseline_pass_regressions": []
+  },
+  "limitation": "Small authored quality corpus and short replay checks; not general FP32 equivalence, long-context certification or performance evidence. Existing model conversation failures remain."
+}
