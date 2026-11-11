@@ -55,7 +55,7 @@ class RTLChatEngine(ChatProtocol):
         m = dict(prompt_tokens=len(request.ids), reused_prefix_tokens=0, output_tokens=0,
                  rounds=0, proposed_tokens=0, accepted_tokens=0, verified_tokens=0, tokens_per_round=0,
                  decode_tokens_per_second=0, first_token_ms=None, elapsed_seconds=0,
-                 kv_tokens=0, context_limit=4096, prefill_block_size=self.sim.block_size,
+                 kv_tokens=0, context_limit=4096, prefill_seconds=0, decode_seconds=0, prefill_block_size=self.sim.block_size,
                  requested_max_draft=request.max_draft, effective_max_draft=draft_limit)
         def metrics():
             m['elapsed_seconds'] = time.perf_counter()-started
@@ -64,7 +64,8 @@ class RTLChatEngine(ChatProtocol):
             m['decoding'] = request.decoding
             m['reduction_lanes'] = self.sim.lanes if self.sim.workers else 1
             if decoded_at is not None:
-                m['decode_tokens_per_second'] = len(generated)/max(time.perf_counter()-decoded_at, 1e-9)
+                m['decode_seconds'] = time.perf_counter()-decoded_at
+                m['decode_tokens_per_second'] = len(generated)/max(m['decode_seconds'], 1e-9)
             return dict(m)
         try:
             yield dict(type='loading', message='Starting full SystemVerilog simulation…')
@@ -85,6 +86,7 @@ class RTLChatEngine(ChatProtocol):
                 self.cache_ids = self.cache_ids[:reused]
             m['reused_prefix_tokens'] = reused
             yield dict(type='start', metrics=metrics())
+            prefill_started = time.perf_counter()
             prefill = request.ids[reused:-1]
             for offset in range(0, len(prefill), self.sim.block_size):
                 chunk = prefill[offset:offset+self.sim.block_size]
@@ -99,6 +101,7 @@ class RTLChatEngine(ChatProtocol):
                 yield dict(type='prefill', processed_tokens=len(self.cache_ids), metrics=metrics())
             pending = request.ids[-1]
             decoded_at = time.perf_counter()
+            m['prefill_seconds'] = decoded_at-prefill_started
             while len(generated) < request.max_new:
                 if cancel.is_set():
                     raise SimulationCancelled()
@@ -162,4 +165,4 @@ class RTLChatEngine(ChatProtocol):
             # A disconnected browser can close the generator between tokens.
             if cancel.is_set():
                 self.close()
-        yield dict(type='done', text=text, finish_reason=reason, metrics=metrics())
+        yield dict(type='done', text=text, token_ids=list(generated), finish_reason=reason, metrics=metrics())

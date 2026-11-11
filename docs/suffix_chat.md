@@ -25,3 +25,22 @@ CHAT_URL=http://127.0.0.1:8766 uv run --locked python tests/browser_suffix.py
 ```
 
 The executable override is a trusted local CLI argument, never an HTTP input. Selecting `--block-size 4` against a token-only executable is invalid. No live server was changed by these tests.
+
+## Optimized B4 verification and suffix timing
+
+The optimized B4 executable SHA256 `d576cde12f0fc64499b35647878fe2ddea21b9fdd3c5459f14dd96cf58a36272` passed the same real greedy and seeded sampled parity checks, now comparing exact output token IDs as well as text, finish reason, and cached IDs. The block-specific browser smoke passed again. Evidence is in [suffix-optimized-correctness.json](../reports/suffix-optimized-correctness.json). The independent block-validation work separately measures the prefill improvement; the suffix comparison below keeps **B4 prefill enabled in both modes**.
+
+Two alternating pairs per workload compared suffix off/on, then on/off, using one resident process, eight workers, sampled decoding with seed 42, identical prompts, a 64-token reply limit, and empty logical KV for every request. Warmup/startup is excluded. All paired output IDs and finish reasons matched exactly. No other agent inference or compilation ran during scored requests; user applications remained running.
+
+| Workload / mode | Median TTFT | Median prefill | Median decode | Median total request |
+|---|---:|---:|---:|---:|
+| Repeated code / off | 1.172 s | 1.150 s | 0.902 s | 2.053 s |
+| Repeated code / on | 1.192 s | 1.169 s | 0.687 s | 1.856 s |
+| Ordinary prose / off | 1.091 s | 1.068 s | 0.810 s | 1.878 s |
+| Ordinary prose / on | 1.129 s | 1.106 s | 0.793 s | 1.899 s |
+
+The repeated-code reply emitted 39 target tokens, accepting all 24 proposed draft tokens. Its two paired decode speed ratios were 1.311× and 1.317×; complete-request ratios were 1.105× and 1.106×. Ordinary prose emitted 34 target tokens and accepted two of three proposals: decode ratios were 1.017× and 1.026×, but complete requests were slightly slower (0.989× in both pairs). Prefill and TTFT variation must not be attributed to a different prefill algorithm: both modes use the same B4 path.
+
+Decode time includes the first target prediction/verification round, avoiding misleading rates calculated from chunked UI arrivals. TTFT overlaps prefill and the first decode round and must not be added to the other columns. Two pairs are a small local sample, not a general performance guarantee. The evidence supports an **optional verified draft mode, unchecked by default**, especially for repetitive content; it does not support claiming suffix drafting speeds up every reply.
+
+Raw paired evidence: [suffix-paired.json](../reports/suffix-paired.json). Reproduce with `tools/benchmark_suffix_chat.py --binary /path/to/tested/block-capable/Vqwen_behavioral --pairs 2 --tokens 64 --seed 42 --decoding chat`. Real parity is opt-in via `SV_BLOCK_BINARY=/path/to/binary uv run --locked python -m unittest tests.test_suffix_real -v`.
