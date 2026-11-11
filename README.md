@@ -174,6 +174,14 @@ support. See [the block runtime](docs/batched-prefill-runtime.md) and
 
 ### Validation without PyTorch
 
+The [held-out distribution probe](docs/approximate_projection_quality.md) compares
+candidate logits with the current SV baseline using authored reference continuations.
+It reports token-weighted loss changes, KL divergence, and token agreement; its
+small corpus is a regression probe, not proof of broad model quality. `make quality-test`
+checks the scorer and token alignment without loading a model. The standalone
+[W8A8 experiment](docs/w8a8_microkernel.md) passed integer correctness checks but
+was slower than the optimized FP64 worker and is not used by chat.
+
 ```sh
 make check
 # Or the focused full-model and chat checks:

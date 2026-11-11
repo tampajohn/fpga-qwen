@@ -8,7 +8,11 @@ ATTENTION_REFERENCE_BINARY = build/variants/scalar-O3-lto-unchecked-masked-activ
 .PHONY: all prepare test report clean block-test kv-test suffix-test setup check chat chat-test
 all: test
 
-check: test kv-test suffix-test full-test chat-test
+check: test kv-test suffix-test full-test chat-test quality-test
+
+.PHONY: quality-test
+quality-test:
+	uv run --locked python -m unittest tests.test_projection_quality tests.test_matched_prefill -v
 
 prepare:
 	$(PYTHON) tools/experiment.py prepare $(if $(MODEL),--model "$(MODEL)",)
