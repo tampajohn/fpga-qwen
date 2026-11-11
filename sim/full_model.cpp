@@ -277,7 +277,7 @@ int main(int argc,char** argv) {
 #endif
 #ifdef FP32_PROJECTION_B1
             } else if(command=="precision") {
-                std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill","scalar_projection":"fp32","prefill_projection":"fp64","attention_kv":"fp64","max_verification_block":1,"prefix_reuse_supported":false})"<<'\n'<<std::flush;
+                std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill","scalar_projection":"fp32","prefill_projection":"fp64","attention_kv":"fp64","max_verification_block":1,"prefix_reuse_supported":false,"canonical_prefix_policy":"fp64_b8_aligned_v1"})"<<'\n'<<std::flush;
             } else if(command=="fp32probe") {
                 int slot,rows,width;
                 std::string path;

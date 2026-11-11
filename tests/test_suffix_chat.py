@@ -85,6 +85,7 @@ def engine(prediction,block_size=4):
     result.precision_profile="fp64"
     result.precision_verified=False
     result.reuse_prefix=True
+    result.canonical_prefix=None
     result.cache_ids=[]
     result.cache_session=None
     result.eos={99}

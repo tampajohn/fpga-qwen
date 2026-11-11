@@ -1,0 +1,17 @@
+{
+  "completed": true,
+  "binary_sha256": "bf8242221d07675916cd6711869d3568cb24d8655824d875dee5d1eefda943a7",
+  "policy": "fp64_b8_aligned_v1",
+  "shared_prefix_tokens": 36,
+  "prior_canonical_end": 32,
+  "reused_tokens": 32,
+  "recomputed_matching_fp32_tokens": 4,
+  "output_ids": [
+    2776,
+    264,
+    2632,
+    1112
+  ],
+  "full_logits_bit_identical": true,
+  "timing_claim": false
+}

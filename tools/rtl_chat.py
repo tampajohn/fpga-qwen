@@ -7,16 +7,23 @@ try:
     from .chat_protocol import ChatProtocol, common_prefix
     from .rtl_model import RTLModel, SimulationCancelled
     from .suffix import SuffixDrafter, greedy_accept
+    from .canonical_prefix import CanonicalPrefix, POLICY
 except ImportError:
     from chat_protocol import ChatProtocol, common_prefix
     from rtl_model import RTLModel, SimulationCancelled
     from suffix import SuffixDrafter, greedy_accept
+    from canonical_prefix import CanonicalPrefix, POLICY
 
 
 class RTLChatEngine(ChatProtocol):
-    def __init__(self, model=None, workers=8, binary=None, lanes=1, block_size=1, prefill_size=None, reuse_prefix=True, precision_profile="fp64"):
+    def __init__(self, model=None, workers=8, binary=None, lanes=1, block_size=1, prefill_size=None, reuse_prefix=True, precision_profile="fp64", canonical_prefix_reuse=False):
         if precision_profile not in ('fp64','fp32_b1_fp64_prefill'):
             raise ValueError('Unknown precision profile')
+        if type(canonical_prefix_reuse) is not bool:
+            raise ValueError('canonical_prefix_reuse must be a boolean')
+        if canonical_prefix_reuse and precision_profile != 'fp32_b1_fp64_prefill':
+            raise ValueError('Canonical reuse requires the explicit hybrid profile')
+        self.canonical_prefix = CanonicalPrefix() if canonical_prefix_reuse else None
         self.precision_profile = precision_profile
         self.precision_verified = False
         if precision_profile != 'fp64' and (workers < 1 or lanes != 8 or block_size != 1 or prefill_size != 8 or reuse_prefix is not False):
@@ -45,11 +52,15 @@ class RTLChatEngine(ChatProtocol):
                     prefill_reduction_lanes=(4 if self.sim.prefill_size == 8 and self.sim.lanes == 8 else self.sim.lanes) if self.sim.workers else 1,
                     prefill_block_size=self.sim.prefill_size, suffix_supported=self.sim.block_size == 4,
                     max_verified_draft=self.sim.block_size-1,
-                    prefix_reuse_enabled=self.reuse_prefix, cached_tokens=len(self.cache_ids), pytorch_loaded=('torch' in sys.modules))
+                    prefix_reuse_enabled=self.reuse_prefix or self.canonical_prefix is not None,
+                    canonical_prefix_policy=POLICY if self.canonical_prefix is not None else None,
+                    canonical_reusable_tokens=self.canonical_prefix.end if self.canonical_prefix else 0, cached_tokens=len(self.cache_ids), pytorch_loaded=('torch' in sys.modules))
 
     def close(self):
         self.precision_verified = False
         self.sim.close()
+        if self.canonical_prefix is not None:
+            self.canonical_prefix.clear()
         self.cache_ids = []
         self.cache_session = None
 
@@ -62,6 +73,8 @@ class RTLChatEngine(ChatProtocol):
         actual = json.loads(self.sim.command('precision',cancel))
         if not isinstance(actual,dict) or any(type(actual.get(k)) is not type(v) or actual[k] != v for k,v in expected.items()):
             raise RuntimeError('Simulator does not match the requested hybrid precision profile')
+        if self.canonical_prefix is not None and actual.get('canonical_prefix_policy') != POLICY:
+            raise RuntimeError('Simulator does not advertise the canonical FP64 prefix policy')
         self.precision_verified = True
 
     def stream(self, request, cancel):
@@ -87,6 +100,7 @@ class RTLChatEngine(ChatProtocol):
         def metrics():
             m['elapsed_seconds'] = time.perf_counter()-started
             m['kv_tokens'] = len(self.cache_ids)
+            m['canonical_reusable_tokens'] = self.canonical_prefix.end if self.canonical_prefix else 0
             m['simulation_workers'] = self.sim.workers
             m['decoding'] = request.decoding
             m['reduction_lanes'] = self.sim.lanes if self.sim.workers else 1
@@ -99,19 +113,29 @@ class RTLChatEngine(ChatProtocol):
             if not self.sim.process or self.sim.process.poll() is not None:
                 self.cache_ids = []
                 self.cache_session = None
+                if self.canonical_prefix is not None:
+                    self.canonical_prefix.clear()
             if request.workers is not None:
                 self.sim.set_workers(request.workers, cancel)
             self.sim.start(cancel)
             self.verify_precision(cancel)
-            if not self.reuse_prefix or self.cache_session != request.session:
+            if self.canonical_prefix is not None:
+                self.canonical_prefix.bind(self.sim.process)
+            if (not self.reuse_prefix and self.canonical_prefix is None) or self.cache_session != request.session:
                 self.sim.reset(cancel)
                 self.cache_ids = []
+                if self.canonical_prefix is not None:
+                    self.canonical_prefix.truncate(0)
                 self.cache_session = request.session
             reused = common_prefix(self.cache_ids, request.ids[:-1])
+            if self.canonical_prefix is not None:
+                reused = self.canonical_prefix.reuse(reused, len(request.ids)-1)
             if len(self.cache_ids) != reused:
                 if self.sim.command(f'truncate {reused}', cancel) != 'truncated':
                     raise RuntimeError('Invalid simulator truncation response')
                 self.cache_ids = self.cache_ids[:reused]
+            if self.canonical_prefix is not None:
+                self.canonical_prefix.truncate(reused)
             m['reused_prefix_tokens'] = reused
             yield dict(type='start', metrics=metrics())
             prefill_started = time.perf_counter()
@@ -130,6 +154,8 @@ class RTLChatEngine(ChatProtocol):
                     self.cache_ids.append(token)
                     if position != len(self.cache_ids):
                         raise RuntimeError('SystemVerilog KV position mismatch')
+                if self.canonical_prefix is not None:
+                    self.canonical_prefix.acknowledge(len(self.cache_ids)-len(chunk), len(chunk))
                 yield dict(type='prefill', processed_tokens=len(self.cache_ids), metrics=metrics())
             pending = request.ids[-1]
             decoded_at = time.perf_counter()
