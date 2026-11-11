@@ -57,14 +57,32 @@ module projection_worker (
     task automatic attend_heads;
         real sum, maximum, denom, scale;
         int index, kvhead;
+`ifdef ATTENTION_DOT_LANES8
+        real dot_partial[8];
+`endif
         for (int head=first_row;head<end_row;head++) begin
             kvhead=head/2;
             maximum=-1.0e300;
             for (int t=0;t<=attention_position;t++) begin
                 sum=0.0;
                 index=(attention_layer*4096+t)*1024+kvhead*128;
+`ifdef ATTENTION_DOT_LANES8
+                for (int lane=0;lane<8;lane++) dot_partial[lane]=0.0;
+                for (int unsigned j=0;j<128;j+=8) begin
+                    dot_partial[0]+=`ACTIVATION_AT(head*128+j+0)*attention_key_value(index+j+0);
+                    dot_partial[1]+=`ACTIVATION_AT(head*128+j+1)*attention_key_value(index+j+1);
+                    dot_partial[2]+=`ACTIVATION_AT(head*128+j+2)*attention_key_value(index+j+2);
+                    dot_partial[3]+=`ACTIVATION_AT(head*128+j+3)*attention_key_value(index+j+3);
+                    dot_partial[4]+=`ACTIVATION_AT(head*128+j+4)*attention_key_value(index+j+4);
+                    dot_partial[5]+=`ACTIVATION_AT(head*128+j+5)*attention_key_value(index+j+5);
+                    dot_partial[6]+=`ACTIVATION_AT(head*128+j+6)*attention_key_value(index+j+6);
+                    dot_partial[7]+=`ACTIVATION_AT(head*128+j+7)*attention_key_value(index+j+7);
+                end
+                for (int lane=0;lane<8;lane++) sum+=dot_partial[lane];
+`else
                 for (int j=0;j<128;j++)
                     sum+=`ACTIVATION_AT(head*128+j)*attention_key_value(index+j);
+`endif
                 attention_scores[t]=sum/$sqrt(128.0);
                 if (attention_scores[t]>maximum) maximum=attention_scores[t];
             end

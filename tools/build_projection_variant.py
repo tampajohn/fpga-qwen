@@ -23,6 +23,7 @@ def main():
     parser.add_argument('--cpu', choices=['generic', 'native'], default='generic')
     parser.add_argument('--fast-attention', action='store_true')
     parser.add_argument('--parallel-attention', action='store_true')
+    parser.add_argument('--attention-dot-lanes8', action='store_true')
     parser.add_argument('--batched-prefill', action='store_true')
     parser.add_argument('--block-unroll', action='store_true')
     parser.add_argument('--compact-projection', action='store_true')
@@ -37,6 +38,8 @@ def main():
     if args.scalar_group and not args.group_projections:parser.error('--scalar-group requires --group-projections')
     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
+    if args.attention_dot_lanes8 and not args.parallel_attention:
+        parser.error('--attention-dot-lanes8 requires --parallel-attention')
     if args.prefill_b8 and not args.batched_prefill:
         parser.error('--prefill-b8 requires --batched-prefill')
     if args.group_projections and not args.batched_prefill:
@@ -56,6 +59,7 @@ def main():
     if args.cpu == 'native': tag += '-cpu-native'
     if args.fast_attention: tag += '-fast-attention'
     if args.parallel_attention: tag += '-parallel-attention'
+    if args.attention_dot_lanes8: tag += '-attention-dot-lanes8'
     if args.batched_prefill: tag += '-batched-prefill'
     if args.block_unroll: tag += '-block-unroll'
     if args.compact_projection: tag += '-compact-projection'
@@ -86,6 +90,7 @@ def main():
     if args.static_kv: flags += ' -DSTATIC_KV'
     if args.prefill_b8: flags += ' -DPREFILL_B8 -DWIDE_BATCH=8 -DWIDE_FOUR_LANES'
     defines = {'scalar': [], 'row': ['+define+BULK_ROW_WEIGHTS']}[args.storage]
+    if args.attention_dot_lanes8: defines += ['+define+ATTENTION_DOT_LANES8']
     if args.unchecked: defines += ['+define+UNCHECKED_WEIGHTS']
     if args.masked_activation: defines += ['+define+MASK_ACTIVATION_INDEX']
     if args.block_unroll: defines += ['+define+BLOCK_UNROLL']
