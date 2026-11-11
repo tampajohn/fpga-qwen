@@ -26,8 +26,8 @@ class RTLChatEngine(ChatProtocol):
         self.canonical_prefix = CanonicalPrefix() if canonical_prefix_reuse else None
         self.precision_profile = precision_profile
         self.precision_verified = False
-        if precision_profile != 'fp64' and (workers < 1 or lanes != 8 or block_size != 1 or prefill_size != 8 or reuse_prefix is not False):
-            raise ValueError('Hybrid requires workers, eight lanes, B8 prefill, B1 decode and prefix reuse disabled')
+        if precision_profile != 'fp64' and (workers < 1 or lanes != 8 or block_size not in (1,4) or prefill_size != 8 or reuse_prefix is not False or (block_size == 4 and not canonical_prefix_reuse)):
+            raise ValueError('Hybrid requires workers, eight lanes, B8 prefill, general prefix reuse disabled and canonical policy for B4 verification')
         if type(reuse_prefix) is not bool:
             raise ValueError("reuse_prefix must be a boolean")
         self.reuse_prefix = reuse_prefix
@@ -45,6 +45,7 @@ class RTLChatEngine(ChatProtocol):
         return dict(model='Qwen3-0.6B', device='cpu', precision=('BF16 weights / FP32 scalar projections / FP64 prefill, attention and KV'
                                if self.precision_profile != 'fp64' else 'BF16 weights / FP64 arithmetic and KV'),
                     precision_profile=self.precision_profile, precision_verified=self.precision_verified,
+                    verification_projection=('fp32' if self.precision_profile != 'fp64' and self.sim.block_size == 4 else None),
                     gpu_inference=False, cpu_threads=self.threads, simulation_workers=self.sim.workers, context_limit=4096,
                     rtl='Full behavioral SystemVerilog; not synthesizable or cycle-accurate',
                     inference='Verilator: all model math and KV payload in SystemVerilog',
@@ -69,7 +70,9 @@ class RTLChatEngine(ChatProtocol):
             return
         expected = dict(precision_profile='fp32_b1_fp64_prefill',scalar_projection='fp32',
                         prefill_projection='fp64',attention_kv='fp64',
-                        max_verification_block=1,prefix_reuse_supported=False)
+                        max_verification_block=self.sim.block_size,prefix_reuse_supported=False)
+        if self.sim.block_size == 4:
+            expected['verification_projection']='fp32'
         actual = json.loads(self.sim.command('precision',cancel))
         if not isinstance(actual,dict) or any(type(actual.get(k)) is not type(v) or actual[k] != v for k,v in expected.items()):
             raise RuntimeError('Simulator does not match the requested hybrid precision profile')

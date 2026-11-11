@@ -96,6 +96,23 @@ class HybridBackendTests(unittest.TestCase):
         self.assertEqual(entry['canonical_prefix_policy'],POLICY)
         self.assertFalse(entry['suffix_supported'])
 
+    def test_b4_requires_verified_fp32_projection_capability(self):
+        from tools.canonical_prefix import CanonicalPrefix, POLICY
+        expected=dict(EXPECTED,max_verification_block=4,verification_projection='fp32',canonical_prefix_policy=POLICY)
+        for actual in (expected,dict(expected,verification_projection='fp64'),EXPECTED):
+            candidate=hybrid()
+            candidate.sim.block_size=4
+            candidate.canonical_prefix=CanonicalPrefix()
+            candidate.sim.command=Mock(return_value=json.dumps(actual))
+            if actual==expected:
+                candidate.verify_precision(None)
+                self.assertTrue(candidate.precision_verified)
+            else:
+                with self.assertRaises(RuntimeError):candidate.verify_precision(None)
+        candidate=hybrid()
+        candidate.sim.command=Mock(return_value=json.dumps(expected))
+        with self.assertRaises(RuntimeError):candidate.verify_precision(None)
+
     def test_uninstalled_hybrid_is_unavailable(self):
         router=BackendRouter(engine(cycle))
         self.addCleanup(router.close)
