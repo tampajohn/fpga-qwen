@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "batch": 1,
+      "rows": 1,
+      "width": 8,
+      "exact": true
+    },
+    {
+      "batch": 1,
+      "rows": 3,
+      "width": 16,
+      "exact": true
+    },
+    {
+      "batch": 1,
+      "rows": 7,
+      "width": 24,
+      "exact": true
+    },
+    {
+      "batch": 4,
+      "rows": 1,
+      "width": 8,
+      "exact": true
+    },
+    {
+      "batch": 4,
+      "rows": 3,
+      "width": 16,
+      "exact": true
+    },
+    {
+      "batch": 4,
+      "rows": 7,
+      "width": 24,
+      "exact": true
+    },
+    {
+      "batch": 8,
+      "rows": 1,
+      "width": 8,
+      "exact": true
+    },
+    {
+      "batch": 8,
+      "rows": 3,
+      "width": 16,
+      "exact": true
+    },
+    {
+      "batch": 8,
+      "rows": 7,
+      "width": 24,
+      "exact": true
+    }
+  ],
+  "negative_shapes": 15
+}

@@ -1,0 +1,62 @@
+{
+  "fp64-b1": {
+    "fmul.2s": 0,
+    "fadd.2s": 0,
+    "fmul.4s": 0,
+    "fadd.4s": 0,
+    "fmul.2d": 18,
+    "fadd.2d": 16,
+    "fmla.2d": 80,
+    "fmadd": 6
+  },
+  "fp64-b4": {
+    "fmul.2s": 0,
+    "fadd.2s": 0,
+    "fmul.4s": 0,
+    "fadd.4s": 0,
+    "fmul.2d": 18,
+    "fadd.2d": 16,
+    "fmla.2d": 80,
+    "fmadd": 6
+  },
+  "fp64-b8": {
+    "fmul.2s": 0,
+    "fadd.2s": 0,
+    "fmul.4s": 0,
+    "fadd.4s": 0,
+    "fmul.2d": 18,
+    "fadd.2d": 16,
+    "fmla.2d": 80,
+    "fmadd": 6
+  },
+  "fp32-b1": {
+    "fmul.2s": 0,
+    "fadd.2s": 0,
+    "fmul.4s": 4,
+    "fadd.4s": 4,
+    "fmul.2d": 0,
+    "fadd.2d": 0,
+    "fmla.2d": 0,
+    "fmadd": 0
+  },
+  "fp32-b4": {
+    "fmul.2s": 16,
+    "fadd.2s": 32,
+    "fmul.4s": 0,
+    "fadd.4s": 0,
+    "fmul.2d": 0,
+    "fadd.2d": 0,
+    "fmla.2d": 0,
+    "fmadd": 0
+  },
+  "fp32-b8": {
+    "fmul.2s": 16,
+    "fadd.2s": 32,
+    "fmul.4s": 0,
+    "fadd.4s": 0,
+    "fmul.2d": 0,
+    "fadd.2d": 0,
+    "fmla.2d": 0,
+    "fmadd": 0
+  }
+}

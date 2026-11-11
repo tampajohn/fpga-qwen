@@ -16,4 +16,18 @@ python tools/probe_fp32_projection.py --build-only --compiler-root REVIEWED_COMP
 python tools/probe_fp32_projection.py --run-only --workers 8 --repetitions 20 --pairs 3
 ```
 
-The builder records executable/compiler/source hashes, the candidate compiler Git base and tracked patch hash, exact command/environment and disassembly; source/compiler changes during builds invalidate the artifact. Run-only rechecks source and executable hashes. The report records checkpoint/tokenizer provenance. The compiler binary hash identifies the actual compiler even when development files outside its tracked patch exist. No global installs, production defaults, or generated-code replacements are involved. Build, SIMD inspection, tiny-oracle results and timing evidence remain pending until the compiler subset is approved and the experiment runs.
+The builder records executable/compiler/source hashes, the candidate compiler Git base and tracked patch hash, exact command/environment and disassembly; source/compiler changes during builds invalidate the artifact. Run-only rechecks source and executable hashes. The report records checkpoint/tokenizer provenance. The compiler binary hash identifies the actual compiler even when development files outside its tracked patch exist. No global installs, production defaults, or generated-code replacements are involved. Evidence from the subsequently approved bounded run is summarized below.
+
+The bounded experiment is now complete with the reviewed compiler at `c607db4` (compiler binary SHA256 `70df52bf26b8852b199d5c8d4e94dd0514e0f499ae6d7ff786bfb297de05989f`). All nine exact-rational fixture combinations matched every output bit; fifteen bad-shape commands were rejected. Generated candidate storage is native `float`. Independent hot-function inspection found B1 `fmul.4s`/`fadd.4s`, B4/B8 `fmul.2s`/`fadd.2s`, and no FMA-family instructions in candidate `evalNba`; original FP64 baseline hot paths retain `fmla.2d`/`fmadd`. Activation narrowing appears before row loops, output widening after reduction, with no stack accesses inside inspected hot loops. B4/B8 use only two FP32 SIMD lanes and retain substantial integer address work. Assembly inventory counts are whole-binary evidence, not dynamic instruction counts; build scripts also retain full disassembly for reproduction.
+
+The initial20-repetition report is explicitly exploratory: intervals were too short and showed scheduling outliers. A separate exclusive-window1000-repetition rerun used the same frozen binaries and produced these median candidate/FP64 throughput ratios:
+
+| Batch | Q | Gate | Down |
+|---|---:|---:|---:|
+| 1 | 1.404 | 1.502 | 1.413 |
+| 4 | 1.269 | 1.256 | 1.218 |
+| 8 | 0.904 | 0.896 | 0.971 |
+
+All measured B1/B4 pairs favored the candidate, while every B8 pair favored FP64. Timed intervals were at least19.9ms in the longer run. Maximum absolute projection errors across tested matrices were approximately1.2e-6–3.0e-6, relative L2 errors2.1e-7–4.8e-7; outputs were deterministic across repeats. No model-quality acceptance threshold is inferred from those projection errors. The complete longer report, exploratory report, oracle gates and SIMD inventory are in `reports/fp32-projection-*.json`.
+
+These results support investigating isolated B1 FP32 integration while retaining deployed FP64 B8 and attention. They do not establish an end-to-end speedup or preservation of model quality. The unmeasured151936-row vocabulary projection and actual model activations must be addressed before a full-model candidate can be assessed.

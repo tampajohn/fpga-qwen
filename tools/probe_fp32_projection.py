@@ -48,15 +48,16 @@ def build(directory,batch,kind,compiler_root):
     before={str(p.relative_to(ROOT)):sha(p)for p in source_files}
     compiler_binary=(Path(compiler).resolve().parent/'verilator_bin') if baseline else compiler_root/'build-local/src/verilator_bin'
     compiler_hash=sha(compiler_binary)
-    compiler_patch=b'' if baseline else subprocess.check_output(['git','diff','--binary','HEAD'],cwd=compiler_root)
+    compiler_patch=b'' if baseline else subprocess.check_output(['git','diff','--binary','bbb60a403932a9f695cb6ff001ceb73de6ad9234'],cwd=compiler_root)
     with (destination/'build.log').open('w') as log:subprocess.run(command,env=env,check=True,stdout=log,stderr=subprocess.STDOUT)
     if before!={str(p.relative_to(ROOT)):sha(p)for p in source_files} or compiler_hash!=sha(compiler_binary):raise RuntimeError('Source/compiler changed during build')
-    if not baseline and compiler_patch!=subprocess.check_output(['git','diff','--binary','HEAD'],cwd=compiler_root):raise RuntimeError('Compiler source changed during build')
+    if not baseline and compiler_patch!=subprocess.check_output(['git','diff','--binary','bbb60a403932a9f695cb6ff001ceb73de6ad9234'],cwd=compiler_root):raise RuntimeError('Compiler source changed during build')
     binary=destination/f'V{top}'
     with (destination/'disassembly.txt').open('w') as assembly:subprocess.run(['otool','-tvV',str(binary)],check=True,stdout=assembly)
     metadata=dict(binary=str(binary),binary_sha256=sha(binary),command=command,
         version=subprocess.check_output([compiler,'--version'],env=env,text=True).strip(),
         compiler_binary_sha256=compiler_hash,
+        compiler_patch_base=None if baseline else 'bbb60a403932a9f695cb6ff001ceb73de6ad9234',
         compiler_git_head=None if baseline else subprocess.check_output(['git','rev-parse','HEAD'],cwd=compiler_root,text=True).strip(),
         compiler_patch_sha256=None if baseline else hashlib.sha256(compiler_patch).hexdigest(),
         environment={k:env[k] for k in ('VERILATOR_ROOT','VERILATOR_BIN')if k in env},
