@@ -3,6 +3,9 @@
 module projection_worker (
     input logic clk, start,
     input longint base,
+`ifdef PARALLEL_ATTENTION
+    input int operation, attention_layer, attention_position,
+`endif
     input int first_row, end_row, width, reduction_lanes,
 `ifdef MASK_ACTIVATION_INDEX
     input real activation[4096],
@@ -33,10 +36,47 @@ module projection_worker (
 `else
 `define ACTIVATION_AT(index) activation[index]
 `endif
+`ifdef PARALLEL_ATTENTION
+    import "DPI-C" function real attention_key_value(input int index);
+    import "DPI-C" function real attention_value_value(input int index);
+    real attention_scores[4096];
+    task automatic attend_heads;
+        real sum, maximum, denom, scale;
+        int index, kvhead;
+        for (int head=first_row;head<end_row;head++) begin
+            kvhead=head/2;
+            maximum=-1.0e300;
+            for (int t=0;t<=attention_position;t++) begin
+                sum=0.0;
+                index=(attention_layer*4096+t)*1024+kvhead*128;
+                for (int j=0;j<128;j++)
+                    sum+=`ACTIVATION_AT(head*128+j)*attention_key_value(index+j);
+                attention_scores[t]=sum/$sqrt(128.0);
+                if (attention_scores[t]>maximum) maximum=attention_scores[t];
+            end
+            denom=0.0;
+            for (int t=0;t<=attention_position;t++) begin
+                attention_scores[t]=$exp(attention_scores[t]-maximum);
+                denom+=attention_scores[t];
+            end
+            for (int j=0;j<128;j++) result[head*128+j]=0.0;
+            for (int t=0;t<=attention_position;t++) begin
+                scale=attention_scores[t]/denom;
+                index=(attention_layer*4096+t)*1024+kvhead*128;
+                for (int j=0;j<128;j++)
+                    result[head*128+j]+=scale*attention_value_value(index+j);
+            end
+        end
+    endtask
+`endif
     always @(posedge clk) begin
         real sum;
         real partial[8];
         if (start) begin
+`ifdef PARALLEL_ATTENTION
+            if (operation==1) attend_heads();
+            else begin
+`endif
             for (int row=first_row;row<end_row;row++) begin
 `ifdef BULK_ROW_WEIGHTS
                 weight_row(base+longint'(row)*width,width,row_weights);
@@ -100,6 +140,9 @@ module projection_worker (
                 end
                 result[row]=sum;
             end
+`ifdef PARALLEL_ATTENTION
+            end
+`endif
         end
     end
 `undef ACTIVATION_AT

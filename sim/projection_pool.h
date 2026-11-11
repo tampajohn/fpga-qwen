@@ -43,6 +43,9 @@ class ProjectionPool {
     int64_t base=0;
     int rows=0, width=0;
     int reduction_lanes=1;
+#ifdef PARALLEL_ATTENTION
+    int operation=0, attention_layer=0, attention_position=0;
+#endif
     const double* input=nullptr;
     double* output=nullptr;
     void worker(int id, int count) {
@@ -75,6 +78,13 @@ class ProjectionPool {
                 seen=generation;
 #endif
                 int begin=rows*id/count, end=rows*(id+1)/count;
+#ifdef PARALLEL_ATTENTION
+                model->operation=operation;
+                model->attention_layer=attention_layer;model->attention_position=attention_position;
+                int copy_scale=operation==1?128:1;
+#else
+                int copy_scale=1;
+#endif
                 model->base=base;model->width=width;model->first_row=begin;model->end_row=end;
                 std::memcpy(model->activation.data(),input,width*sizeof(double));
                 double* destination=output;
@@ -82,7 +92,8 @@ class ProjectionPool {
                 lock.unlock();
 #endif
                 model->start=1;model->clk=0;model->eval();model->clk=1;model->eval();
-                std::memcpy(destination+begin,model->result.data()+begin,(end-begin)*sizeof(double));
+                std::memcpy(destination+begin*copy_scale,model->result.data()+begin*copy_scale,
+                            (end-begin)*copy_scale*sizeof(double));
 #ifdef PROJECTION_HYBRID_WAIT
                 // The release sequence carries every partition's writes to run().
                 bool last=pending.fetch_sub(1,std::memory_order_acq_rel)==1;
@@ -125,12 +136,28 @@ public:
         for(auto& thread:threads) if(thread.joinable()) thread.join();
     }
     ~ProjectionPool() {shutdown();}
-    void run(int64_t matrix_base,int matrix_rows,int matrix_width,const double* x,double* y) {
+    void run(int64_t matrix_base,int matrix_rows,int matrix_width,const double* x,double* y
+#ifdef PARALLEL_ATTENTION
+             ,int requested_operation=0,int layer=0,int position=0
+#endif
+             ) {
+#ifdef PARALLEL_ATTENTION
+        if(requested_operation==1) {
+            if(layer<0 || layer>=28 || position<0 || position>=4096 || matrix_rows!=16 || matrix_width!=2048)
+                throw std::runtime_error("Invalid attention job");
+        } else if(requested_operation!=0) throw std::runtime_error("Invalid worker operation");
+#endif
         if(matrix_rows<1 || matrix_rows>151936 || matrix_width<1 || matrix_width>3072)
             throw std::runtime_error("Invalid projection shape");
+#ifdef PARALLEL_ATTENTION
+        if(requested_operation==0)
+#endif
         validate_weight_span(matrix_base,int64_t(matrix_rows)*matrix_width);
         std::unique_lock<std::mutex> lock(mutex);
         if(error) std::rethrow_exception(error);
+#ifdef PARALLEL_ATTENTION
+        operation=requested_operation;attention_layer=layer;attention_position=position;
+#endif
         base=matrix_base;rows=matrix_rows;width=matrix_width;input=x;output=y;
 #ifdef PROJECTION_HYBRID_WAIT
         pending.store(threads.size(),std::memory_order_relaxed);
