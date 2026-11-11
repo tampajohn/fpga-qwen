@@ -1,0 +1,48 @@
+{
+  "binary_sha256": "d576cde12f0fc64499b35647878fe2ddea21b9fdd3c5459f14dd96cf58a36272",
+  "reference_sha256": "d6828bf12adbbe1338be325074ca2f92efb291683e07a39d3b8c6a863e089106",
+  "gpu": false,
+  "pytorch": false,
+  "absolute_logit_tolerance": 0,
+  "short_suite": {
+    "tests_run": 6,
+    "capacity_skipped_in_short_suite": true,
+    "passed": true,
+    "coverage": [
+      "block sizes1/2/3/4 and tails",
+      "full151936 binary logits",
+      "greedy and supplied sampling uniforms",
+      "future-token causality",
+      "prefix truncation and replacement",
+      "reset and restart",
+      "inflight cancellation",
+      "malformed wire requests"
+    ]
+  },
+  "long_gate": {
+    "prompt_tokens": 452,
+    "teacher_forced_continuations": 8,
+    "bit_identical": true,
+    "max_absolute_error": 0
+  },
+  "capacity": {
+    "actual_positions_evaluated": 4096,
+    "last_block_positions": [
+      4093,
+      4094,
+      4095,
+      4096
+    ],
+    "truncate_to": 4095,
+    "rejected_crossing_count": 2,
+    "error": "Invalid block request",
+    "passed": true,
+    "wall_seconds": 263.572,
+    "note": "Correctness run with overlapping agent correctness/build work; not performance timing."
+  },
+  "malformed_wire": {
+    "passed": true,
+    "verified_exit_code": 1,
+    "diagnostic_substring": "Invalid block"
+  }
+}
