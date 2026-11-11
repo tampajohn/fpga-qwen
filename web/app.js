@@ -27,7 +27,7 @@ function backendChanged() {
     ? 'All model math and KV data run in a behavioral SystemVerilog model via Verilator. It uses floating-point real arithmetic and is not synthesizable or cycle-accurate. Python handles tokenization, suffix proposals, sampling random numbers, and HTTP; the model verifies every proposed token.'
     : 'llama.cpp runs Qwen3-0.6B on CPU with native prefix caching. This comparison backend does not use SystemVerilog. GPU support is disabled in the build.';
   $('connection').textContent = connectionLabel();
-  ['rate', 'reused', 'accepted', 'rounds'].forEach(id => $(id).textContent = '—');
+  ['rate', 'first-token', 'reused', 'accepted', 'rounds'].forEach(id => $(id).textContent = '—');
   $('context').textContent = '0 / 4,096 context tokens';
   controls();
 }
@@ -73,6 +73,7 @@ function bubble(role, text = '') {
 function updateMetrics(m) {
   if (!m) return;
   $('rate').textContent = m.output_tokens ? m.decode_tokens_per_second.toFixed(1) : '—';
+  $('first-token').textContent = Number.isFinite(m.first_token_ms) ? (m.first_token_ms / 1000).toFixed(2) : '—';
   $('reused').textContent = m.reused_prefix_tokens.toLocaleString();
   $('accepted').textContent = selectedBackend()?.suffix_supported === false ? '—' : `${m.accepted_tokens} / ${m.proposed_tokens}`;
   $('rounds').textContent = m.rounds ? m.tokens_per_round.toFixed(2) : '—';
