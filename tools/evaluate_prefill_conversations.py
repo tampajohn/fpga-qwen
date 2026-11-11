@@ -14,11 +14,12 @@ def main():
     parser.add_argument('--reference',type=Path,required=True)
     parser.add_argument('--candidate',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--reference-prefill-size',type=int,choices=(4,8),default=4)
     args=parser.parse_args()
     paths=[args.reference.resolve(),args.candidate.resolve()]
-    engines=[RTLChatEngine(binary=p,workers=8,lanes=8,block_size=4,prefill_size=s) for p,s in zip(paths,(4,8))]
+    engines=[RTLChatEngine(binary=p,workers=8,lanes=8,block_size=4,prefill_size=s) for p,s in zip(paths,(args.reference_prefill_size,8))]
     report=dict(completed=False,suite_sha256=suite_fingerprint(),workers=8,decoding='greedy',
-                suffix_draft=0,verification_capacity=4,prefill_capacities=[4,8],
+                suffix_draft=0,verification_capacity=4,prefill_capacities=[args.reference_prefill_size,8],
                 penalty_policy='Existing RTLChatEngine greedy path; no sampler or penalty override',
                 timing_claim=False,limitation='Nine strict regression cases, not a general quality benchmark; concurrent correctness jobs permitted.',
                 binaries=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in paths],cases=[])
