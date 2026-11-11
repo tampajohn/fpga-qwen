@@ -1,0 +1,243 @@
+diff --git a/sim/dispatch_profile.h b/sim/dispatch_profile.h
+new file mode 100644
+index 0000000..8acdb94
+--- /dev/null
++++ b/sim/dispatch_profile.h
+@@ -0,0 +1,33 @@
++#pragma once
++// Experimental transport-only wall timing. No neural arithmetic or worker timing.
++#ifdef PROFILE_DISPATCH
++#include <array>
++#include <chrono>
++#include <cstdint>
++#include <iostream>
++#include <unordered_map>
++namespace dispatch_profile {
++using Clock=std::chrono::steady_clock;
++inline bool enabled=false;
++inline constexpr int total=11;
++inline const char* names[]={"q","k","v","o","gate","up","down","vocabulary","attention","qkv_group","gate_up_group","eval_tick"};
++inline std::array<uint64_t,12> nanos{},calls{};
++inline std::unordered_map<int64_t,int> family;
++struct Scope {
++    int id; bool active; Clock::time_point begin;
++    explicit Scope(int category):id(category),active(enabled) {if(active)begin=Clock::now();}
++    ~Scope(){if(active){nanos[id]+=std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-begin).count();++calls[id];}}
++};
++inline int category(int64_t base){return family.at(base);}
++inline void output(){
++    std::cout<<"{\"enabled\":"<<(enabled?"true":"false")<<",\"categories\":{";
++    for(int i=0;i<12;++i){if(i)std::cout<<',';std::cout<<'"'<<names[i]<<"\":{\"calls\":"<<calls[i]<<",\"nanoseconds\":"<<nanos[i]<<'}';}
++    std::cout<<"}}\n"<<std::flush;
++}
++}
++#define PROFILE_SCOPE(id) dispatch_profile::Scope profile_scope(id)
++#define PROFILE_PROJECTION(base) dispatch_profile::Scope profile_scope(dispatch_profile::enabled?dispatch_profile::category(base):0)
++#else
++#define PROFILE_SCOPE(id) ((void)0)
++#define PROFILE_PROJECTION(base) ((void)0)
++#endif
+diff --git a/sim/full_model.cpp b/sim/full_model.cpp
+index e799555..5d5880f 100644
+--- a/sim/full_model.cpp
++++ b/sim/full_model.cpp
+@@ -9,6 +9,7 @@ static constexpr int block_capacity=4;
+ #include "Vqwen_behavioral___024root.h"
+ #include "verilated.h"
+ #include "projection_pool.h"
++#include "dispatch_profile.h"
+ #include <chrono>
+ #include <iomanip>
+ #include <sys/mman.h>
+@@ -77,6 +78,7 @@ extern "C" void dispatch_attention(int layer,int position,const svOpenArrayHandl
+     const auto* q=static_cast<const double*>(svGetArrayPtr(query));
+     auto* a=static_cast<double*>(svGetArrayPtr(output));
+     if(!pool || !q || !a || !attention_root) throw std::runtime_error("Invalid attention dispatch");
++    PROFILE_SCOPE(8);
+     pool->run(0,16,2048,q,a,1,layer,position);
+ }
+ // This guard is destroyed before the main model, including exception unwinding.
+@@ -90,6 +92,7 @@ extern "C" void dispatch_projection(int64_t base,int rows,int width,
+     const auto* x=static_cast<const double*>(svGetArrayPtr(input));
+     auto* y=static_cast<double*>(svGetArrayPtr(output));
+     if(!pool || !x || !y) throw std::runtime_error("Invalid projection dispatch");
++    PROFILE_PROJECTION(base);
+     pool->run(base,rows,width,x,y);
+ }
+ #ifdef BATCH_PREFILL
+@@ -98,6 +101,7 @@ extern "C" void dispatch_block_projection(int64_t base,int rows,int width,int co
+     const auto* x=static_cast<const double*>(svGetArrayPtr(input));
+     auto* y=static_cast<double*>(svGetArrayPtr(output));
+     if(!pool || !x || !y) throw std::runtime_error("Invalid block projection dispatch");
++    PROFILE_PROJECTION(base);
+     pool->run(base,rows,width,x,y,count>4?3:2,0,0,count);
+ }
+ #endif
+@@ -117,6 +121,7 @@ extern "C" void dispatch_projection_group(const svOpenArrayHandle bases,
+     if(count<2 || count>3) throw std::runtime_error("Invalid projection group count");
+     std::array<ProjectionDescriptor,3> jobs{};
+     for(int i=0;i<count;++i) jobs[i]={b[i],r[i],1024,o[i]};
++    PROFILE_SCOPE(count==3?9:10);
+     pool->run_group(jobs,count,tokens,x,y);
+ }
+ #endif
+@@ -134,6 +139,14 @@ int main(int argc,char** argv) {
+         std::ifstream layout(argv[2]); int64_t offset;
+         while(layout>>offset) offsets.push_back(offset);
+         if(offsets.size()!=311) throw std::runtime_error("Invalid tensor layout");
++#ifdef PROFILE_DISPATCH
++        dispatch_profile::family[offsets.at(2)]=7;
++        for(int layer=0;layer<28;++layer) {
++            const int slots[]={1,2,3,4,8,9,10};
++            for(int category=0;category<7;++category)
++                dispatch_profile::family[offsets.at(3+layer*11+slots[category])]=category;
++        }
++#endif
+         int count=argc==4?std::stoi(argv[3]):0;
+         if(count<0 || count>32) throw std::runtime_error("Invalid worker count");
+         int reduction_lanes=1;
+@@ -144,7 +157,7 @@ int main(int argc,char** argv) {
+         attention_root=d->rootp;
+         AttentionLifetime attention_lifetime;
+ #endif
+-        auto tick=[&](){d->clk=0;d->eval();d->clk=1;d->eval();};
++        auto tick=[&](){PROFILE_SCOPE(11);d->clk=0;d->eval();d->clk=1;d->eval();};
+ #ifdef BATCH_PREFILL
+         d->block_start=0;
+ #endif
+@@ -154,6 +167,16 @@ int main(int argc,char** argv) {
+         std::string command;
+         while(std::cin>>command) {
+             if(command=="quit") break;
++#ifdef PROFILE_DISPATCH
++            if(command=="profile") {
++                std::string action;std::cin>>action;
++                if(action=="on")dispatch_profile::enabled=true;
++                else if(action=="off")dispatch_profile::enabled=false;
++                else if(action=="reset"){dispatch_profile::nanos.fill(0);dispatch_profile::calls.fill(0);}
++                else if(action!="read")throw std::runtime_error("Invalid profile action");
++                dispatch_profile::output();continue;
++            }
++#endif
+             if(command=="reset") {
+                 d->start=0;d->rst_n=0;tick();d->rst_n=1;
+                 std::cout<<"reset\n"<<std::flush;
+diff --git a/tools/build_projection_variant.py b/tools/build_projection_variant.py
+index 4299a0c..85f5fa0 100644
+--- a/tools/build_projection_variant.py
++++ b/tools/build_projection_variant.py
+@@ -30,6 +30,7 @@ def main():
+     parser.add_argument('--group-projections', action='store_true')
+     parser.add_argument('--static-kv', action='store_true')
+     parser.add_argument('--pool', choices=['cv', 'hybrid'], default='cv')
++    parser.add_argument('--profile-dispatch', action='store_true', help='Experimental dispatch wall timers; no SV arithmetic changes')
+     parser.add_argument('--tag', default='', help='Extra alphanumeric/dash suffix for a reproducible experiment')
+     parser.add_argument('--print-path', action='store_true', help='Print output path without compiling')
+     args = parser.parse_args()
+@@ -61,6 +62,7 @@ def main():
+     if args.static_kv: tag += '-static-kv'
+     if args.prefill_b8: tag += '-prefill-b8'
+     if args.pool != 'cv': tag += '-pool-'+args.pool
++    if args.profile_dispatch: tag += '-dispatch-profile'
+     if args.tag: tag += '-'+args.tag
+     directory = ROOT / 'build/variants' / tag
+     projection, full = directory / 'projection', directory / 'full'
+@@ -71,6 +73,7 @@ def main():
+     projection.mkdir(parents=True, exist_ok=True)
+     full.mkdir(parents=True, exist_ok=True)
+     flags = '-std=c++17 -' + args.opt + (' -flto=thin' if args.lto else '')
++    if args.profile_dispatch: flags += ' -DPROFILE_DISPATCH'
+     if args.cpu == 'native': flags += ' -mcpu=native'
+     if args.fast_math: flags += ' -ffast-math'
+     if args.fp_contract != 'on': flags += ' -ffp-contract='+args.fp_contract
+@@ -113,7 +116,7 @@ def main():
+          str(ROOT/'rtl/qwen_behavioral.sv'), str(ROOT/'sim/full_model.cpp'),
+          str(projection/'Vprojection_worker__ALL.a')]]
+     sources = ['rtl/projection_worker.sv', 'rtl/qwen_behavioral.sv', 'rtl/sampling.svh',
+-               'sim/full_model.cpp', 'sim/projection_pool.h', 'sim/projection_descriptors.h', 'tools/build_projection_variant.py']
++               'sim/full_model.cpp', 'sim/dispatch_profile.h', 'sim/projection_pool.h', 'sim/projection_descriptors.h', 'tools/build_projection_variant.py']
+     def source_hashes():
+         return {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sources}
+     before = source_hashes()
+diff --git a/tools/profile_dispatch.py b/tools/profile_dispatch.py
+new file mode 100644
+index 0000000..71a8e89
+--- /dev/null
++++ b/tools/profile_dispatch.py
+@@ -0,0 +1,76 @@
++"""Opt-in dispatch wall attribution, with paired enabled/disabled overhead checks."""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import statistics
++import tempfile
++import time
++from prefill_protocol import PrefillProtocolModel as RTLModel
++from chat_protocol import ChatProtocol
++from benchmark_matched import make_prompt
++from evaluate_projection_quality import read_dump_logits,model_provenance
++
++
++def request(model,prompt,count,enabled):
++    model.command('profile off');model.reset()
++    for start in range(0,len(prompt)-1,8):model.prefill(prompt[:-1][start:start+8])
++    pending=model.token(prompt[-1])[0]
++    model.command('profile reset');model.command('profile on' if enabled else 'profile off')
++    started=time.perf_counter();ids=[]
++    for _ in range(count):
++        pending=model.token(pending)[0];ids.append(pending)
++    elapsed=time.perf_counter()-started
++    model.command('profile off');counters=json.loads(model.command('profile read'))['categories']
++    total=counters['eval_tick']['nanoseconds'];dispatch=sum(v['nanoseconds']for k,v in counters.items()if k!='eval_tick')
++    if enabled:
++        if counters['eval_tick']['calls']!=count:raise RuntimeError('Wrong eval tick count')
++        for name in ('q','k','v','o','gate','up','down','attention'):
++            if counters[name]['calls']!=28*count:raise RuntimeError(f'Wrong {name} dispatch count')
++        if counters['vocabulary']['calls']!=count:raise RuntimeError('Wrong head count')
++        if dispatch>total:raise RuntimeError('Nested dispatch timing exceeds enclosing tick')
++    return dict(enabled=enabled,host_decode_seconds=elapsed,decode_tokens=count,output_ids=ids,counters=counters,
++                eval_tick_seconds=total/1e9,dispatch_sum_seconds=dispatch/1e9,
++                residual_main_sv_wrapper_coordinator_seconds=(total-dispatch)/1e9,
++                host_outside_eval_seconds=elapsed-total/1e9 if enabled else None)
++
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--binary',type=Path,required=True)
++    parser.add_argument('--tokens',type=int,default=32)
++    parser.add_argument('--pairs',type=int,default=3)
++    parser.add_argument('--output',type=Path,default=Path('build/dispatch-profile.json'))
++    args=parser.parse_args()
++    model=RTLModel(binary=args.binary,workers=8,lanes=8,block_size=4)
++    report=dict(binary=str(args.binary.resolve()),binary_sha256=hashlib.sha256(args.binary.read_bytes()).hexdigest(),
++                gpu=False,pytorch=False,workers=8,lanes=8,prefill_size=8,profiles={},
++                boundaries='Dispatch scopes surround synchronous pool.run/run_group only. Includes scheduling, transport into workers, SV worker evaluation and wait. Eval tick surrounds both main d->eval calls; includes all dispatches. Residual is main SV arithmetic plus generated wrappers/copies, dispatch classification and coordinator work, not pure scheduling. Host outside eval includes IPC, parsing/output and Python overhead.',
++                limitations='Wall time, not sum of worker CPU. Profiling may perturb scheduling/codegen. Dynamic on/off pairs bound instrumentation overhead within the same executable; do not prove no codegen change against production.')
++    try:
++        model.start();protocol=ChatProtocol(model.model)
++        report['model_provenance']=model_provenance(model.model)
++        report['build_manifest']=json.loads((args.binary.parent.parent/'manifest.json').read_text())
++        with tempfile.TemporaryDirectory() as directory:
++            for profile in ('short','long'):
++                prompt=make_prompt(protocol,profile);request(model,prompt,args.tokens,False)
++                runs=[];reference=None;reference_logits=None
++                for pair in range(args.pairs):
++                    for enabled in ((False,True)if pair%2==0 else(True,False)):
++                        row=request(model,prompt,args.tokens,enabled)
++                        logits=read_dump_logits(model,Path(directory)/'logits.bin')
++                        bits=logits.view('uint64')
++                        if reference is None:reference=row['output_ids'];reference_logits=bits.copy()
++                        if row['output_ids']!=reference or not (bits==reference_logits).all():raise AssertionError('Profiling changed output/logits')
++                        row['pair']=pair;runs.append(row)
++                overhead=[]
++                for pair in range(args.pairs):
++                    rows={r['enabled']:r for r in runs if r['pair']==pair}
++                    overhead.append(rows[True]['host_decode_seconds']/rows[False]['host_decode_seconds'])
++                report['profiles'][profile]=dict(prompt_tokens=len(prompt),prompt_ids=prompt,runs=runs,
++                    enabled_over_disabled_wall_ratios=overhead,median_overhead_ratio=statistics.median(overhead),exact_final_logits_and_ids=True)
++                args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(report,indent=2)+'\n')
++                print(profile,overhead,flush=True)
++    finally:model.close()
++
++if __name__=='__main__':main()
