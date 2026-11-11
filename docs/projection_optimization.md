@@ -107,18 +107,18 @@ waiting remains an opt-in experiment (`--pool hybrid`). No fast-math or unroll
 experiment was measured. Raw records are local ignored artifacts
 `build/projection-probe-round2.json` and `build/projection-probe-round3.json`.
 
-The selected candidate was subsequently rebuilt to include the final sampler
+The historical second-iteration candidate was subsequently rebuilt to include the final sampler
 optimization; that rebuilt binary SHA256 is
 `59139c1ff40c0df262387cd3379ab518a1262fa68b3a893f9dc15291185b062d`.
 The builder writes `manifest.json` with source hashes, commands, toolchain
 versions, and binary hash, and rejects sources changing during a build.
-Full matched 85/452-token context timing and quality gates must evaluate the
-rebuilt artifact before deployment or comparative performance claims. The short
+That artifact was evaluated in the [second-iteration report](performance_iteration_2.md);
+the unsigned-index successor is covered by the [paired third-iteration report](performance_iteration_3.md). The short
 probe does not establish performance relative to llama.cpp or real FPGA hardware.
 
-### Assembly inspection and next experiment
+### Assembly inspection of the second-iteration binary
 
-Read-only disassembly of the selected binary confirms four ARM NEON `fmla.2d`
+Read-only disassembly of the second-iteration binary confirms four ARM NEON `fmla.2d`
 instructions per eight-column step, with BF16 expansion through `shll.4s` and
 `fcvtl`/`fcvtl2`. Thin LTO eliminated inner-loop DPI calls, and partial sums stay
 in SIMD registers. It is already executing vector FP64 arithmetic; simply
@@ -127,10 +127,49 @@ turning on contraction is not an unexplored route to SIMD.
 The inner loop still performs repeated signed-index extension and masked address
 calculations. The first four BF16 values also load through several fragments and
 a `zip1` instruction, whereas the next four use a single 64-bit load. These are
-observations, not measured percentages of runtime. A staged, unapplied patch at
-`tools/experiments/unsigned_projection_indices.patch` adds an independent
-unsigned-index SV macro and separate `--cpu native` build option. They preserve
-accumulation order and must be tested independently before combining. The
-unsigned variables are safe only under the existing host validation of
-nonnegative projection dimensions and matrix spans. No speedup is claimed for
-these unbuilt experiments.
+observations, not measured percentages of runtime. The implemented
+`--unsigned-indices` option addresses that index overhead. The separate
+`--cpu native` compiler option remains untested. Unsigned variables rely on
+existing host validation of nonnegative dimensions and matrix spans.
+
+## Unsigned indices and fixed KV arrays
+
+The implemented build options preserve the original reference path. `--unsigned-indices`
+uses unsigned row/column loop variables; `--static-kv` replaces deque-backed SV
+dynamic arrays with fixed SV arrays of exactly 117,440,512 doubles each. The
+combined KV storage remains 1,792 MiB. Both compile successfully. Existing live
+binaries were preserved, and all candidates have separate build paths.
+
+One warm request per profile, 32 greedy output tokens, eight workers/accumulators:
+
+| Candidate | Short (85 prompt tokens), tok/s | Long (452 prompt tokens), tok/s |
+| --- | ---: | ---: |
+| Current selected baseline, same session | 30.396 | 13.704 |
+| Fixed KV only | 32.086 | 14.117 |
+| Unsigned projection indices only | 35.377 | 15.443 |
+| Unsigned indices + fixed KV | 29.193 | 14.651 |
+
+These runs were sequential, not interleaved, and noticeable host/run drift was
+observed versus earlier measurements. Fixed KV is not established as a win.
+Unsigned-only is the candidate for an interleaved AB/BA evaluation, not a confirmed
+speedup. No native-CPU experiment was run. Its binary SHA256 is
+`becad933e07b45cc027717ae8f04b842c2db46d32b5a5b3e0bc736a6e85cb07e`.
+
+The unsigned-only candidate had bit-identical full-vocabulary logits against the
+current eight-accumulator baseline over five continuations after the 85-token
+prompt. The combined candidate was also bit-identical after the 452-token prompt.
+The initial fixed-KV test against a one-accumulator reference had max error
+1.226e-13 and matched all five greedy IDs. Subsequent paired performance, exact-logit, quality and KV replacement gates
+passed for unsigned-only; see the [third-iteration report](performance_iteration_3.md).
+Unsigned-only is now the chat default; fixed KV remains experimental.
+
+Read-only disassembly explains a plausible unsigned-index benefit: the hot
+8-column loop shrank from approximately 40 instructions to 19, removing repeated
+signed extension/masked address arithmetic and using contiguous paired BF16
+loads. FP64 SIMD and arithmetic order remain unchanged. This is a compiler result,
+not proof that the entire model speeds up by the same ratio.
+
+Raw ignored artifacts: `build/static-kv-exploratory.json`,
+`build/static-kv-baseline-exploratory.json`,
+`build/unsigned-indices-exploratory.json`, and
+`build/unsigned-static-kv-exploratory.json`.

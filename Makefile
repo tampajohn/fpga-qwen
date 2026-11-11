@@ -1,6 +1,6 @@
 PYTHON ?= python3
 VERILATOR ?= verilator
-FAST_BINARY = build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral
+FAST_BINARY = build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral
 
 .PHONY: all prepare test report clean block-test kv-test suffix-test setup check chat chat-test
 all: test
@@ -83,7 +83,7 @@ chat-reference: build/full/Vqwen_behavioral
 	uv run --locked tools/chat_server.py --simulator reference $(if $(MODEL),--model "$(MODEL)",) $(if $(PORT),--port $(PORT),)
 
 $(FAST_BINARY): rtl/qwen_behavioral.sv rtl/sampling.svh rtl/projection_worker.sv sim/full_model.cpp sim/projection_pool.h tools/build_projection_variant.py
-	uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --fast-attention --compact-projection
+	uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --compact-projection
 
 fast-test: $(FAST_BINARY)
 	SV_TEST_BINARY="$(CURDIR)/$(FAST_BINARY)" SV_TEST_LANES=8 uv run --locked python -m unittest tests.test_fast_model tests.test_projection_span tests.test_sampling tests.test_projection_scheduler tests.test_conversation -v

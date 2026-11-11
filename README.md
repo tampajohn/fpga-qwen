@@ -110,7 +110,10 @@ normalization, nonlinearities, residuals, and KV state remain in the main SV mod
 This is shared-memory execution on one machine, not a multi-machine service.
 
 The selected fast build is reproducible with
-`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --fast-attention --compact-projection`.
+`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --compact-projection`.
+Unsigned indices simplify generated projection address calculations without
+changing accumulation order; this incremental change passed bit-exact gates
+against the prior fast build. See the [paired comparison](docs/performance_iteration_3.md).
 These options preserve BF16 checkpoint storage and SV FP64 arithmetic; they do
 not implement FP16 inference. `make fast-test` checks full-logit tolerances,
 same-uniform sampling, KV truncation/reset/restart, invalid projection spans,

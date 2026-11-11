@@ -27,7 +27,13 @@ module qwen_behavioral (
 `endif
     localparam int H=1024, D=128, Q=2048, I=3072, L=28, C=4096, V=151936;
     real x[H], n[H], q[Q], k[H], v[H], a[Q], gate[I], up[I];
+`ifdef STATIC_KV
+    // Exact dimensions avoid deque-backed dynamic indexing without changing
+    // attention arithmetic or rounding. Do not pad these giant arrays.
+    real keys[L*C*H], values[L*C*H];
+`else
     real keys[], values[];
+`endif
     real scores[C], cosine[64], sine[64];
     // Debug outputs are scalar transport only; all arithmetic is performed here.
     real logits[V];
@@ -35,10 +41,12 @@ module qwen_behavioral (
     int token_history[C];
     `include "sampling.svh"
 
+`ifndef STATIC_KV
     initial begin
         keys = new[L*C*H];
         values = new[L*C*H];
     end
+`endif
 
     task automatic normalize_hidden(input int slot);
         real sum, scale;
