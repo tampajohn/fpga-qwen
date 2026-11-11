@@ -7,13 +7,15 @@ import numpy as np
 from tools.rtl_model import RTLModel
 
 BINARY = os.environ.get('SV_ATTENTION_BINARY')
+REFERENCE = os.environ.get('SV_ATTENTION_REFERENCE')
+LANES = int(os.environ.get('SV_TEST_LANES', '1'))
 
 
 @unittest.skipUnless(BINARY and Path(BINARY).is_file(), 'Set SV_ATTENTION_BINARY to built candidate')
 class ParallelAttentionTests(unittest.TestCase):
     def test_head_partitions_full_logits_and_cache_replay(self):
-        serial = RTLModel(binary=BINARY, workers=0, lanes=1)
-        parallel = RTLModel(binary=BINARY, workers=3, lanes=1)
+        serial = RTLModel(binary=REFERENCE or BINARY, workers=3 if REFERENCE else 0, lanes=LANES)
+        parallel = RTLModel(binary=BINARY, workers=3, lanes=LANES)
         try:
             serial.start(); parallel.start()
             with tempfile.TemporaryDirectory() as directory:
@@ -27,10 +29,11 @@ class ParallelAttentionTests(unittest.TestCase):
                     self.assertEqual(results[0], results[1])
                     self.assertEqual(arrays[0].size,151936)
                     self.assertTrue(np.isfinite(arrays[0]).all())
-                    np.testing.assert_array_equal(*arrays)
+                    np.testing.assert_array_equal(arrays[0].view(np.uint64),arrays[1].view(np.uint64))
                     return arrays[1]
                 for workers, token in [(3,9707),(8,11),(17,1917),(1,0)]:
                     parallel.set_workers(workers)
+                    if REFERENCE: serial.set_workers(workers)
                     step(token,.42)
                 for model in (serial,parallel): model.command('truncate 2')
                 expected=step(9707,.7)
