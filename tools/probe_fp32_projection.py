@@ -21,7 +21,7 @@ def sha(path):
     with Path(path).open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
 
 
-def build(directory,batch,kind,compiler_root,vocabulary=False,no_lto=False):
+def build(directory,batch,kind,compiler_root,vocabulary=False,no_lto=False,unroll_count=None):
     destination=directory/f'{kind}-b{batch}';destination.mkdir(parents=True,exist_ok=True)
     baseline=kind=='fp64'
     env=os.environ.copy()
@@ -42,7 +42,7 @@ def build(directory,batch,kind,compiler_root,vocabulary=False,no_lto=False):
         flags+=' -fno-fast-math -ffp-contract=off'
         defines=[f'KERNEL_BATCH={batch}',f'KERNEL_ROWS={151936 if vocabulary else 3072}']
     source=ROOT/'rtl'/f'{top}.sv'
-    command=[compiler,'--cc','--exe','--build','-j','4','--top-module',top,'--Mdir',str(destination),
+    command=[compiler,*(['--unroll-count',str(unroll_count)]if not baseline and unroll_count is not None else []),'--cc','--exe','--build','-j','4','--top-module',top,'--Mdir',str(destination),
              '-Wall','-Wno-BLKSEQ','-Wno-fatal','-CFLAGS',flags,'-MAKEFLAGS','OPT_FAST=-O3',
              *(['-LDFLAGS','-flto=thin']if lto else []),'-O3',*['+define+'+v for v in defines],str(source),str(ROOT/'sim/fp32_projection_probe.cpp')]
     source_files=(source,ROOT/'sim/fp32_projection_probe.cpp',Path(__file__).resolve(),ROOT/'tools/fp32_rounding_oracle.py')
@@ -71,6 +71,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--compiler-root',type=Path)
     parser.add_argument('--candidate-no-lto',action='store_true')
+    parser.add_argument('--candidate-unroll-count',type=int,choices=range(0,65))
     parser.add_argument('--vocabulary',action='store_true')
     parser.add_argument('--matrices',default='q,gate,down')
     mode=parser.add_mutually_exclusive_group(required=True)
@@ -84,7 +85,7 @@ def main():
     if args.build_only:
         if not args.compiler_root:parser.error('Explicit reviewed compiler root required')
         for batch in batches:
-            for kind in ('fp64','fp32'):build(args.directory,batch,kind,args.compiler_root.resolve(),args.vocabulary,args.candidate_no_lto)
+            for kind in ('fp64','fp32'):build(args.directory,batch,kind,args.compiler_root.resolve(),args.vocabulary,args.candidate_no_lto,args.candidate_unroll_count)
         return
     model,layout=prepare_layout(locate_model(None))
     header,start,_=read_header(model/'model.safetensors')
