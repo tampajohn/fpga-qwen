@@ -392,6 +392,11 @@ tokens/round into tokens/sec without accounting for those components.
 
 ### Local llama.cpp comparison
 
+The [current deployed-backend comparison](docs/current_native_comparison.md)
+measures B8 prefill and grouped decode against CPU-only llama.cpp: approximately
+50/33 tokens/s for short/long prompts versus 120/122 with native FP16. It includes
+first-token latency, identical-token checks and measurement limitations.
+
 On this Apple M5 Max, using the same Qwen3-0.6B checkpoint, 512 tokens of
 context, 128 generated tokens and three repetitions, CPU-only llama-bench measured:
 
