@@ -17,7 +17,14 @@ module qwen_behavioral (
     import "DPI-C" function longint tensor_base(input int slot);
     import "DPI-C" function void dispatch_projection(input longint base, input int rows, width,
                                                       input real activation[], output real result[]);
-    real projection_input[3072], projection_output[151936];
+    real projection_input[3072];
+`ifdef COMPACT_PROJECTION_BUFFER
+    // DPI output arrays are initialized/copied at their declared size. Hidden
+    // projections have at most 3072 rows; only the final vocabulary needs V.
+    real projection_output[3072], vocabulary_output[151936];
+`else
+    real projection_output[151936];
+`endif
     localparam int H=1024, D=128, Q=2048, I=3072, L=28, C=4096, V=151936;
     real x[H], n[H], q[Q], k[H], v[H], a[Q], gate[I], up[I];
     real keys[], values[];
@@ -132,12 +139,24 @@ module qwen_behavioral (
                 scores[t]=$exp(scores[t]-maximum);
                 denom+=scores[t];
             end
+`ifdef FAST_ATTENTION
+            // Walk each contiguous value vector once. Each output keeps the same
+            // ascending-time reduction order as the reference implementation.
+            for (int j=0;j<D;j++) a[head*D+j]=0.0;
+            for (int t=0;t<=position;t++) begin
+                scale=scores[t]/denom;
+                index=(layer*C+t)*H+kvhead*D;
+                for (int j=0;j<D;j++)
+                    a[head*D+j]+=scale*values[index+j];
+            end
+`else
             for (int j=0;j<D;j++) begin
                 sum=0.0;
                 for (int t=0;t<=position;t++)
                     sum+=scores[t]/denom*values[(layer*C+t)*H+kvhead*D+j];
                 a[head*D+j]=sum;
             end
+`endif
         end
         base=tensor_base(3+layer*11+4);
         if (parallel_workers>0) begin
@@ -227,11 +246,19 @@ module qwen_behavioral (
                 best_logit=-1.0e300; best_id=0;
                 if (parallel_workers>0) begin
                     for (int j=0;j<H;j++) projection_input[j]=n[j];
+`ifdef COMPACT_PROJECTION_BUFFER
+                    dispatch_projection(base,V,H,projection_input,vocabulary_output);
+`else
                     dispatch_projection(base,V,H,projection_input,projection_output);
+`endif
                 end
                 for (int r=0;r<V;r++) begin
                     sum=0.0;
+`ifdef COMPACT_PROJECTION_BUFFER
+                    if (parallel_workers>0) sum=vocabulary_output[r];
+`else
                     if (parallel_workers>0) sum=projection_output[r];
+`endif
                     else for (int j=0;j<H;j++) sum+=n[j]*weight_value(base+longint'(r)*H+longint'(j));
                     logits[r]=sum;
                     if (sum>best_logit) begin best_logit=sum; best_id=r; end

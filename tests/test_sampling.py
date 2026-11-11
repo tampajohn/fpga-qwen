@@ -1,5 +1,6 @@
 """SV top-k/top-p sampling matches an independent NumPy probability oracle."""
 import tempfile
+import os
 import threading
 from pathlib import Path
 import unittest
@@ -9,7 +10,7 @@ from tools.rtl_model import RTLModel
 
 class SamplingTests(unittest.TestCase):
     def test_sampling_math_and_truncated_history(self):
-        model = RTLModel(workers=8)
+        model = RTLModel(workers=8, binary=os.environ.get('SV_TEST_BINARY'), lanes=int(os.environ.get('SV_TEST_LANES', '1')))
         history = []
         try:
             model.start()

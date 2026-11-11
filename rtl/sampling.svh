@@ -17,6 +17,9 @@ function automatic int sample_chat_token(input real raw_logits[], input int hist
     count=raw_logits.size()<20 ? raw_logits.size() : 20;
     for (int token=0;token<raw_logits.size();token++) begin
         candidate=(raw_logits[token]-(seen[token] ? presence_penalty : 0.0))/0.7;
+        // Most vocabulary entries cannot enter the current top-k. Preserve
+        // stable ties while avoiding a full rank scan for those entries.
+        if (candidate<=top_scores[count-1]) continue;
         for (int rank=0;rank<count;rank++) begin
             if (candidate>top_scores[rank]) begin
                 for (int j=count-1;j>rank;j--) begin

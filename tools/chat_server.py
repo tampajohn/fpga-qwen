@@ -10,9 +10,11 @@ from urllib.parse import urlsplit
 try:
     from .rtl_chat import RTLChatEngine
     from .chat_backends import BackendRouter
+    from .rtl_model import FAST_BINARY
 except ImportError:
     from rtl_chat import RTLChatEngine
     from chat_backends import BackendRouter
+    from rtl_model import FAST_BINARY
 
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / 'web'
@@ -170,8 +172,7 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         raise ValueError('Invalid port')
-    binary = ROOT / ('build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral'
-                     if args.simulator == 'fast' else 'build/full/Vqwen_behavioral')
+    binary = FAST_BINARY if args.simulator == 'fast' else ROOT / 'build/full/Vqwen_behavioral'
     if not binary.is_file():
         raise RuntimeError('Build the simulator first: make chat (fast) or make chat-reference')
     print('Preparing full SystemVerilog chat; no PyTorch or GPU inference...', flush=True)

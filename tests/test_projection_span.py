@@ -2,13 +2,13 @@
 from pathlib import Path
 import subprocess
 import unittest
-from tools.rtl_model import prepare_layout
-from tools.experiment import ROOT
+import os
+from tools.rtl_model import prepare_layout, FAST_BINARY
 
 
 class ProjectionSpanTests(unittest.TestCase):
     def test_invalid_span_is_rejected_before_worker_reads(self):
-        binary = ROOT/'build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral'
+        binary = Path(os.environ.get('SV_TEST_BINARY', FAST_BINARY))
         if not binary.is_file():
             self.skipTest('Build the isolated unchecked projection candidate first')
         model, layout = prepare_layout(None)

@@ -15,8 +15,10 @@ make chat
 ```
 
 The default backend is now **full-model behavioral SystemVerilog**, compiled by
-Verilator. `make chat` builds the optimized CPU profile (thin LTO, validated
-projection spans, eight independent accumulators). `make chat-reference` retains
+Verilator. `make chat` builds the optimized CPU profile: thin LTO, validated
+projection spans, eight independent accumulators, bounded activation indexing,
+optimized attention access, and compact projection transport. It uses the sleeping
+condition-variable worker scheduler. `make chat-reference` retains
 the original accumulation order. Both are behavioral SystemVerilog, not FPGA
 implementations. PyTorch and Transformers are neither installed by the default setup
 nor imported by the chat server. Tokenization uses the local checkpoint's
@@ -106,6 +108,14 @@ validated with numerical tolerances and output checks rather than claiming
 bit-identical logits. There is no cross-worker floating-point reduction. Attention,
 normalization, nonlinearities, residuals, and KV state remain in the main SV model.
 This is shared-memory execution on one machine, not a multi-machine service.
+
+The selected fast build is reproducible with
+`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --fast-attention --compact-projection`.
+These options preserve BF16 checkpoint storage and SV FP64 arithmetic; they do
+not implement FP16 inference. `make fast-test` checks full-logit tolerances,
+same-uniform sampling, KV truncation/reset/restart, invalid projection spans,
+worker scheduling, and the conversation recovery fixture. These short checks
+complement the matched benchmark's quality suite; they are not a broad quality guarantee.
 
 The original parallel implementation measured the following on this Apple M5 Max,
 with two warmup tokens and nine measured

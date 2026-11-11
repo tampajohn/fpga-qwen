@@ -1,5 +1,6 @@
 PYTHON ?= python3
 VERILATOR ?= verilator
+FAST_BINARY = build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral
 
 .PHONY: all prepare test report clean block-test kv-test suffix-test setup check chat chat-test
 all: test
@@ -25,7 +26,7 @@ report:
 setup:
 	uv sync --locked --python python3.12
 
-chat: build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral
+chat: $(FAST_BINARY)
 	uv run --locked tools/chat_server.py $(if $(MODEL),--model "$(MODEL)",) $(if $(PORT),--port $(PORT),)
 
 chat-test: build/full/Vqwen_behavioral
@@ -81,8 +82,8 @@ conversation-test: build/full/Vqwen_behavioral
 chat-reference: build/full/Vqwen_behavioral
 	uv run --locked tools/chat_server.py --simulator reference $(if $(MODEL),--model "$(MODEL)",) $(if $(PORT),--port $(PORT),)
 
-build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral: rtl/qwen_behavioral.sv rtl/sampling.svh rtl/projection_worker.sv sim/full_model.cpp sim/projection_pool.h tools/build_projection_variant.py
-	uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked
+$(FAST_BINARY): rtl/qwen_behavioral.sv rtl/sampling.svh rtl/projection_worker.sv sim/full_model.cpp sim/projection_pool.h tools/build_projection_variant.py
+	uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --fast-attention --compact-projection
 
-fast-test: build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral
-	SV_TEST_BINARY="$(CURDIR)/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral" SV_TEST_LANES=8 uv run --locked python -m unittest tests.test_fast_model tests.test_projection_span tests.test_conversation -v
+fast-test: $(FAST_BINARY)
+	SV_TEST_BINARY="$(CURDIR)/$(FAST_BINARY)" SV_TEST_LANES=8 uv run --locked python -m unittest tests.test_fast_model tests.test_projection_span tests.test_sampling tests.test_projection_scheduler tests.test_conversation -v

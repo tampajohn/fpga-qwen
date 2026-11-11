@@ -69,3 +69,68 @@ Further claims must use the matched throughput/latency and quality harness, with
 benchmarks scheduled without competing model jobs. The 28.89 figure does not
 establish a win over llama.cpp, and these remain behavioral simulator timings,
 not predicted FPGA performance.
+
+## Attention, buffer, and bounds-check iteration
+
+The next candidate is built independently with:
+
+```sh
+uv run --locked tools/build_projection_variant.py --lto --unchecked \
+  --masked-activation --fast-attention --compact-projection
+```
+
+`--masked-activation` pads the worker activation port to 4096 entries and masks
+indices to 12 bits. Existing validated projection widths are at most 3072, so
+this does not alter a legal index or consume padding. Inspection of generated
+C++ confirms direct `activation[index & 4095]` accesses, eliminating the prior
+per-lane `index <= 3071 ? activation[index] : 0` guards. Neural arithmetic stays
+in SV. `--compact-projection` separates the 3072-element intermediate output
+buffer from the vocabulary-sized final output, avoiding large temporary clears
+and copies for intermediate projections. `--fast-attention` normalizes attention
+scores once and traverses value accumulation in contiguous channel order.
+
+Five-position exploratory probes, eight workers and eight accumulators:
+
+| Additional options over scalar O3 + LTO + checked-once | Steady tok/s |
+| --- | ---: |
+| Fast attention + compact projection | 32.09 |
+| Above + masked activation, CV scheduler | 42.50 |
+| Above + masked activation, hybrid scheduler | 40.95 |
+| Above + masked activation, `-ffp-contract=fast`, CV scheduler | 37.91 |
+
+These are separate short probes, not repeated matched comparisons. All candidates
+matched the five reference greedy choices, with maximum absolute logit error
+2.096e-13 for eight accumulators. Lane one was bit-identical for the first three;
+explicit fast contraction changed lane-one rounding (max error 1.075e-13).
+The selected candidate keeps the CV scheduler and default contraction. Hybrid
+waiting remains an opt-in experiment (`--pool hybrid`). No fast-math or unroll
+experiment was measured. Raw records are local ignored artifacts
+`build/projection-probe-round2.json` and `build/projection-probe-round3.json`.
+
+The selected candidate was subsequently rebuilt to include the final sampler
+optimization; that rebuilt binary SHA256 is
+`59139c1ff40c0df262387cd3379ab518a1262fa68b3a893f9dc15291185b062d`.
+The builder writes `manifest.json` with source hashes, commands, toolchain
+versions, and binary hash, and rejects sources changing during a build.
+Full matched 85/452-token context timing and quality gates must evaluate the
+rebuilt artifact before deployment or comparative performance claims. The short
+probe does not establish performance relative to llama.cpp or real FPGA hardware.
+
+### Assembly inspection and next experiment
+
+Read-only disassembly of the selected binary confirms four ARM NEON `fmla.2d`
+instructions per eight-column step, with BF16 expansion through `shll.4s` and
+`fcvtl`/`fcvtl2`. Thin LTO eliminated inner-loop DPI calls, and partial sums stay
+in SIMD registers. It is already executing vector FP64 arithmetic; simply
+turning on contraction is not an unexplored route to SIMD.
+
+The inner loop still performs repeated signed-index extension and masked address
+calculations. The first four BF16 values also load through several fragments and
+a `zip1` instruction, whereas the next four use a single 64-bit load. These are
+observations, not measured percentages of runtime. A staged, unapplied patch at
+`tools/experiments/unsigned_projection_indices.patch` adds an independent
+unsigned-index SV macro and separate `--cpu native` build option. They preserve
+accumulation order and must be tested independently before combining. The
+unsigned variables are safe only under the existing host validation of
+nonnegative projection dimensions and matrix spans. No speedup is claimed for
+these unbuilt experiments.

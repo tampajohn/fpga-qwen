@@ -192,7 +192,7 @@ def make_prompt(protocol, profile):
     return request.ids
 
 
-def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, workers, lanes, count, atol):
+def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, workers, lanes, count, atol, profile='short'):
     """Teacher-force both engines from the same prompt; test every output logit.
 
     Reassociation may change low bits. Exact sampled text is not required, but
@@ -202,7 +202,7 @@ def compare_sv_logits(checkpoint, protocol, reference_binary, candidate_binary, 
     import numpy as np
     reference = SVEngine(checkpoint,workers,protocol.tokenizer,reference_binary,1)
     candidate = SVEngine(checkpoint,workers,protocol.tokenizer,candidate_binary,lanes)
-    prompt = make_prompt(protocol,'short')
+    prompt = make_prompt(protocol,profile)
     errors, choices, finite = [], [], True
     try:
         reference.start(); candidate.start()
@@ -255,6 +255,7 @@ def main():
     parser.add_argument('--sv-lanes', type=int, choices=[1,8], default=1)
     parser.add_argument('--reference-sv-binary', type=Path, help='Optional baseline for a separate numerical gate before timing')
     parser.add_argument('--gate-tokens', type=int, default=16)
+    parser.add_argument('--gate-profile', choices=['short','medium','long'], default='short')
     parser.add_argument('--logit-atol', type=float, default=1e-6)
     parser.add_argument('--quality', action='store_true')
     parser.add_argument('--quality-only', action='store_true')
@@ -298,7 +299,7 @@ def main():
         report[key] = hashlib.sha256(binary.read_bytes()).hexdigest() if binary.is_file() else None
     if args.reference_sv_binary:
         report['numerical_gate'] = compare_sv_logits(checkpoint, protocol, args.reference_sv_binary,
-            sv_binary, args.threads, args.sv_lanes, args.gate_tokens, args.logit_atol)
+            sv_binary, args.threads, args.sv_lanes, args.gate_tokens, args.logit_atol, args.gate_profile)
         args.output.write_text(json.dumps(report,indent=2)+'\n')
         if not report['numerical_gate']['passed']:
             raise RuntimeError('Numerical gate failed; candidate timing skipped')

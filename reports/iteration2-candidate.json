@@ -1,0 +1,858 @@
+{
+  "cpu": "Apple M5 Max",
+  "threads_or_workers": 8,
+  "checkpoint": "$CHECKPOINT",
+  "timestamp_utc": "2026-11-11T20:46:44Z",
+  "decoding": "greedy, no penalties, identical EOS-respecting selection; performance requires requested count before EOS",
+  "gpu": false,
+  "pytorch": false,
+  "runs": [
+    {
+      "engine": "rtl",
+      "metadata": {
+        "weight_storage": "BF16 checkpoint",
+        "arithmetic": "SystemVerilog real / FP64",
+        "kv": "SystemVerilog real / FP64",
+        "parallel_workers": 8,
+        "reduction_lanes": 8,
+        "executable": "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral",
+        "cpu_thread_note": "Persistent projection workers plus coordinator; no GPU"
+      },
+      "startup_seconds": 0.17458604194689542,
+      "profile": "short",
+      "prompt_tokens": 85,
+      "prompt_ids_sha256": "58be84173178cdcfb224e0c441a55147e7df172e2ac71dd1361f4340a63f0dbb",
+      "first_request": {
+        "output_token_ids": [
+          10642,
+          33394,
+          19257,
+          311,
+          279,
+          4628,
+          518,
+          892,
+          821,
+          646,
+          387,
+          22409,
+          1948,
+          279,
+          13940,
+          323,
+          1887,
+          4938,
+          13,
+          356,
+          11829,
+          374,
+          264,
+          14762,
+          429,
+          10533,
+          13814,
+          1483,
+          821,
+          304,
+          264,
+          13340
+        ],
+        "output_token_count": 32,
+        "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+        "finish_reason": "length",
+        "first_token_seconds": 2.6839673329959624,
+        "request_seconds": 3.856435749970842,
+        "steady_decode_seconds": 1.1723611250054091,
+        "steady_decode_tokens_per_second": 26.44236433535526,
+        "backend_timings": null,
+        "eos_observed": false
+      },
+      "warm_requests": [
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 2.41127833299106,
+          "request_seconds": 3.610849499993492,
+          "steady_decode_seconds": 1.1995421249885112,
+          "steady_decode_tokens_per_second": 25.84319412733997,
+          "backend_timings": null,
+          "eos_observed": false
+        },
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 2.4275795410503633,
+          "request_seconds": 3.5461575830122456,
+          "steady_decode_seconds": 1.1185523750027642,
+          "steady_decode_tokens_per_second": 27.714392899951058,
+          "backend_timings": null,
+          "eos_observed": false
+        },
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+          "finish_reason": "length",
+          "first_token_seconds": 2.0735412920475937,
+          "request_seconds": 3.094130458019208,
+          "steady_decode_seconds": 1.0205648329574615,
+          "steady_decode_tokens_per_second": 30.37533628330707,
+          "backend_timings": null,
+          "eos_observed": false
+        }
+      ],
+      "warm_median_ttft_seconds": 2.41127833299106,
+      "warm_median_decode_tokens_per_second": 27.714392899951058,
+      "greedy_sequence_repeatable": true,
+      "warm_decode_rate_min": 25.84319412733997,
+      "warm_decode_rate_max": 30.37533628330707
+    },
+    {
+      "engine": "rtl",
+      "metadata": {
+        "weight_storage": "BF16 checkpoint",
+        "arithmetic": "SystemVerilog real / FP64",
+        "kv": "SystemVerilog real / FP64",
+        "parallel_workers": 8,
+        "reduction_lanes": 8,
+        "executable": "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral",
+        "cpu_thread_note": "Persistent projection workers plus coordinator; no GPU"
+      },
+      "startup_seconds": 0.17458604194689542,
+      "profile": "long",
+      "prompt_tokens": 452,
+      "prompt_ids_sha256": "24611aa6edbc4b0ab50df6b2cfde18686ffebfb360547e6488f5803e5e8e2205",
+      "first_request": {
+        "output_token_ids": [
+          10642,
+          33394,
+          19257,
+          311,
+          279,
+          4379,
+          518,
+          892,
+          821,
+          374,
+          22409,
+          1948,
+          264,
+          17654,
+          323,
+          4938,
+          11,
+          1393,
+          47430,
+          374,
+          264,
+          943,
+          315,
+          4938,
+          6240,
+          429,
+          10533,
+          13814,
+          1483,
+          821,
+          304,
+          264
+        ],
+        "output_token_count": 32,
+        "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+        "finish_reason": "length",
+        "first_token_seconds": 21.986033542023506,
+        "request_seconds": 24.843865042028483,
+        "steady_decode_seconds": 2.8577972499770112,
+        "steady_decode_tokens_per_second": 10.847515512253143,
+        "backend_timings": null,
+        "eos_observed": false
+      },
+      "warm_requests": [
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            374,
+            22409,
+            1948,
+            264,
+            17654,
+            323,
+            4938,
+            11,
+            1393,
+            47430,
+            374,
+            264,
+            943,
+            315,
+            4938,
+            6240,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+          "finish_reason": "length",
+          "first_token_seconds": 20.449512415973004,
+          "request_seconds": 23.461126207956113,
+          "steady_decode_seconds": 3.01158920902526,
+          "steady_decode_tokens_per_second": 10.293568560777768,
+          "backend_timings": null,
+          "eos_observed": false
+        },
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            374,
+            22409,
+            1948,
+            264,
+            17654,
+            323,
+            4938,
+            11,
+            1393,
+            47430,
+            374,
+            264,
+            943,
+            315,
+            4938,
+            6240,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+          "finish_reason": "length",
+          "first_token_seconds": 23.30528199998662,
+          "request_seconds": 26.127283417037688,
+          "steady_decode_seconds": 2.8219545000465587,
+          "steady_decode_tokens_per_second": 10.985294057536555,
+          "backend_timings": null,
+          "eos_observed": false
+        },
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            374,
+            22409,
+            1948,
+            264,
+            17654,
+            323,
+            4938,
+            11,
+            1393,
+            47430,
+            374,
+            264,
+            943,
+            315,
+            4938,
+            6240,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264
+          ],
+          "output_token_count": 32,
+          "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+          "finish_reason": "length",
+          "first_token_seconds": 19.814444249961525,
+          "request_seconds": 22.028311041998677,
+          "steady_decode_seconds": 2.213840375014115,
+          "steady_decode_tokens_per_second": 14.002816259868036,
+          "backend_timings": null,
+          "eos_observed": false
+        }
+      ],
+      "warm_median_ttft_seconds": 20.449512415973004,
+      "warm_median_decode_tokens_per_second": 10.985294057536555,
+      "greedy_sequence_repeatable": true,
+      "warm_decode_rate_min": 10.293568560777768,
+      "warm_decode_rate_max": 14.002816259868036
+    }
+  ],
+  "quality": [
+    {
+      "engine": "rtl",
+      "case": "fact_recall",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "first_token_seconds": 4.397364499978721,
+        "request_seconds": 4.551756415981799,
+        "steady_decode_seconds": 0.15436737501295283,
+        "steady_decode_tokens_per_second": 25.912211046306666,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "corrected_fact",
+      "result": {
+        "output_token_ids": [
+          43,
+          7523,
+          13,
+          151645
+        ],
+        "output_token_count": 4,
+        "text": "Lima.",
+        "finish_reason": "eos",
+        "first_token_seconds": 6.539019957999699,
+        "request_seconds": 6.6733884159475565,
+        "steady_decode_seconds": 0.13434749998850748,
+        "steady_decode_tokens_per_second": 22.330151288685162,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "assistant_quote",
+      "result": {
+        "output_token_ids": [
+          13936,
+          36506,
+          11,
+          50344,
+          0,
+          151645
+        ],
+        "output_token_count": 6,
+        "text": "Welcome aboard, Maya!",
+        "finish_reason": "eos",
+        "first_token_seconds": 4.44839283300098,
+        "request_seconds": 4.662717166997027,
+        "steady_decode_seconds": 0.21430824999697506,
+        "steady_decode_tokens_per_second": 23.330879702813935,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "verbatim_quote": true
+        },
+        "details": "quote target: \"Welcome aboard, Maya!\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "task_switch",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          13,
+          151645
+        ],
+        "output_token_count": 9,
+        "text": "9, 2, 5.",
+        "finish_reason": "eos",
+        "first_token_seconds": 7.461397750012111,
+        "request_seconds": 7.848003207996953,
+        "steady_decode_seconds": 0.38658916600979865,
+        "steady_decode_tokens_per_second": 20.693802887888555,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "json_extraction",
+      "result": {
+        "output_token_ids": [
+          73594,
+          2236,
+          198,
+          4913,
+          606,
+          788,
+          330,
+          44,
+          8832,
+          497,
+          330,
+          3423,
+          788,
+          330,
+          665,
+          278,
+          16707,
+          73594,
+          151645
+        ],
+        "output_token_count": 19,
+        "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+        "finish_reason": "eos",
+        "first_token_seconds": 2.7474334170110524,
+        "request_seconds": 3.3576677920063958,
+        "steady_decode_seconds": 0.6102027079905383,
+        "steady_decode_tokens_per_second": 29.498394163598345,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "two_step_arithmetic",
+      "result": {
+        "output_token_ids": [
+          785,
+          2790,
+          1372,
+          315,
+          54208,
+          374,
+          220,
+          16,
+          22,
+          2518,
+          488,
+          220,
+          23,
+          6303,
+          284,
+          220
+        ],
+        "output_token_count": 16,
+        "text": "The total number of beads is 17 red + 8 blue = ",
+        "finish_reason": "length",
+        "first_token_seconds": 2.5723378339898773,
+        "request_seconds": 3.0811049999902025,
+        "steady_decode_seconds": 0.50873895798577,
+        "steady_decode_tokens_per_second": 29.48466942533536,
+        "backend_timings": null,
+        "eos_observed": false
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "distractor_recall",
+      "result": {
+        "output_token_ids": [
+          34,
+          33215,
+          151645
+        ],
+        "output_token_count": 3,
+        "text": "Cedar",
+        "finish_reason": "eos",
+        "first_token_seconds": 5.036743541015312,
+        "request_seconds": 5.117483791022096,
+        "steady_decode_seconds": 0.08072220900794491,
+        "steady_decode_tokens_per_second": 24.776328901048213,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"Cedar\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "evidence_only",
+      "result": {
+        "output_token_ids": [
+          16088,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "unknown",
+        "finish_reason": "eos",
+        "first_token_seconds": 3.0234979999950156,
+        "request_seconds": 3.057964541018009,
+        "steady_decode_seconds": 0.0344524160027504,
+        "steady_decode_tokens_per_second": 29.025540615792178,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"unknown\""
+      }
+    },
+    {
+      "engine": "rtl",
+      "case": "new_question_after_repetition",
+      "result": {
+        "output_token_ids": [
+          22,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "7",
+        "finish_reason": "eos",
+        "first_token_seconds": 9.559974000032526,
+        "request_seconds": 9.610586666036397,
+        "steady_decode_seconds": 0.0505997909931466,
+        "steady_decode_tokens_per_second": 19.762927481962194,
+        "backend_timings": null,
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    }
+  ],
+  "sv_lanes": 8,
+  "limitations": [
+    "Same prompt token IDs, context, generated count and numeric worker count; NOT identical arithmetic or KV precision.",
+    "SV: BF16 stored weights / FP64 arithmetic and KV. Native: named stored weights / mixed arithmetic / FP16 KV.",
+    "Startup is process/model startup, not OS page-cache cold; no page-cache eviction is attempted.",
+    "Every timed request has empty logical KV. Warm repetitions retain the process and resident weight pages.",
+    "Both measurements include their existing transport (SV pipes, llama HTTP); steady decode excludes first-token prompt processing.",
+    "Fixed-count performance rejects any early EOS rather than masking it. Quality mode permits EOS and records objective checks separately."
+  ],
+  "generated_files": {
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral.cpp": "a0e54daf251f6a743ed05b22555a768776283ba8751fd89bfc5431634e4d5771",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral.h": "71ddb466dfa6d1859835ee4736711d62e8e57f5f4031c7c1f3c984572e6e892c",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral__ALL.cpp": "aeaec7f81d3ee7a786bfab0f852e36e29eb1121de88379a6548a63583fbc594b",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral__Dpi.cpp": "a249d1350f612b75604dfaf0fc5d694981f93ffd3d80f1584ccf2d40cee1d7c6",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral__Dpi.h": "344aecff7273bd0d537d82bad2ad2d7ed83f6d54a35495b3f1105cb054498873",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral__Syms.h": "b3c0f38cf77669db1fe7165d1c3d03c80c1dfbcfa780c9c72eeaf0e388117708",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral__Syms__Slow.cpp": "f48cb26b68477697f94ffd4ab2580c2480f91193eae01dc19bfdfc92aecb774e",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral___024root.h": "870f84120903fb5826f9e81c199dd9add7b6fef1f2ff8cc6c261609434f90a31",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral___024root__0.cpp": "ff6a31e7364904bee0745bc1b55ae906d242bf23ce1f61e35cac92f2616eec01",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral___024root__0__Slow.cpp": "75b49722e326ea6c95be637aaaf9da8fed3ac96fb4297ad42bec4ccc36169882",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral___024root__Slow.cpp": "63b081e6090f78b1de0d67b24a4efd5d22b314d943f1b61649d95561ec6a7130",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral__pch.h": "22940ef1a44ae5bc904961b86eed4bf0de3765bdfdbb04d23c197020f67078ee",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker.cpp": "4f96c0cab761c8d28a9c441b7c5f5db4cb7d2b70959f94accafdaeacced7775f",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker.h": "2cdb2b7cddc5cc7e79dc6fecfd13cda5d1cc58f74bf4f1f8558e78ac80db1f92",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker__ALL.cpp": "c665fc8c0e88cb6051c4779b90898602f5adebce8c63113e4656a937619e7aff",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker__Dpi.cpp": "216d175bfae3b53178d97991174e20e144a82723befb32fdc6cda9be0af6037c",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker__Dpi.h": "95b9367314f8cb8dfd1ed34b2a0d9586252a93aeca8b7340df5f1d4ee2677c65",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker__Syms.h": "10eda60ff67374818610ee362c8e6ab0c826ac46a0830c89c67b50236009d7b8",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker__Syms__Slow.cpp": "59b091b8036ab0b432237ea55f00dbbd04a81e999ef419e036a2a67f94e78faf",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker___024root.h": "3b5d7c9a0cb65d2828855423d854c5e4274adc36b5a96083c8addc23cc9e010d",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker___024root__0.cpp": "dc3ab20956ae3b608e3146694198e85c98204b5655c45473a7da0de195e3662b",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker___024root__0__Slow.cpp": "db05c9764bfeda45b38f04ad609617a3dc088dfa4f23d44050d2a481aec3eff0",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker___024root__Slow.cpp": "291c2d45264b8cbf7455c7f1c411539426ef7136792a90397004d74e9b661c6e",
+    "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/projection/Vprojection_worker__pch.h": "49c99af6aabc07d143be7841cba2e3a11a30cc297a70cde8fd49de9366abe779"
+  },
+  "generated_source_sha256": "dbc8e01b473198f0341077da95967422097b2c7772b0a9153b1d3fccdce5ad5e",
+  "sv_binary_sha256": "59139c1ff40c0df262387cd3379ab518a1262fa68b3a893f9dc15291185b062d",
+  "native_binary_sha256": "e9c93f0fb1ea58180632b77a1943eee31126e365e1a80ac34bcc54475403fc96",
+  "numerical_gate": {
+    "reference_binary": "$PROJECT/build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral",
+    "candidate_binary": "$PROJECT/build/variants/scalar-O3-lto-unchecked-masked-activation-fast-attention-compact-projection/full/Vqwen_behavioral",
+    "reference_sha256": "59b1a6939c1b60aad08a55f742418909f8c4c5738d3d889fb4aa0e5f02ca8b29",
+    "candidate_sha256": "59139c1ff40c0df262387cd3379ab518a1262fa68b3a893f9dc15291185b062d",
+    "prompt_tokens": 452,
+    "teacher_forced_generated_tokens": 16,
+    "candidate_reduction_lanes": 8,
+    "absolute_error_tolerance": 1e-06,
+    "per_position_max_absolute_logit_errors": [
+      1.2256862191861728e-13,
+      1.1723955140041653e-13,
+      1.0302869668521453e-13,
+      1.0835776720341528e-13,
+      1.0658141036401503e-13,
+      1.4210854715202004e-13,
+      1.0125233984581428e-13,
+      1.687538997430238e-13,
+      1.2256862191861728e-13,
+      1.3677947663381929e-13,
+      1.2967404927621828e-13,
+      1.1546319456101628e-13,
+      1.1191048088221578e-13,
+      1.0302869668521453e-13,
+      1.3145040611561853e-13,
+      1.1013412404281553e-13
+    ],
+    "max_absolute_logit_error": 1.687538997430238e-13,
+    "greedy_choices": [
+      {
+        "reference": 10642,
+        "candidate": 10642
+      },
+      {
+        "reference": 33394,
+        "candidate": 33394
+      },
+      {
+        "reference": 19257,
+        "candidate": 19257
+      },
+      {
+        "reference": 311,
+        "candidate": 311
+      },
+      {
+        "reference": 279,
+        "candidate": 279
+      },
+      {
+        "reference": 4379,
+        "candidate": 4379
+      },
+      {
+        "reference": 518,
+        "candidate": 518
+      },
+      {
+        "reference": 892,
+        "candidate": 892
+      },
+      {
+        "reference": 821,
+        "candidate": 821
+      },
+      {
+        "reference": 374,
+        "candidate": 374
+      },
+      {
+        "reference": 22409,
+        "candidate": 22409
+      },
+      {
+        "reference": 1948,
+        "candidate": 1948
+      },
+      {
+        "reference": 264,
+        "candidate": 264
+      },
+      {
+        "reference": 17654,
+        "candidate": 17654
+      },
+      {
+        "reference": 323,
+        "candidate": 323
+      },
+      {
+        "reference": 4938,
+        "candidate": 4938
+      }
+    ],
+    "unchanged_greedy_sequence": true,
+    "all_logits_finite": true,
+    "passed": true
+  },
+  "llama_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb",
+  "quality_suite_sha256": "e83a1561ae3c1245ad1a2be15fc6521471ce63c2037da887af7ce0fec3136810",
+  "host_load_note": "Concurrent user VM approximately56% CPU, Warp12%, WindowServer9% at a gate-time spotcheck; user processes unchanged. No other agent inference during measurement window. Sequential runs, not interleaved.",
+  "sanitization": "Absolute project/checkpoint paths replaced with placeholders. Synthetic prompts, raw timings, output IDs and source/binary hashes retained."
+}

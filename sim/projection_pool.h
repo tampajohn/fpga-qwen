@@ -1,5 +1,6 @@
 // Persistent CPU workers, each running an independent Verilated SV partition.
 // Host code only schedules partitions and copies activations/results.
+// One coordinator owns run()/shutdown(); concurrent calls are not supported.
 #pragma once
 #include "Vprojection_worker.h"
 #include "verilated.h"
@@ -12,6 +13,7 @@
 #include <exception>
 #include <cstring>
 #include <stdexcept>
+#include <atomic>
 
 extern "C" void validate_weight_span(int64_t index,int64_t count);
 
@@ -19,7 +21,22 @@ class ProjectionPool {
     std::mutex mutex;
     std::condition_variable work, complete;
     std::vector<std::thread> threads;
-    bool stopping=false;
+    std::atomic<bool> stopping{false};
+#ifdef PROJECTION_HYBRID_WAIT
+    std::atomic<uint64_t> published{0};
+    std::atomic<int> pending{0};
+    // Briefly remain runnable between adjacent layers, then sleep when idle.
+    static void spin_hint() {
+#if defined(__aarch64__)
+        __asm__ __volatile__("yield");
+#elif defined(__x86_64__) || defined(__i386__)
+        __asm__ __volatile__("pause");
+#else
+        std::this_thread::yield();
+#endif
+    }
+    static constexpr int spin_limit=10000;
+#endif
     uint64_t generation=0;
     int remaining=0, ready=0;
     std::exception_ptr error;
@@ -38,24 +55,53 @@ class ProjectionPool {
             std::unique_lock<std::mutex> lock(mutex);
             ++ready;complete.notify_one();
             uint64_t seen=0;
+#ifdef PROJECTION_HYBRID_WAIT
+            lock.unlock();
+#endif
             while(true) {
+#ifdef PROJECTION_HYBRID_WAIT
+                for(int spin=0;spin<spin_limit && !stopping.load(std::memory_order_acquire)
+                    && published.load(std::memory_order_acquire)==seen;++spin) spin_hint();
+                if(published.load(std::memory_order_acquire)==seen && !stopping.load()) {
+                    lock.lock();
+                    work.wait(lock,[&]{return stopping.load() || published.load(std::memory_order_acquire)!=seen;});
+                    lock.unlock();
+                }
+                if(stopping.load(std::memory_order_acquire)) break;
+                seen=published.load(std::memory_order_acquire);
+#else
                 work.wait(lock,[&]{return stopping || generation!=seen;});
                 if(stopping) break;
                 seen=generation;
+#endif
                 int begin=rows*id/count, end=rows*(id+1)/count;
                 model->base=base;model->width=width;model->first_row=begin;model->end_row=end;
                 std::memcpy(model->activation.data(),input,width*sizeof(double));
                 double* destination=output;
+#ifndef PROJECTION_HYBRID_WAIT
                 lock.unlock();
+#endif
                 model->start=1;model->clk=0;model->eval();model->clk=1;model->eval();
                 std::memcpy(destination+begin,model->result.data()+begin,(end-begin)*sizeof(double));
+#ifdef PROJECTION_HYBRID_WAIT
+                // The release sequence carries every partition's writes to run().
+                bool last=pending.fetch_sub(1,std::memory_order_acq_rel)==1;
+                if(last) {
+                    lock.lock();complete.notify_one();lock.unlock();
+                }
+#else
                 lock.lock();
                 if(--remaining==0) complete.notify_one();
+#endif
             }
-            lock.unlock();model->final();
+#ifndef PROJECTION_HYBRID_WAIT
+            lock.unlock();
+#endif
+            model->final();
         } catch(...) {
             std::lock_guard<std::mutex> lock(mutex);
-            error=std::current_exception();stopping=true;
+            if(!error) error=std::current_exception();
+            stopping=true;
             complete.notify_one();work.notify_all();
         }
     }
@@ -63,7 +109,11 @@ public:
     explicit ProjectionPool(int count,int lanes=1) : reduction_lanes(lanes) {
         if(lanes!=1 && lanes!=8) throw std::runtime_error("Reduction lanes must be 1 or 8");
         if(count<1 || count>32) throw std::runtime_error("Workers must be 1..32");
-        for(int i=0;i<count;i++) threads.emplace_back([this,i,count]{worker(i,count);});
+        try {
+            for(int i=0;i<count;i++) threads.emplace_back([this,i,count]{worker(i,count);});
+        } catch(...) {
+            shutdown();throw;
+        }
         std::unique_lock<std::mutex> lock(mutex);
         complete.wait(lock,[&]{return ready==count || error;});
         if(error) {
@@ -82,8 +132,24 @@ public:
         std::unique_lock<std::mutex> lock(mutex);
         if(error) std::rethrow_exception(error);
         base=matrix_base;rows=matrix_rows;width=matrix_width;input=x;output=y;
+#ifdef PROJECTION_HYBRID_WAIT
+        pending.store(threads.size(),std::memory_order_relaxed);
+        published.fetch_add(1,std::memory_order_release);
+        work.notify_all();
+        lock.unlock();
+        for(int spin=0;spin<spin_limit && pending.load(std::memory_order_acquire)!=0
+            && !stopping.load(std::memory_order_acquire);++spin) spin_hint();
+        lock.lock();
+        complete.wait(lock,[&]{return pending.load(std::memory_order_acquire)==0 || error;});
+#else
         remaining=threads.size();++generation;work.notify_all();
         complete.wait(lock,[&]{return remaining==0 || error;});
-        if(error) std::rethrow_exception(error);
+#endif
+        if(error) {
+            // A failing partition must not leave others writing caller-owned y
+            // after this call returns by exception.
+            auto failure=error;
+            lock.unlock();shutdown();std::rethrow_exception(failure);
+        }
     }
 };

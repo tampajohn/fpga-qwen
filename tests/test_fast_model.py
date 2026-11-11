@@ -7,14 +7,14 @@ import random
 import tempfile
 from pathlib import Path
 import unittest
+import os
 
 import numpy as np
 
-from tools.experiment import ROOT
-from tools.rtl_model import RTLModel
+from tools.rtl_model import RTLModel, FAST_BINARY as DEFAULT_FAST_BINARY
 
 
-FAST_BINARY = ROOT / 'build/variants/scalar-O3-lto-unchecked/full/Vqwen_behavioral'
+FAST_BINARY = Path(os.environ.get('SV_TEST_BINARY', DEFAULT_FAST_BINARY))
 
 
 @unittest.skipUnless(FAST_BINARY.is_file(), 'Build the fast simulator variant first')
