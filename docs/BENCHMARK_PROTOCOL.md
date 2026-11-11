@@ -7,6 +7,13 @@ reduced first-token wait by about 15–16% versus grouped B4, with unchanged tim
 output IDs; see [B8 evidence](b8_prefill.md). This is a prefill gain, not a claim
 of faster steady decode or parity with llama.cpp.
 
+The selected profile additionally groups single-token projection dispatches.
+Paired decode speed ratios versus B8 were 1.126× short and 1.196× long; observed
+median rates were 46.94 and 34.08 tok/s, with substantial long-run variability.
+See [exact decode-group validation](scalar_projection_groups.md). These newer
+SV-only comparisons do not replace the matched native results below or establish
+llama parity.
+
 ## Matched grouped B4 comparison before B8 promotion
 
 The grouped B4 simulator trailed llama.cpp in this CPU-only comparison

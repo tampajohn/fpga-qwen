@@ -1,0 +1,136 @@
+{
+  "binary_sha256": "186615739651cb253804374653bb8d74e816e8870873ea88a17c2b9b4c6bb682",
+  "scored_binary_sha256": "0c3e3b972e45ceab644f8c64141eb26d37176060244678b5a6446552031e6d00",
+  "source_hashes": {
+    "rtl/projection_worker.sv": "0c3a166902dd28e6e3daa05a137271d766a0bf380889f741a730a1549cba555e",
+    "rtl/qwen_behavioral.sv": "1e3184f1e39596cf921e6e653f8cb4ab1e68626adb40667402f24a6b880595a0",
+    "rtl/sampling.svh": "0dbc0e7afbe0f74c5deea579739171256629dcf8c374770a16de0ca49102c01a",
+    "sim/full_model.cpp": "bdaddefa4468ca150893a12a61d02a612bf942cd52c15ea2c8323775a3c6f57d",
+    "sim/projection_pool.h": "c148aa6d03cfb6d2a9eb92b5142da3781fac28470e28c53eb9c5214d3bf6d554",
+    "sim/projection_descriptors.h": "476090efcd9a0941acb9190c9ab0b7e609de438f86a323cba2c7ae19074f233c",
+    "tools/build_projection_variant.py": "1abe3c8263d17898d920b876c627c663d189c9172831fe16639af9534105b3f0"
+  },
+  "provenance": "Runtime source hashes match scored artifact except disabled ATTENTION_DOT_LANES8 worker code and its builder option. Removing the disabled conditional restores identical SV source; option is false in this build.",
+  "tests": {
+    "run": 37,
+    "passed": 35,
+    "skipped": 2,
+    "skip_note": "Capacity tests opt-in; prior actual B8 4096 gate passed and grouping does not change KV capacity."
+  },
+  "browser": {
+    "first_response": "blue",
+    "second_response": "blue",
+    "reused_prefix_tokens": 77,
+    "first_reply_tokens_per_second": "35.9",
+    "worker_change_preserved_cache": true,
+    "stop_passed": true,
+    "context_error_passed": true,
+    "mobile_passed": true,
+    "backends_tested": [
+      "rtl",
+      "llama-q4",
+      "llama-f16",
+      "llama-f32"
+    ],
+    "console_errors": []
+  },
+  "suffix_browser": {
+    "first_response": "red blue red blue red blue red blue red blue",
+    "accepted": 5,
+    "proposed": 12,
+    "reused_prefix_tokens": 93,
+    "sampled_followup": true,
+    "stop": true,
+    "context_error": true,
+    "mobile_no_overflow": true,
+    "console_errors": []
+  },
+  "gpu": false,
+  "pytorch": false,
+  "attention_dot_lanes8": false,
+  "live_status": {
+    "ready": true,
+    "busy": false,
+    "model": "Qwen3-0.6B",
+    "device": "cpu",
+    "precision": "BF16 weights / SV real arithmetic",
+    "gpu_inference": false,
+    "cpu_threads": 8,
+    "simulation_workers": 8,
+    "context_limit": 4096,
+    "rtl": "Full behavioral SystemVerilog; not synthesizable or cycle-accurate",
+    "inference": "Verilator: all model math and KV payload in SystemVerilog",
+    "reduction_lanes": 8,
+    "prefill_reduction_lanes": 4,
+    "prefill_block_size": 8,
+    "suffix_supported": true,
+    "max_verified_draft": 3,
+    "cached_tokens": 0,
+    "pytorch_loaded": false,
+    "backends": [
+      {
+        "id": "rtl",
+        "label": "SystemVerilog \u00b7 fast",
+        "available": true,
+        "cpu_threads": 8,
+        "suffix_supported": true,
+        "max_draft": 3,
+        "prefill_block_size": 8
+      },
+      {
+        "id": "llama-q4",
+        "label": "llama.cpp \u00b7 Q4_K_M",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-f16",
+        "label": "llama.cpp \u00b7 FP16",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-f32",
+        "label": "llama.cpp \u00b7 FP32",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      }
+    ],
+    "active_backend": "rtl"
+  },
+  "live_smoke": {
+    "type": "done",
+    "text": "blue",
+    "token_ids": [
+      12203,
+      151645
+    ],
+    "finish_reason": "eos",
+    "metrics": {
+      "prompt_tokens": 81,
+      "reused_prefix_tokens": 0,
+      "output_tokens": 2,
+      "rounds": 2,
+      "proposed_tokens": 0,
+      "accepted_tokens": 0,
+      "verified_tokens": 2,
+      "tokens_per_round": 1.0,
+      "decode_tokens_per_second": 44.897535416875776,
+      "first_token_ms": 889.4185000099242,
+      "elapsed_seconds": 0.908890041988343,
+      "kv_tokens": 82,
+      "context_limit": 4096,
+      "prefill_seconds": 0.7211758750490844,
+      "decode_seconds": 0.04454587498912588,
+      "prefill_block_size": 8,
+      "requested_max_draft": 0,
+      "effective_max_draft": 0,
+      "simulation_workers": 8,
+      "decoding": "greedy",
+      "reduction_lanes": 8
+    }
+  }
+}

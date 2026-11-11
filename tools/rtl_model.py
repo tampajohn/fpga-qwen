@@ -11,7 +11,7 @@ try:
 except ImportError:
     from experiment import ROOT, locate_model, read_header
 
-FAST_BINARY = ROOT / 'build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8/full/Vqwen_behavioral'
+FAST_BINARY = ROOT / 'build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group/full/Vqwen_behavioral'
 
 
 def prepare_layout(model):

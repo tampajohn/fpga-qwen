@@ -112,7 +112,7 @@ heads run on the persistent SV workers, with the main model owning KV state.
 This is shared-memory execution on one machine, not a multi-machine service.
 
 The selected fast build is reproducible with
-`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --batched-prefill --block-unroll --compact-projection --group-projections --prefill-b8`.
+`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --batched-prefill --block-unroll --compact-projection --group-projections --prefill-b8 --scalar-group`.
 Unsigned indices simplify generated projection address calculations without
 changing accumulation order; this incremental change passed bit-exact gates
 against the prior fast build. See the [paired comparison](docs/performance_iteration_3.md).
@@ -166,6 +166,13 @@ prefill and 6–11% faster long prefill, with bit-identical outputs; see
 [grouped projection evidence](docs/grouped_projection_execution.md). This does
 not remove weight reads or dense matrix operations. The browser displays
 first-token latency separately from generation throughput.
+
+Single-token decode also groups Q/K/V and gate/up work, removing 84 worker
+synchronization rounds per token while retaining identical SV arithmetic.
+Paired median decode speed ratios were 1.126× short and 1.196× long, with
+substantial variation in the long runs. Observed median throughput was
+40.80→46.94 and 30.35→34.08 tok/s respectively; see
+[decode grouping evidence](docs/scalar_projection_groups.md).
 
 The browser's **Suffix drafting** checkbox is available for this profile and
 starts off. It proposes up to three cached n-gram continuation tokens and verifies

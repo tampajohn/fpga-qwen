@@ -26,8 +26,10 @@ class ScalarGroupTests(unittest.TestCase):
         for workers in (1,3,8,17):
             a,b=self.models(workers)
             for token in (9707,11):
+                before=list(map(int,b.command('groupstats').split()))
                 self.assertEqual(a.token(token,uniform=.42),b.token(token,uniform=.42))
-                self.assertEqual(list(map(int,b.command('groupstats').split())),[56,140,84,84*workers*1024*8])
+                after=list(map(int,b.command('groupstats').split()))
+                self.assertEqual([y-x for x,y in zip(before,after)],[56,140,84,84*workers*1024*8])
                 self.compare((a,b))
             for m in (a,b):m.reset()
             self.assertEqual(a.block([9707,11,1917],logits=True),b.block([9707,11,1917],logits=True));self.compare((a,b))
