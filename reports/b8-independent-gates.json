@@ -1,0 +1,223 @@
+{
+  "completed": true,
+  "candidate_sha256": "17b12348ced96818e18578af7fadaf88e40333ae48b29dcd4eeff520039ff184",
+  "reference_profile": "grouped B4 current exact fast",
+  "absolute_tolerance": 1e-06,
+  "full_vocabulary_comparisons": 33,
+  "max_absolute_logit_error": 6.750155989720952e-14,
+  "checks": [
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 4.263256414560601e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 4.3076653355456074e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 3.6415315207705135e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 4.973799150320701e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 5.684341886080802e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 3.907985046680551e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 5.1514348342607263e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 3.375077994860476e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 6.750155989720952e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 5.684341886080802e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 5.262457136723242e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 3.375077994860476e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 4.618527782440651e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 4.263256414560601e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 4.574118861455645e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 5.595524044110789e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_short_long_continuation_and_sampled_block",
+      "max_absolute_error": 3.8191672047105385e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 2.6201263381153694e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 0.0,
+      "bit_identical": true,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 2.6201263381153694e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 0.0,
+      "bit_identical": true,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 2.6201263381153694e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 0.0,
+      "bit_identical": true,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 2.6201263381153694e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 4.1744385725905886e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 3.197442310920451e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 4.8405723873656825e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 3.197442310920451e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 3.8191672047105385e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 3.197442310920451e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 4.3076653355456074e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 3.197442310920451e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    },
+    {
+      "gate": "tests.test_prefill_model.PrefillModelTests.test_sizes_tails_and_truncated_prefix_causality",
+      "max_absolute_error": 3.197442310920451e-14,
+      "bit_identical": false,
+      "absolute_tolerance": 1e-06
+    }
+  ],
+  "greedy_and_sampled_ids_agree": true,
+  "capacity_status": "passed_actual_4096",
+  "timing": "Correctness runs overlapped other correctness; no performance claim.",
+  "test_source": "tests/test_prefill_model.py",
+  "source_commit": "852b234",
+  "capacity_steps": [
+    "4088 tokens through actual B8 inference",
+    "8-token exact fill to4096",
+    "truncate4095 then one-token fill to4096",
+    "truncate4092 then reject5-token overflow"
+  ],
+  "capacity_test_log": "test_actual_capacity_boundary (tests.test_prefill_model.PrefillModelTests.test_actual_capacity_boundary) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 260.811s\n\nOK\n",
+  "capacity_timing_note": "Correctness elapsed time only; corpus correctness overlapped initial interval.",
+  "test_source_sha256": "069c663586efa4f62f7c7a78d49379cf1f920e65199bc847e71abba106b633dc",
+  "raw_adapter_sha256": "022afa7de73f0742a905c90c108aecc0d5ce669e123fe6a356b3875b28bc132d"
+}
