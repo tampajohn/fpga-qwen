@@ -40,11 +40,13 @@ def main():
             assert 'FP32 hybrid' in page.locator('.assistant .reply-meta').last.inner_text()
             first_status=page.request.get(url+'/api/status').json()
             assert first_status['precision_verified'] is True
-            assert first_status['prefix_reuse_enabled'] is False
+            assert first_status['prefix_reuse_enabled'] is True
+            assert first_status['canonical_prefix_policy']=='fp64_b8_aligned_v1'
             assert first_status['precision_profile']=='fp32_b1_fp64_prefill'
             page.locator('#workers').select_option('2')
             replies.append(send('Repeat that word once.'))
-            expect(page.locator('#reused')).to_have_text('0')
+            reused=int(page.locator('#reused').inner_text().replace(',',''))
+            assert reused>0 and reused%8==0
             assert '2 workers' in page.locator('.assistant .reply-meta').last.inner_text()
             page.screenshot(path=str(output/'hybrid.png'))
             page.locator('#backend').select_option('rtl')
@@ -62,7 +64,7 @@ def main():
             expect(page.locator('#reused')).to_have_text('0')
             assert not errors,errors
             report=dict(replies=replies,default_backend='rtl',hybrid_precision_verified=True,
-                        hybrid_prefix_reused_tokens=0,suffix_disabled=True,serial_disabled=True,
+                        hybrid_second_turn_reused_tokens=reused,canonical_prefix_policy=first_status["canonical_prefix_policy"],suffix_disabled=True,serial_disabled=True,
                         worker_change=True,switch_back=True,cancel_restart=True,console_errors=errors)
             (output/'report.json').write_text(json.dumps(report,indent=2)+'\n')
             print(json.dumps(report,indent=2))

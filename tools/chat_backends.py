@@ -30,7 +30,8 @@ class BackendRouter:
                    'SystemVerilog · fast' if engine.sim.lanes == 8 else 'SystemVerilog · reference'),
             available=True, cpu_threads=engine.threads, simulation=True,
             min_workers=1 if key == 'rtl-fp32' else 0,
-            precision=engine.status()['precision'],prefix_reuse_supported=engine.reuse_prefix,
+            precision=engine.status()['precision'],prefix_reuse_supported=engine.status()["prefix_reuse_enabled"],
+            canonical_prefix_policy=engine.status().get("canonical_prefix_policy"),
             suffix_supported=engine.sim.block_size == 4,max_draft=engine.sim.block_size-1,
             prefill_block_size=engine.sim.prefill_size) for key,engine in self.simulations.items()]
         if 'rtl-fp32' not in self.simulations:

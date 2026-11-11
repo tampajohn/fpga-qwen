@@ -1,0 +1,31 @@
+{
+  "replies": [
+    "blue",
+    "blue",
+    "blue",
+    "blue",
+    "blue"
+  ],
+  "default_backend": "rtl",
+  "hybrid_precision_verified": true,
+  "hybrid_second_turn_reused_tokens": 136,
+  "canonical_prefix_policy": "fp64_b8_aligned_v1",
+  "suffix_disabled": true,
+  "serial_disabled": true,
+  "worker_change": true,
+  "switch_back": true,
+  "cancel_restart": true,
+  "console_errors": [],
+  "binary_sha256": "bf8242221d07675916cd6711869d3568cb24d8655824d875dee5d1eefda943a7",
+  "browser_session": 46051,
+  "browser_exit_code": 0,
+  "isolated_server_session": 39666,
+  "isolated_server_exit_code": 0,
+  "scope": "Isolated localhost8766 real browser correctness; no live deployment or throughput claim",
+  "source_sha256": {
+    "tools/chat_server.py": "19aee52a188481e14923f3b80579a9dd4dea75d08220b86051da17c94cd78cc3",
+    "tools/chat_backends.py": "f972ce81d87447ca67da88012f45239aaa6e229a027bdfc49610c7411b11314a",
+    "web/app.js": "779ac92f4136b8062f31916deb129c62799e55cba346b84136e6ea6267daaad5",
+    "tests/browser_hybrid.py": "db92a3ec2775969f2d4dd7e440441d262eb76caacd72c813f3ea2710c08bf412"
+  }
+}

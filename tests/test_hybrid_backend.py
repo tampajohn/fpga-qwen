@@ -85,6 +85,17 @@ class HybridBackendTests(unittest.TestCase):
         self.assertEqual(router.status()['precision_profile'],'fp64')
         self.assertTrue(router.status()['suffix_supported'])
 
+    def test_catalog_reports_opt_in_canonical_capability(self):
+        from tools.canonical_prefix import CanonicalPrefix, POLICY
+        candidate=hybrid()
+        candidate.canonical_prefix=CanonicalPrefix()
+        router=BackendRouter(engine(cycle),candidate)
+        self.addCleanup(router.close)
+        entry=next(item for item in router.catalog() if item['id']=='rtl-fp32')
+        self.assertTrue(entry['prefix_reuse_supported'])
+        self.assertEqual(entry['canonical_prefix_policy'],POLICY)
+        self.assertFalse(entry['suffix_supported'])
+
     def test_uninstalled_hybrid_is_unavailable(self):
         router=BackendRouter(engine(cycle))
         self.addCleanup(router.close)
