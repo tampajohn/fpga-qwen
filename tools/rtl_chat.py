@@ -17,7 +17,7 @@ except ImportError:
 
 class RTLChatEngine(ChatProtocol):
     def __init__(self, model=None, workers=8, binary=None, lanes=1, block_size=1, prefill_size=None, reuse_prefix=True, precision_profile="fp64", canonical_prefix_reuse=False):
-        if precision_profile not in ('fp64','fp32_b1_fp64_prefill'):
+        if precision_profile not in ('fp64','fp32_b1_fp64_prefill','fp32_b1_fp32_prefill'):
             raise ValueError('Unknown precision profile')
         if type(canonical_prefix_reuse) is not bool:
             raise ValueError('canonical_prefix_reuse must be a boolean')
@@ -26,8 +26,13 @@ class RTLChatEngine(ChatProtocol):
         self.canonical_prefix = CanonicalPrefix() if canonical_prefix_reuse else None
         self.precision_profile = precision_profile
         self.precision_verified = False
-        if precision_profile != 'fp64' and (workers < 1 or lanes != 8 or block_size not in (1,4) or prefill_size != 8 or reuse_prefix is not False or (block_size == 4 and not canonical_prefix_reuse)):
-            raise ValueError('Hybrid requires workers, eight lanes, B8 prefill, general prefix reuse disabled and canonical policy for B4 verification')
+        if precision_profile != 'fp64':
+            if workers < 1 or lanes != 8 or block_size not in (1,4) or prefill_size != 8 or reuse_prefix is not False:
+                raise ValueError('FP32 profiles require workers, eight lanes, B8 prefill and general prefix reuse disabled')
+            if precision_profile == 'fp32_b1_fp64_prefill' and block_size == 4 and not canonical_prefix_reuse:
+                raise ValueError('Hybrid B4 verification requires the canonical FP64 prefix policy')
+            if precision_profile == 'fp32_b1_fp32_prefill' and block_size != 4:
+                raise ValueError('FP32 prefill requires explicit B4 verification capacity')
         if type(reuse_prefix) is not bool:
             raise ValueError("reuse_prefix must be a boolean")
         self.reuse_prefix = reuse_prefix
@@ -42,7 +47,7 @@ class RTLChatEngine(ChatProtocol):
         return max(1, self.sim.workers)
 
     def status(self):
-        return dict(model='Qwen3-0.6B', device='cpu', precision=('BF16 weights / FP32 scalar projections / FP64 prefill, attention and KV'
+        return dict(model='Qwen3-0.6B', device='cpu', precision=('BF16 weights / FP32 scalar and prefill projections / FP64 attention and KV' if self.precision_profile == 'fp32_b1_fp32_prefill' else 'BF16 weights / FP32 scalar projections / FP64 prefill, attention and KV'
                                if self.precision_profile != 'fp64' else 'BF16 weights / FP64 arithmetic and KV'),
                     precision_profile=self.precision_profile, precision_verified=self.precision_verified,
                     verification_projection=('fp32' if self.precision_profile != 'fp64' and self.sim.block_size == 4 else None),
@@ -68,11 +73,13 @@ class RTLChatEngine(ChatProtocol):
     def verify_precision(self, cancel):
         if self.precision_profile == 'fp64':
             return
-        expected = dict(precision_profile='fp32_b1_fp64_prefill',scalar_projection='fp32',
-                        prefill_projection='fp64',attention_kv='fp64',
+        expected = dict(precision_profile=self.precision_profile,scalar_projection='fp32',
+                        prefill_projection='fp32' if self.precision_profile == 'fp32_b1_fp32_prefill' else 'fp64',attention_kv='fp64',
                         max_verification_block=self.sim.block_size,prefix_reuse_supported=False)
         if self.sim.block_size == 4:
             expected['verification_projection']='fp32'
+        if self.precision_profile == 'fp32_b1_fp32_prefill':
+            expected['canonical_prefix_policy']='none'
         actual = json.loads(self.sim.command('precision',cancel))
         if not isinstance(actual,dict) or any(type(actual.get(k)) is not type(v) or actual[k] != v for k,v in expected.items()):
             raise RuntimeError('Simulator does not match the requested hybrid precision profile')

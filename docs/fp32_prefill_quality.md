@@ -1,0 +1,13 @@
+# FP32 prefill quality checks
+
+The experimental `fp32_b1_fp32_prefill` profile uses strict FP32 B8 projections for chunks of 5–8 tokens, FP32 B4 for shorter tails, FP32 B1 decode, and FP64 attention/KV/nonlinearities. B8 uses four reduction lanes; B4/B1 use eight. Request segmentation is therefore part of the inference policy. Both general and canonical prefix caching are rejected; every request resets KV. The profile is available only through explicitly configured Python construction, with no UI/default change.
+
+The frozen candidate is `c87074825ab522ead128c121312d8c799205230d6f9235081ce261c1ad7a8449`. The reference is `91e3e161d6e08c83e435ab093d8d15ff2132e1275b842c323423f4780e577cc2`, the validated FP32 B1/B4 hybrid with FP64 prefill. Both use B8 prompt chunks, process the final prompt token through B1, then decode through B1. Capability checks reject mismatched profile, prefill precision or cache policy before execution.
+
+The [teacher-forced report](../reports/fp32-prefill-quality.json) covers all 16 fixed examples and 292 target tokens. Top-1 predictions agree on all 292. Token-weighted mean NLL changes by −7.63025e−8 nats; mean reference-to-candidate KL is 2.77858e−12; maximum absolute logit difference is 4.86374e−5. This is changed arithmetic, not bitwise parity. The tiny average NLL improvement is not evidence of better model quality.
+
+The [free-running report](../reports/fp32-prefill-conversations.json) covers all nine unchanged objective cases. Every output token sequence matches the reference; both pass only four of nine strict cases. Repeating each candidate request with the same session resets KV, reuses zero prefix tokens and reproduces the output sequence. Independent kernel-owner gates additionally cover bitwise same-route full-logit replay for counts 1–8, truncation/replacement and worker repartitioning.
+
+Thirty-one host tests pass, including rejection of canonical/general caching for the new profile, wrong precision capabilities, unsafe batch/lane/worker configurations, and unchanged existing hybrid behavior. These small local suites establish no observed regression on their inputs; they do not establish broad model quality or long-context equivalence. No performance claim is made from concurrent correctness runs.
+
+Reproduction helpers are `tools/evaluate_fp32_prefill_quality.py` (explicit `--baseline-block-size 8 --candidate-block-size 8`) and `tools/evaluate_fp32_prefill_conversations.py` (explicit `--reference-prefill-size 8 --candidate-block-size 4 --disable-prefix-reuse`). Both require explicit artifact paths and output paths. Use `python -m tools.<module>` from the repository root.
