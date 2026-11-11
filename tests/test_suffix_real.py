@@ -4,6 +4,11 @@ import json
 import os
 from pathlib import Path
 import threading
+import tempfile
+
+import numpy as np
+from tools.chat_protocol import ChatRequest
+from tools.evaluate_projection_quality import read_dump_logits
 import unittest
 from tools.rtl_chat import RTLChatEngine
 from tools.experiment import ROOT
@@ -35,6 +40,42 @@ class RealSuffixTests(unittest.TestCase):
         output=ROOT/'build/suffix-optimized-real.json'
         output.parent.mkdir(parents=True,exist_ok=True)
         output.write_text(json.dumps(report,indent=2)+'\n')
+
+
+HYBRID_BINARY=os.environ.get('SV_HYBRID_BINARY')
+
+
+@unittest.skipUnless(HYBRID_BINARY and Path(HYBRID_BINARY).is_file(),
+                     'Set SV_HYBRID_BINARY to the opt-in FP64 prefill / FP32 decode executable')
+class RealHybridRouteTests(unittest.TestCase):
+    def test_canonical_prefill_replay_restart_and_suffix_rejection(self):
+        # Bit identity is required only between repetitions of this SAME route.
+        # No cross-precision tolerance or suffix equivalence is assumed.
+        engine=RTLChatEngine(binary=HYBRID_BINARY,workers=8,lanes=8,
+                             block_size=1,prefill_size=8,reuse_prefix=False)
+        self.addCleanup(engine.close)
+        with tempfile.TemporaryDirectory() as temporary:
+            dump=Path(temporary)/'logits.bin'
+            for tail in range(1,9):
+                ids=[9707]*(8+tail)+[11]
+                request=ChatRequest('same-session',ids,3,0,decoding='chat',seed=42)
+                snapshots=[]
+                for repetition in range(3):
+                    if repetition==2:engine.close()
+                    final=list(engine.stream(request,threading.Event()))[-1]
+                    self.assertEqual(final['type'],'done')
+                    self.assertIn(final['finish_reason'],('length','eos'))
+                    self.assertEqual(final['metrics']['reused_prefix_tokens'],0)
+                    self.assertEqual(engine.cache_ids[:len(ids)],ids)
+                    snapshots.append((final['token_ids'],list(engine.cache_ids),
+                                      read_dump_logits(engine.sim,dump).view(np.uint64).copy()))
+                for replay in snapshots[1:]:
+                    self.assertEqual(replay[:2],snapshots[0][:2])
+                    np.testing.assert_array_equal(replay[2],snapshots[0][2])
+                previous=list(engine.cache_ids)
+                with self.assertRaises(ValueError):
+                    list(engine.stream(ChatRequest('same-session',ids,3,1),threading.Event()))
+                self.assertEqual(engine.cache_ids,previous)
 
 
 if __name__=='__main__': unittest.main()

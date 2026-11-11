@@ -15,11 +15,16 @@ def main():
     parser.add_argument('--candidate',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--reference-prefill-size',type=int,choices=(4,8),default=4)
+    parser.add_argument('--candidate-block-size',type=int,choices=(1,4),default=4)
+    parser.add_argument('--disable-prefix-reuse',action='store_true',help='Reset each request; required for experimental hybrid precision')
     args=parser.parse_args()
     paths=[args.reference.resolve(),args.candidate.resolve()]
-    engines=[RTLChatEngine(binary=p,workers=8,lanes=8,block_size=4,prefill_size=s) for p,s in zip(paths,(args.reference_prefill_size,8))]
+    engines=[RTLChatEngine(binary=p,workers=8,lanes=8,block_size=b,prefill_size=s,
+                           reuse_prefix=not args.disable_prefix_reuse)
+             for p,s,b in zip(paths,(args.reference_prefill_size,8),(4,args.candidate_block_size))]
     report=dict(completed=False,suite_sha256=suite_fingerprint(),workers=8,decoding='greedy',
-                suffix_draft=0,verification_capacity=4,prefill_capacities=[args.reference_prefill_size,8],
+                suffix_draft=0,verification_capacities=[4,args.candidate_block_size],
+                prefix_reuse_enabled=not args.disable_prefix_reuse,prefill_capacities=[args.reference_prefill_size,8],
                 penalty_policy='Existing RTLChatEngine greedy path; no sampler or penalty override',
                 timing_claim=False,limitation='Nine strict regression cases, not a general quality benchmark; concurrent correctness jobs permitted.',
                 binaries=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in paths],cases=[])
@@ -48,6 +53,9 @@ def main():
                 passes=[r['grade']['passed'] for r in results])),flush=True)
         report['passed_counts']=[sum(c[k]['grade']['passed'] for c in report['cases']) for k in ('baseline','candidate')]
         report['all_output_ids_identical']=all(c['identical_output_ids'] for c in report['cases'])
+        report['baseline_pass_regressions']=[c['case'] for c in report['cases']
+            if c['baseline']['grade']['passed'] and not c['candidate']['grade']['passed']]
+        report['baseline_passes_preserved']=not report['baseline_pass_regressions']
         report['completed']=True
     finally:
         for engine in engines:engine.sim.close()
