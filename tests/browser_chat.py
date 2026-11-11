@@ -33,6 +33,7 @@ def main():
         assert first.strip(), 'Empty first response'
         assert not page.locator('#error').is_visible(), 'First reply failed'
         first_rate = page.locator('#rate').inner_text()
+        assert float(page.locator('#first-token').inner_text()) > 0, 'Missing first-token latency'
         page.locator('#workers').select_option('2')
         page.locator('#prompt').fill('What word did you just say?')
         page.locator('#prompt').press('Enter')
@@ -68,6 +69,7 @@ def main():
 
         page.locator('#new-chat').click()
         assert page.locator('#welcome').is_visible()
+        assert page.locator('#first-token').inner_text() == '—', 'Stale first-token latency'
         page.locator('#reply-limit').select_option('512')
         page.locator('#prompt').fill('Repeat the phrase red blue green 100 times, with no explanation.')
         page.locator('#send').click()

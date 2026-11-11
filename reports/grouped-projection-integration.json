@@ -1,0 +1,128 @@
+{
+  "purpose": "Main build integration correctness; not scored performance evidence",
+  "binary_sha256": "f5fd60915e65d156baa765a8ce9efd9272f45a333dc7ae67b1d952f5b8a6944e",
+  "scored_worktree_binary_sha256": "675ace2b0b9de087cff6d648d7256dacd2f896bfe5ace2659a88572ddb4eb0ea",
+  "source_hashes": {
+    "rtl/projection_worker.sv": "5569accf59ee4127dac3b57a886fe8830e4946e206056d47246014625274a4d6",
+    "rtl/qwen_behavioral.sv": "0b6079b741e24438086ad920337d59450f82f42b26e380522598e8aba1e04680",
+    "rtl/sampling.svh": "0dbc0e7afbe0f74c5deea579739171256629dcf8c374770a16de0ca49102c01a",
+    "sim/full_model.cpp": "da1972b2f9102fe9cceeee04d006a2ff4353f546e1d055f6b17f32d8ef60441b",
+    "sim/projection_pool.h": "d66e4e75fd8cd561b56e6a4dc78aa26f005268b81f20955f22e8f6165eb4bd8d",
+    "sim/projection_descriptors.h": "b6dad53f90f0921f93c91670bbbbfe75c591146e1196066fe3bd6d72bf3456f3",
+    "tools/build_projection_variant.py": "7f926994ce087554f1aa00408179e6b66f0b98f26e5e767eb73bc80fdd7ef42f"
+  },
+  "options_match_scored_build": true,
+  "source_hashes_match_scored_build": true,
+  "binary_hash_note": "Separate build roots affect generated artifact hashes. Sources and options match; integration gates run on main executable.",
+  "fast_test": {
+    "run": 23,
+    "passed": 22,
+    "skipped": 1,
+    "skip": "Full 4096-token capacity gate is separately opt-in; grouping does not alter capacity logic."
+  },
+  "browser": {
+    "first_response": "blue",
+    "second_response": "blue",
+    "reused_prefix_tokens": 77,
+    "first_reply_tokens_per_second": "40.3",
+    "worker_change_preserved_cache": true,
+    "stop_passed": true,
+    "context_error_passed": true,
+    "mobile_passed": true,
+    "backends_tested": [
+      "rtl",
+      "llama-q4",
+      "llama-f16",
+      "llama-f32"
+    ],
+    "console_errors": []
+  },
+  "first_token_display_checks": [
+    "pending value",
+    "milliseconds to seconds",
+    "backend reset",
+    "mobile layout",
+    "live measured positive latency",
+    "new chat reset"
+  ],
+  "suffix_browser": {
+    "first_response": "red blue red blue red blue red blue red blue",
+    "accepted": 5,
+    "proposed": 12,
+    "reused_prefix_tokens": 93,
+    "sampled_followup": true,
+    "stop": true,
+    "context_error": true,
+    "mobile_no_overflow": true,
+    "console_errors": []
+  },
+  "live_browser": {
+    "first_response": "blue",
+    "second_response": "blue",
+    "reused_prefix_tokens": 77,
+    "first_reply_tokens_per_second": "37.0",
+    "worker_change_preserved_cache": true,
+    "stop_passed": true,
+    "context_error_passed": true,
+    "mobile_passed": true,
+    "backends_tested": [
+      "rtl",
+      "llama-q4",
+      "llama-f16",
+      "llama-f32"
+    ],
+    "console_errors": []
+  },
+  "live_status": {
+    "ready": true,
+    "busy": false,
+    "model": "Qwen3-0.6B",
+    "device": "cpu",
+    "precision": "BF16 weights / SV real arithmetic",
+    "gpu_inference": false,
+    "cpu_threads": 8,
+    "simulation_workers": 8,
+    "context_limit": 4096,
+    "rtl": "Full behavioral SystemVerilog; not synthesizable or cycle-accurate",
+    "inference": "Verilator: all model math and KV payload in SystemVerilog",
+    "reduction_lanes": 8,
+    "prefill_block_size": 4,
+    "suffix_supported": true,
+    "max_verified_draft": 3,
+    "cached_tokens": 90,
+    "pytorch_loaded": false,
+    "backends": [
+      {
+        "id": "rtl",
+        "label": "SystemVerilog \u00b7 fast",
+        "available": true,
+        "cpu_threads": 8,
+        "suffix_supported": true,
+        "max_draft": 3,
+        "prefill_block_size": 4
+      },
+      {
+        "id": "llama-q4",
+        "label": "llama.cpp \u00b7 Q4_K_M",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-f16",
+        "label": "llama.cpp \u00b7 FP16",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-f32",
+        "label": "llama.cpp \u00b7 FP32",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      }
+    ],
+    "active_backend": "rtl"
+  }
+}

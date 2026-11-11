@@ -111,7 +111,7 @@ heads run on the persistent SV workers, with the main model owning KV state.
 This is shared-memory execution on one machine, not a multi-machine service.
 
 The selected fast build is reproducible with
-`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --batched-prefill --block-unroll --compact-projection`.
+`uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --batched-prefill --block-unroll --compact-projection --group-projections`.
 Unsigned indices simplify generated projection address calculations without
 changing accumulation order; this incremental change passed bit-exact gates
 against the prior fast build. See the [paired comparison](docs/performance_iteration_3.md).
@@ -155,6 +155,14 @@ The fast profile now prefills uncached prompt tokens in blocks of four through
 all transformer layers. Measured prompt-to-first-token time improved about1.4×
 on the tested85/452-token contexts; some steady decode runs were13–15% slower.
 This is a prefill improvement, not an across-the-board throughput gain.
+
+The fast profile also groups Q/K/V and gate/up projections sharing an input.
+This removes repeated worker dispatches and activation copies while preserving
+the same SV arithmetic. Four matched pairs showed about 4–12% faster short
+prefill and 6–11% faster long prefill, with bit-identical outputs; see
+[grouped projection evidence](docs/grouped_projection_execution.md). This does
+not remove weight reads or dense matrix operations. The browser displays
+first-token latency separately from generation throughput.
 
 The browser's **Suffix drafting** checkbox is available for this profile and
 starts off. It proposes up to three cached n-gram continuation tokens and verifies

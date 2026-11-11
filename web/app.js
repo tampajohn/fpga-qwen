@@ -227,7 +227,7 @@ $('new-chat').addEventListener('click', () => {
   $('messages').replaceChildren();
   $('welcome').hidden = false;
   $('prompt').value = '';
-  ['rate', 'reused', 'accepted', 'rounds'].forEach((id) => $(id).textContent = '—');
+  ['rate', 'first-token', 'reused', 'accepted', 'rounds'].forEach((id) => $(id).textContent = '—');
   $('context').textContent = '0 / 4,096 context tokens';
   showError('');
   controls();

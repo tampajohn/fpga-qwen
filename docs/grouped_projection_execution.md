@@ -1,8 +1,8 @@
 # Bounded descriptors for grouped B4 projections
 
-This opt-in experiment groups Q/K/V projections sharing the same normalized input into one worker submission, and gate/up into another. The descriptors contain a matrix base, row count, width, and output offset. They describe existing dense ranges; there is no per-weight lookup dictionary, approximate skipping, cached context-dependent product, or host implementation of model arithmetic.
+This optimization groups Q/K/V projections sharing the same normalized input into one worker submission, and gate/up into another. The descriptors contain a matrix base, row count, width, and output offset. They describe existing dense ranges; there is no per-weight lookup dictionary, approximate skipping, cached context-dependent product, or host implementation of model arithmetic.
 
-Each worker copies the shared B4 input once, executes the existing SystemVerilog projection task separately for each descriptor, and copies its disjoint output rows. The coordinator waits once for the whole group. Per-matrix accumulation order and precision are unchanged. Single-token dispatch and serial-worker fallback remain available; the feature requires explicit `--group-projections` in the isolated builder and does not change the default profile.
+Each worker copies the shared B4 input once, executes the existing SystemVerilog projection task separately for each descriptor, and copies its disjoint output rows. The coordinator waits once for the whole group. Per-matrix accumulation order and precision are unchanged. Single-token dispatch and serial-worker fallback remain available; the isolated builder uses `--group-projections`. Following validation, the default fast profile enables this option.
 
 ## Why the experiment was bounded
 
@@ -35,10 +35,14 @@ Ratios are calculated per pair; a ratio of aggregate medians need not equal thei
 
 Extracting validation into the standalone header and rebuilding produced a byte-identical executable: SHA256 `675ace2b0b9de087cff6d648d7256dacd2f896bfe5ace2659a88572ddb4eb0ea` before and after. The real grouped/tail fixture was rerun after rebuilding. Build options, commands, and source hashes are in [grouped-projection-manifest.json](../reports/grouped-projection-manifest.json).
 
-After final rebuilding and negative-validation tests, an independent warmed confirmation pair again improved prefill: **1.038× for 85 tokens and 1.076× for 452 tokens**, with exact logits and identical generated IDs. PGO training had finished before this confirmation, so no paused training model remained. Raw evidence: [final confirmation](../reports/grouped-projection-final-confirmation.json). These small, consistent local gains support integration review but do not establish a general confidence interval or a reduction in required dense arithmetic. The experiment remains opt-in in this branch.
+After final rebuilding and negative-validation tests, an independent warmed confirmation pair again improved prefill: **1.038× for 85 tokens and 1.076× for 452 tokens**, with exact logits and identical generated IDs. PGO training had finished before this confirmation, so no paused training model remained. Raw evidence: [final confirmation](../reports/grouped-projection-final-confirmation.json). These small, consistent local gains supported enabling grouping in the fast profile. They do not establish a general confidence interval or a reduction in required dense arithmetic.
 
 ## Reproduction
 
 Build with the existing validated B4 flags plus `--group-projections`. Compare using `tools/benchmark_blocks.py --reference-binary /path/to/baseline --binary /path/to/grouped --reference-block-size 4 --block-size 4 --profiles short,long --pairs 3 --tokens 16 --gate-tokens 8`.
 
 Run the real partition/counter fixture with `SV_GROUP_REFERENCE=/path/to/baseline SV_GROUP_BINARY=/path/to/grouped uv run --locked python -m unittest tests.test_grouped_projections -v`; run the compiler-only scheduler tests with `uv run --locked python -m unittest tests.test_projection_scheduler -v`.
+
+## Main integration
+
+The selected main build has SHA256 `f5fd60915e65d156baa765a8ce9efd9272f45a333dc7ae67b1d952f5b8a6944e`. Its recorded source hashes and build options match the scored worktree artifact; different build roots produce different executable hashes. Main validation passed 22 focused tests with the separately opt-in capacity test skipped. Browser checks passed backend switching, history, cancellation, context limits, mobile layout, and measured first-token display; suffix browser checks accepted drafts and reused follow-up context. These are correctness checks, not new scored timings. [Integration evidence](../reports/grouped-projection-integration.json).
