@@ -19,6 +19,8 @@ class StubTransport:
     def token(self,token,logits=True):
         self.fed.append(token);self.position+=1
         return int(np.argmax(self.logits)),self.position,float(np.max(self.logits))
+    def prefill(self,tokens):
+        return self.block(tokens,logits=False)
     def block(self,tokens,logits=False):
         self.blocks.append(list(tokens));return [self.token(t,logits)for t in tokens]
 
@@ -43,6 +45,13 @@ class ProjectionQualityTests(unittest.TestCase):
             self.assertEqual(model.calls,[f'dump {path}','lanes 8'])
             with self.assertRaisesRegex(ValueError,'expected 24, got 7'):
                 read_dump_logits(DelayedDump(False),path,3)
+
+    def test_eight_token_prefill_preserves_teacher_forcing_alignment(self):
+        a,b=StubTransport([0,1,2]),StubTransport([0,1,2])
+        rows=teacher_force(a,b,[0,1,2]*4,[1,0],lambda m,slot:m.logits,4,8,3)
+        self.assertEqual(a.fed,b.fed)
+        self.assertEqual([len(chunk) for chunk in b.blocks],[8,3])
+        self.assertEqual([r['context_position'] for r in rows],[12,13])
 
     def test_raw_tokenizers_encoding_exposes_sliceable_ids(self):
         from tokenizers import Tokenizer,models,pre_tokenizers

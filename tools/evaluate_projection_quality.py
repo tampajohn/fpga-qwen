@@ -105,10 +105,11 @@ def aggregate(rows):
 
 
 def feed_prefix(model,ids,block_size):
-    if block_size not in (1,4):raise ValueError('Supported prefill block sizes are1 and4')
+    if block_size not in (1,4,8):raise ValueError('Supported prefill block sizes are 1, 4 and 8')
     for start in range(0,len(ids),block_size):
         chunk=ids[start:start+block_size]
-        outputs=[model.token(chunk[0],logits=False)] if block_size==1 else model.block(chunk,logits=False)
+        outputs=([model.token(chunk[0],logits=False)] if block_size==1 else
+                 model.prefill(chunk) if block_size==8 else model.block(chunk,logits=False))
         expected=list(range(start+1,start+len(chunk)+1))
         if [x[1] for x in outputs]!=expected:raise RuntimeError('Prefix position mismatch')
 
@@ -163,8 +164,8 @@ def main():
     parser.add_argument('--model')
     parser.add_argument('--workers',type=int,default=8)
     parser.add_argument('--lanes',type=int,choices=[1,8],default=8)
-    parser.add_argument('--baseline-block-size',type=int,choices=[1,4],default=1)
-    parser.add_argument('--candidate-block-size',type=int,choices=[1,4],default=1)
+    parser.add_argument('--baseline-block-size',type=int,choices=[1,4,8],default=1)
+    parser.add_argument('--candidate-block-size',type=int,choices=[1,4,8],default=1)
     parser.add_argument('--case-ids',default='')
     parser.add_argument('--max-target-tokens',type=int)
     parser.add_argument('--require-exact',action='store_true',help='Sanity check for exact engines; not an approximate-quality threshold')
@@ -172,17 +173,17 @@ def main():
     args=parser.parse_args()
     if not 1<=args.workers<=32 or (args.max_target_tokens is not None and args.max_target_tokens<1):parser.error('Invalid workload')
     try:
-        from .rtl_model import RTLModel
+        from .prefill_protocol import PrefillProtocolModel as RTLModel
         from .chat_protocol import ChatProtocol
     except ImportError:
-        from rtl_model import RTLModel
+        from prefill_protocol import PrefillProtocolModel as RTLModel
         from chat_protocol import ChatProtocol
     corpus,overlap=load_corpus(args.corpus,ROOT/'reports/arm-pgo-training.json')
     requested=set(args.case_ids.split(',')) if args.case_ids else {e['id'] for e in corpus['examples']}
     if not requested<={e['id'] for e in corpus['examples']}:parser.error('Unknown case ID')
     selected=[e for e in corpus['examples'] if e['id'] in requested]
     binaries=[args.baseline.resolve(),args.candidate.resolve()]
-    models=[RTLModel(args.model,workers=args.workers,lanes=args.lanes,binary=p,block_size=size)
+    models=[RTLModel(args.model,workers=args.workers,lanes=args.lanes,binary=p,block_size=min(size,4))
             for p,size in zip(binaries,(args.baseline_block_size,args.candidate_block_size))]
     if models[0].model.resolve()!=models[1].model.resolve():raise RuntimeError('Checkpoint paths differ')
     protocol=ChatProtocol(models[0].model)
