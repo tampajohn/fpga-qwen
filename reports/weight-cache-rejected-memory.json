@@ -1,0 +1,131 @@
+{
+  "limitation": "RSS snapshots include shared pages; not peak RSS, physical/private memory, or allocation size.",
+  "snapshots": [
+    {
+      "timestamp": 1794431688.101047,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral",
+      "pid": 35364,
+      "phase": "ready",
+      "rss_kib": 1864432,
+      "startup_seconds": 0.13232979201711714,
+      "startup_stderr": ""
+    },
+    {
+      "timestamp": 1794431688.559755,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral",
+      "pid": 35366,
+      "phase": "ready",
+      "rss_kib": 6267472,
+      "startup_seconds": 0.44731166696874425,
+      "startup_stderr": "weight_cache_f32 bytes=3006600656 startup_seconds=0.278647\n"
+    },
+    {
+      "timestamp": 1794431691.3144379,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral",
+      "pid": 35364,
+      "phase": "after_request",
+      "rss_kib": 3030016,
+      "prompt_tokens": 85,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431694.178467,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral",
+      "pid": 35366,
+      "phase": "after_request",
+      "rss_kib": 6267472,
+      "prompt_tokens": 85,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431696.870215,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral",
+      "pid": 35364,
+      "phase": "after_request",
+      "rss_kib": 3030016,
+      "prompt_tokens": 85,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431699.7445061,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral",
+      "pid": 35366,
+      "phase": "after_request",
+      "rss_kib": 6267472,
+      "prompt_tokens": 85,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431702.73997,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral",
+      "pid": 35366,
+      "phase": "after_request",
+      "rss_kib": 6267472,
+      "prompt_tokens": 85,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431705.469874,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral",
+      "pid": 35364,
+      "phase": "after_request",
+      "rss_kib": 3030016,
+      "prompt_tokens": 85,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431727.168829,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral",
+      "pid": 35364,
+      "phase": "after_request",
+      "rss_kib": 3030320,
+      "prompt_tokens": 452,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431748.197463,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral",
+      "pid": 35366,
+      "phase": "after_request",
+      "rss_kib": 6267472,
+      "prompt_tokens": 452,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431767.6196191,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral",
+      "pid": 35364,
+      "phase": "after_request",
+      "rss_kib": 3030320,
+      "prompt_tokens": 452,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431791.3184571,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral",
+      "pid": 35366,
+      "phase": "after_request",
+      "rss_kib": 6267472,
+      "prompt_tokens": 452,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431813.722208,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral",
+      "pid": 35366,
+      "phase": "after_request",
+      "rss_kib": 6267472,
+      "prompt_tokens": 452,
+      "output_tokens": 32
+    },
+    {
+      "timestamp": 1794431833.494981,
+      "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral",
+      "pid": 35364,
+      "phase": "after_request",
+      "rss_kib": 3030320,
+      "prompt_tokens": 452,
+      "output_tokens": 32
+    }
+  ]
+}

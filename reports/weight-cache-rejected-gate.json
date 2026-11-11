@@ -1,0 +1,154 @@
+{
+  "cpu": "Apple M5 Max",
+  "threads_or_workers": 8,
+  "checkpoint": "/Users/jadams/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca",
+  "timestamp_utc": "2026-11-11T21:14:37Z",
+  "decoding": "greedy, no penalties, identical EOS-respecting selection; performance requires requested count before EOS",
+  "gpu": false,
+  "pytorch": false,
+  "runs": [
+    {
+      "engine": "rtl",
+      "metadata": {
+        "weight_storage": "BF16 checkpoint",
+        "arithmetic": "SystemVerilog real / FP64",
+        "kv": "SystemVerilog real / FP64",
+        "parallel_workers": 8,
+        "reduction_lanes": 8,
+        "executable": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral",
+        "cpu_thread_note": "Persistent projection workers plus coordinator; no GPU"
+      },
+      "startup_seconds": 0.42286512500140816,
+      "profile": "short",
+      "prompt_tokens": 85,
+      "prompt_ids_sha256": "58be84173178cdcfb224e0c441a55147e7df172e2ac71dd1361f4340a63f0dbb",
+      "first_request": {
+        "output_token_ids": [
+          10642,
+          33394,
+          19257,
+          311
+        ],
+        "output_token_count": 4,
+        "text": "Memory bandwidth refers to",
+        "finish_reason": "length",
+        "first_token_seconds": 1.8699073329917155,
+        "request_seconds": 1.9555272919824347,
+        "steady_decode_seconds": 0.08556583401514217,
+        "steady_decode_tokens_per_second": 35.06072294543526,
+        "backend_timings": null,
+        "eos_observed": false
+      },
+      "warm_requests": [
+        {
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311
+          ],
+          "output_token_count": 4,
+          "text": "Memory bandwidth refers to",
+          "finish_reason": "length",
+          "first_token_seconds": 1.839975000009872,
+          "request_seconds": 1.9330255420063622,
+          "steady_decode_seconds": 0.093033250013832,
+          "steady_decode_tokens_per_second": 32.246535508046485,
+          "backend_timings": null,
+          "eos_observed": false
+        }
+      ],
+      "warm_median_ttft_seconds": 1.839975000009872,
+      "warm_median_decode_tokens_per_second": 32.246535508046485,
+      "greedy_sequence_repeatable": true,
+      "warm_decode_rate_min": 32.246535508046485,
+      "warm_decode_rate_max": 32.246535508046485
+    }
+  ],
+  "quality": [],
+  "sv_lanes": 8,
+  "limitations": [
+    "Same prompt token IDs, context, generated count and numeric worker count; NOT identical arithmetic or KV precision.",
+    "SV: BF16 stored weights / FP64 arithmetic and KV. Native: named stored weights / mixed arithmetic / FP16 KV.",
+    "Startup is process/model startup, not OS page-cache cold; no page-cache eviction is attempted.",
+    "Every timed request has empty logical KV. Warm repetitions retain the process and resident weight pages.",
+    "Both measurements include their existing transport (SV pipes, llama HTTP); steady decode excludes first-token prompt processing.",
+    "Fixed-count performance rejects any early EOS rather than masking it. Quality mode permits EOS and records objective checks separately."
+  ],
+  "generated_files": {
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral.cpp": "a0e54daf251f6a743ed05b22555a768776283ba8751fd89bfc5431634e4d5771",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral.h": "71ddb466dfa6d1859835ee4736711d62e8e57f5f4031c7c1f3c984572e6e892c",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral__ALL.cpp": "aeaec7f81d3ee7a786bfab0f852e36e29eb1121de88379a6548a63583fbc594b",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral__Dpi.cpp": "a249d1350f612b75604dfaf0fc5d694981f93ffd3d80f1584ccf2d40cee1d7c6",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral__Dpi.h": "344aecff7273bd0d537d82bad2ad2d7ed83f6d54a35495b3f1105cb054498873",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral__Syms.h": "b3c0f38cf77669db1fe7165d1c3d03c80c1dfbcfa780c9c72eeaf0e388117708",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral__Syms__Slow.cpp": "f48cb26b68477697f94ffd4ab2580c2480f91193eae01dc19bfdfc92aecb774e",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral___024root.h": "870f84120903fb5826f9e81c199dd9add7b6fef1f2ff8cc6c261609434f90a31",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral___024root__0.cpp": "2b478f1415011e4e7bf1a183e22d2dc2ece5e2e08cfe2263a3e25a8ec7ceea1e",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral___024root__0__Slow.cpp": "75b49722e326ea6c95be637aaaf9da8fed3ac96fb4297ad42bec4ccc36169882",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral___024root__Slow.cpp": "63b081e6090f78b1de0d67b24a4efd5d22b314d943f1b61649d95561ec6a7130",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral__pch.h": "22940ef1a44ae5bc904961b86eed4bf0de3765bdfdbb04d23c197020f67078ee",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker.cpp": "4f96c0cab761c8d28a9c441b7c5f5db4cb7d2b70959f94accafdaeacced7775f",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker.h": "2cdb2b7cddc5cc7e79dc6fecfd13cda5d1cc58f74bf4f1f8558e78ac80db1f92",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker__ALL.cpp": "c665fc8c0e88cb6051c4779b90898602f5adebce8c63113e4656a937619e7aff",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker__Dpi.cpp": "216d175bfae3b53178d97991174e20e144a82723befb32fdc6cda9be0af6037c",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker__Dpi.h": "95b9367314f8cb8dfd1ed34b2a0d9586252a93aeca8b7340df5f1d4ee2677c65",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker__Syms.h": "10eda60ff67374818610ee362c8e6ab0c826ac46a0830c89c67b50236009d7b8",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker__Syms__Slow.cpp": "59b091b8036ab0b432237ea55f00dbbd04a81e999ef419e036a2a67f94e78faf",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker___024root.h": "3b5d7c9a0cb65d2828855423d854c5e4274adc36b5a96083c8addc23cc9e010d",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker___024root__0.cpp": "d0c353e260f7d1fff7b5f0f024ec5ce8cf9948d365944995add74e969b0d6a5b",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker___024root__0__Slow.cpp": "db05c9764bfeda45b38f04ad609617a3dc088dfa4f23d44050d2a481aec3eff0",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker___024root__Slow.cpp": "291c2d45264b8cbf7455c7f1c411539426ef7136792a90397004d74e9b661c6e",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/projection/Vprojection_worker__pch.h": "49c99af6aabc07d143be7841cba2e3a11a30cc297a70cde8fd49de9366abe779"
+  },
+  "generated_source_sha256": "1b999e2d7909757af83c3fb0df36087739e888065e3e266206202cabf0d2c822",
+  "sv_binary_sha256": "4e6b869a04f4477f111dbb5e5ecaf3b58aa32e572220f0c0a2b649975e2784a0",
+  "native_binary_sha256": "e9c93f0fb1ea58180632b77a1943eee31126e365e1a80ac34bcc54475403fc96",
+  "numerical_gate": {
+    "reference_binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection/full/Vqwen_behavioral",
+    "candidate_binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-compact-projection-weight-cache-f32/full/Vqwen_behavioral",
+    "reference_sha256": "becad933e07b45cc027717ae8f04b842c2db46d32b5a5b3e0bc736a6e85cb07e",
+    "candidate_sha256": "4e6b869a04f4477f111dbb5e5ecaf3b58aa32e572220f0c0a2b649975e2784a0",
+    "prompt_tokens": 85,
+    "teacher_forced_generated_tokens": 5,
+    "candidate_reduction_lanes": 8,
+    "reference_reduction_lanes": 8,
+    "bit_identical_logits": true,
+    "require_bit_identical": true,
+    "absolute_error_tolerance": 1e-06,
+    "per_position_max_absolute_logit_errors": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max_absolute_logit_error": 0.0,
+    "greedy_choices": [
+      {
+        "reference": 10642,
+        "candidate": 10642
+      },
+      {
+        "reference": 33394,
+        "candidate": 33394
+      },
+      {
+        "reference": 19257,
+        "candidate": 19257
+      },
+      {
+        "reference": 311,
+        "candidate": 311
+      },
+      {
+        "reference": 279,
+        "candidate": 279
+      }
+    ],
+    "unchanged_greedy_sequence": true,
+    "all_logits_finite": true,
+    "passed": true
+  },
+  "llama_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb"
+}

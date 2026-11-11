@@ -1,0 +1,101 @@
+--- a/sim/full_model.cpp
++++ b/sim/full_model.cpp
+@@ -15,14 +15,45 @@
+ #include <iostream>
+ #include <vector>
+ #include <stdexcept>
++#ifdef WEIGHT_CACHE_F32
++#include <limits>
++#endif
+ static const uint16_t* weights;
+ static size_t words;
++#ifdef WEIGHT_CACHE_F32
++// Expanded storage only: multiplication/accumulation and KV stay in SV real.
++static const float* expanded_weights=nullptr;
++static size_t expanded_bytes=0;
++static void prepare_weight_cache() {
++    static_assert(sizeof(float)==4 && std::numeric_limits<float>::is_iec559,
++                  "Weight cache requires IEEE binary32");
++    if(words==0 || words>std::numeric_limits<size_t>::max()/sizeof(float))
++        throw std::runtime_error("Invalid expanded weight cache size");
++    expanded_bytes=words*sizeof(float);
++    auto* storage=static_cast<float*>(mmap(nullptr,expanded_bytes,PROT_READ|PROT_WRITE,
++                                         MAP_PRIVATE|MAP_ANONYMOUS,-1,0));
++    if(storage==MAP_FAILED) throw std::runtime_error("Cannot allocate expanded weight cache");
++    for(size_t index=0;index<words;++index) {
++        uint32_t bits=uint32_t(weights[index])<<16;
++        std::memcpy(storage+index,&bits,sizeof(bits));
++    }
++    if(mprotect(storage,expanded_bytes,PROT_READ)) {
++        munmap(storage,expanded_bytes);
++        throw std::runtime_error("Cannot protect expanded weight cache");
++    }
++    expanded_weights=storage;
++}
++#endif
+ static std::vector<int64_t> offsets;
+ extern "C" double weight_value(int64_t index) {
+     if (index<0 || size_t(index)>=words) throw std::runtime_error("Weight address out of bounds");
++#ifdef WEIGHT_CACHE_F32
++    return expanded_weights[index];
++#else
+     uint32_t bits=uint32_t(weights[index])<<16;
+     float value; std::memcpy(&value,&bits,4);
+     return value;
++#endif
+ }
+ // Projection jobs validate their complete span before any worker is dispatched.
+ // This accessor is used only by those validated SV worker loops.
+@@ -31,8 +62,12 @@
+         throw std::runtime_error("Projection weight span out of bounds");
+ }
+ extern "C" double weight_value_unchecked(int64_t index) {
++#ifdef WEIGHT_CACHE_F32
++    return expanded_weights[index];
++#else
+     uint32_t bits=uint32_t(weights[index])<<16;
+     float value;std::memcpy(&value,&bits,4);return value;
++#endif
+ }
+ // Row transport variant retained for direct comparison with resident/scalar modes.
+ extern "C" void weight_row(int64_t index,int count,const svOpenArrayHandle output) {
+@@ -41,8 +76,12 @@
+        size_t(index)>words || size_t(count)>words-size_t(index))
+         throw std::runtime_error("Weight row address out of bounds");
+     for(int i=0;i<count;i++) {
++#ifdef WEIGHT_CACHE_F32
++        destination[i]=expanded_weights[index+i];
++#else
+         uint32_t bits=uint32_t(weights[index+i])<<16;
+         float value;std::memcpy(&value,&bits,4);destination[i]=value;
++#endif
+     }
+ }
+ extern "C" int64_t tensor_base(int slot) { return offsets.at(slot); }
+@@ -67,6 +106,13 @@
+         std::ifstream layout(argv[2]); int64_t offset;
+         while(layout>>offset) offsets.push_back(offset);
+         if(offsets.size()!=311) throw std::runtime_error("Invalid tensor layout");
++#ifdef WEIGHT_CACHE_F32
++        auto cache_started=std::chrono::steady_clock::now();
++        prepare_weight_cache();
++        std::cerr<<"weight_cache_f32 bytes="<<expanded_bytes<<" startup_seconds="
++                 <<std::chrono::duration<double>(std::chrono::steady_clock::now()-cache_started).count()
++                 <<'\n';
++#endif
+         int count=argc==4?std::stoi(argv[3]):0;
+         if(count<0 || count>32) throw std::runtime_error("Invalid worker count");
+         int reduction_lanes=1;
+@@ -137,6 +183,11 @@
+                 std::cout<<"dumped\n"<<std::flush;
+             } else throw std::runtime_error("Unknown command");
+         }
+-        d->final();pool.reset();munmap(mapped,info.st_size);
++        d->final();pool.reset();
++#ifdef WEIGHT_CACHE_F32
++        munmap(const_cast<float*>(expanded_weights),expanded_bytes);
++        expanded_weights=nullptr;
++#endif
++        munmap(mapped,info.st_size);
+     } catch(const std::exception& error) {std::cerr<<error.what()<<'\n';return 1;}
+ }
