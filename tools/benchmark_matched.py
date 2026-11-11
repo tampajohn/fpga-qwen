@@ -49,11 +49,13 @@ def timing_result(start, arrivals, ids, text, stopped, backend_timings=None):
 
 
 class SVEngine:
-    def __init__(self, checkpoint, threads, tokenizer, binary=None, lanes=1, block_size=1, prefill_size=None, precision_profile='fp64'):
-        if precision_profile not in ('fp64', 'fp32_b1_fp64_prefill'):
+    def __init__(self, checkpoint, threads, tokenizer, binary=None, lanes=1, block_size=1, prefill_size=None, precision_profile='fp64', verification_capacity=1):
+        if precision_profile not in ('fp64', 'fp32_b1_fp64_prefill', 'fp32_b1_fp32_prefill'):
             raise ValueError('Unknown simulator precision profile')
         if precision_profile != 'fp64' and (not threads or lanes != 8 or block_size != 1 or prefill_size != 8):
             raise ValueError('Hybrid timing requires workers, eight lanes, B8 prefill and B1 decode')
+        if verification_capacity not in (1,4):raise ValueError("Invalid verification capacity")
+        self.verification_capacity = verification_capacity
         self.precision_profile = precision_profile
         kwargs = {'binary': binary} if binary is not None else {}
         self.model = RTLModel(checkpoint, workers=threads, block_size=block_size, prefill_size=prefill_size, **kwargs)
@@ -67,8 +69,9 @@ class SVEngine:
                              cpu_thread_note='Persistent projection workers plus coordinator; no GPU')
         self.metadata['precision_profile'] = precision_profile
         if precision_profile != 'fp64':
-            self.metadata['arithmetic'] = 'SV FP32 scalar projections; FP64 prefill, attention and other model arithmetic'
-            self.metadata['routing'] = 'Fresh FP64 B8 prompt[:-1], then FP32 B1 final prompt token and decode; no prefix reuse or suffix verification'
+            prefill_precision = 'FP32' if precision_profile == 'fp32_b1_fp32_prefill' else 'FP64'
+            self.metadata['arithmetic'] = f'SV FP32 scalar projections; {prefill_precision} prefill projections; FP64 attention and other model arithmetic'
+            self.metadata['routing'] = f'Fresh {prefill_precision} B8 prompt[:-1] with B4 tails, then FP32 B1 final prompt token and decode; no prefix reuse or suffix verification'
 
     def start(self):
         start = time.perf_counter()
@@ -76,8 +79,10 @@ class SVEngine:
         if self.precision_profile != 'fp64':
             capabilities = json.loads(self.model.command('precision'))
             expected = dict(precision_profile=self.precision_profile, scalar_projection='fp32',
-                            prefill_projection='fp64', attention_kv='fp64',
-                            max_verification_block=1, prefix_reuse_supported=False)
+                            prefill_projection='fp32' if self.precision_profile == 'fp32_b1_fp32_prefill' else 'fp64', attention_kv='fp64',
+                            max_verification_block=self.verification_capacity, prefix_reuse_supported=False)
+            if self.verification_capacity == 4:expected['verification_projection']='fp32'
+            if self.precision_profile == 'fp32_b1_fp32_prefill':expected['canonical_prefix_policy']='none'
             if not isinstance(capabilities, dict) or any(
                 type(capabilities.get(key)) is not type(value) or capabilities[key] != value
                 for key, value in expected.items()
