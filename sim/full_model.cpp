@@ -286,7 +286,9 @@ int main(int argc,char** argv) {
 #endif
 #ifdef FP32_PROJECTION_B1
             } else if(command=="precision") {
-#ifdef FP32_VERIFICATION_B4
+#ifdef FP32_PREFILL_B8
+                std::cout<<R"({"precision_profile":"fp32_b1_fp32_prefill","scalar_projection":"fp32","prefill_projection":"fp32","verification_projection":"fp32","attention_kv":"fp64","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
+#elif defined(FP32_VERIFICATION_B4)
                 std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill","scalar_projection":"fp32","prefill_projection":"fp64","verification_projection":"fp32","attention_kv":"fp64","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"fp64_b8_aligned_v1"})"<<'\n'<<std::flush;
 #else
                 std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill","scalar_projection":"fp32","prefill_projection":"fp64","attention_kv":"fp64","max_verification_block":1,"prefix_reuse_supported":false,"canonical_prefix_policy":"fp64_b8_aligned_v1"})"<<'\n'<<std::flush;

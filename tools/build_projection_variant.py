@@ -35,10 +35,12 @@ def main():
     parser.add_argument('--scalar-group', action='store_true')
     parser.add_argument('--fp32-projection-b1', action='store_true', help='Experimental FP32 scalar projections with FP64 prefill/attention; no prefix reuse or block verification')
     parser.add_argument('--fp32-verification-b4', action='store_true', help='Experimental explicit FP32 B4 verification; FP64 prefill unchanged')
+    parser.add_argument('--fp32-prefill-b8', action='store_true', help='Experimental FP32 B8 prefill and B4 tails; distinct precision profile')
     parser.add_argument('--shortreal-compiler', default='', help='Reviewed patched Verilator root for isolated FP32 archive')
     parser.add_argument('--tag', default='', help='Extra alphanumeric/dash suffix for a reproducible experiment')
     parser.add_argument('--print-path', action='store_true', help='Print output path without compiling')
     args = parser.parse_args()
+    if args.fp32_prefill_b8 and not args.fp32_verification_b4:parser.error('--fp32-prefill-b8 requires --fp32-verification-b4')
     if args.fp32_verification_b4 and not args.fp32_projection_b1:parser.error('--fp32-verification-b4 requires --fp32-projection-b1')
     if args.fp32_projection_b1:
         if not (args.lto and args.parallel_attention and args.batched_prefill and args.prefill_b8 and args.scalar_group and args.storage=='scalar' and args.opt=='O3'):
@@ -80,11 +82,13 @@ def main():
     if args.scalar_group: tag += '-scalar-group'
     if args.fp32_projection_b1: tag += '-fp32-b1'
     if args.fp32_verification_b4: tag += '-verify-b4'
+    if args.fp32_prefill_b8: tag += '-fp32-prefill-b8'
     if args.tag: tag += '-'+args.tag
     directory = ROOT / 'build/variants' / tag
     projection, full = directory / 'projection', directory / 'full'
     fp32 = directory / 'fp32'
     fp32_b4 = directory / 'fp32-b4'
+    fp32_b8 = directory / 'fp32-b8'
     binary = full/'Vqwen_behavioral'
     if args.print_path:
         print(binary)
@@ -94,6 +98,7 @@ def main():
     flags = '-std=c++17 -' + args.opt + (' -flto=thin' if args.lto else '')
     if args.scalar_group: flags += ' -DSCALAR_GROUP'
     if args.fp32_projection_b1: flags += ' -DFP32_PROJECTION_B1 -I'+str(fp32)
+    if args.fp32_prefill_b8: flags += ' -DFP32_PREFILL_B8 -I'+str(fp32_b8)
     if args.fp32_verification_b4: flags += ' -DFP32_VERIFICATION_B4 -I'+str(fp32_b4)
     if args.cpu == 'native': flags += ' -mcpu=native'
     if args.fast_math: flags += ' -ffast-math'
@@ -139,7 +144,8 @@ def main():
          str(ROOT/'rtl/qwen_behavioral.sv'), str(ROOT/'sim/full_model.cpp'),
          str(projection/'Vprojection_worker__ALL.a'),
          *([str(fp32/'Vfp32_projection_kernel__ALL.a')]if args.fp32_projection_b1 else []),
-         *([str(fp32_b4/'Vfp32_verification_kernel__ALL.a')] if args.fp32_verification_b4 else [])]]
+         *([str(fp32_b4/'Vfp32_verification_kernel__ALL.a')] if args.fp32_verification_b4 else []),
+         *([str(fp32_b8/'Vfp32_prefill_kernel__ALL.a')] if args.fp32_prefill_b8 else [])]]
     stock_env=os.environ.copy()
     stock_env.pop('VERILATOR_ROOT',None);stock_env.pop('VERILATOR_BIN',None)
     environments=[stock_env for _ in commands]
@@ -160,6 +166,14 @@ def main():
             verify_command[verify_command.index('+define+KERNEL_ROWS=151936')]='+define+KERNEL_ROWS=3072'
             verify_command[1:1]=['--prefix','Vfp32_verification_kernel']
             commands.insert(1,verify_command);environments.insert(1,patched_env)
+        if args.fp32_prefill_b8:
+            fp32_b8.mkdir(parents=True,exist_ok=True)
+            prefill_command=command.copy()
+            prefill_command[prefill_command.index('--Mdir')+1]=str(fp32_b8)
+            prefill_command[prefill_command.index('+define+KERNEL_BATCH=1')]='+define+KERNEL_BATCH=8'
+            prefill_command[prefill_command.index('+define+KERNEL_ROWS=151936')]='+define+KERNEL_ROWS=3072'
+            prefill_command[1:1]=['--prefix','Vfp32_prefill_kernel','--unroll-count','1']
+            commands.insert(2,prefill_command);environments.insert(2,patched_env)
         stock_include=Path(subprocess.check_output(['verilator','--getenv','VERILATOR_ROOT'],env=stock_env,text=True).strip())/'include'
         headers={}
         for name in ('verilated.h','verilated_types.h','verilated_threads.h'):
@@ -168,7 +182,7 @@ def main():
             headers[name]=a
         fp32_info=dict(compiler_binary_sha256=hashlib.sha256(compiler_binary.read_bytes()).hexdigest(),
             git_head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=compiler_root,text=True).strip(),runtime_header_hashes=headers,
-            policy='FP32 archives only use strict flags; stock worker/main/runtime retain original O3 ThinLTO/contraction. B1 FP32, prefill/attention/KV FP64; explicit B4 verification only when selected.', verification_batch=4 if args.fp32_verification_b4 else 1)
+            policy='FP32 archives only use strict flags; stock worker/main/runtime retain original O3 ThinLTO/contraction. B1 FP32; attention/KV FP64. Prefill precision and verification capacity are specified by the adjacent manifest fields.', verification_batch=4 if args.fp32_verification_b4 else 1, prefill_projection='fp32' if args.fp32_prefill_b8 else 'fp64', prefill_unroll_count=1 if args.fp32_prefill_b8 else None)
     sources = ['rtl/projection_worker.sv', 'rtl/qwen_behavioral.sv', 'rtl/sampling.svh',
                'sim/full_model.cpp', 'sim/projection_pool.h', 'sim/projection_descriptors.h', 'tools/build_projection_variant.py']
     if args.fp32_projection_b1:sources.append('rtl/fp32_projection_kernel.sv')

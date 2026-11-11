@@ -1,3 +1,6 @@
+#if defined(FP32_PREFILL_B8) && (!defined(FP32_VERIFICATION_B4) || !defined(FP32_PROJECTION_B1))
+#error "FP32 B8 prefill requires FP32 B1 and B4 modules"
+#endif
 // Persistent CPU workers, each running an independent Verilated SV partition.
 // Host code only schedules partitions and copies activations/results.
 // One coordinator owns run()/shutdown(); concurrent calls are not supported.
@@ -7,6 +10,9 @@
 #include "Vfp32_projection_kernel.h"
 #ifdef FP32_VERIFICATION_B4
 #include "Vfp32_verification_kernel.h"
+#ifdef FP32_PREFILL_B8
+#include "Vfp32_prefill_kernel.h"
+#endif
 #endif
 #if !defined(PARALLEL_ATTENTION) || !defined(BATCH_PREFILL) || !defined(PREFILL_B8)
 #error "FP32 B1 requires the FP64 parallel-attention and B8-prefill backend"
@@ -89,6 +95,12 @@ class ProjectionPool {
             auto verify=std::make_unique<Vfp32_verification_kernel>(verify_context.get());
             verify->start=0;verify->clk=0;verify->eval();
 #endif
+#ifdef FP32_PREFILL_B8
+            auto prefill_context=std::make_unique<VerilatedContext>();
+            prefill_context->threads(1);
+            auto prefill=std::make_unique<Vfp32_prefill_kernel>(prefill_context.get());
+            prefill->start=0;prefill->clk=0;prefill->eval();
+#endif
             std::unique_lock<std::mutex> lock(mutex);
             ++ready;complete.notify_one();
             uint64_t seen=0;
@@ -128,9 +140,19 @@ class ProjectionPool {
 #ifdef FP32_PROJECTION_B1
                 // One copy per dispatch, including a multi-matrix scalar group.
 #ifdef FP32_VERIFICATION_B4
-                if(operation==4) {
+                if(operation==4
+#ifdef FP32_PREFILL_B8
+                   || operation==2
+#endif
+                ) {
                     for(int j=0;j<width;++j) for(int t=0;t<4;++t)
                         verify->activation[j*4+t]=t<batch_count?input[j*8+t]:0.0;
+                } else
+#endif
+#ifdef FP32_PREFILL_B8
+                if(operation==3) {
+                    for(int j=0;j<width;++j) for(int t=0;t<8;++t)
+                        prefill->activation[j*8+t]=t<batch_count?input[j*8+t]:0.0;
                 } else
 #endif
                 if(operation==0) std::memcpy(fp32->activation.data(),input,width*sizeof(double));
@@ -169,11 +191,23 @@ class ProjectionPool {
                 int begin=job_rows*id/count, end=job_rows*(id+1)/count;
 #ifdef FP32_PROJECTION_B1
 #ifdef FP32_VERIFICATION_B4
-                if(operation==4) {
+                if(operation==4
+#ifdef FP32_PREFILL_B8
+                   || operation==2
+#endif
+                ) {
                     verify->base=job_base;verify->width=width;verify->first_row=begin;verify->end_row=end;
                     verify->start=1;verify->clk=0;verify->eval();verify->clk=1;verify->eval();
                     for(int r=begin;r<end;++r) for(int t=0;t<batch_count;++t)
                         destination[(output_offset+r)*8+t]=verify->result[r*4+t];
+                } else
+#endif
+#ifdef FP32_PREFILL_B8
+                if(operation==3) {
+                    prefill->base=job_base;prefill->width=width;prefill->first_row=begin;prefill->end_row=end;
+                    prefill->start=1;prefill->clk=0;prefill->eval();prefill->clk=1;prefill->eval();
+                    for(int r=begin;r<end;++r) for(int t=0;t<batch_count;++t)
+                        destination[(output_offset+r)*8+t]=prefill->result[r*8+t];
                 } else
 #endif
                 if(operation==0) {
@@ -222,6 +256,12 @@ class ProjectionPool {
 #endif
 #ifdef FP32_PROJECTION_B1
             fp32->final();
+#endif
+#ifdef FP32_VERIFICATION_B4
+            verify->final();
+#endif
+#ifdef FP32_PREFILL_B8
+            prefill->final();
 #endif
             model->final();
         } catch(...) {
@@ -296,6 +336,10 @@ public:
 #ifdef FP32_PROJECTION_B1
         if(requested_operation==0 && (matrix_width<8 || matrix_width%8))
             throw std::runtime_error("FP32 scalar projection width must be a positive multiple of eight");
+#endif
+#ifdef FP32_PREFILL_B8
+        if((requested_operation==2 || requested_operation==3) && matrix_width%8)
+            throw std::runtime_error("FP32 prefill width must be a multiple of eight");
 #endif
         std::unique_lock<std::mutex> lock(mutex);
         if(error) std::rethrow_exception(error);

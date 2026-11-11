@@ -1,0 +1,32 @@
+{
+  "binary_sha256": "c87074825ab522ead128c121312d8c799205230d6f9235081ce261c1ad7a8449",
+  "cases": [
+    "count1",
+    "truncate1",
+    "count2",
+    "truncate2",
+    "count3",
+    "truncate3",
+    "count4",
+    "truncate4",
+    "count5",
+    "truncate5",
+    "count6",
+    "truncate6",
+    "count7",
+    "truncate7",
+    "count8",
+    "truncate8",
+    "restart7"
+  ],
+  "precision": {
+    "precision_profile": "fp32_b1_fp32_prefill",
+    "scalar_projection": "fp32",
+    "prefill_projection": "fp32",
+    "verification_projection": "fp32",
+    "attention_kv": "fp64",
+    "max_verification_block": 4,
+    "prefix_reuse_supported": false,
+    "canonical_prefix_policy": "none"
+  }
+}
