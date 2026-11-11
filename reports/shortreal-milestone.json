@@ -1,0 +1,37 @@
+{
+  "status": "bounded compiler milestone; not model promotion",
+  "upstream_base": "bbb60a403932a9f695cb6ff001ceb73de6ad9234",
+  "upstream_tag": "v5.054",
+  "compiler_branch": "codex/shortreal-subset",
+  "compiler_commit": "c607db496a5cb5207a14cfa70e1639edb742a4b1",
+  "compiler_sha256": "70df52bf26b8852b199d5c8d4e94dd0514e0f499ae6d7ff786bfb297de05989f",
+  "patch_sha256": "6cf8b4f944ab0f6118c0fa96d4fd84574f1553741efd21b0c2c2d2881c94819b",
+  "passed_regressions": [
+    "t_shortreal_subset",
+    "t_shortreal_subset_opt",
+    "t_shortreal_subset_unsup",
+    "t_shortreal_stream_unsup",
+    "t_shortreal_and_unsup",
+    "t_shortreal_mod_unsup",
+    "t_shortreal_const_unsup",
+    "t_math_real",
+    "t_math_real_round",
+    "t_cast",
+    "t_math_signed"
+  ],
+  "independent_negative_fixtures": 19,
+  "runtime_codegen": "float storage, VlUnpacked<float,3>, scalar fmul/fadd and fmul.2s in array dot",
+  "strict_flags": [
+    "-fno-fast-math",
+    "-ffp-contract=off"
+  ],
+  "validated_build_generator": "GNUmake",
+  "full_model_inference_tested": false,
+  "performance_tested": false,
+  "commercial_sv_simulator_crosscheck": false,
+  "exact_base_patch_apply_check": {
+    "passed": true,
+    "method": "git read-tree upstream base into temporary index; git apply --cached --check patch",
+    "working_tree_modified": false
+  }
+}

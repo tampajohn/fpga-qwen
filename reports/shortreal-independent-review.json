@@ -1,0 +1,138 @@
+{
+  "compiler_sha256": "70df52bf26b8852b199d5c8d4e94dd0514e0f499ae6d7ff786bfb297de05989f",
+  "cases": [
+    {
+      "case": "stream",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/stream.sv:1:168: Unsupported: shortreal integral coercion in experimental subset\n                                                                                                  : ... note: In instance 't'\n    1 | module t(input clk); shortreal x[2]; logic [63:0] bits; always @(posedge clk) begin x[0]=$bitstoshortreal(32'h3f800000); x[1]=$bitstoshortreal(32'h40000000); bits={>>{x}}; $display(\"%h\",bits); end endmodule\n      |                                                                                                                                                                        ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Warning-REALCVT: $REVIEW_FIXTURES/stream.sv:1:168: Implicit conversion of real to integer; expected integral input to STREAMR\n                                                                                                            : ... note: In instance 't'\n    1 | module t(input clk); shortreal x[2]; logic [63:0] bits; always @(posedge clk) begin x[0]=$bitstoshortreal(32'h3f800000); x[1]=$bitstoshortreal(32'h40000000); bits={>>{x}}; $display(\"%h\",bits); end endmodule\n      |                                                                                                                                                                        ^\n                  ... For warning description see https://verilator.org/warn/REALCVT?v=0.000\n                  ... Use \"/* verilator lint_off REALCVT */\" and lint_on around source to disable this message.\n%Warning-WIDTHEXPAND: $REVIEW_FIXTURES/stream.sv:1:163: Operator ASSIGN expects 64 bits on the Assign RHS, but Assign RHS's STREAMR generates 32 bits.\n                                                                                                                : ... note: In instance 't'\n    1 | module t(input clk); shortreal x[2]; logic [63:0] bits; always @(posedge clk) begin x[0]=$bitstoshortreal(32'h3f800000); x[1]=$bitstoshortreal(32'h40000000); bits={>>{x}}; $display(\"%h\",bits); end endmodule\n      |                                                                                                                                                                   ^\n                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=0.000\n                      ... Use \"/* verilator lint_off WIDTHEXPAND */\" and lint_on around source to disable this message.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "mixed",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/mixed.sv:1:96: Unsupported: integral to shortreal conversion wider than 32 bits in experimental subset\n                                                                                                : ... note: In instance 't'\n    1 | module t(input clk); shortreal x,y; longint n; always @(posedge clk) begin n=n+1; x=shortreal'(n); y=x+1; $display(\"%g\",y); end endmodule\n      |                                                                                                ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: $REVIEW_FIXTURES/mixed.sv:1:107: Unsupported: shortreal formatting in experimental subset\n                                                                                                 : ... note: In instance 't'\n    1 | module t(input clk); shortreal x,y; longint n; always @(posedge clk) begin n=n+1; x=shortreal'(n); y=x+1; $display(\"%g\",y); end endmodule\n      |                                                                                                           ^~~~~~~~\n%Error: Exiting due to 2 error(s)\n"
+    },
+    {
+      "case": "widebits",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/widebits.sv:1:97: Unsupported: shortreal bitcast requires an integral input of at most 32 bits\n                                                                                                   : ... note: In instance 't'\n    1 | module t(input clk); logic [95:0] bits; shortreal x; always @(posedge clk) begin bits=bits+1; x=$bitstoshortreal(bits); $display(\"%g\",x); end endmodule\n      |                                                                                                 ^~~~~~~~~~~~~~~~\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: $REVIEW_FIXTURES/widebits.sv:1:121: Unsupported: shortreal formatting in experimental subset\n                                                                                                    : ... note: In instance 't'\n    1 | module t(input clk); logic [95:0] bits; shortreal x; always @(posedge clk) begin bits=bits+1; x=$bitstoshortreal(bits); $display(\"%g\",x); end endmodule\n      |                                                                                                                         ^~~~~~~~\n%Error: Exiting due to 2 error(s)\n"
+    },
+    {
+      "case": "compare",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/compare.sv:1:123: Unsupported: shortreal comparison in experimental subset\n                                                                                                   : ... note: In instance 't'\n    1 | module t(input clk, input int n); shortreal x; bit eq; always @(posedge clk) begin x=$bitstoshortreal(32'h4b800000); eq=(x==n); $display(\"%d\",eq); end endmodule\n      |                                                                                                                           ^~\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "negate",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/negate.sv:1:61: Unsupported: shortreal unary operator in experimental subset\n                                                                                                          : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=-a; endmodule\n      |                                                             ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "divide",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/divide.sv:1:62: Unsupported: shortreal arithmetic operator in experimental subset\n                                                                                                          : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=a/b; endmodule\n      |                                                              ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "param",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/param.sv:1:42: Unsupported: shortreal parameter expression in experimental subset\n                                                                                                         : ... note: In instance 't'\n    1 | module t(input clk); parameter shortreal P=shortreal'(1.0); always @(posedge clk) $display(\"%h\",$shortrealtobits(P)); endmodule\n      |                                          ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: $REVIEW_FIXTURES/param.sv:1:42: Unsupported: shortreal ports/functions/parameters/public variables in experimental subset\n                                                                                                         : ... note: In instance 't'\n    1 | module t(input clk); parameter shortreal P=shortreal'(1.0); always @(posedge clk) $display(\"%h\",$shortrealtobits(P)); endmodule\n      |                                          ^\n%Error: Exiting due to 2 error(s)\n"
+    },
+    {
+      "case": "format",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/format.sv:1:57: Unsupported: shortreal formatting in experimental subset\n                                                                                                          : ... note: In instance 't'\n    1 | module t(input clk); shortreal a; always @(posedge clk) $display(\"%f\",a); endmodule\n      |                                                         ^~~~~~~~\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "arrayassign",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/arrayassign.sv:1:67: Unsupported: whole shortreal array assignment in experimental subset\n                                                                                                               : ... note: In instance 't'\n    1 | module t(input clk); shortreal a[2],b[2]; always @(posedge clk) b=a; endmodule\n      |                                                                   ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "bitand",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/bitand.sv:1:61: Unsupported: shortreal integral coercion in experimental subset\n                                                                                                          : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=a&b; endmodule\n      |                                                             ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Warning-REALCVT: $REVIEW_FIXTURES/bitand.sv:1:61: Implicit conversion of real to integer; expected integral input to AND\n                                                                                                                    : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=a&b; endmodule\n      |                                                             ^\n                  ... For warning description see https://verilator.org/warn/REALCVT?v=0.000\n                  ... Use \"/* verilator lint_off REALCVT */\" and lint_on around source to disable this message.\n%Error: $REVIEW_FIXTURES/bitand.sv:1:63: Unsupported: shortreal integral coercion in experimental subset\n                                                                                                          : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=a&b; endmodule\n      |                                                               ^\n%Warning-REALCVT: $REVIEW_FIXTURES/bitand.sv:1:63: Implicit conversion of real to integer; expected integral input to AND\n                                                                                                                    : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=a&b; endmodule\n      |                                                               ^\n%Error: Exiting due to 2 error(s)\n"
+    },
+    {
+      "case": "bitnot",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/bitnot.sv:1:61: Unsupported: shortreal unary operator in experimental subset\n                                                                                                          : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=~a; endmodule\n      |                                                             ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: $REVIEW_FIXTURES/bitnot.sv:1:62: Unsupported: shortreal integral coercion in experimental subset\n                                                                                                          : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=~a; endmodule\n      |                                                              ^\n%Warning-REALCVT: $REVIEW_FIXTURES/bitnot.sv:1:62: Implicit conversion of real to integer; expected integral input to NOT\n                                                                                                                    : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=~a; endmodule\n      |                                                              ^\n                  ... For warning description see https://verilator.org/warn/REALCVT?v=0.000\n                  ... Use \"/* verilator lint_off REALCVT */\" and lint_on around source to disable this message.\n%Error: Exiting due to 2 error(s)\n"
+    },
+    {
+      "case": "conditional",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/conditional.sv:1:64: Unsupported: shortreal conditional expression in experimental subset\n                                                                                                               : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=clk?a:b; endmodule\n      |                                                                ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "mod",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/mod.sv:1:61: Unsupported: shortreal integral coercion in experimental subset\n                                                                                                       : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=a%b; endmodule\n      |                                                             ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Warning-REALCVT: $REVIEW_FIXTURES/mod.sv:1:61: Implicit conversion of real to integer; expected integral input to MODDIV\n                                                                                                                 : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=a%b; endmodule\n      |                                                             ^\n                  ... For warning description see https://verilator.org/warn/REALCVT?v=0.000\n                  ... Use \"/* verilator lint_off REALCVT */\" and lint_on around source to disable this message.\n%Error: $REVIEW_FIXTURES/mod.sv:1:63: Unsupported: shortreal integral coercion in experimental subset\n                                                                                                       : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=a%b; endmodule\n      |                                                               ^\n%Warning-REALCVT: $REVIEW_FIXTURES/mod.sv:1:63: Implicit conversion of real to integer; expected integral input to MODDIV\n                                                                                                                 : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=a%b; endmodule\n      |                                                               ^\n%Error: Exiting due to 2 error(s)\n"
+    },
+    {
+      "case": "power",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/power.sv:1:62: Unsupported: shortreal exponentiation in experimental subset\n                                                                                                         : ... note: In instance 't'\n    1 | module t(input clk); shortreal a,b; always @(posedge clk) b=a**b; endmodule\n      |                                                              ^~\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "function",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: $REVIEW_FIXTURES/function.sv:1:41: Unsupported: shortreal ports/functions/parameters/public variables in experimental subset\n                                                                                                            : ... note: In instance 't'\n    1 | module t(input clk); function shortreal f(input int i); f=shortreal'(i); endfunction always @(posedge clk) $display(\"%h\",$shortrealtobits(f(1))); endmodule\n      |                                         ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "t_shortreal_const_unsup",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: /Users/jadams/workspace/sandbox/verilator-shortreal/test_regress/t/t_shortreal_const_unsup.v:5:25: Unsupported: shortreal parameter expression in experimental subset\n                                                                                                         : ... note: In instance 't'\n    5 |   localparam bit [31:0] x = $shortrealtobits($bitstoshortreal(32'h3f800000));\n      |                         ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "const-range",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: /Users/jadams/workspace/sandbox/verilator-shortreal/build-local/const-range.sv:1:17: left side of bit range isn't a two-state constant (IEEE 1800-2023 6.9.1)\n                                                                                           : ... note: In instance 't'\n    1 | module t; logic[$shortrealtobits($bitstoshortreal(32'd3)):0] a; initial $display(\"%h\",a); endmodule\n      |                 ^~~~~~~~~~~~~~~~\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "const-enum",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Warning-WIDTHTRUNC: /Users/jadams/workspace/sandbox/verilator-shortreal/build-local/const-enum.sv:1:36: Operator ENUMITEM 'A' expects 4 bits on the Enum value, but Enum value's SHORTREALTOBITS generates 32 bits.\n                                                                                                       : ... note: In instance 't'\n    1 | module t; typedef enum logic[3:0] {A=$shortrealtobits($bitstoshortreal(32'd3))} e; e a; initial $display(\"%h\",a); endmodule\n      |                                    ^\n                     ... For warning description see https://verilator.org/warn/WIDTHTRUNC?v=0.000\n                     ... Use \"/* verilator lint_off WIDTHTRUNC */\" and lint_on around source to disable this message.\n%Error: /Users/jadams/workspace/sandbox/verilator-shortreal/build-local/const-enum.sv:1:38: Enum value isn't a constant\n                                                                                          : ... note: In instance 't'\n    1 | module t; typedef enum logic[3:0] {A=$shortrealtobits($bitstoshortreal(32'd3))} e; e a; initial $display(\"%h\",a); endmodule\n      |                                      ^~~~~~~~~~~~~~~~\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    },
+    {
+      "case": "const-genif",
+      "exit": 1,
+      "explicit_error": true,
+      "internal_error": false,
+      "diagnostics": "%Error: /Users/jadams/workspace/sandbox/verilator-shortreal/build-local/const-genif.sv:1:55: Generate If condition must evaluate to constant\n                                                                                           : ... note: In instance 't'\n    1 | module t; if($shortrealtobits($bitstoshortreal(32'd3))==3) begin initial $display(\"ok\"); end endmodule\n      |                                                       ^~\n        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+    }
+  ]
+}

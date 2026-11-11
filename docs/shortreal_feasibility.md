@@ -1,5 +1,7 @@
 # Native FP 32 SystemVerilog simulation: compiler feasibility
 
+A subsequent isolated compiler milestone now passes bounded native-shortreal runtime and rejection tests. See [the milestone, exact-base patch and validation evidence](shortreal_compiler_milestone.md). It is not a general compiler release or a production model precision change. The assessment below records the original read-only investigation.
+
 A correct `shortreal` implementation is possible in principle, but it is a
 cross-cutting Verilator language/compiler feature, not a small C++ code-generation
 switch. It is not recommended as the next short performance experiment. Replacing
@@ -8,7 +10,7 @@ would break type/ABI assumptions.
 
 This read-only review inspected official Verilator tag `v5.054`, commit
 `bbb60a403932a9f695cb6ff001ceb73de6ad9234`, cloned under ignored
-`build/verilator-shortreal-review`. No compiler fork was modified or built, and
+`build/verilator-shortreal-review`. At the time of this initial assessment, no compiler fork was modified or built, and
 nothing was installed globally. The current simulator still uses FP 64 arithmetic.
 
 ## Evidence in the official compiler

@@ -1,0 +1,30 @@
+__Z55Vt_shortreal_subset_opt___024root___nba_sequent__TOP__0P33Vt_shortreal_subset_opt___024root.cold.1:
+000000010002bb84	stp	x29, x30, [sp, #-0x10]!
+000000010002bb88	mov	x29, sp
+000000010002bb8c	ldr	s0, [x0, #0x30]
+000000010002bb90	ldr	s1, [x0, #0x10]
+000000010002bb94	fmul	s0, s0, s1
+000000010002bb98	add	x8, x0, #0x1c
+000000010002bb9c	movi.2d	v1, #0000000000000000
+000000010002bba0	fadd	s0, s0, s1
+000000010002bba4	ldur	d1, [x0, #0x34]
+000000010002bba8	ldur	d2, [x0, #0x14]
+000000010002bbac	fmul.2s	v1, v1, v2
+000000010002bbb0	fadd	s0, s0, s1
+000000010002bbb4	st1.s	{ v1 }[1], [x8]
+000000010002bbb8	mov	s1, v1[1]
+000000010002bbbc	fadd	s0, s0, s1
+000000010002bbc0	str	s0, [x0, #0x20]
+000000010002bbc4	fmov	w8, s0
+000000010002bbc8	mov	w9, #0x41400000
+000000010002bbcc	cmp	w8, w9
+000000010002bbd0	b.eq	0x10002bbe4
+000000010002bbd4	bl	_OUTLINED_FUNCTION_32
+000000010002bbd8	mov	w1, #0x4c
+000000010002bbdc	mov	w3, #0x1
+000000010002bbe0	bl	__Z10VL_STOP_MTPKciS0_b
+000000010002bbe4	adrp	x0, 4 ; 0x10002f000
+000000010002bbe8	add	x0, x0, #0x6eb ; literal pool for: "*-* All Finished *-*\n"
+000000010002bbec	mov	w1, #0x0
+000000010002bbf0	bl	__Z12VL_WRITEF_NXPKciz
+000000010002bbf4	bl	_OUTLINED_FUNCTION_32
