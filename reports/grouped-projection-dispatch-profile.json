@@ -1,0 +1,15 @@
+{
+  "projection_8_rows_width1_seconds_per_dispatch": [
+    2.258e-05,
+    2.0761792e-05,
+    2.2615041999999998e-05
+  ],
+  "projection_8_rows_width1024_seconds_per_dispatch": [
+    2.6970167e-05,
+    3.6459375000000004e-05,
+    2.7555792e-05
+  ],
+  "limitations_notes": [
+    "Microbench dispatch includes eight tiny row calculations and synchronization; does not isolate pure barrier cost. macOS stack dump excluded."
+  ]
+}

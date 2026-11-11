@@ -61,7 +61,7 @@ block-test: build/linear/Vq4_matvec build/kv/Vkv_cursor
 clean:
 	rm -rf build
 
-build/full/Vqwen_behavioral: rtl/qwen_behavioral.sv rtl/sampling.svh sim/full_model.cpp sim/projection_pool.h build/projection/Vprojection_worker__ALL.a
+build/full/Vqwen_behavioral: rtl/qwen_behavioral.sv rtl/sampling.svh sim/full_model.cpp sim/projection_pool.h sim/projection_descriptors.h build/projection/Vprojection_worker__ALL.a
 	mkdir -p build/full
 	$(VERILATOR) --cc --exe --build -j 4 --top-module qwen_behavioral \
 		--Mdir build/full -MAKEFLAGS "OPT_FAST=-O3" -Irtl -Wno-fatal --public-flat-rw \
@@ -84,7 +84,7 @@ conversation-test: build/full/Vqwen_behavioral
 chat-reference: build/full/Vqwen_behavioral
 	uv run --locked tools/chat_server.py --simulator reference $(if $(MODEL),--model "$(MODEL)",) $(if $(PORT),--port $(PORT),)
 
-$(FAST_BINARY): rtl/qwen_behavioral.sv rtl/sampling.svh rtl/projection_worker.sv sim/full_model.cpp sim/projection_pool.h tools/build_projection_variant.py
+$(FAST_BINARY): rtl/qwen_behavioral.sv rtl/sampling.svh rtl/projection_worker.sv sim/full_model.cpp sim/projection_pool.h sim/projection_descriptors.h tools/build_projection_variant.py
 	uv run --locked tools/build_projection_variant.py --storage scalar --opt O3 --lto --unchecked --masked-activation --unsigned-indices --fast-attention --parallel-attention --batched-prefill --block-unroll --compact-projection
 
 fast-test: $(FAST_BINARY)

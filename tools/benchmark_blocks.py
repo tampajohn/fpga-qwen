@@ -90,6 +90,7 @@ def main():
     parser.add_argument('--model')
     parser.add_argument('--workers',type=int,default=8)
     parser.add_argument('--lanes',type=int,choices=[1,8],default=8)
+    parser.add_argument('--reference-block-size',type=int,choices=[1,2,3,4],default=1)
     parser.add_argument('--block-size',type=int,choices=[2,3,4],default=4)
     parser.add_argument('--profiles',default='short,long')
     parser.add_argument('--pairs',type=int,default=3)
@@ -109,7 +110,7 @@ def main():
     protocol=ChatProtocol(models[0].model)
     report=dict(timestamp_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
                 completed=False,gpu=False,pytorch=False,workers=args.workers,lanes=args.lanes,
-                block_size=args.block_size,arithmetic='SystemVerilog real / FP64',
+                block_size=args.block_size,reference_block_size=args.reference_block_size,arithmetic='SystemVerilog real / FP64',
                 batching='Declared layer-first RTL block execution; inspect engine implementation, not inferred from IPC counts.',
                 limitation='Two resident processes, sequential inference, no OS cache eviction; timings include protocol overhead.',
                 binaries=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in (reference,candidate)],
@@ -124,7 +125,7 @@ def main():
             for profile in profiles:
                 prompt=make_prompt(protocol,profile)
                 for m in models:m.reset()
-                prefill(models[0],prompt[:-1],1);prefill(models[1],prompt[:-1],args.block_size)
+                prefill(models[0],prompt[:-1],args.reference_block_size);prefill(models[1],prompt[:-1],args.block_size)
                 pending=prompt[-1];gates=[]
                 for _ in range(args.gate_tokens):
                     outputs=[m.token(pending) for m in models]
@@ -133,13 +134,13 @@ def main():
                     gates.append(compare_logits(*arrays,args.logit_atol));pending=outputs[0][0]
                 record=dict(profile=profile,prompt_tokens=len(prompt),prompt_ids=prompt,gate=gates,pairs=[])
                 report['profiles'].append(record)
-                warm=[request(m,prompt,b,args.tokens) for m,b in zip(models,(1,args.block_size))]
+                warm=[request(m,prompt,b,args.tokens) for m,b in zip(models,(args.reference_block_size,args.block_size))]
                 expected=warm[0]['output_token_ids']
                 if warm[1]['output_token_ids']!=expected:raise AssertionError('Warm greedy trajectories differ')
                 record['warmup']=warm
                 for index in range(args.pairs):
                     order=[0,1] if index%2==0 else [1,0]
-                    results={i:request(models[i],prompt,1 if i==0 else args.block_size,args.tokens) for i in order}
+                    results={i:request(models[i],prompt,args.reference_block_size if i==0 else args.block_size,args.tokens) for i in order}
                     if any(r['output_token_ids']!=expected for r in results.values()):raise AssertionError('Timed greedy trajectories differ')
                     pair=dict(index=index,order=order,serial=results[0],block=results[1],
                               prefill_speed_ratio=results[0]['prefill_seconds']/results[1]['prefill_seconds'],

@@ -287,6 +287,21 @@ module qwen_behavioral (
     endtask
 
 `ifdef BATCH_PREFILL
+`ifdef GROUP_PROJECTIONS
+    import "DPI-C" function void dispatch_projection_group(input longint bases[],
+        input int rows[], offsets[], input int count, tokens,
+        input real activation[], output real result[]);
+    longint group_bases[3];
+    int group_rows[3], group_offsets[3];
+    real group_output[24576];
+    task automatic block_group(input int slot0, rows0, slot1, rows1, slot2, rows2, jobs);
+        group_bases[0]=tensor_base(slot0);group_rows[0]=rows0;group_offsets[0]=0;
+        group_bases[1]=tensor_base(slot1);group_rows[1]=rows1;group_offsets[1]=rows0;
+        group_bases[2]=tensor_base(slot2);group_rows[2]=rows2;group_offsets[2]=rows0+rows1;
+        dispatch_projection_group(group_bases,group_rows,group_offsets,jobs,block_count,block_input,group_output);
+    endtask
+`endif
+
     task automatic block_project(input int slot, rows, width);
         real sum;
         longint base;
@@ -331,12 +346,25 @@ module qwen_behavioral (
         // Each layer finishes all block hidden states before the next starts.
         for (int layer=0;layer<L;layer++) begin
             block_normalize(3+layer*11);
+`ifdef GROUP_PROJECTIONS
+            if (parallel_workers>0) begin
+                block_group(3+layer*11+1,Q,3+layer*11+2,H,3+layer*11+3,H,3);
+                for (int j=0;j<Q;j++) for (int t=0;t<block_count;t++) block_q[j][t]=group_output[j*4+t];
+                for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) begin
+                    block_k[j][t]=group_output[(Q+j)*4+t];
+                    block_v[j][t]=group_output[(Q+H+j)*4+t];
+                end
+            end else begin
+`endif
             block_project(3+layer*11+1,Q,H);
             for (int j=0;j<Q;j++) for (int t=0;t<block_count;t++) block_q[j][t]=block_output[j*4+t];
             block_project(3+layer*11+2,H,H);
             for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_k[j][t]=block_output[j*4+t];
             block_project(3+layer*11+3,H,H);
             for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_v[j][t]=block_output[j*4+t];
+`ifdef GROUP_PROJECTIONS
+            end
+`endif
             for (int t=0;t<block_count;t++) begin
                 position=initial_position+t;
                 for (int j=0;j<Q;j++) q[j]=block_q[j][t];
@@ -353,17 +381,32 @@ module qwen_behavioral (
             block_project(3+layer*11+4,H,Q);
             for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_x[j][t]+=block_output[j*4+t];
             block_normalize(3+layer*11+7);
+`ifdef GROUP_PROJECTIONS
+            if (parallel_workers>0) block_group(3+layer*11+8,I,3+layer*11+9,I,0,0,2);
+            else
+`endif
             block_project(3+layer*11+8,I,H);
             for (int j=0;j<I;j++) begin
                 for (int t=0;t<block_count;t++) begin
+`ifdef GROUP_PROJECTIONS
+                    if (parallel_workers>0) sum=group_output[j*4+t];
+                    else
+`endif
                     sum=block_output[j*4+t];
                     if (sum>=0.0) sigmoid=1.0/(1.0+$exp(-sum));
                     else begin g=$exp(sum);sigmoid=g/(1.0+g);end
                     block_gate[j][t]=sum*sigmoid;
                 end
             end
+`ifdef GROUP_PROJECTIONS
+            if (parallel_workers==0)
+`endif
             block_project(3+layer*11+9,I,H);
             for (int j=0;j<I;j++) for (int t=0;t<block_count;t++) begin
+`ifdef GROUP_PROJECTIONS
+                if (parallel_workers>0) block_up[j][t]=block_gate[j][t]*group_output[(I+j)*4+t];
+                else
+`endif
                 block_up[j][t]=block_gate[j][t]*block_output[j*4+t];
                 block_input[j*4+t]=block_up[j][t];
             end

@@ -96,6 +96,26 @@ extern "C" void dispatch_block_projection(int64_t base,int rows,int width,int co
     pool->run(base,rows,width,x,y,2,0,0,count);
 }
 #endif
+#ifdef GROUP_PROJECTIONS
+extern "C" void dispatch_projection_group(const svOpenArrayHandle bases,
+        const svOpenArrayHandle rows,const svOpenArrayHandle output_offsets,int count,int tokens,
+        const svOpenArrayHandle input,const svOpenArrayHandle output) {
+    if(!pool || svSize(bases,1)!=3 || svSize(rows,1)!=3 || svSize(output_offsets,1)!=3 ||
+       svSize(input,1)<4096 || svSize(output,1)!=24576)
+        throw std::runtime_error("Invalid group array shape");
+    const auto* b=static_cast<const int64_t*>(svGetArrayPtr(bases));
+    const auto* r=static_cast<const int*>(svGetArrayPtr(rows));
+    const auto* o=static_cast<const int*>(svGetArrayPtr(output_offsets));
+    const auto* x=static_cast<const double*>(svGetArrayPtr(input));
+    auto* y=static_cast<double*>(svGetArrayPtr(output));
+    if(!b || !r || !o || !x || !y) throw std::runtime_error("Invalid group array storage");
+    if(count<2 || count>3) throw std::runtime_error("Invalid projection group count");
+    std::array<ProjectionDescriptor,3> jobs{};
+    for(int i=0;i<count;++i) jobs[i]={b[i],r[i],1024,o[i]};
+    pool->run_group(jobs,count,tokens,x,y);
+}
+#endif
+
 int main(int argc,char** argv) {
     try {
         if(argc!=3 && argc!=4) throw std::runtime_error("usage: Vqwen_behavioral checkpoint.safetensors offsets.txt [workers: 0=serial]");
@@ -194,6 +214,12 @@ int main(int argc,char** argv) {
                 d->token_id=token;d->do_logits=logits;d->start=1;tick();d->start=0;
                 if(!d->done) throw std::runtime_error("Simulation did not finish token");
                 std::cout<<d->best_id<<' '<<d->position<<' '<<d->best_logit<<'\n'<<std::flush;
+#ifdef GROUP_PROJECTIONS
+            } else if(command=="groupstats") {
+                if(!pool) throw std::runtime_error("Group statistics require workers");
+                const auto values=pool->group_stats();
+                std::cout<<values[0]<<' '<<values[1]<<' '<<values[2]<<' '<<values[3]<<'\n'<<std::flush;
+#endif
             } else if(command=="bench") {
                 int slot,rows,width,repetitions;
                 if(!(std::cin>>slot>>rows>>width>>repetitions) || !pool || repetitions<1 || repetitions>1000)

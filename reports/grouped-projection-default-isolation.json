@@ -1,0 +1,16 @@
+{
+  "binary_hashes": [
+    "64a806a5d2237364b85c890919b7c1c762a4d0eab2384a31648fdddc4ddb6e92",
+    "36ffded787f388fde9d59dcda8ae26624fb387eb1d6a71f4a1adc6489c4eaeb2"
+  ],
+  "block": {
+    "max_absolute_error": 0.0,
+    "bit_identical": true,
+    "absolute_tolerance": 0
+  },
+  "token": {
+    "max_absolute_error": 0.0,
+    "bit_identical": true,
+    "absolute_tolerance": 0
+  }
+}

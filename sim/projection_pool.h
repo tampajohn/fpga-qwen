@@ -14,6 +14,11 @@
 #include <cstring>
 #include <stdexcept>
 #include <atomic>
+#include <array>
+
+#ifdef GROUP_PROJECTIONS
+#include "projection_descriptors.h"
+#endif
 
 extern "C" void validate_weight_span(int64_t index,int64_t count);
 
@@ -49,6 +54,11 @@ class ProjectionPool {
     int batch_count=1;
 #endif
 #endif
+#ifdef GROUP_PROJECTIONS
+    std::array<ProjectionDescriptor,3> group_jobs{};
+    int group_count=0;
+    std::array<uint64_t,4> group_counters{};
+#endif
     const double* input=nullptr;
     double* output=nullptr;
     void worker(int id, int count) {
@@ -80,7 +90,6 @@ class ProjectionPool {
                 if(stopping) break;
                 seen=generation;
 #endif
-                int begin=rows*id/count, end=rows*(id+1)/count;
 #ifdef PARALLEL_ATTENTION
                 model->operation=operation;
                 model->attention_layer=attention_layer;model->attention_position=attention_position;
@@ -92,7 +101,6 @@ class ProjectionPool {
 #else
                 int copy_scale=1;
 #endif
-                model->base=base;model->width=width;model->first_row=begin;model->end_row=end;
 #ifdef BATCH_PREFILL
                 if(operation==2) std::memcpy(model->batch_activation.data(),input,width*4*sizeof(double));
                 else
@@ -102,13 +110,28 @@ class ProjectionPool {
 #ifndef PROJECTION_HYBRID_WAIT
                 lock.unlock();
 #endif
+#ifdef GROUP_PROJECTIONS
+                for(int job=0;job<(group_count?group_count:1);++job) {
+                    int job_rows=group_count?group_jobs[job].rows:rows;
+                    int64_t job_base=group_count?group_jobs[job].base:base;
+                    int output_offset=group_count?group_jobs[job].output_offset:0;
+#else
+                    int job_rows=rows;
+                    int64_t job_base=base;
+                    int output_offset=0;
+#endif
+                int begin=job_rows*id/count, end=job_rows*(id+1)/count;
+                model->base=job_base;model->width=width;model->first_row=begin;model->end_row=end;
                 model->start=1;model->clk=0;model->eval();model->clk=1;model->eval();
                 const double* source=model->result.data();
 #ifdef BATCH_PREFILL
                 if(operation==2) source=model->batch_result.data();
 #endif
-                std::memcpy(destination+begin*copy_scale,source+begin*copy_scale,
+                std::memcpy(destination+(output_offset+begin)*copy_scale,source+begin*copy_scale,
                             (end-begin)*copy_scale*sizeof(double));
+#ifdef GROUP_PROJECTIONS
+                }
+#endif
 #ifdef PROJECTION_HYBRID_WAIT
                 // The release sequence carries every partition's writes to run().
                 bool last=pending.fetch_sub(1,std::memory_order_acq_rel)==1;
@@ -186,6 +209,9 @@ public:
         batch_count=requested_batch_count;
 #endif
 #endif
+#ifdef GROUP_PROJECTIONS
+        group_count=0;
+#endif
         base=matrix_base;rows=matrix_rows;width=matrix_width;input=x;output=y;
 #ifdef PROJECTION_HYBRID_WAIT
         pending.store(threads.size(),std::memory_order_relaxed);
@@ -207,4 +233,33 @@ public:
             lock.unlock();shutdown();std::rethrow_exception(failure);
         }
     }
+#ifdef GROUP_PROJECTIONS
+    std::array<uint64_t,4> group_stats() const { return group_counters; }
+    // Bounded immutable descriptors; every job reads the same normalized input.
+    // Matrix reductions still execute in the existing SystemVerilog worker.
+    void run_group(const std::array<ProjectionDescriptor,3>& jobs,int count,int tokens,
+                   const double* x,double* y) {
+        validate_projection_group(jobs,count,tokens,x,y);
+        std::unique_lock<std::mutex> lock(mutex);
+        if(error) std::rethrow_exception(error);
+        ++group_counters[0];group_counters[1]+=count;group_counters[2]+=count-1;
+        group_counters[3]+=uint64_t(count-1)*threads.size()*1024*4*sizeof(double);
+        group_jobs=jobs;group_count=count;operation=2;batch_count=tokens;
+        base=jobs[0].base;rows=jobs[0].rows;width=1024;input=x;output=y;
+#ifdef PROJECTION_HYBRID_WAIT
+        pending.store(threads.size(),std::memory_order_relaxed);
+        published.fetch_add(1,std::memory_order_release);
+        work.notify_all();lock.unlock();
+        for(int spin=0;spin<spin_limit && pending.load(std::memory_order_acquire)!=0
+            && !stopping.load(std::memory_order_acquire);++spin) spin_hint();
+        lock.lock();
+        complete.wait(lock,[&]{return pending.load(std::memory_order_acquire)==0 || error;});
+#else
+        remaining=threads.size();++generation;work.notify_all();
+        complete.wait(lock,[&]{return remaining==0 || error;});
+#endif
+        if(error) {auto failure=error;lock.unlock();shutdown();std::rethrow_exception(failure);}
+    }
+#endif
+
 };

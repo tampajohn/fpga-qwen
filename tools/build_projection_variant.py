@@ -26,6 +26,7 @@ def main():
     parser.add_argument('--batched-prefill', action='store_true')
     parser.add_argument('--block-unroll', action='store_true')
     parser.add_argument('--compact-projection', action='store_true')
+    parser.add_argument('--group-projections', action='store_true')
     parser.add_argument('--static-kv', action='store_true')
     parser.add_argument('--pool', choices=['cv', 'hybrid'], default='cv')
     parser.add_argument('--tag', default='', help='Extra alphanumeric/dash suffix for a reproducible experiment')
@@ -33,6 +34,8 @@ def main():
     args = parser.parse_args()
     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
+    if args.group_projections and not args.batched_prefill:
+        parser.error('--group-projections requires --batched-prefill')
     if args.block_unroll and not args.batched_prefill:
         parser.error('--block-unroll requires --batched-prefill')
     if args.batched_prefill and (not args.parallel_attention or args.storage!='scalar'):
@@ -51,6 +54,7 @@ def main():
     if args.batched_prefill: tag += '-batched-prefill'
     if args.block_unroll: tag += '-block-unroll'
     if args.compact_projection: tag += '-compact-projection'
+    if args.group_projections: tag += '-group-projections'
     if args.static_kv: tag += '-static-kv'
     if args.pool != 'cv': tag += '-pool-'+args.pool
     if args.tag: tag += '-'+args.tag
@@ -70,6 +74,7 @@ def main():
     if args.pool == 'hybrid': flags += ' -DPROJECTION_HYBRID_WAIT'
     if args.parallel_attention: flags += ' -DPARALLEL_ATTENTION'
     if args.batched_prefill: flags += ' -DBATCH_PREFILL'
+    if args.group_projections: flags += ' -DGROUP_PROJECTIONS'
     if args.static_kv: flags += ' -DSTATIC_KV'
     defines = {'scalar': [], 'row': ['+define+BULK_ROW_WEIGHTS']}[args.storage]
     if args.unchecked: defines += ['+define+UNCHECKED_WEIGHTS']
@@ -85,6 +90,7 @@ def main():
         main_defines += ['+define+BATCH_PREFILL']
     if args.fast_attention: main_defines += ['+define+FAST_ATTENTION']
     if args.compact_projection: main_defines += ['+define+COMPACT_PROJECTION_BUFFER']
+    if args.group_projections: main_defines += ['+define+GROUP_PROJECTIONS']
     if args.static_kv: main_defines += ['+define+STATIC_KV']
     commands = [
         ['verilator', '--cc', '--build', '-j', '4', '--top-module',
@@ -99,7 +105,7 @@ def main():
          str(ROOT/'rtl/qwen_behavioral.sv'), str(ROOT/'sim/full_model.cpp'),
          str(projection/'Vprojection_worker__ALL.a')]]
     sources = ['rtl/projection_worker.sv', 'rtl/qwen_behavioral.sv', 'rtl/sampling.svh',
-               'sim/full_model.cpp', 'sim/projection_pool.h', 'tools/build_projection_variant.py']
+               'sim/full_model.cpp', 'sim/projection_pool.h', 'sim/projection_descriptors.h', 'tools/build_projection_variant.py']
     def source_hashes():
         return {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sources}
     before = source_hashes()
