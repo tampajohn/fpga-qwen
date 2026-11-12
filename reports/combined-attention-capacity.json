@@ -1,0 +1,50 @@
+{
+  "completed": true,
+  "fp64_b8_prefill_reached": 4096,
+  "reference_checked": true,
+  "timing_claim": false,
+  "max_causal_position": 4095,
+  "max_position_scalar_id_position": [
+    21806,
+    4096
+  ],
+  "scalar_full_logits_bit_identical": true,
+  "max_position_fp32_b4_verification_ids_positions": [
+    [
+      21806,
+      4093
+    ],
+    [
+      21806,
+      4094
+    ],
+    [
+      21806,
+      4095
+    ],
+    [
+      21806,
+      4096
+    ]
+  ],
+  "full_logits_bit_identical": true,
+  "valid_single_token_tail": true,
+  "overflow_rejected": true,
+  "session": 59316,
+  "exit_code": 0,
+  "test_seconds_not_performance": 361.54,
+  "binaries": [
+    {
+      "path": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-batch-attention/full/Vqwen_behavioral",
+      "sha256": "4d45e071a8a8aec353b638356c90dd42f9c90e69aaee929725e17e20dec7ebc3"
+    },
+    {
+      "path": "/Users/jadams/workspace/sandbox/fpga-qwen-attention-combined/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-static-kv-prefill-b8-scalar-group-fp32-b1-verify-b4-batch-attention-qk2-head-pairs-value-pairs/full/Vqwen_behavioral",
+      "sha256": "f17ae654f0c64ac47b63225a3406edc8bcd114cc86e67d56610090bf5d7c075d"
+    }
+  ],
+  "source_commit": "1cbf75d",
+  "source_sha256": "04a6007488c81e2b85d6152ea8db188aa2b5c4b999d0e6522e3551453a01a06d",
+  "math_changes_for_validation": false,
+  "scope": "FP64 B8 prefill ACK4096, scalar token aftertruncate4095 full151936-logit bits/IDs exact at4096 (operation6), then B4 verification positions4093..4096 fullfinal-logit bits/IDs exact (operation5), validone-token prefilltail and overflow4092+5 rejection."
+}
