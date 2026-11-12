@@ -1,8 +1,9 @@
 # Greedy B2 verification protocol (experimental)
 
 The CLI advertises `verify_greedy_b2: true` and `max_verified_draft: 1`.
-`suffix_drafting: false` remains the broader browser-facing capability until
-adapter integration and independent gates pass. No performance claim follows
+`suffix_drafting: false` remains the CLI's broad capability label; the adapter
+separately recognizes the narrowly scoped greedy B2 handshake. Requests opt in
+through `max_draft: 1`; the default remains zero. No performance claim follows
 from exposing this command. Chat sampling is explicitly unsupported.
 
 `verify-greedy PENDING DRAFT` evaluates exactly two input positions. PENDING
@@ -26,7 +27,7 @@ The correction or bonus prediction remains unconsumed until the next round.
 Commit restores the corresponding full logits and normalized hidden vector.
 Only committed input IDs enter consumed history and sampler presence. The CLI
 uses no RNG draws in greedy mode; any error resets model/history/presence using
-the existing error contract. A future adapter must retain the canonical prefill
+the existing error contract. The adapter retains the canonical prefill
 cache ceiling: verified/decoded KV cannot become canonical prefix-cache chunks.
 
 `tools/check_native_suffix_cli.py` prepares real-model protocol checks against
@@ -118,3 +119,23 @@ separate coverage item. The isolated server was stopped after testing; this
 result does not deploy candidate15 or change the live build12 release.
 
 Evidence: [isolated browser report](../reports/native-cpu-build-15-browser-isolated.json).
+
+
+## Paired suffix off/on outcome: keep drafting off by default
+
+The first fixed repeat prompt, “Write the exact sequence red blue green twenty times, without commentary.”, returned **“Red, Blue, Green, Twenty.”** and made zero suffix proposals. The workload gate correctly stopped before scoring: **zero paired rounds** ran. This is preserved in the [failed preflight archive](../reports/native-cpu-build-15-suffix-preflight-failed.json), including its actual output. It provides no suffix-benefit timing evidence.
+
+Before any new timed rounds, an explicit `--repeat-fixture counting` selected “Count from 1 to 40, separated by commas, without commentary.” This prompt was already present in the 35-case correctness suite. The original default and failed evidence were retained. The second fixture remained the complete frozen 85-token memory-bandwidth prompt. The [completed confirmation archive](../reports/native-cpu-build-15-suffix-confirmation-v2.json) contains ten alternating off/on pairs, two symmetric warmups per configuration/profile, the same candidate15 binary and 12/6 threads, fresh prefixes with reuse disabled, and a 64-token cap that honors natural EOS. Every warmup and measured request matched exact IDs, text and stop behavior. Both fixtures reached the cap in this run.
+
+| Fixture | Median paired request-time speedup, off/on (95% interval) | Median paired decode-throughput ratio, on/off (95% interval) |
+|---|---|---|
+| Counting, 90 prompt tokens | 0.968107 (0.850626–1.112122) | 0.993300 (0.837174–1.156923) |
+| Low-repetition prose, 85 prompt tokens | 0.971805 (0.848502–1.013266) | 0.971677 (0.827671–1.001238) |
+
+Each interval is a deterministic paired bootstrap over its own ten rounds; no workloads are pooled. Ratios above 1 favor suffix drafting. **Neither workload establishes a request-time or decode improvement.** The intervals do not establish equivalence, either. Full precision ratios and every paired measurement remain in the compact archive; only repeated output arrays and unscored warmup timings were omitted.
+
+Per 64-token counting request, drafting proposed **27** tokens and accepted **9**, with **18 rejected**. It evaluated 54 verification positions, committed 36 verified inputs, and left 18 computed verification positions uncommitted. Neural command count fell from 64 to 55, including prefill. The prose request proposed **1**, accepted **0**, and left one of two computed verification positions uncommitted; command count stayed 64. These work counters explain what the experiment exercised, but are not a direct allocation of elapsed time or a general acceptance estimate.
+
+The observed paired TTFT ratios were 0.906694 (0.893014–0.957502) for counting and 0.962948 (0.942146–1.091532) for prose. B2 verification starts **after the first emitted token**. Therefore these TTFT differences are not established algorithmic B2 overhead; scheduling, address placement and background activity remain uncontrolled. Whole-request time is the primary end-to-end measure; decode-rate timing also has batching/EOS-tail limitations and is reported separately.
+
+The evidence supports keeping suffix drafting **off by default**. Build12 remains the live release at this report's publication; candidate15 browser verification is a separate step and no deployment or speedup is claimed here.

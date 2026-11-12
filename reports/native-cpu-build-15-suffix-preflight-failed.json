@@ -1,0 +1,758 @@
+{
+  "completed": false,
+  "paired_sampling_complete": false,
+  "performance_claim_eligible": false,
+  "mode": "confirmation",
+  "gpu": false,
+  "pytorch": false,
+  "rounds": 10,
+  "output_token_cap": 64,
+  "warmups_per_visit_profile": 2,
+  "threads": 12,
+  "prefill_threads": 6,
+  "configurations": [
+    {
+      "name": "suffix-off",
+      "max_draft": 0
+    },
+    {
+      "name": "suffix-on",
+      "max_draft": 1
+    }
+  ],
+  "preflight": [
+    {
+      "configuration": "suffix-off",
+      "phase": "preflight",
+      "round": null,
+      "order_index": null,
+      "profiles": {
+        "repeat": {
+          "scored": {
+            "finish_reason": "eos",
+            "eos_observed": true,
+            "output_tokens": 8,
+            "prompt_tokens": 87,
+            "first_token_seconds": 0.09866483398946002,
+            "steady_decode_tokens_per_second": 145.98387926324077,
+            "request_seconds": 0.1532552499556914,
+            "neural_commands": {
+              "prefill": 1,
+              "step": 8,
+              "verify-greedy": 0
+            },
+            "neural_call_count": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "verified_positions": 0,
+            "committed_verified_inputs": 0,
+            "wasted_verified_positions": 0
+          },
+          "warmup_count": 2,
+          "warmups_and_scored_exact_identity_passed": true
+        },
+        "low-repetition": {
+          "scored": {
+            "finish_reason": "length",
+            "eos_observed": false,
+            "output_tokens": 64,
+            "prompt_tokens": 85,
+            "first_token_seconds": 0.09738175000529736,
+            "steady_decode_tokens_per_second": 140.4346060867367,
+            "request_seconds": 0.5460160000366159,
+            "neural_commands": {
+              "prefill": 1,
+              "step": 63,
+              "verify-greedy": 0
+            },
+            "neural_call_count": 64,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "verified_positions": 0,
+            "committed_verified_inputs": 0,
+            "wasted_verified_positions": 0
+          },
+          "warmup_count": 2,
+          "warmups_and_scored_exact_identity_passed": true
+        }
+      },
+      "startup_seconds": 0.3547935000387952,
+      "ready": {
+        "ready": true,
+        "protocol": 1,
+        "position": 0,
+        "decode_threads": 12,
+        "prefill_threads": 6,
+        "context": 4096,
+        "lossless_bf16_decode_cache_bytes": 0,
+        "gpu": false,
+        "pytorch": false,
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_precision": "f16",
+        "prefix_reuse": true,
+        "prefix_reuse_chunk": 512,
+        "suffix_drafting": false,
+        "verify_greedy_b2": true,
+        "max_verified_draft": 1
+      },
+      "runtime_log": {
+        "path": "$REPO/build/native-cpu/build-15-suffix-confirmation-logs/preflight/suffix-off/native.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "configuration": "suffix-on",
+      "phase": "preflight",
+      "round": null,
+      "order_index": null,
+      "profiles": {
+        "repeat": {
+          "scored": {
+            "finish_reason": "eos",
+            "eos_observed": true,
+            "output_tokens": 8,
+            "prompt_tokens": 87,
+            "first_token_seconds": 0.09777029202086851,
+            "steady_decode_tokens_per_second": 144.0930851964893,
+            "request_seconds": 0.15356254199286923,
+            "neural_commands": {
+              "prefill": 1,
+              "step": 8,
+              "verify-greedy": 0
+            },
+            "neural_call_count": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "verified_positions": 0,
+            "committed_verified_inputs": 0,
+            "wasted_verified_positions": 0
+          },
+          "warmup_count": 2,
+          "warmups_and_scored_exact_identity_passed": true
+        },
+        "low-repetition": {
+          "scored": {
+            "finish_reason": "length",
+            "eos_observed": false,
+            "output_tokens": 64,
+            "prompt_tokens": 85,
+            "first_token_seconds": 0.09962125000311062,
+            "steady_decode_tokens_per_second": 140.31834053957024,
+            "request_seconds": 0.548625583993271,
+            "neural_commands": {
+              "prefill": 1,
+              "step": 62,
+              "verify-greedy": 1
+            },
+            "neural_call_count": 64,
+            "proposed_tokens": 1,
+            "accepted_tokens": 0,
+            "rejected_tokens": 1,
+            "verified_positions": 2,
+            "committed_verified_inputs": 1,
+            "wasted_verified_positions": 1
+          },
+          "warmup_count": 2,
+          "warmups_and_scored_exact_identity_passed": true
+        }
+      },
+      "startup_seconds": 0.3400101250153966,
+      "ready": {
+        "ready": true,
+        "protocol": 1,
+        "position": 0,
+        "decode_threads": 12,
+        "prefill_threads": 6,
+        "context": 4096,
+        "lossless_bf16_decode_cache_bytes": 0,
+        "gpu": false,
+        "pytorch": false,
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_precision": "f16",
+        "prefix_reuse": true,
+        "prefix_reuse_chunk": 512,
+        "suffix_drafting": false,
+        "verify_greedy_b2": true,
+        "max_verified_draft": 1
+      },
+      "runtime_log": {
+        "path": "$REPO/build/native-cpu/build-15-suffix-confirmation-logs/preflight/suffix-on/native.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "visits": [],
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Measure candidate15 suffix drafting off versus on",
+      "started_at": "2026-11-12T16:50:58.711529+00:00"
+    }
+  },
+  "host_before": {
+    "timestamp_utc": "2026-11-12T16:50:58Z",
+    "load_average": [
+      7.0830078125,
+      7.826171875,
+      6.96875
+    ],
+    "busiest_processes": [
+      {
+        "cpu_percent": 65.2,
+        "memory_percent": 10.4,
+        "elapsed": "06-20:19:37"
+      },
+      {
+        "cpu_percent": 28.0,
+        "memory_percent": 0.3,
+        "elapsed": "06-01:29:09"
+      },
+      {
+        "cpu_percent": 24.1,
+        "memory_percent": 0.2,
+        "elapsed": "10-03:06:58"
+      },
+      {
+        "cpu_percent": 13.8,
+        "memory_percent": 0.0,
+        "elapsed": "00:00"
+      },
+      {
+        "cpu_percent": 9.9,
+        "memory_percent": 0.0,
+        "elapsed": "00:00"
+      },
+      {
+        "cpu_percent": 7.3,
+        "memory_percent": 0.3,
+        "elapsed": "06-01:28:44"
+      },
+      {
+        "cpu_percent": 7.1,
+        "memory_percent": 0.5,
+        "elapsed": "10-03:06:22"
+      },
+      {
+        "cpu_percent": 6.6,
+        "memory_percent": 0.1,
+        "elapsed": "10-03:06:51"
+      },
+      {
+        "cpu_percent": 6.2,
+        "memory_percent": 0.1,
+        "elapsed": "23:35:46"
+      },
+      {
+        "cpu_percent": 5.4,
+        "memory_percent": 0.0,
+        "elapsed": "10-03:06:04"
+      },
+      {
+        "cpu_percent": 5.1,
+        "memory_percent": 0.1,
+        "elapsed": "10-03:06:10"
+      },
+      {
+        "cpu_percent": 2.9,
+        "memory_percent": 0.2,
+        "elapsed": "10-03:06:32"
+      },
+      {
+        "cpu_percent": 2.7,
+        "memory_percent": 0.0,
+        "elapsed": "10-03:06:32"
+      },
+      {
+        "cpu_percent": 2.5,
+        "memory_percent": 0.1,
+        "elapsed": "10-03:06:16"
+      },
+      {
+        "cpu_percent": 2.4,
+        "memory_percent": 0.1,
+        "elapsed": "10-03:06:28"
+      },
+      {
+        "cpu_percent": 2.2,
+        "memory_percent": 0.3,
+        "elapsed": "02-14:09:47"
+      },
+      {
+        "cpu_percent": 2.1,
+        "memory_percent": 0.1,
+        "elapsed": "05-10:39:57"
+      },
+      {
+        "cpu_percent": 2.0,
+        "memory_percent": 0.0,
+        "elapsed": "10-03:06:32"
+      },
+      {
+        "cpu_percent": 1.8,
+        "memory_percent": 0.0,
+        "elapsed": "10-03:06:59"
+      },
+      {
+        "cpu_percent": 1.8,
+        "memory_percent": 0.5,
+        "elapsed": "17:56:05"
+      }
+    ]
+  },
+  "comparison_scope": "Same candidate binary, weights, threads, greedy sampler and real browser adapter; explicit suffix off/on.",
+  "timing_scope": "Fresh-prefix request wall time including reset, mode, prefill, suffix proposal/IPC and text decoding. Startup and symmetric warmups excluded.",
+  "limitations": [
+    "64 is a natural-EOS output cap, not a forced length. Exact IDs/text/EOS must match on every warmup and scored request.",
+    "One process per visit, with reuse_prefix=False. No prefix priming or retained-prefix benefit.",
+    "Wasted verified positions counts computed verification rows whose input was not committed; not a wall-time attribution.",
+    "OS scheduling/background activity remain uncontrolled. No inferred llama, full-model quality, or combined-workload win."
+  ],
+  "removed_environment_names": [],
+  "requested_veclib_maximum_threads": 6,
+  "inputs": {
+    "$REPO/build/native-cpu/build-15/qwen_cpu": "0317e37023a50e2a9902e0aba58110a27158ec6af61ac7aa6da1c19c41837f59",
+    "$REPO/build/native-cpu/build-15/manifest.json": "5f2b777eee11833dd7fa7aa0a8c1a1e663d9950f49f7f3730dacefcc17060cbf",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$REPO/build/native-phase0/prompt-short.json": "58e00bf8b3d31e4acefb5eb3fa2caa3874f426b931bbb3131e3565821b17a848",
+    "$REPO/build/native-cpu/build-15-suffix-trajectories.json": "6b89b5c5dd364317b05e415fa4abce22cff4184db21117eebe06bc3c3cc52976",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd"
+  },
+  "source_hashes": {
+    "$REPO/tools/benchmark_native_suffix.py": "3d7fc33777a3ef500e6d9805ff31707080d4e1472812cc54dd73603935a8c5a2",
+    "$REPO/tools/native_cpu_chat.py": "730b53fddf34da236140424128d8099a9024eebf5a75d2ac9c320a7f348c79cd",
+    "$REPO/tools/suffix.py": "06bd949ad8f1c4b96fa641b1bbde8a0e706519f26d4267e7e4e3342999a12ab7",
+    "$REPO/tools/chat_protocol.py": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e",
+    "$REPO/tools/benchmark_matched.py": "88627ed3b10440864d451d1d81bb72b08b62558737fe7bd968a4fb093f821fc6",
+    "$REPO/tools/benchmark_native_phase0.py": "2072dff376baf6e0476c7beddfae311483ea2a15a3af54af8622ad8bbbe17b7e",
+    "$REPO/tools/benchmark_guard.py": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7",
+    "$REPO/tools/analyze_native_phase0.py": "6e27a7964cb7475aca76f214bee152dc472bd6d8dcc4b2b75becf014a4ac89d6",
+    "$REPO/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713"
+  },
+  "native_build": {
+    "completed": true,
+    "gpu": false,
+    "pytorch": false,
+    "guard": {
+      "directory": "$REPO/build/benchmark-status",
+      "metadata": {
+        "name": "Build experimental greedy suffix candidate 15",
+        "started_at": "2026-11-12T16:47:18.971801+00:00"
+      }
+    },
+    "command": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-O3",
+      "-mcpu=native",
+      "-flto=thin",
+      "-ffp-contract=fast",
+      "-fno-math-errno",
+      "-pthread",
+      "$REPO/engine/core.cpp",
+      "$REPO/engine/main.cpp",
+      "-framework",
+      "Accelerate",
+      "-o",
+      "$REPO/build/native-cpu/build-15/qwen_cpu"
+    ],
+    "source_sha256": {
+      "$REPO/engine/core.cpp": "e4d2a029f6f9e169f85483e4eecb1fb5a425bc796e4422d63a4857a32244ebdc",
+      "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+      "$REPO/engine/main.cpp": "45ac7cd9f3e64c5c4029505628674ccc6229f1e4395ad5306adb98e3b8917f45",
+      "$REPO/tools/build_native_cpu.py": "e100b8687f3cba52d94db9bb2e1700c6669f7081a6dde55609695f0b1d5d325a"
+    },
+    "removed_environment_keys": [],
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "started_at": "2026-11-12T16:47:19Z",
+    "exit_code": 0,
+    "binary": "$REPO/build/native-cpu/build-15/qwen_cpu",
+    "binary_sha256": "0317e37023a50e2a9902e0aba58110a27158ec6af61ac7aa6da1c19c41837f59",
+    "linked_libraries": "$REPO/build/native-cpu/build-15/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+  },
+  "correctness_scope": "Exact visible IDs, text and natural stop/cap through the real adapter; fixed nine and eighteen case suites plus repetitive/budget fixtures. Not an independent model-quality claim.",
+  "workloads": {
+    "repeat": {
+      "ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        7985,
+        279,
+        4734,
+        8500,
+        2518,
+        6303,
+        6176,
+        17073,
+        3039,
+        11,
+        2041,
+        30610,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "prompt_tokens": 87,
+      "output_cap": 64,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write the exact sequence red blue green twenty times, without commentary."
+        }
+      ]
+    },
+    "low-repetition": {
+      "ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "prompt_tokens": 85,
+      "output_cap": 64,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Explain memory bandwidth and caching in four concise sentences."
+        }
+      ]
+    }
+  },
+  "preflight_exact_ids_text_and_eos_passed": true,
+  "expected_outputs": {
+    "repeat": {
+      "token_ids": [
+        6033,
+        11,
+        8697,
+        11,
+        7840,
+        11,
+        43856,
+        13
+      ],
+      "predicted_ids_including_eos": [
+        6033,
+        11,
+        8697,
+        11,
+        7840,
+        11,
+        43856,
+        13,
+        151645
+      ],
+      "text": "Red, Blue, Green, Twenty.",
+      "finish_reason": "eos",
+      "eos_observed": true
+    },
+    "low-repetition": {
+      "token_ids": [
+        10642,
+        33394,
+        19257,
+        311,
+        279,
+        4628,
+        518,
+        892,
+        821,
+        646,
+        387,
+        22409,
+        1948,
+        279,
+        13940,
+        323,
+        1887,
+        4938,
+        13,
+        356,
+        11829,
+        374,
+        264,
+        14762,
+        429,
+        10533,
+        13814,
+        1483,
+        821,
+        304,
+        264,
+        13340,
+        4938,
+        311,
+        7949,
+        279,
+        1184,
+        369,
+        803,
+        11392,
+        4938,
+        2615,
+        13,
+        11733,
+        18940,
+        975,
+        3786,
+        311,
+        7269,
+        5068,
+        553,
+        76291,
+        279,
+        882,
+        279,
+        13940,
+        37102,
+        8580,
+        369,
+        821,
+        311,
+        387,
+        30403,
+        504
+      ],
+      "predicted_ids_including_eos": [
+        10642,
+        33394,
+        19257,
+        311,
+        279,
+        4628,
+        518,
+        892,
+        821,
+        646,
+        387,
+        22409,
+        1948,
+        279,
+        13940,
+        323,
+        1887,
+        4938,
+        13,
+        356,
+        11829,
+        374,
+        264,
+        14762,
+        429,
+        10533,
+        13814,
+        1483,
+        821,
+        304,
+        264,
+        13340,
+        4938,
+        311,
+        7949,
+        279,
+        1184,
+        369,
+        803,
+        11392,
+        4938,
+        2615,
+        13,
+        11733,
+        18940,
+        975,
+        3786,
+        311,
+        7269,
+        5068,
+        553,
+        76291,
+        279,
+        882,
+        279,
+        13940,
+        37102,
+        8580,
+        369,
+        821,
+        311,
+        387,
+        30403,
+        504
+      ],
+      "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary memory to reduce the need for more expensive memory access. Both concepts work together to improve performance by minimizing the time the CPU spends waiting for data to be retrieved from",
+      "finish_reason": "length",
+      "eos_observed": false
+    }
+  },
+  "error": {
+    "type": "RuntimeError",
+    "message": "Repeat fixture did not exercise verification; do not silently replace it"
+  },
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-15-suffix-confirmation.json",
+    "raw_source_sha256": "682e3654de559a30bb3582c5e63b5f25e094b0914912c7540d03167332214493",
+    "sanitization": "Home/repository paths and process IDs/names removed; host CPU percentages retained from ps column index2. Raw artifact hashes preserved.",
+    "compaction": "All scored pair metrics, ratios, uncertainty and work counters retained. Repeated IDs/text stored once in expected_outputs; identical warmup trajectories checked against expected before archiving, with warmup counts retained and unscored timing omitted. Redundant adapter_metrics omitted."
+  }
+}
