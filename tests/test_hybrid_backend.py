@@ -61,16 +61,19 @@ class HybridBackendTests(unittest.TestCase):
                 self.assertIsNone(candidate.sim.process)
                 self.assertFalse(candidate.precision_verified)
 
-    def test_router_default_switching_validation_and_no_http_binary_override(self):
+    @patch('tools.chat_backends.NativeCPUChat.available', return_value=False)
+    def test_router_default_switching_validation_and_no_http_binary_override(self, _native_available):
         reference=engine(cycle,4)
         candidate=hybrid()
         for model in [reference,candidate]:
             model.prepare=lambda payload: ChatRequest('s',[1,2,3,1],2,payload.get('max_draft',0))
         router=BackendRouter(reference,candidate)
         self.addCleanup(router.close)
-        self.assertEqual(router.active,'rtl')
-        self.assertEqual(router.catalog()[0]['id'],'rtl')
-        self.assertEqual(router.catalog()[1]['min_workers'],1)
+        self.assertEqual(router.active,'rtl-fp32')
+        entries={item['id']:item for item in router.catalog()}
+        self.assertEqual(router.catalog()[0]['id'],'native-cpu-f16')
+        self.assertFalse(entries['native-cpu-f16']['available'])
+        self.assertEqual(entries['rtl-fp32']['min_workers'],1)
         for bad in [dict(simulation_workers=0),dict(max_draft=1),dict(backend='/tmp/other')]:
             with self.assertRaises(ValueError):router.prepare(dict(backend='rtl-fp32',**bad) if 'backend' not in bad else bad)
         request=router.prepare(dict(backend='rtl-fp32',simulation_workers=2,binary='/tmp/untrusted',sv_binary='/tmp/untrusted'))

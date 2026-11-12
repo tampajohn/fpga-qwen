@@ -49,12 +49,13 @@ class FusedPhaseBackendTests(unittest.TestCase):
         self.assertIsNone(model.sim.process);self.assertEqual(model.canonical_prefix.end,0)
         self.assertFalse(model.phase_verified)
 
-    def test_catalog_keeps_existing_choices_and_rejects_worker_override(self):
+    @patch('tools.chat_backends.NativeCPUChat.available', return_value=False)
+    def test_catalog_keeps_existing_choices_and_rejects_worker_override(self, _native_available):
         ref,generic,phase,new=engine(cycle),engine(cycle),phase_engine(),fused()
         for item in (ref,generic,phase,new):
             item.prepare=lambda payload:ChatRequest('s',[1,2,3]*4,2,payload.get('max_draft',0))
         router=BackendRouter(ref,generic,phase,fused_phase=new);self.addCleanup(router.close)
-        self.assertEqual(router.active,'rtl')
+        self.assertEqual(router.active,'rtl-fp32-fused-phase')
         entries={item['id']:item for item in router.catalog()}
         self.assertTrue(all(entries[x]['available'] for x in ('rtl','rtl-fp32','rtl-fp32-phase','rtl-fp32-fused-phase')))
         self.assertEqual(entries['rtl-fp32-fused-phase']['canonical_prefix_policy'],FMA_POLICY)

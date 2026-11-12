@@ -20,7 +20,7 @@ class RTLChatTests(unittest.TestCase):
         self.assertNotIn('torch', sys.modules)
         self.assertNotIn('transformers', sys.modules)
         self.assertFalse(self.engine.status()['pytorch_loaded'])
-        payload = dict(session='test', messages=[dict(role='user', content='Hello')], max_draft=0)
+        payload = dict(backend='rtl', session='test', messages=[dict(role='user', content='Hello')], max_draft=0)
         backend, request = self.router.prepare(payload)
         self.assertEqual(backend, 'rtl')
         self.assertEqual(request.decoding, 'chat')

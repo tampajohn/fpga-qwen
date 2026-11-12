@@ -68,13 +68,14 @@ class PhaseBackendTests(unittest.TestCase):
                 run(model,max_new=1)
                 self.assertTrue(model.phase_verified)
 
-    def test_router_fixed_workers_and_http_fields_ignored(self):
+    @patch('tools.chat_backends.NativeCPUChat.available', return_value=False)
+    def test_router_fixed_workers_and_http_fields_ignored(self, _native_available):
         phase=phase_engine();generic=engine(cycle);reference=engine(cycle)
         for model in (phase,generic,reference):
             model.prepare=lambda payload:ChatRequest('s',[1,2,3]*4,2,payload.get('max_draft',0))
         router=BackendRouter(reference,generic,phase)
         self.addCleanup(router.close)
-        self.assertEqual(router.active,'rtl')
+        self.assertEqual(router.active,'rtl-fp32-phase')
         entry=next(x for x in router.catalog() if x['id']=='rtl-fp32-phase')
         self.assertEqual(entry['fixed_workers'],8)
         self.assertTrue(entry['prefix_reuse_supported'])
