@@ -33,3 +33,15 @@ timing. Prefill, first-token, decode and total latency are separate. No native
 backend equivalence is claimed. Timing results will determine whether exposing
 this suffix option is worthwhile; it remains unavailable in the deployed hybrid
 until integration is separately authorized and tested.
+
+
+The six paired runs completed with every equality gate passing. On repeated
+code, the median off/on ratio was 1.080 for total request time and 1.179 for
+decode time (39 outputs, 24 of 24 proposed tokens accepted). Ordinary prose was
+essentially flat: median ratios 0.988 total and 0.992 decode (34 outputs, two of
+three proposals accepted). This supports an optional repetition-oriented suffix
+mode, not default-on drafting or a general inference speedup. Exact paired rows
+and separate timing components are in `reports/fp32-suffix-paired.json`; startup
+and continuation probes are excluded and all requests began with empty logical
+KV. The benchmark used seed-42 sampled decoding, three alternating pairs per
+workload, and respected EOS rather than forcing the 64-token budget.
