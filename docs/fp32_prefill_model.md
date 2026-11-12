@@ -9,3 +9,14 @@ Initial artifact SHA256: `c87074825ab522ead128c121312d8c799205230d6f9235081ce261
 Final linked B8 `Vfp32_prefill_kernel::evalNba()` begins at `0x100026158`. Its hot loop has 16 `fmul.2s` and 16 `fadd.2s` operations per four columns, direct BF16 loads, no calls, and no fused multiply-add instructions. No forced vector width flags are used. This matches the validated unroll1 strategy; it does not claim four-lane FP32 SIMD.
 
 Run the opt-in real route test with `SV_FP32_PREFILL_BINARY=<artifact> python -m unittest tests.test_fp32_prefill_real`. The build uses the same selected fast flags as the hybrid profile plus the two options above, with `--shortreal-compiler` pointing at the reviewed compiler fork. Model weights remain external BF16; no GPU or host neural kernels are introduced.
+
+## Paired end-to-end result
+
+Three alternating warmed pairs per prompt, 32 generated tokens, 8 workers, two resident models, cold logical KV each request: reference is FP32 B1 + FP64 B8 prefill with verification-capable artifact `91e3e161`; candidate is `c8707482`. Both prefill prompt[:-1] in canonical B8 chunks, then scalar final-prompt and decode. Cache and suffix are off. Every output ID matched. See [raw paired report](../reports/fp32-prefill-paired.json).
+
+| Profile | Prefill ratio median (range) | Total request ratio median (range) |
+| --- | --- | --- |
+| 85-token short | 1.018 (0.994–1.081) | 1.006 (0.964–1.059) |
+| 452-token long | 1.024 (1.019–1.068) | 1.041 (1.021–1.078) |
+
+Ratios above 1 favor the candidate. The short result is mixed; the long prefill improvement is modest. Long decode also varied by a median 1.150× despite sharing the scalar implementation, so host conditions and executable layout confound attributing the total difference purely to prefill arithmetic. This does not reproduce the 12–19% standalone kernel gain end to end. Keep this profile optional rather than promoting it on these results. Full-vocabulary final-prediction errors were descriptive (maximum 1.65e-5 short / 2.43e-5 long), not an exactness claim or a newly chosen quality threshold. The separate 292-target and nine-conversation evaluation is required alongside this timing evidence.
