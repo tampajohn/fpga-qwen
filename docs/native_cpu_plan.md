@@ -759,27 +759,35 @@ Source review of commit 0880a99, whose core hash matches binary 14's build manif
 
 The experiment is rejected under the predeclared numerical contract. Its source remains reverted, binary 14 was never live, and no timing or promotion follows. The serialized script stopped at the failed 1024 gate; **2048 and 3968 captures/gates were not run**. Earlier passes and the favorable 1025 row remain published together with the failure; no tolerance change or selective performance claim is made.
 
-## Follow-on acceptance audit
+## Current follow-on acceptance audit — build18
 
-The selected release remains immutable build 12; later attention candidates have
-not replaced it. This finite follow-on continues the approved work after the
-completed Phase 0 baseline and Phase 1 within-10% result. Historical phase
-milestones do not establish current performance; the final selected-binary
-comparisons are separate evidence.
+Build18 is now the selected live CPU browser release. The [deployment record](../reports/native-cpu-build-18-deployment.json)
+binds its binary and manifest, and the [actual live browser gate](../reports/native-cpu-build-18-browser-live.json)
+passed. Status reports build18, advertised FP64 norm accumulation, CPU execution,
+no GPU/PyTorch inference, and an idle server with no active benchmark.
+Selection addresses the sampled numerical failure; it is not an overall speed win.
 
-| Approved deliverable | Evidence and current scope |
+| Approved deliverable | Completed evidence and limits |
 |---|---|
-| Safe prefix reuse | [28-case exact prefix gate](../reports/native-cpu-build-12-prefix-check.json), [ten-pair primed edited-tail comparison](../reports/native-cpu-build-12-prefix-confirmation.json), and [live browser gate](../reports/native-cpu-build-12-browser-live.json). Complete canonical 512-token blocks only; scoped TTFT benefit, no established decode benefit. |
-| Extended contexts and sustained decode | Final ten-pair [standard32](../reports/native-cpu-build-12-final-standard-confirmation.json) and [extended128](../reports/native-cpu-build-12-final-extended-confirmation.json) runs completed. Independent controls passed at 1024/1025 and 2048/2049 but failed at3968/3969 under unchanged tolerances. Near-4K timing remains diagnostic, not a qualified performance win; no pooling across contexts. |
-| Profile the original engine | [85-token](../reports/native-cpu-build-11-profile85-summary.json) and [3968-token](../reports/native-cpu-build-11-profile3968-summary.json) diagnostics delivered. Counts include sleeping threads and lack phase timestamps; they are not CPU percentages or wall-time attribution. |
-| Certified vocabulary-head experiment | [Saved-state correctness and six ten-pair component comparisons](../reports/native-head-probe-short-v1.json) delivered. The prototype was slower; keep the dense head. Coverage is eight saved states, not a general correctness proof inferred from a corpus. |
-| Measured suffix drafting | [Ten-pair off/on comparison](../reports/native-cpu-build-15-suffix-confirmation-v2.json), [cached lifecycle checks](../reports/native-cpu-build-15-suffix-lifecycle.json), and [actual isolated browser suffix-on gate](../reports/native-cpu-build-15-browser-suffix-on.json) delivered. No established benefit; experimental greedy-only drafting stays off and is unavailable in live build 12. |
-| Expanded conversation quality | [18 predetermined cases](../reports/native-cpu-build-11-extended-quality.json) matched baseline trajectories, both 10/18; unchanged nine-case suite remains 4/9. Failed answers remain failures. |
-| Current browser and GitHub | Build-12 historical live checks passed. [Final actual live build-12 browser recheck](../reports/native-cpu-build-12-final-browser-live.json) passed default/reload, polling controls, prefix replies, cancellation, backend switching and benchmark lock. Final repository publication remains a separate step; the near-4K numerical gap is unresolved and blocks a completed follow-on acceptance claim. |
+| Safe prefix reuse | [Build18's 28-case gate](../reports/native-cpu-build-18-prefix-check.json) and live browser reuse passed. Complete canonical 512-token blocks only. Earlier [build12 cache timing](../reports/native-cpu-build-12-prefix-confirmation.json) remains historical scoped evidence, not a new18 timing result. |
+| Extended contexts and sustained decode | Final ten-pair [standard32](../reports/native-cpu-build-18-final-standard-confirmation.json) and [extended128](../reports/native-cpu-build-18-final-extended-confirmation.json) comparisons completed. [56-array binding](../reports/native-cpu-build-18-exact-gate.json) links 28 sampled positions to unchanged-limit oracle passes. Short decode is slower; near4K decode is faster but full requests are slower. No general win or full-generation numerical proof. |
+| Profile the original engine | [85-token](../reports/native-cpu-build-11-profile85-summary.json) and [3968-token](../reports/native-cpu-build-11-profile3968-summary.json) diagnostics delivered. Sleeping-thread observations and absent phase timestamps limit attribution. |
+| Certified vocabulary-head experiment | [Saved-state correctness and six ten-pair comparisons](../reports/native-head-probe-short-v1.json) delivered. The prototype was slower; dense head retained. Eight-state tests are not a universal proof. |
+| Measured suffix drafting | [Ten-pair experiment](../reports/native-cpu-build-15-suffix-confirmation-v2.json) found no established benefit. Build18's [API](../reports/native-cpu-build-18-verify-api.json), [lifecycle](../reports/native-cpu-build-18-suffix-trajectories.json), and live browser checks passed. Greedy-only drafting remains opt-in and off by default. |
+| Expanded conversation quality | Build18 [nine-case](../reports/native-cpu-build-18-quality.json) and [18-case](../reports/native-cpu-build-18-extended-quality.json) trajectories match baseline, both 4/9 and 10/18 respectively. No improved-answer claim. |
+| Browser and repository publication | Actual live18 default/reload, precision disclosure, suffix-on, prefix 512, cancellation, backend switching and benchmark lock passed. Final repository review/push remains the root's publication step. |
 
-This table is an acceptance audit, not a declaration that the follow-on goal is
-complete. Independent numerical fixtures cover selected positions; exact
-128-output timing preflight does not replace full-logit oracle coverage.
+The original build12 near4K failure remains historical evidence. Build18 closes
+that gap on the sampled 28-position matrix with a disclosed arithmetic change;
+it does not prove all contexts or outputs accurate. The approved experimental
+work and live acceptance are now evidenced; final repository verification and
+goal-status closure remain separate orchestration steps.
+
+The sections below preserve the chronological investigation. Their intermediate
+"pending", "unpromoted" and "gap open" statements describe the state when those
+results were recorded and are superseded for current status by this audit and
+the final live release entry. Failed reports and measured regressions are not
+rewritten or reclassified as passes.
 
 ## Deferred model and GPU exploration
 
@@ -1177,3 +1185,21 @@ not for universal speed. Deployment and actual live-browser verification are
 pending at this entry; the isolated browser pass is separate evidence. The
 completed scoreboard alone is not a declaration that release work or the
 follow-on goal is complete.
+
+
+### Final live build18 release acceptance
+
+The [deployment record](../reports/native-cpu-build-18-deployment.json) and
+[actual localhost browser report](../reports/native-cpu-build-18-browser-live.json)
+confirm selected build18 and its immutable binary. The assertion-based browser
+report completed without error: latest/default selection, FP64 accumulator
+status/catalog/UI disclosure, actual greedy suffix-on request, canonical 512-token
+reuse, benchmark banner/rejection, cancellation and backend switching passed.
+The final HTTP status reports CPU execution with GPU/PyTorch false, idle state
+and no running benchmark. Build12 is preserved as rollback/history.
+
+This release is selected for the tested numerical correction and passed
+acceptance, not universal performance superiority. All final paired scoreboard
+results and unfavorable experiments remain visible. Qwen3.5 and Metal are
+still parked. Final repository publication/verification remains to be performed
+by the root orchestration before the goal is marked complete.
