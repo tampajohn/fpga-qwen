@@ -12,11 +12,14 @@ import json
 from pathlib import Path
 import statistics
 import threading
+import tempfile
 import time
 try:
+    from .evaluate_projection_quality import read_dump_logits
     from .rtl_chat import RTLChatEngine
     from .experiment import ROOT
 except ImportError:
+    from evaluate_projection_quality import read_dump_logits
     from rtl_chat import RTLChatEngine
     from experiment import ROOT
 
@@ -34,15 +37,20 @@ def main():
     parser.add_argument('--seed',type=int,default=42)
     parser.add_argument('--decoding',choices=['chat','greedy'],default='chat')
     parser.add_argument('--workers',type=int,default=8)
+    parser.add_argument('--hybrid-verification',action='store_true',help='Require FP32 B4 verification, FP64 B8 prefill and canonical prefix capability')
     parser.add_argument('--output',type=Path,default=ROOT/'build/suffix-paired.json')
     args=parser.parse_args()
     if not 1<=args.pairs<=10 or not 1<=args.tokens<=512:
         parser.error('Invalid pair/token count')
     binary=args.binary.expanduser().resolve()
-    engine=RTLChatEngine(binary=binary,lanes=8,workers=args.workers,block_size=4)
+    profile=(dict(prefill_size=8,reuse_prefix=False,precision_profile='fp32_b1_fp64_prefill',canonical_prefix_reuse=True)
+             if args.hybrid_verification else {})
+    engine=RTLChatEngine(binary=binary,lanes=8,workers=args.workers,block_size=4,**profile)
+    temporary=tempfile.TemporaryDirectory()
+    dump=Path(temporary.name)/'logits.bin'
     report=dict(binary=str(binary),binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),
                 timestamp_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),workers=args.workers,
-                seed=args.seed,decoding=args.decoding,max_new_tokens=args.tokens,prefill_block_size=4,
+                seed=args.seed,decoding=args.decoding,max_new_tokens=args.tokens,prefill_block_size=engine.sim.prefill_size,hybrid_verification=args.hybrid_verification,
                 limitation='Single resident process, exclusive agent timing window, user applications remain running. Decode includes first target round; startup excluded after warmup.',
                 completed=False,workloads=[])
     args.output.parent.mkdir(parents=True,exist_ok=True)
@@ -56,6 +64,14 @@ def main():
         final=list(engine.stream(prepared,threading.Event()))[-1]
         final['request_wall_seconds']=time.perf_counter()-start
         final['prompt_tokens']=len(prepared.ids)
+        final['prompt_token_ids']=prepared.ids
+        final['cache_token_ids']=list(engine.cache_ids)
+        # Probe accepted KV after timing; a raw final dump can describe a rejected draft.
+        position=len(engine.cache_ids)
+        final['continuation']=engine.sim.token(198)[:2]
+        if final['continuation'][1]!=position+1:raise RuntimeError('Continuation position mismatch')
+        final['logits_sha256']=hashlib.sha256(read_dump_logits(engine.sim,dump).tobytes()).hexdigest()
+        if engine.sim.command(f'truncate {position}')!='truncated':raise RuntimeError('Invalid probe rollback')
         assert final['metrics']['reused_prefix_tokens']==0
         assert final['finish_reason'] in ('eos','length')
         return final
@@ -68,9 +84,9 @@ def main():
                 order=['off','on'] if index%2==0 else ['on','off']
                 results={mode:request(name,3 if mode=='on' else 0) for mode in order}
                 a,b=results['off'],results['on']
-                if (a['token_ids'],a['finish_reason'])!=(b['token_ids'],b['finish_reason']):
+                if any(a[key]!=b[key] for key in ('prompt_token_ids','token_ids','finish_reason','cache_token_ids','continuation','logits_sha256')):
                     raise RuntimeError('Suffix mode changed target outputs; comparison rejected')
-                pair=dict(order=order,results=results,exact_output_ids=True,
+                pair=dict(order=order,results=results,exact_output_ids=True,exact_cache_ids=True,exact_continuation_logit_bits=True,
                           total_speed_ratio=a['request_wall_seconds']/b['request_wall_seconds'],
                           decode_speed_ratio=a['metrics']['decode_seconds']/b['metrics']['decode_seconds'],
                           ttft_speed_ratio=a['metrics']['first_token_ms']/b['metrics']['first_token_ms'])
@@ -86,6 +102,7 @@ def main():
         report['completed']=True
     finally:
         engine.close()
+        temporary.cleanup()
         args.output.write_text(json.dumps(report,indent=2)+'\n')
 
 

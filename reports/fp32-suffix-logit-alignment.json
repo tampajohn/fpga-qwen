@@ -1,0 +1,36 @@
+{
+  "initial_failed_gate": {
+    "session": 13561,
+    "exit_code": 1,
+    "error": "assert_array_equal on raw final dump failed for all151936 entries after output IDs and cache IDs matched",
+    "comparison": "Noncomparable speculative buffer positions, not a retained-KV equality test"
+  },
+  "corrected_gate": {
+    "session": 25713,
+    "exit_code": 0,
+    "seconds": 25.759,
+    "case": "greedy-42-3",
+    "off_raw_position": 107,
+    "on_raw_position": 109,
+    "retained_positions": [
+      107,
+      107
+    ],
+    "continuations": [
+      [
+        1151,
+        108
+      ],
+      [
+        1151,
+        108
+      ]
+    ],
+    "fixed_continuation_token": 198,
+    "full_continuation_logits_bit_identical": true,
+    "probe_rollback_position": 107
+  },
+  "binary_sha256": "91e3e161d6e08c83e435ab093d8d15ff2132e1275b842c323423f4780e577cc2",
+  "test_source_sha256": "b156e7971e5a2c22b5a5f0ab56319d4ce339698a31a3a781769e5dffb0d7223e",
+  "interpretation": "Block verification computes logits for every proposal. Truncating rejected speculative KV does not recompute the raw dump buffer. Full-logit equality is checked at the same fixed continuation position using the retained accepted KV, then probe is truncated; RNG and engine cache metadata remain unchanged."
+}
