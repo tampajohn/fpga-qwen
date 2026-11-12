@@ -23,6 +23,7 @@ class RealCanonicalPrefixTests(unittest.TestCase):
                       reuse_prefix=False,precision_profile='fp32_b1_fp64_prefill')
         cached=RTLChatEngine(**settings,canonical_prefix_reuse=True)
         fresh=RTLChatEngine(**settings,canonical_prefix_reuse=BLOCK_SIZE==4)
+        for instance in (cached,fresh):instance.sim.phase_pool_selector=os.environ.get('SV_PHASE_POOL_SELECTOR')
         self.addCleanup(cached.close);self.addCleanup(fresh.close)
         ids=[9707,11,1917,0]*8+[358]
         list(cached.stream(ChatRequest('s',ids,4,0,decoding='chat',seed=42),threading.Event()))
@@ -41,6 +42,7 @@ class RealCanonicalPrefixTests(unittest.TestCase):
         self.assertTrue(all(np.isfinite(a).all() and len(a)==151936 for a in arrays))
         np.testing.assert_array_equal(arrays[0].view(np.uint64),arrays[1].view(np.uint64))
         report=dict(completed=True,binary_sha256=hashlib.sha256(Path(BINARY).read_bytes()).hexdigest(),
+                    phase_pool_selector=os.environ.get('SV_PHASE_POOL_SELECTOR'),
                     policy='fp64_b8_aligned_v1',shared_prefix_tokens=shared,prior_canonical_end=boundary,
                     reused_tokens=outputs[0]['metrics']['reused_prefix_tokens'],
                     recomputed_matching_fp32_tokens=shared-boundary,
@@ -53,6 +55,7 @@ class RealCanonicalPrefixTests(unittest.TestCase):
                       reuse_prefix=False,precision_profile='fp32_b1_fp64_prefill')
         cached=RTLChatEngine(**settings,canonical_prefix_reuse=True)
         fresh=RTLChatEngine(**settings,canonical_prefix_reuse=BLOCK_SIZE==4)
+        for instance in (cached,fresh):instance.sim.phase_pool_selector=os.environ.get('SV_PHASE_POOL_SELECTOR')
         self.addCleanup(cached.close);self.addCleanup(fresh.close)
         report=dict(completed=False,binary_sha256=hashlib.sha256(Path(BINARY).read_bytes()).hexdigest(),
                     policy='fp64_b8_aligned_v1',timing_claim=False,cases=[])
@@ -110,6 +113,7 @@ class RealCanonicalPrefixTests(unittest.TestCase):
                 if event['type']=='prefill':break
             stream.close();self.assertEqual(cached.canonical_prefix.end,0);self.assertIsNone(cached.sim.process)
             compare('after_generator_close',base[:41])
+        report['phase_pool_selector']=os.environ.get('SV_PHASE_POOL_SELECTOR')
         report['worker_change_scope']='fixed8; incompatible changes tested separately' if FIXED_WORKERS else '1/3/17 worker changes'
         report['completed']=True
         report['total_reused_tokens']=sum(c['actual_reused'] for c in report['cases'])

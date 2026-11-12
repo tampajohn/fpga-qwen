@@ -6,7 +6,6 @@ from pathlib import Path
 import statistics
 import tempfile
 import time
-import os
 
 import numpy as np
 from benchmark_matched import SVEngine,make_prompt
@@ -18,14 +17,8 @@ from evaluate_projection_quality import validate_logits,model_provenance
 
 
 def start_with_selector(engine,selector):
-    key='QWEN_EXPERIMENTAL_PHASE_POOLS';previous=os.environ.get(key)
-    try:
-        if selector is None:os.environ.pop(key,None)
-        else:os.environ[key]=selector
-        engine.start()
-    finally:
-        if previous is None:os.environ.pop(key,None)
-        else:os.environ[key]=previous
+    engine.model.phase_pool_selector=selector
+    engine.start()
 
 def validate_telemetry(engine,selector):
     return None if selector is None else telemetry(engine.model,selector=='PREFILL_12')

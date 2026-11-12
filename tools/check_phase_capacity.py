@@ -5,12 +5,15 @@ from pathlib import Path
 import sys
 import unittest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from tests.test_prefill_model import PrefillModelTests
+from tests.test_prefill_model import PrefillModelTests, PrefillProtocolModel, BINARY, REFERENCE
 
 class PhaseCapacityTests(PrefillModelTests):
     observations=[]
     def model(self,reference=False,workers=8):
-        model=super().model(reference,workers)
+        model=PrefillProtocolModel(binary=REFERENCE if reference else BINARY,workers=workers,lanes=8)
+        self.addCleanup(model.close)
+        model.phase_pool_selector=None if reference else 'PREFILL_12'
+        model.start()
         if not reference:
             initial=json.loads(model.command('phase_pools'))
             self.assertEqual(initial['selector'],'PREFILL_12')

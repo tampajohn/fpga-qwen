@@ -445,3 +445,12 @@ numerical agreement from answering correctly. The frozen objective suite include
 recall, correction, quotation, task switching, extraction and arithmetic. Its low
 native-model pass rate is a model/decoding limitation, not evidence that matching
 those answers is high quality. No GPU or PyTorch is required for these experiments.
+
+The optional **FP32 hybrid · 12 prefill / 8 decode** backend uses the same
+validated hybrid arithmetic and canonical prefix policy, with fixed worker counts
+for each phase. Both pools remain resident (20 worker threads); only one receives
+work at a time. Its worker control is disabled, while the existing FP32 hybrid
+keeps its configurable worker count. The option appears only when the trusted
+phase-pool artifact is installed. It verifies the numerical profile and phase
+policy on every request, including process restarts. Suffix drafting remains off
+by default. This option does not change the default FP64 backend.

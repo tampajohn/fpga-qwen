@@ -88,6 +88,7 @@ class RealFP32SuffixTests(unittest.TestCase):
         settings=dict(binary=VERIFY_BINARY,workers=8,lanes=8,block_size=4,prefill_size=8,
                       reuse_prefix=False,precision_profile='fp32_b1_fp64_prefill',canonical_prefix_reuse=True)
         serial=RTLChatEngine(**settings);drafted=RTLChatEngine(**settings)
+        for instance in (serial,drafted):instance.sim.phase_pool_selector=os.environ.get('SV_PHASE_POOL_SELECTOR')
         self.addCleanup(serial.close);self.addCleanup(drafted.close)
         for engine in (serial,drafted):
             engine.last_logit_position=None
@@ -158,7 +159,8 @@ class RealFP32SuffixTests(unittest.TestCase):
             self.assertEqual(drafted.cache_ids,[])
             self.assertEqual(drafted.canonical_prefix.end,0)
             compare('after-cancel','chat',42,3)
-        report=dict(binary_sha256=hashlib.sha256(Path(VERIFY_BINARY).read_bytes()).hexdigest(),
+        report=dict(phase_pool_selector=os.environ.get('SV_PHASE_POOL_SELECTOR'),
+                    binary_sha256=hashlib.sha256(Path(VERIFY_BINARY).read_bytes()).hexdigest(),
                     completed=True,cancellation_recovery=True,timing_claim=False,
                     logit_gate='Fixed token198 continuation on retained accepted KV, then truncate probe; raw final dump may reference discarded speculative position',cases=rows)
         output=Path(os.environ.get('FP32_SUFFIX_REPORT',str(ROOT/'build/fp32-suffix-real.json')))

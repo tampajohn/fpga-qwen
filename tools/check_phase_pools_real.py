@@ -2,7 +2,6 @@
 import argparse
 import hashlib
 import json
-import os
 from pathlib import Path
 import tempfile
 from rtl_model import RTLModel
@@ -10,16 +9,9 @@ from compare_attention_combined import read_dump_logits
 from benchmark_matched import make_prompt
 from chat_protocol import ChatProtocol
 from experiment import locate_model
-KEY='QWEN_EXPERIMENTAL_PHASE_POOLS'
 def start(model,selector):
- old=os.environ.get(KEY)
- try:
-  if selector is None:os.environ.pop(KEY,None)
-  else:os.environ[KEY]=selector
-  model.start()
- finally:
-  if old is None:os.environ.pop(KEY,None)
-  else:os.environ[KEY]=old
+ model.phase_pool_selector=selector
+ model.start()
 
 def telemetry(model,enabled):
  data=json.loads(model.command('phase_pools'))

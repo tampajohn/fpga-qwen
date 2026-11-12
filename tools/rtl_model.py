@@ -1,5 +1,6 @@
 """Transport for the full behavioral SystemVerilog model. No tensor framework."""
 import json
+import os
 import select
 import subprocess
 import time
@@ -18,6 +19,8 @@ HYBRID_BINARY = FAST_BINARY.parents[1].with_name(
     + '-fp32-b1-verify-b4-batch-attention-qk2-head-pairs-value-pairs'
 ) / 'full/Vqwen_behavioral'
 
+
+PHASE_BINARY = ROOT / 'build/variants/phase-pools-b3eaa86c6c880192/full/Vqwen_behavioral'
 
 def prepare_layout(model):
     model = locate_model(model)
@@ -79,6 +82,7 @@ class RTLModel:
         self.block_size = block_size
         self.lanes = lanes
         self.workers = workers
+        self.phase_pool_selector = None  # Trusted host configuration; never HTTP input.
         self.binary = Path(binary).expanduser().resolve() if binary is not None else ROOT / 'build/full/Vqwen_behavioral'
         self.model, self.layout = prepare_layout(model)
         self.process = None
@@ -122,10 +126,16 @@ class RTLModel:
         if self.process and self.process.poll() is None:
             return
         self.close()
+        if self.phase_pool_selector not in (None, 'OFF', 'PREFILL_12'):
+            raise RuntimeError('Invalid trusted phase-pool selector')
+        environment = os.environ.copy()
+        environment.pop('QWEN_EXPERIMENTAL_PHASE_POOLS', None)
+        if self.phase_pool_selector is not None:
+            environment['QWEN_EXPERIMENTAL_PHASE_POOLS'] = self.phase_pool_selector
         self.log = (ROOT / 'build/full/runtime.log').open('w')
         self.process = subprocess.Popen([str(self.binary),
             str(self.model / 'model.safetensors'), str(self.layout), str(self.workers)],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.log, text=True, bufsize=1)
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.log, text=True, bufsize=1, env=environment)
         if self.read(cancel) != 'ready':
             raise RuntimeError('Invalid simulator handshake')
         if self.lanes != 1:

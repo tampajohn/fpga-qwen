@@ -8,6 +8,7 @@ let backends = [];
 
 function connectionLabel() {
   if (selectedBackend()?.simulation === true) {
+    if (selectedBackend()?.fixed_workers) return 'Local simulation · 12 prefill / 8 decode workers';
     const count = Number($('workers').value);
     return count ? `Local simulation · ${count} worker${count === 1 ? '' : 's'}` : 'Local simulation · serial baseline';
   }
@@ -18,16 +19,20 @@ function backendChanged() {
   const backend = selectedBackend();
   const rtl = selectedBackend()?.simulation === true;
   $('workers-row').hidden = !rtl;
-  for (const option of $('workers').options) option.disabled = Number(option.value) < (backend?.min_workers ?? 0);
+  for (const option of $('workers').options) option.disabled = backend?.fixed_workers
+    ? Number(option.value) !== backend.fixed_workers : Number(option.value) < (backend?.min_workers ?? 0);
+  if (backend?.fixed_workers) $('workers').value = String(backend.fixed_workers);
   if (Number($('workers').value) < (backend?.min_workers ?? 0)) $('workers').value = '8';
   $('suffix').checked = false;
   $('suffix-note').textContent = backend?.suffix_supported
-    ? ($('backend').value === 'rtl-fp32'
+    ? ($('backend').value.startsWith('rtl-fp32')
       ? `Optional · up to ${backend.max_draft} verified tokens; helps repeated text, little benefit on prose`
       : `Verified n-gram drafts · up to ${backend.max_draft} tokens; sampled and greedy`)
     : 'Unavailable in this backend';
   $('backend-tag').textContent = rtl ? 'Full SV simulation' : 'llama.cpp · CPU only';
-  $('backend-about').textContent = $('backend').value === 'rtl-fp32'
+  $('backend-about').textContent = backend?.fixed_workers
+    ? 'Same FP32 hybrid math and canonical prefix reuse, with 12 workers for prefill and 8 for decoding and verification. Both pools stay resident; only one runs at a time. Worker counts are fixed. Optional suffix drafting is off by default. CPU only; not cycle-accurate FPGA timing.'
+    : $('backend').value === 'rtl-fp32'
     ? 'SystemVerilog uses FP32 scalar projections for decoding and FP64 for prefill, attention and KV storage. It reuses complete FP64 prefill blocks. Optional FP32 suffix verification helped repeated code in testing; ordinary prose was essentially unchanged. Drafting is off by default. CPU only; not cycle-accurate FPGA timing.'
     : rtl
     ? 'All model math and KV data run in a behavioral SystemVerilog model via Verilator. It uses floating-point real arithmetic and is not synthesizable or cycle-accurate. Python handles tokenization, suffix proposals, sampling random numbers, and HTTP; the model verifies every proposed token.'
@@ -50,7 +55,7 @@ function controls() {
   $('new-chat').disabled = busy;
   $('suffix').disabled = !ready || busy || !selectedBackend()?.suffix_supported;
   $('backend').disabled = busy || !ready;
-  $('workers').disabled = busy || !ready;
+  $('workers').disabled = busy || !ready || Boolean(selectedBackend()?.fixed_workers);
   $('reply-limit').disabled = busy;
   $('decoding').disabled = busy;
   $('send').hidden = busy;
@@ -168,7 +173,7 @@ async function send(event) {
         const m = event.metrics;
         const end = userStopped ? 'Stopped' : event.finish_reason === 'length' ? 'Reply limit reached' : 'Complete';
         const suffixLabel = m.effective_max_draft ? ` · ${m.accepted_tokens}/${m.proposed_tokens} drafts accepted` : '';
-        const workerLabel = m.simulation_workers === undefined ? '' : m.simulation_workers ? ` · ${m.simulation_workers} workers` : ' · serial';
+        const workerLabel = m.prefill_workers ? ` · ${m.prefill_workers} prefill / ${m.decode_workers} decode workers` : m.simulation_workers === undefined ? '' : m.simulation_workers ? ` · ${m.simulation_workers} workers` : ' · serial';
         reply.meta.textContent = `${selectedBackend()?.label ?? "SystemVerilog"}${workerLabel} · ${$('decoding').value === 'chat' ? 'Sampled' : 'Greedy'} · ${end} · ${m.output_tokens} tokens · ${m.elapsed_seconds.toFixed(2)} s · ${m.reused_prefix_tokens} prefix tokens reused${suffixLabel}`;
         if (event.text.trim()) messages = [...submitted, { role: 'assistant', content: event.text }];
         else {

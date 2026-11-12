@@ -10,11 +10,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class BackendRouter:
-    def __init__(self, simulation, hybrid=None):
+    def __init__(self, simulation, hybrid=None, phase=None):
         self.simulation = simulation
         self.simulations = {"rtl": simulation}
         if hybrid is not None:
             self.simulations["rtl-fp32"] = hybrid
+        if phase is not None:
+            self.simulations['rtl-fp32-phase'] = phase
         self.process = None
         self.loaded = None
         self.port = None
@@ -26,10 +28,14 @@ class BackendRouter:
 
     def catalog(self):
         simulations = [dict(id=key,
-            label=('SystemVerilog · FP32 hybrid' if key == 'rtl-fp32' else
+            label=('SystemVerilog · FP32 hybrid · 12 prefill / 8 decode' if key == 'rtl-fp32-phase' else
+                   'SystemVerilog · FP32 hybrid' if key == 'rtl-fp32' else
                    'SystemVerilog · fast' if engine.sim.lanes == 8 else 'SystemVerilog · reference'),
             available=True, cpu_threads=engine.threads, simulation=True,
-            min_workers=1 if key == 'rtl-fp32' else 0,
+            min_workers=1 if key.startswith('rtl-fp32') else 0,
+            fixed_workers=getattr(engine,'fixed_workers',None),
+            prefill_workers=engine.status().get('prefill_workers'),
+            decode_workers=engine.status().get('decode_workers'),
             precision=engine.status()['precision'],prefix_reuse_supported=engine.status()["prefix_reuse_enabled"],
             canonical_prefix_policy=engine.status().get("canonical_prefix_policy"),
             suffix_supported=engine.sim.block_size == 4,max_draft=engine.sim.block_size-1,
@@ -37,6 +43,9 @@ class BackendRouter:
         if 'rtl-fp32' not in self.simulations:
             simulations.append(dict(id='rtl-fp32',label='SystemVerilog · FP32 hybrid',
                                     available=False,simulation=True,min_workers=1,suffix_supported=False))
+        if 'rtl-fp32-phase' not in self.simulations:
+            simulations.append(dict(id='rtl-fp32-phase',label='SystemVerilog · FP32 hybrid · 12 prefill / 8 decode',
+                                    available=False,simulation=True,min_workers=1,fixed_workers=8,suffix_supported=False))
         return simulations + [
             dict(id=key, label=label, available=self.binary.is_file() and self.models[key].is_file(),
                  cpu_threads=6, suffix_supported=False)
@@ -67,6 +76,8 @@ class BackendRouter:
                 raise ValueError('Choose serial (0), 1, 2, 4, or 8 simulation workers')
             if workers < entry["min_workers"]:
                 raise ValueError("Hybrid requires at least one simulation worker")
+            if entry.get('fixed_workers') is not None and workers != entry['fixed_workers']:
+                raise ValueError('This backend requires fixed 8 decode / 12 prefill workers')
             request.workers = workers
         return backend, request
 
