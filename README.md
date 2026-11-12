@@ -22,20 +22,34 @@ It also matched tuned llama.cpp's exact token trajectories, EOS behavior, text,
 and grades on the existing nine-case conversation suite. Both scored **4/9**:
 matching baseline mistakes is not a model-quality improvement.
 
-The first matched speed measurement used **two exploratory rounds**, 85/452-token
-uncached prompts, and 32 identical greedy output tokens. These are observations,
-not a confirmed performance win:
+**Build-03** replaces per-kernel worker wake/completion overhead and reuses scratch
+buffers. All 32 captured full-logit arrays were bit-identical to build-02, and
+it passed the same nine-case exact-trajectory gate (both engines still 4/9).
+Ten alternating paired rounds now provide the current speed evidence, using
+85/452-token uncached prompts and 32 identical greedy output tokens:
 
 | Engine, 12 decode / 6 prefill threads | 85-token prompt decode | 452-token prompt decode |
 | --- | ---: | ---: |
-| Tuned llama.cpp FP16, KleidiAI + LTO | 141.95 tokens/s | 134.20 tokens/s |
-| Original CPU engine, build-02 | 59.93 tokens/s | 52.29 tokens/s |
+| Tuned llama.cpp FP16, KleidiAI + LTO | 135.27 tokens/s | 131.69 tokens/s |
+| Original CPU engine, build-03 | 125.74 tokens/s | 101.93 tokens/s |
 
-The original engine is currently substantially slower. Its subprocess transport
-differs from llama.cpp's HTTP streaming, and it keeps a widened FP32 layer-weight
-cache for batched prefill. CPU scheduling and background activity also affect
-measurements. A later build-03 worker-pool/scratch-buffer change is under
-validation; no performance or deployment result is claimed for it here.
+The median **paired** native/llama speed ratios were **0.838x** (95% paired
+bootstrap interval 0.793–0.957) and **0.754x** (0.645–0.834), respectively.
+These summarize within-round ratios, not ratios of the table's medians. The
+original engine remains slower and has not met the 90% decode target.
+See [confirmation](reports/native-cpu-build-03-confirmation.json),
+[paired uncertainty](reports/native-cpu-build-03-confirmation-analysis.json),
+[exact logits](reports/native-cpu-build-03-exact-gate-v2.json), and
+[conversation quality](reports/native-cpu-build-03-quality.json).
+
+Earlier build-02 measurements were only two exploratory rounds: 59.93/52.29
+native versus 141.95/134.20 llama tokens/s. Build-03's improvement over that
+historical run is not an interleaved build-02/build-03 performance comparison.
+The native subprocess transport differs from llama.cpp's HTTP streaming, and
+native prefill retains a widened FP32 layer-weight cache. Background scheduling
+also affects results. Build-04 has passed its 32-array exact check, but further
+quality/timing work remains under evaluation; build-05 SIMD source has no result
+reported here. No live backend has been promoted.
 
 The primary target remains the tuned **FP16** baseline. FP32 and constrained
 KleidiAI-OFF Q4 measurements are separate precision classes, not interchangeable

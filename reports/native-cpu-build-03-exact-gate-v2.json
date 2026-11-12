@@ -1,0 +1,352 @@
+{
+  "completed": true,
+  "passed": true,
+  "scope": "Bit-identical full logits and predicted/consumed IDs on all supplied repeated trajectories only.",
+  "inputs": {
+    "$REPO/build/native-cpu/build-02-tiny-logits/report.json": "29f3c69fb188b6f578f73274c5c7d6b50cc3562b0c3c8c4ce5ffb35d85d15854",
+    "$REPO/build/native-cpu/build-03-tiny-logits/report.json": "aa616aa0b0223a5547349c22adf3847053ae0c05986d1abc005e48d3c66f5dc3",
+    "$REPO/build/native-cpu/build-02/qwen_cpu": "508ec922bac5f94cb0a6aa3283389454b8804fd43e4efeba402701a941c931ec",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$REPO/build/native-phase0/prompt-oracle.json": "86f30ec5ce6f5d0d841148dfb2b615cfd8fe617e461c0059f51a7171a4fe944d",
+    "$REPO/build/native-phase0/continuation-oracle.json": "5a8d5bea453b33d5ca2ea00c0f1b54d58e5984a63dbe3b6c82c54a2198de02f4",
+    "$REPO/build/native-cpu/build-03/qwen_cpu": "1da832f37bdc5fae0c0567b57c71ea28899b67d0fe94567b1ecaea9217f989a4",
+    "$REPO/build/native-cpu/build-02-tiny-logits/run0-step0.f32": "ffc34813a6fa8298ead7cabcbb098b586ebff1c89ef2b2def0b152ad72ad47b5",
+    "$REPO/build/native-cpu/build-03-tiny-logits/run0-step0.f32": "ffc34813a6fa8298ead7cabcbb098b586ebff1c89ef2b2def0b152ad72ad47b5",
+    "$REPO/build/native-cpu/build-02-tiny-logits/run0-step1.f32": "03278b72edf556a7bd176c135f27276999f24ae29ca20960e5c8d10b52aa1353",
+    "$REPO/build/native-cpu/build-03-tiny-logits/run0-step1.f32": "03278b72edf556a7bd176c135f27276999f24ae29ca20960e5c8d10b52aa1353",
+    "$REPO/build/native-cpu/build-02-tiny-logits/run0-step2.f32": "2c3c3df64c32d9359c7e79c2f81176e49f0d45eb672df6de7410b5a4730c5eb7",
+    "$REPO/build/native-cpu/build-03-tiny-logits/run0-step2.f32": "2c3c3df64c32d9359c7e79c2f81176e49f0d45eb672df6de7410b5a4730c5eb7",
+    "$REPO/build/native-cpu/build-02-tiny-logits/run0-step3.f32": "482792cf5007d1224832d589135ced8d2268d59a62af9d7cee36dcfe513b5720",
+    "$REPO/build/native-cpu/build-03-tiny-logits/run0-step3.f32": "482792cf5007d1224832d589135ced8d2268d59a62af9d7cee36dcfe513b5720",
+    "$REPO/build/native-cpu/build-02-tiny-logits/run1-step0.f32": "ffc34813a6fa8298ead7cabcbb098b586ebff1c89ef2b2def0b152ad72ad47b5",
+    "$REPO/build/native-cpu/build-03-tiny-logits/run1-step0.f32": "ffc34813a6fa8298ead7cabcbb098b586ebff1c89ef2b2def0b152ad72ad47b5",
+    "$REPO/build/native-cpu/build-02-tiny-logits/run1-step1.f32": "03278b72edf556a7bd176c135f27276999f24ae29ca20960e5c8d10b52aa1353",
+    "$REPO/build/native-cpu/build-03-tiny-logits/run1-step1.f32": "03278b72edf556a7bd176c135f27276999f24ae29ca20960e5c8d10b52aa1353",
+    "$REPO/build/native-cpu/build-02-tiny-logits/run1-step2.f32": "2c3c3df64c32d9359c7e79c2f81176e49f0d45eb672df6de7410b5a4730c5eb7",
+    "$REPO/build/native-cpu/build-03-tiny-logits/run1-step2.f32": "2c3c3df64c32d9359c7e79c2f81176e49f0d45eb672df6de7410b5a4730c5eb7",
+    "$REPO/build/native-cpu/build-02-tiny-logits/run1-step3.f32": "482792cf5007d1224832d589135ced8d2268d59a62af9d7cee36dcfe513b5720",
+    "$REPO/build/native-cpu/build-03-tiny-logits/run1-step3.f32": "482792cf5007d1224832d589135ced8d2268d59a62af9d7cee36dcfe513b5720",
+    "$REPO/build/native-cpu/build-02-short-logits/report.json": "68130a8938bd16233da85a29a6134fc95a374e99952fa41e767d1c17a5f406c9",
+    "$REPO/build/native-cpu/build-03-short-logits/report.json": "44adff14b9f67f9990230cd4e82a6b29e14d97b59c272b556bf94b648c0ba005",
+    "$REPO/build/native-phase0/prompt-short.json": "58e00bf8b3d31e4acefb5eb3fa2caa3874f426b931bbb3131e3565821b17a848",
+    "$REPO/build/native-cpu/continuation-short.json": "abc3f175fd91c9e38ac5676d1b521204500433ed74f9bb8336b34f29f80d206c",
+    "$REPO/build/native-cpu/build-02-short-logits/run0-step0.f32": "9b1aed2f14e4333d65914b71674af7485a4480cea49aa9c48908ec5c05cba88a",
+    "$REPO/build/native-cpu/build-03-short-logits/run0-step0.f32": "9b1aed2f14e4333d65914b71674af7485a4480cea49aa9c48908ec5c05cba88a",
+    "$REPO/build/native-cpu/build-02-short-logits/run0-step1.f32": "02c7455fa194bd861c4c90ded4cbd15f3165576ad4f195032e824dbfcb2a88f7",
+    "$REPO/build/native-cpu/build-03-short-logits/run0-step1.f32": "02c7455fa194bd861c4c90ded4cbd15f3165576ad4f195032e824dbfcb2a88f7",
+    "$REPO/build/native-cpu/build-02-short-logits/run0-step2.f32": "1c86ab07da222d5d7215d931e70c4ad0e9dac93b150fff4fe923d3b82f210b38",
+    "$REPO/build/native-cpu/build-03-short-logits/run0-step2.f32": "1c86ab07da222d5d7215d931e70c4ad0e9dac93b150fff4fe923d3b82f210b38",
+    "$REPO/build/native-cpu/build-02-short-logits/run0-step3.f32": "68d2aab23bac54b393bead059902f2137ebf7ddfa020ba7ae80ece66e9fa5357",
+    "$REPO/build/native-cpu/build-03-short-logits/run0-step3.f32": "68d2aab23bac54b393bead059902f2137ebf7ddfa020ba7ae80ece66e9fa5357",
+    "$REPO/build/native-cpu/build-02-short-logits/run0-step4.f32": "ad4793f4b863093042847a598b667d900293b68bc0a8046509c2d6a6a56e5b96",
+    "$REPO/build/native-cpu/build-03-short-logits/run0-step4.f32": "ad4793f4b863093042847a598b667d900293b68bc0a8046509c2d6a6a56e5b96",
+    "$REPO/build/native-cpu/build-02-short-logits/run0-step5.f32": "11ca0b5af3d1e0246d28f8e7804d9924391901c54513f02fd168c96d309784d0",
+    "$REPO/build/native-cpu/build-03-short-logits/run0-step5.f32": "11ca0b5af3d1e0246d28f8e7804d9924391901c54513f02fd168c96d309784d0",
+    "$REPO/build/native-cpu/build-02-short-logits/run0-step6.f32": "b8e4d6a48f573bb38055714f5e958dca306dcdc34203018da900bf3e0192602d",
+    "$REPO/build/native-cpu/build-03-short-logits/run0-step6.f32": "b8e4d6a48f573bb38055714f5e958dca306dcdc34203018da900bf3e0192602d",
+    "$REPO/build/native-cpu/build-02-short-logits/run0-step7.f32": "0fc0795d1bf50b2f659860748cbd92f9600ee423195e26218a2cfe51fc8bc1ff",
+    "$REPO/build/native-cpu/build-03-short-logits/run0-step7.f32": "0fc0795d1bf50b2f659860748cbd92f9600ee423195e26218a2cfe51fc8bc1ff",
+    "$REPO/build/native-cpu/build-02-short-logits/run1-step0.f32": "9b1aed2f14e4333d65914b71674af7485a4480cea49aa9c48908ec5c05cba88a",
+    "$REPO/build/native-cpu/build-03-short-logits/run1-step0.f32": "9b1aed2f14e4333d65914b71674af7485a4480cea49aa9c48908ec5c05cba88a",
+    "$REPO/build/native-cpu/build-02-short-logits/run1-step1.f32": "02c7455fa194bd861c4c90ded4cbd15f3165576ad4f195032e824dbfcb2a88f7",
+    "$REPO/build/native-cpu/build-03-short-logits/run1-step1.f32": "02c7455fa194bd861c4c90ded4cbd15f3165576ad4f195032e824dbfcb2a88f7",
+    "$REPO/build/native-cpu/build-02-short-logits/run1-step2.f32": "1c86ab07da222d5d7215d931e70c4ad0e9dac93b150fff4fe923d3b82f210b38",
+    "$REPO/build/native-cpu/build-03-short-logits/run1-step2.f32": "1c86ab07da222d5d7215d931e70c4ad0e9dac93b150fff4fe923d3b82f210b38",
+    "$REPO/build/native-cpu/build-02-short-logits/run1-step3.f32": "68d2aab23bac54b393bead059902f2137ebf7ddfa020ba7ae80ece66e9fa5357",
+    "$REPO/build/native-cpu/build-03-short-logits/run1-step3.f32": "68d2aab23bac54b393bead059902f2137ebf7ddfa020ba7ae80ece66e9fa5357",
+    "$REPO/build/native-cpu/build-02-short-logits/run1-step4.f32": "ad4793f4b863093042847a598b667d900293b68bc0a8046509c2d6a6a56e5b96",
+    "$REPO/build/native-cpu/build-03-short-logits/run1-step4.f32": "ad4793f4b863093042847a598b667d900293b68bc0a8046509c2d6a6a56e5b96",
+    "$REPO/build/native-cpu/build-02-short-logits/run1-step5.f32": "11ca0b5af3d1e0246d28f8e7804d9924391901c54513f02fd168c96d309784d0",
+    "$REPO/build/native-cpu/build-03-short-logits/run1-step5.f32": "11ca0b5af3d1e0246d28f8e7804d9924391901c54513f02fd168c96d309784d0",
+    "$REPO/build/native-cpu/build-02-short-logits/run1-step6.f32": "b8e4d6a48f573bb38055714f5e958dca306dcdc34203018da900bf3e0192602d",
+    "$REPO/build/native-cpu/build-03-short-logits/run1-step6.f32": "b8e4d6a48f573bb38055714f5e958dca306dcdc34203018da900bf3e0192602d",
+    "$REPO/build/native-cpu/build-02-short-logits/run1-step7.f32": "0fc0795d1bf50b2f659860748cbd92f9600ee423195e26218a2cfe51fc8bc1ff",
+    "$REPO/build/native-cpu/build-03-short-logits/run1-step7.f32": "0fc0795d1bf50b2f659860748cbd92f9600ee423195e26218a2cfe51fc8bc1ff",
+    "$REPO/build/native-cpu/build-02-long-logits/report.json": "3f94d7811cbd1e2c9280d8cb5de698b7e31fb7e4c899dbd092a5081fd91369bc",
+    "$REPO/build/native-cpu/build-03-long-logits/report.json": "53a7ea6b35f57a46cf563bc233f567e560e4c0f1bdc5e346bc01d52dae9526f7",
+    "$REPO/build/native-phase0/prompt-long.json": "106e1ef1bc04a548f383d029847eed76700620aaf05b30a234883d7526fda1bc",
+    "$REPO/build/native-cpu/continuation-long.json": "1c75b5e3b63d77e048de760ca8399fad596985327762b66703da0dab72e6d829",
+    "$REPO/build/native-cpu/build-02-long-logits/run0-step0.f32": "86a27099ea98f1b44c14ecfe4399d9e86f14c8f1fab51b7f81d65e03126071d1",
+    "$REPO/build/native-cpu/build-03-long-logits/run0-step0.f32": "86a27099ea98f1b44c14ecfe4399d9e86f14c8f1fab51b7f81d65e03126071d1",
+    "$REPO/build/native-cpu/build-02-long-logits/run0-step1.f32": "b800a7302532a6a8e0c91682c98ba16967f0e4b7ae8acea986530f8fbc03fee6",
+    "$REPO/build/native-cpu/build-03-long-logits/run0-step1.f32": "b800a7302532a6a8e0c91682c98ba16967f0e4b7ae8acea986530f8fbc03fee6",
+    "$REPO/build/native-cpu/build-02-long-logits/run0-step2.f32": "7df4623950b6323fbfe3bde8fe8047e77bc776683b9b03849b2f86bbea774dad",
+    "$REPO/build/native-cpu/build-03-long-logits/run0-step2.f32": "7df4623950b6323fbfe3bde8fe8047e77bc776683b9b03849b2f86bbea774dad",
+    "$REPO/build/native-cpu/build-02-long-logits/run0-step3.f32": "46c20adf23af2094baa3713c39f87ef61ed768c06b5541c4967f8872eaaaa450",
+    "$REPO/build/native-cpu/build-03-long-logits/run0-step3.f32": "46c20adf23af2094baa3713c39f87ef61ed768c06b5541c4967f8872eaaaa450",
+    "$REPO/build/native-cpu/build-02-long-logits/run1-step0.f32": "86a27099ea98f1b44c14ecfe4399d9e86f14c8f1fab51b7f81d65e03126071d1",
+    "$REPO/build/native-cpu/build-03-long-logits/run1-step0.f32": "86a27099ea98f1b44c14ecfe4399d9e86f14c8f1fab51b7f81d65e03126071d1",
+    "$REPO/build/native-cpu/build-02-long-logits/run1-step1.f32": "b800a7302532a6a8e0c91682c98ba16967f0e4b7ae8acea986530f8fbc03fee6",
+    "$REPO/build/native-cpu/build-03-long-logits/run1-step1.f32": "b800a7302532a6a8e0c91682c98ba16967f0e4b7ae8acea986530f8fbc03fee6",
+    "$REPO/build/native-cpu/build-02-long-logits/run1-step2.f32": "7df4623950b6323fbfe3bde8fe8047e77bc776683b9b03849b2f86bbea774dad",
+    "$REPO/build/native-cpu/build-03-long-logits/run1-step2.f32": "7df4623950b6323fbfe3bde8fe8047e77bc776683b9b03849b2f86bbea774dad",
+    "$REPO/build/native-cpu/build-02-long-logits/run1-step3.f32": "46c20adf23af2094baa3713c39f87ef61ed768c06b5541c4967f8872eaaaa450",
+    "$REPO/build/native-cpu/build-03-long-logits/run1-step3.f32": "46c20adf23af2094baa3713c39f87ef61ed768c06b5541c4967f8872eaaaa450"
+  },
+  "arrays": [
+    {
+      "reference": "$REPO/build/native-cpu/build-02-tiny-logits/run0-step0.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-tiny-logits/run0-step0.f32",
+      "context_tokens": 1,
+      "bit_identical": true,
+      "reference_sha256": "ffc34813a6fa8298ead7cabcbb098b586ebff1c89ef2b2def0b152ad72ad47b5",
+      "candidate_sha256": "ffc34813a6fa8298ead7cabcbb098b586ebff1c89ef2b2def0b152ad72ad47b5"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-tiny-logits/run0-step1.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-tiny-logits/run0-step1.f32",
+      "context_tokens": 2,
+      "bit_identical": true,
+      "reference_sha256": "03278b72edf556a7bd176c135f27276999f24ae29ca20960e5c8d10b52aa1353",
+      "candidate_sha256": "03278b72edf556a7bd176c135f27276999f24ae29ca20960e5c8d10b52aa1353"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-tiny-logits/run0-step2.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-tiny-logits/run0-step2.f32",
+      "context_tokens": 3,
+      "bit_identical": true,
+      "reference_sha256": "2c3c3df64c32d9359c7e79c2f81176e49f0d45eb672df6de7410b5a4730c5eb7",
+      "candidate_sha256": "2c3c3df64c32d9359c7e79c2f81176e49f0d45eb672df6de7410b5a4730c5eb7"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-tiny-logits/run0-step3.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-tiny-logits/run0-step3.f32",
+      "context_tokens": 4,
+      "bit_identical": true,
+      "reference_sha256": "482792cf5007d1224832d589135ced8d2268d59a62af9d7cee36dcfe513b5720",
+      "candidate_sha256": "482792cf5007d1224832d589135ced8d2268d59a62af9d7cee36dcfe513b5720"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-tiny-logits/run1-step0.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-tiny-logits/run1-step0.f32",
+      "context_tokens": 1,
+      "bit_identical": true,
+      "reference_sha256": "ffc34813a6fa8298ead7cabcbb098b586ebff1c89ef2b2def0b152ad72ad47b5",
+      "candidate_sha256": "ffc34813a6fa8298ead7cabcbb098b586ebff1c89ef2b2def0b152ad72ad47b5"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-tiny-logits/run1-step1.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-tiny-logits/run1-step1.f32",
+      "context_tokens": 2,
+      "bit_identical": true,
+      "reference_sha256": "03278b72edf556a7bd176c135f27276999f24ae29ca20960e5c8d10b52aa1353",
+      "candidate_sha256": "03278b72edf556a7bd176c135f27276999f24ae29ca20960e5c8d10b52aa1353"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-tiny-logits/run1-step2.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-tiny-logits/run1-step2.f32",
+      "context_tokens": 3,
+      "bit_identical": true,
+      "reference_sha256": "2c3c3df64c32d9359c7e79c2f81176e49f0d45eb672df6de7410b5a4730c5eb7",
+      "candidate_sha256": "2c3c3df64c32d9359c7e79c2f81176e49f0d45eb672df6de7410b5a4730c5eb7"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-tiny-logits/run1-step3.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-tiny-logits/run1-step3.f32",
+      "context_tokens": 4,
+      "bit_identical": true,
+      "reference_sha256": "482792cf5007d1224832d589135ced8d2268d59a62af9d7cee36dcfe513b5720",
+      "candidate_sha256": "482792cf5007d1224832d589135ced8d2268d59a62af9d7cee36dcfe513b5720"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run0-step0.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run0-step0.f32",
+      "context_tokens": 85,
+      "bit_identical": true,
+      "reference_sha256": "9b1aed2f14e4333d65914b71674af7485a4480cea49aa9c48908ec5c05cba88a",
+      "candidate_sha256": "9b1aed2f14e4333d65914b71674af7485a4480cea49aa9c48908ec5c05cba88a"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run0-step1.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run0-step1.f32",
+      "context_tokens": 86,
+      "bit_identical": true,
+      "reference_sha256": "02c7455fa194bd861c4c90ded4cbd15f3165576ad4f195032e824dbfcb2a88f7",
+      "candidate_sha256": "02c7455fa194bd861c4c90ded4cbd15f3165576ad4f195032e824dbfcb2a88f7"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run0-step2.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run0-step2.f32",
+      "context_tokens": 87,
+      "bit_identical": true,
+      "reference_sha256": "1c86ab07da222d5d7215d931e70c4ad0e9dac93b150fff4fe923d3b82f210b38",
+      "candidate_sha256": "1c86ab07da222d5d7215d931e70c4ad0e9dac93b150fff4fe923d3b82f210b38"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run0-step3.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run0-step3.f32",
+      "context_tokens": 88,
+      "bit_identical": true,
+      "reference_sha256": "68d2aab23bac54b393bead059902f2137ebf7ddfa020ba7ae80ece66e9fa5357",
+      "candidate_sha256": "68d2aab23bac54b393bead059902f2137ebf7ddfa020ba7ae80ece66e9fa5357"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run0-step4.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run0-step4.f32",
+      "context_tokens": 89,
+      "bit_identical": true,
+      "reference_sha256": "ad4793f4b863093042847a598b667d900293b68bc0a8046509c2d6a6a56e5b96",
+      "candidate_sha256": "ad4793f4b863093042847a598b667d900293b68bc0a8046509c2d6a6a56e5b96"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run0-step5.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run0-step5.f32",
+      "context_tokens": 90,
+      "bit_identical": true,
+      "reference_sha256": "11ca0b5af3d1e0246d28f8e7804d9924391901c54513f02fd168c96d309784d0",
+      "candidate_sha256": "11ca0b5af3d1e0246d28f8e7804d9924391901c54513f02fd168c96d309784d0"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run0-step6.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run0-step6.f32",
+      "context_tokens": 91,
+      "bit_identical": true,
+      "reference_sha256": "b8e4d6a48f573bb38055714f5e958dca306dcdc34203018da900bf3e0192602d",
+      "candidate_sha256": "b8e4d6a48f573bb38055714f5e958dca306dcdc34203018da900bf3e0192602d"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run0-step7.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run0-step7.f32",
+      "context_tokens": 92,
+      "bit_identical": true,
+      "reference_sha256": "0fc0795d1bf50b2f659860748cbd92f9600ee423195e26218a2cfe51fc8bc1ff",
+      "candidate_sha256": "0fc0795d1bf50b2f659860748cbd92f9600ee423195e26218a2cfe51fc8bc1ff"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run1-step0.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run1-step0.f32",
+      "context_tokens": 85,
+      "bit_identical": true,
+      "reference_sha256": "9b1aed2f14e4333d65914b71674af7485a4480cea49aa9c48908ec5c05cba88a",
+      "candidate_sha256": "9b1aed2f14e4333d65914b71674af7485a4480cea49aa9c48908ec5c05cba88a"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run1-step1.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run1-step1.f32",
+      "context_tokens": 86,
+      "bit_identical": true,
+      "reference_sha256": "02c7455fa194bd861c4c90ded4cbd15f3165576ad4f195032e824dbfcb2a88f7",
+      "candidate_sha256": "02c7455fa194bd861c4c90ded4cbd15f3165576ad4f195032e824dbfcb2a88f7"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run1-step2.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run1-step2.f32",
+      "context_tokens": 87,
+      "bit_identical": true,
+      "reference_sha256": "1c86ab07da222d5d7215d931e70c4ad0e9dac93b150fff4fe923d3b82f210b38",
+      "candidate_sha256": "1c86ab07da222d5d7215d931e70c4ad0e9dac93b150fff4fe923d3b82f210b38"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run1-step3.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run1-step3.f32",
+      "context_tokens": 88,
+      "bit_identical": true,
+      "reference_sha256": "68d2aab23bac54b393bead059902f2137ebf7ddfa020ba7ae80ece66e9fa5357",
+      "candidate_sha256": "68d2aab23bac54b393bead059902f2137ebf7ddfa020ba7ae80ece66e9fa5357"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run1-step4.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run1-step4.f32",
+      "context_tokens": 89,
+      "bit_identical": true,
+      "reference_sha256": "ad4793f4b863093042847a598b667d900293b68bc0a8046509c2d6a6a56e5b96",
+      "candidate_sha256": "ad4793f4b863093042847a598b667d900293b68bc0a8046509c2d6a6a56e5b96"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run1-step5.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run1-step5.f32",
+      "context_tokens": 90,
+      "bit_identical": true,
+      "reference_sha256": "11ca0b5af3d1e0246d28f8e7804d9924391901c54513f02fd168c96d309784d0",
+      "candidate_sha256": "11ca0b5af3d1e0246d28f8e7804d9924391901c54513f02fd168c96d309784d0"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run1-step6.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run1-step6.f32",
+      "context_tokens": 91,
+      "bit_identical": true,
+      "reference_sha256": "b8e4d6a48f573bb38055714f5e958dca306dcdc34203018da900bf3e0192602d",
+      "candidate_sha256": "b8e4d6a48f573bb38055714f5e958dca306dcdc34203018da900bf3e0192602d"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-short-logits/run1-step7.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-short-logits/run1-step7.f32",
+      "context_tokens": 92,
+      "bit_identical": true,
+      "reference_sha256": "0fc0795d1bf50b2f659860748cbd92f9600ee423195e26218a2cfe51fc8bc1ff",
+      "candidate_sha256": "0fc0795d1bf50b2f659860748cbd92f9600ee423195e26218a2cfe51fc8bc1ff"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-long-logits/run0-step0.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-long-logits/run0-step0.f32",
+      "context_tokens": 452,
+      "bit_identical": true,
+      "reference_sha256": "86a27099ea98f1b44c14ecfe4399d9e86f14c8f1fab51b7f81d65e03126071d1",
+      "candidate_sha256": "86a27099ea98f1b44c14ecfe4399d9e86f14c8f1fab51b7f81d65e03126071d1"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-long-logits/run0-step1.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-long-logits/run0-step1.f32",
+      "context_tokens": 453,
+      "bit_identical": true,
+      "reference_sha256": "b800a7302532a6a8e0c91682c98ba16967f0e4b7ae8acea986530f8fbc03fee6",
+      "candidate_sha256": "b800a7302532a6a8e0c91682c98ba16967f0e4b7ae8acea986530f8fbc03fee6"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-long-logits/run0-step2.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-long-logits/run0-step2.f32",
+      "context_tokens": 454,
+      "bit_identical": true,
+      "reference_sha256": "7df4623950b6323fbfe3bde8fe8047e77bc776683b9b03849b2f86bbea774dad",
+      "candidate_sha256": "7df4623950b6323fbfe3bde8fe8047e77bc776683b9b03849b2f86bbea774dad"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-long-logits/run0-step3.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-long-logits/run0-step3.f32",
+      "context_tokens": 455,
+      "bit_identical": true,
+      "reference_sha256": "46c20adf23af2094baa3713c39f87ef61ed768c06b5541c4967f8872eaaaa450",
+      "candidate_sha256": "46c20adf23af2094baa3713c39f87ef61ed768c06b5541c4967f8872eaaaa450"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-long-logits/run1-step0.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-long-logits/run1-step0.f32",
+      "context_tokens": 452,
+      "bit_identical": true,
+      "reference_sha256": "86a27099ea98f1b44c14ecfe4399d9e86f14c8f1fab51b7f81d65e03126071d1",
+      "candidate_sha256": "86a27099ea98f1b44c14ecfe4399d9e86f14c8f1fab51b7f81d65e03126071d1"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-long-logits/run1-step1.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-long-logits/run1-step1.f32",
+      "context_tokens": 453,
+      "bit_identical": true,
+      "reference_sha256": "b800a7302532a6a8e0c91682c98ba16967f0e4b7ae8acea986530f8fbc03fee6",
+      "candidate_sha256": "b800a7302532a6a8e0c91682c98ba16967f0e4b7ae8acea986530f8fbc03fee6"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-long-logits/run1-step2.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-long-logits/run1-step2.f32",
+      "context_tokens": 454,
+      "bit_identical": true,
+      "reference_sha256": "7df4623950b6323fbfe3bde8fe8047e77bc776683b9b03849b2f86bbea774dad",
+      "candidate_sha256": "7df4623950b6323fbfe3bde8fe8047e77bc776683b9b03849b2f86bbea774dad"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/build-02-long-logits/run1-step3.f32",
+      "candidate": "$REPO/build/native-cpu/build-03-long-logits/run1-step3.f32",
+      "context_tokens": 455,
+      "bit_identical": true,
+      "reference_sha256": "46c20adf23af2094baa3713c39f87ef61ed768c06b5541c4967f8872eaaaa450",
+      "candidate_sha256": "46c20adf23af2094baa3713c39f87ef61ed768c06b5541c4967f8872eaaaa450"
+    }
+  ],
+  "compared_arrays": 32,
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-03-exact-gate-v2.json",
+    "raw_source_sha256": "76d6cb7b2b1c46b9977640fb0c9eb39b48aa54b2f22d09b1e1d5f9b4974c2a76",
+    "sanitization": "Repository/home prefixes replaced. PID/PPID fields and host process names omitted. Host CPU percentages preserve original ps column index2; memory percentages and elapsed retained. Embedded hashes identify original local artifacts."
+  }
+}

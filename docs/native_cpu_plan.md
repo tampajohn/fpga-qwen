@@ -297,3 +297,41 @@ cancellation and process reaping, clean restart, context overflow and invalid
 token handling. Existing nine-case conversation and matched speed tests remain
 pending. The browser backend is registered as experimental and unavailable
 until explicit binary promotion; the live server has not been restarted.
+
+## Original engine build-03 confirmation
+
+The first correct original engine, build-02, passed the declared NumPy gates at
+16 positions and the nine-case exact-trajectory quality gate (including terminal
+EOS). Its two-round discovery observed 59.93/52.29 decode tokens/s against
+141.95/134.20 for tuned llama. The initial quality harness omitted terminal EOS
+from native returned IDs; quality-v2 fixes that transport representation without
+normalizing baseline output or relaxing the identity gate.
+
+Build-03 changes worker scheduling/completion and scratch-buffer reuse. All 32
+full-logit arrays from repeated tiny, short, and long captures matched build-02
+bit-for-bit. The nine-case suite also passed exact IDs, EOS, text, and grading;
+both engines scored 4/9, with no new regressions and no answer-quality gain.
+
+Ten alternating paired rounds compared build-03 against tuned KleidiAI+LTO FP16,
+with both at twelve decode/six prefill threads. At 85/452 prompt tokens, native
+median decode was 125.74/101.93 tokens/s versus llama's 135.27/131.69. Median
+within-round native/llama ratios were **0.838x** (95% paired-bootstrap interval
+0.793–0.957) short and **0.754x** (0.645–0.834) long. These ratios are not the
+quotients of independent medians. The engine remains slower and has not met
+the 90% target. No live backend is promoted.
+
+Scores include differing subprocess/HTTP transports, while the native engine
+also keeps widened FP32 prefill weights. Background scheduling remains
+uncontrolled. Two-round discovery results are retained as exploratory evidence,
+not substituted for confirmation or used for a causal historical speedup claim.
+Build-04's 32-array exact check has passed; its additional evaluation is ongoing.
+Build-05 SIMD source has no performance result reported here.
+
+Evidence: [build-02 quality-v2](../reports/native-cpu-build-02-quality-v2.json),
+[build-02 discovery](../reports/native-cpu-build-02-discovery.json),
+[build-03 exact gate](../reports/native-cpu-build-03-exact-gate-v2.json),
+[build-03 quality](../reports/native-cpu-build-03-quality.json),
+[build-03 discovery](../reports/native-cpu-build-03-discovery.json),
+[build-03 confirmation](../reports/native-cpu-build-03-confirmation.json), and
+[build-03 paired uncertainty](../reports/native-cpu-build-03-confirmation-analysis.json).
+Sanitized archives retain raw-report hashes and anonymized host CPU percentages.
