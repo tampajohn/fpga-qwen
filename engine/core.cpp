@@ -114,7 +114,7 @@ struct Mapping {
     }
     ~Mapping(){if(data!=MAP_FAILED)munmap(data,length);}
 };
-struct Tensor {int rows=0,cols=0;const Half* half=nullptr;const float* norm=nullptr;std::vector<float> wide;std::vector<uint16_t> lossless_bf16;};
+struct Tensor {int rows=0,cols=0;const Half* half=nullptr;const float* norm=nullptr;std::vector<float> wide;};
 float dot(const float* x,const Half* w,int n) {
     float32x4_t a=vdupq_n_f32(0),b=a;
     for(int j=0;j<n;j+=8) {
@@ -140,38 +140,6 @@ void dot4(const float* x,const Half* w,int n,float* y) {
         b2=vfmaq_f32(b2,xh,vcvt_f32_f16(vget_high_f16(w2)));
         a3=vfmaq_f32(a3,xl,vcvt_f32_f16(vget_low_f16(w3)));
         b3=vfmaq_f32(b3,xh,vcvt_f32_f16(vget_high_f16(w3)));
-    }
-    y[0]=vaddvq_f32(vaddq_f32(a0,b0));y[1]=vaddvq_f32(vaddq_f32(a1,b1));
-    y[2]=vaddvq_f32(vaddq_f32(a2,b2));y[3]=vaddvq_f32(vaddq_f32(a3,b3));
-}
-// Auxiliary encoding is accepted only after bitwise equality to each stored
-// FP16 value widened to FP32. This is integer reconstruction, not BF16 math or
-// a change to effective weights/activations. Attention KV keeps the FP16 path.
-float dot_bf16(const float* x,const uint16_t* w,int n) {
-    float32x4_t a=vdupq_n_f32(0),b=a;
-    for(int j=0;j<n;j+=8) {
-        const uint16x8_t wh=vld1q_u16(w+j);
-        a=vfmaq_f32(a,vld1q_f32(x+j),vreinterpretq_f32_u32(vshll_n_u16(vget_low_u16(wh),16)));
-        b=vfmaq_f32(b,vld1q_f32(x+j+4),vreinterpretq_f32_u32(vshll_n_u16(vget_high_u16(wh),16)));
-    }
-    return vaddvq_f32(vaddq_f32(a,b));
-}
-// Four independent rows share activation loads while retaining exactly the
-// scalar-row kernel's two accumulators, increasing-j FMA order and reduction.
-// Call only where four complete rows lie in the same matrix and worker slice.
-void dot4_bf16(const float* x,const uint16_t* w,int n,float* y) {
-    float32x4_t a0=vdupq_n_f32(0),b0=a0,a1=a0,b1=a0,a2=a0,b2=a0,a3=a0,b3=a0;
-    for(int j=0;j<n;j+=8) {
-        const float32x4_t xl=vld1q_f32(x+j),xh=vld1q_f32(x+j+4);
-        const uint16x8_t w0=vld1q_u16(w+j),w1=vld1q_u16(w+n+j),w2=vld1q_u16(w+2*n+j),w3=vld1q_u16(w+3*n+j);
-        a0=vfmaq_f32(a0,xl,vreinterpretq_f32_u32(vshll_n_u16(vget_low_u16(w0),16)));
-        b0=vfmaq_f32(b0,xh,vreinterpretq_f32_u32(vshll_n_u16(vget_high_u16(w0),16)));
-        a1=vfmaq_f32(a1,xl,vreinterpretq_f32_u32(vshll_n_u16(vget_low_u16(w1),16)));
-        b1=vfmaq_f32(b1,xh,vreinterpretq_f32_u32(vshll_n_u16(vget_high_u16(w1),16)));
-        a2=vfmaq_f32(a2,xl,vreinterpretq_f32_u32(vshll_n_u16(vget_low_u16(w2),16)));
-        b2=vfmaq_f32(b2,xh,vreinterpretq_f32_u32(vshll_n_u16(vget_high_u16(w2),16)));
-        a3=vfmaq_f32(a3,xl,vreinterpretq_f32_u32(vshll_n_u16(vget_low_u16(w3),16)));
-        b3=vfmaq_f32(b3,xh,vreinterpretq_f32_u32(vshll_n_u16(vget_high_u16(w3),16)));
     }
     y[0]=vaddvq_f32(vaddq_f32(a0,b0));y[1]=vaddvq_f32(vaddq_f32(a1,b1));
     y[2]=vaddvq_f32(vaddq_f32(a2,b2));y[3]=vaddvq_f32(vaddq_f32(a3,b3));
@@ -229,17 +197,7 @@ struct Model::Impl {
                 // weights. Output/embedding stays F16; cache avoids repeated
                 // conversion/temporary worker creation in batched prefill.
                 if(name!="model.embed_tokens.weight")t.wide.resize(rows*cols);
-                t.lossless_bf16.resize(rows*cols);bool exact_bf16=true;
-                for(size_t j=0;j<rows*cols;++j){
-                    float v=t.half[j];if(!std::isfinite(v))throw std::runtime_error("Nonfinite matrix: "+name);
-                    if(!t.wide.empty())t.wide[j]=v;
-                    const uint32_t bits=std::bit_cast<uint32_t>(v);
-                    const uint16_t encoded=static_cast<uint16_t>(bits>>16);
-                    t.lossless_bf16[j]=encoded;
-                    if((uint32_t(encoded)<<16)!=bits)exact_bf16=false;
-                }
-                // Conservative tensor-wide fallback; never round an inexact value.
-                if(!exact_bf16)std::vector<uint16_t>().swap(t.lossless_bf16);
+                for(size_t j=0;j<rows*cols;++j){float v=t.half[j];if(!std::isfinite(v))throw std::runtime_error("Nonfinite matrix: "+name);if(!t.wide.empty())t.wide[j]=v;}
             } else {
                 t.norm=reinterpret_cast<const float*>(bytes);
                 for(size_t j=0;j<rows;++j)require(std::isfinite(t.norm[j]),"Nonfinite norm: "+name);
@@ -266,13 +224,8 @@ struct Model::Impl {
         } else {
             pool.run(size_t(batch)*w.rows,[&](size_t begin,size_t end,int){
                 size_t i=begin;
-                if(batch==1&&!w.lossless_bf16.empty()) {
-                    for(;i+4<=end;i+=4)dot4_bf16(x,w.lossless_bf16.data()+i*w.cols,w.cols,y+i);
-                    for(;i<end;++i)y[i]=dot_bf16(x,w.lossless_bf16.data()+i*w.cols,w.cols);
-                } else {
-                    if(batch==1)for(;i+4<=end;i+=4)dot4(x,w.half+i*w.cols,w.cols,y+i);
-                    for(;i<end;++i)y[i]=dot(x+(i/w.rows)*w.cols,w.half+(i%w.rows)*w.cols,w.cols);
-                }
+                if(batch==1)for(;i+4<=end;i+=4)dot4(x,w.half+i*w.cols,w.cols,y+i);
+                for(;i<end;++i)y[i]=dot(x+(i/w.rows)*w.cols,w.half+(i%w.rows)*w.cols,w.cols);
             });
         }
     }
@@ -288,24 +241,13 @@ struct Model::Impl {
                 const Tensor& w=*weights[segment];const size_t limit=offset+w.rows;
                 const size_t first=std::max(begin,offset),last=std::min(end,limit);
                 size_t i=first;
-                if(!w.lossless_bf16.empty()) {
-                    for(;i+4<=last;i+=4) {
-                        const size_t row=i-offset;
-                        dot4_bf16(input,w.lossless_bf16.data()+row*w.cols,w.cols,outputs[segment]+row);
-                    }
-                    for(;i<last;++i) {
-                        const size_t row=i-offset;
-                        outputs[segment][row]=dot_bf16(input,w.lossless_bf16.data()+row*w.cols,w.cols);
-                    }
-                } else {
-                    for(;i+4<=last;i+=4) {
-                        const size_t row=i-offset;
-                        dot4(input,w.half+row*w.cols,w.cols,outputs[segment]+row);
-                    }
-                    for(;i<last;++i) {
-                        const size_t row=i-offset;
-                        outputs[segment][row]=dot(input,w.half+row*w.cols,w.cols);
-                    }
+                for(;i+4<=last;i+=4) {
+                    const size_t row=i-offset;
+                    dot4(input,w.half+row*w.cols,w.cols,outputs[segment]+row);
+                }
+                for(;i<last;++i) {
+                    const size_t row=i-offset;
+                    outputs[segment][row]=dot(input,w.half+row*w.cols,w.cols);
                 }
                 offset=limit;
             }
@@ -391,9 +333,5 @@ void Model::prefill(const std::vector<int>& ids){impl_->append(ids,true);}
 void Model::step(int token){impl_->append(std::vector<int>{token},false);}
 const std::vector<float>& Model::logits()const{return impl_->output;}
 int Model::position()const{return impl_->pos;}
-std::size_t Model::lossless_bf16_cache_bytes()const {
-    std::size_t bytes=0;
-    for(const auto& entry:impl_->tensors)bytes+=entry.second.lossless_bf16.size()*sizeof(uint16_t);
-    return bytes;
-}
+std::size_t Model::lossless_bf16_cache_bytes()const{return 0;}
 }
