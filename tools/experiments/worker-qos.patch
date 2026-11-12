@@ -1,0 +1,234 @@
+diff --git a/sim/experimental_worker_qos.h b/sim/experimental_worker_qos.h
+new file mode 100644
+index 0000000..a172745
+--- /dev/null
++++ b/sim/experimental_worker_qos.h
+@@ -0,0 +1,48 @@
++#pragma once
++// Optional scheduling experiment only; no model arithmetic or core affinity.
++#include <cstdlib>
++#include <cstring>
++#include <stdexcept>
++#include <string>
++#ifdef __APPLE__
++#include <pthread/qos.h>
++#endif
++namespace experimental_worker_qos {
++enum class Selection { unchanged, default_class, user_initiated };
++inline Selection parse(const char* value) {
++    if(!value || !*value) return Selection::unchanged;
++    if(std::strcmp(value,"DEFAULT")==0)return Selection::default_class;
++    if(std::strcmp(value,"USER_INITIATED")==0)return Selection::user_initiated;
++    throw std::runtime_error("QWEN_EXPERIMENTAL_WORKER_QOS must be DEFAULT or USER_INITIATED (or unset)");
++}
++inline const char* name(Selection value) {
++    return value==Selection::unchanged?"UNCHANGED":value==Selection::default_class?"DEFAULT":"USER_INITIATED";
++}
++struct Observation { int requested_class=-1; int relative_priority=0; };
++inline Observation observe() {
++#ifdef __APPLE__
++    qos_class_t value;int relative;
++    int error=pthread_get_qos_class_np(pthread_self(),&value,&relative);
++    if(error)throw std::runtime_error("pthread_get_qos_class_np failed: "+std::to_string(error));
++    return {int(value),relative};
++#else
++    return {};
++#endif
++}
++inline Observation configure(Selection selection) {
++#ifdef __APPLE__
++    if(selection!=Selection::unchanged) {
++        const auto desired=selection==Selection::default_class?QOS_CLASS_DEFAULT:QOS_CLASS_USER_INITIATED;
++        int error=pthread_set_qos_class_self_np(desired,0);
++        if(error)throw std::runtime_error("pthread_set_qos_class_self_np failed: "+std::to_string(error));
++        auto actual=observe();
++        if(actual.requested_class!=int(desired) || actual.relative_priority!=0)
++            throw std::runtime_error("Worker QoS readback differs from requested class");
++        return actual;
++    }
++#else
++    if(selection!=Selection::unchanged)throw std::runtime_error("Explicit worker QoS experiment requires Apple pthread QoS APIs");
++#endif
++    return observe();
++}
++}
+diff --git a/sim/full_model.cpp b/sim/full_model.cpp
+index 066ed3d..ec86270 100644
+--- a/sim/full_model.cpp
++++ b/sim/full_model.cpp
+@@ -338,6 +338,11 @@ int main(int argc,char** argv) {
+                 std::cout<<values[0]<<' '<<values[1]<<' '<<values[2]<<' '<<values[3]<<'\n'<<std::flush;
+ #endif
+ #ifdef FP32_PROJECTION_B1
++#ifdef EXPERIMENTAL_WORKER_QOS
++            } else if(command=="worker_qos") {
++                if(!pool)throw std::runtime_error("Worker QoS telemetry requires a pool");
++                std::cout<<pool->qos_report()<<'\n'<<std::flush;
++#endif
+             } else if(command=="precision") {
+ #ifdef FP32_KV
+                 std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill_fp32_kv","scalar_projection":"fp32","prefill_projection":"fp64","verification_projection":"fp32","attention_arithmetic":"fp64","kv_storage":"fp32","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
+diff --git a/sim/projection_pool.h b/sim/projection_pool.h
+index 171d67e..fd9436c 100644
+--- a/sim/projection_pool.h
++++ b/sim/projection_pool.h
+@@ -36,6 +36,10 @@
+ #include <stdexcept>
+ #include <atomic>
+ #include <array>
++#ifdef EXPERIMENTAL_WORKER_QOS
++#include "experimental_worker_qos.h"
++#include <sstream>
++#endif
+ 
+ #ifdef GROUP_PROJECTIONS
+ #include "projection_descriptors.h"
+@@ -44,6 +48,11 @@
+ extern "C" void validate_weight_span(int64_t index,int64_t count);
+ 
+ class ProjectionPool {
++#ifdef EXPERIMENTAL_WORKER_QOS
++    experimental_worker_qos::Selection qos_selection=experimental_worker_qos::parse(std::getenv("QWEN_EXPERIMENTAL_WORKER_QOS"));
++    experimental_worker_qos::Observation coordinator_qos;
++    std::vector<experimental_worker_qos::Observation> worker_qos;
++#endif
+     std::mutex mutex;
+     std::condition_variable work, complete;
+     std::vector<std::thread> threads;
+@@ -84,6 +93,9 @@ class ProjectionPool {
+     double* output=nullptr;
+     void worker(int id, int count) {
+         try {
++#ifdef EXPERIMENTAL_WORKER_QOS
++            worker_qos[id]=experimental_worker_qos::configure(qos_selection);
++#endif
+             auto context=std::make_unique<VerilatedContext>();
+             context->threads(1);
+             auto model=std::make_unique<Vprojection_worker>(context.get());
+@@ -298,6 +310,10 @@ public:
+ #endif
+         if(lanes!=1 && lanes!=8) throw std::runtime_error("Reduction lanes must be 1 or 8");
+         if(count<1 || count>32) throw std::runtime_error("Workers must be 1..32");
++#ifdef EXPERIMENTAL_WORKER_QOS
++        coordinator_qos=experimental_worker_qos::observe();
++        worker_qos.resize(count);
++#endif
+         try {
+             for(int i=0;i<count;i++) threads.emplace_back([this,i,count]{worker(i,count);});
+         } catch(...) {
+@@ -309,6 +325,21 @@ public:
+             lock.unlock();shutdown();std::rethrow_exception(error);
+         }
+     }
++#ifdef EXPERIMENTAL_WORKER_QOS
++    std::string qos_report() const {
++        // Constructor's readiness barrier publishes immutable per-worker data.
++        auto coordinator_now=experimental_worker_qos::observe();
++        std::ostringstream out;
++        out<<"{\"selector\":\""<<experimental_worker_qos::name(qos_selection)<<"\",\"coordinator_before\":"<<coordinator_qos.requested_class
++           <<",\"coordinator_now\":"<<coordinator_now.requested_class<<",\"workers\":[";
++        for(size_t i=0;i<worker_qos.size();i++) {
++            if(i)out<<',';
++            out<<"{\"id\":"<<i<<",\"requested_class\":"<<worker_qos[i].requested_class<<",\"relative_priority\":"<<worker_qos[i].relative_priority<<'}';
++        }
++        out<<"],\"observation\":\"requested QoS at startup; excludes temporary overrides and does not identify core placement\"}";
++        return out.str();
++    }
++#endif
+     void shutdown() {
+         {std::lock_guard<std::mutex> lock(mutex);stopping=true;work.notify_all();}
+         for(auto& thread:threads) if(thread.joinable()) thread.join();
+diff --git a/tests/test_worker_qos.py b/tests/test_worker_qos.py
+new file mode 100644
+index 0000000..1c4ab5a
+--- /dev/null
++++ b/tests/test_worker_qos.py
+@@ -0,0 +1,52 @@
++"""Scheduling helper checks only; no model math or performance measurements."""
++import json
++import os
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++import unittest
++ROOT=Path(__file__).resolve().parents[1]
++SOURCE=r'''
++#include "experimental_worker_qos.h"
++#include <thread>
++#include <iostream>
++int main() {
++ try {
++  using namespace experimental_worker_qos;
++  auto selection=parse(std::getenv("QWEN_EXPERIMENTAL_WORKER_QOS"));
++  auto before=observe();Observation actual;std::exception_ptr error;
++  std::thread worker([&]{try{actual=configure(selection);}catch(...){error=std::current_exception();}});
++  worker.join();if(error)std::rethrow_exception(error);
++  auto after=observe();
++  std::cout<<"{\"before\":"<<before.requested_class<<",\"after\":"<<after.requested_class
++           <<",\"worker\":"<<actual.requested_class<<",\"relative\":"<<actual.relative_priority<<"}";
++ }catch(const std::exception& error){std::cerr<<error.what();return 1;}
++}
++'''
++class WorkerQoSTests(unittest.TestCase):
++ @classmethod
++ def setUpClass(cls):
++  cls.directory=tempfile.TemporaryDirectory();root=Path(cls.directory.name)
++  source=root/'probe.cpp';source.write_text(SOURCE);cls.binary=root/'probe'
++  subprocess.run(['c++','-std=c++17','-pthread','-I'+str(ROOT/'sim'),str(source),'-o',str(cls.binary)],check=True,capture_output=True)
++ @classmethod
++ def tearDownClass(cls):cls.directory.cleanup()
++ def run_selector(self,value):
++  env=os.environ.copy();env.pop('QWEN_EXPERIMENTAL_WORKER_QOS',None)
++  if value is not None:env['QWEN_EXPERIMENTAL_WORKER_QOS']=value
++  return subprocess.run([str(self.binary)],env=env,text=True,capture_output=True)
++ def test_invalid_selector(self):
++  for value in ('user_initiated','BACKGROUND','DEFAULT ','1'):
++   result=self.run_selector(value);self.assertEqual(result.returncode,1);self.assertIn('must be DEFAULT or USER_INITIATED',result.stderr)
++ def test_unchanged(self):
++  result=self.run_selector(None);self.assertEqual(result.returncode,0,result.stderr)
++  data=json.loads(result.stdout);self.assertEqual(data['before'],data['after'])
++ def test_explicit_readback(self):
++  for selector,expected in (('DEFAULT',21),('USER_INITIATED',25)):
++   result=self.run_selector(selector)
++   if sys.platform!='darwin':self.assertEqual(result.returncode,1);continue
++   self.assertEqual(result.returncode,0,result.stderr);data=json.loads(result.stdout)
++   self.assertEqual(data['worker'],expected);self.assertEqual(data['relative'],0)
++   self.assertEqual(data['before'],data['after'])
++if __name__=='__main__':unittest.main()
+diff --git a/tools/build_projection_variant.py b/tools/build_projection_variant.py
+index e709529..ddf181b 100644
+--- a/tools/build_projection_variant.py
++++ b/tools/build_projection_variant.py
+@@ -39,6 +39,7 @@ def main():
+     parser.add_argument('--scalar-group', action='store_true')
+     parser.add_argument('--fp32-projection-b1', action='store_true', help='Experimental FP32 scalar projections with FP64 prefill/attention; no prefix reuse or block verification')
+     parser.add_argument('--fp32-verification-b4', action='store_true', help='Experimental explicit FP32 B4 verification; FP64 prefill unchanged')
++    parser.add_argument('--worker-qos-experiment', action='store_true', help='Opt-in trusted environment selector and read-only requested QoS telemetry')
+     parser.add_argument('--fp32-kv', action='store_true', help='Experimental single SV FP32 KV store; distinct no-cache profile')
+     parser.add_argument('--fp32-prefill-b8', action='store_true', help='Experimental FP32 B8 prefill and B4 tails; distinct precision profile')
+     parser.add_argument('--shortreal-compiler', default='', help='Reviewed patched Verilator root for isolated FP32 archive')
+@@ -98,6 +99,7 @@ def main():
+     if args.attention_head_pairs: tag += '-head-pairs'
+     if args.attention_value_pairs: tag += '-value-pairs'
+     if args.fp32_kv: tag += '-fp32-kv'
++    if args.worker_qos_experiment: tag = 'qos-'+hashlib.sha256(tag.encode()).hexdigest()[:16]
+     if args.tag: tag += '-'+args.tag
+     directory = ROOT / 'build/variants' / tag
+     projection, full = directory / 'projection', directory / 'full'
+@@ -112,6 +114,7 @@ def main():
+     projection.mkdir(parents=True, exist_ok=True)
+     full.mkdir(parents=True, exist_ok=True)
+     flags = '-std=c++17 -' + args.opt + (' -flto=thin' if args.lto else '')
++    if args.worker_qos_experiment: flags += ' -DEXPERIMENTAL_WORKER_QOS'
+     if args.fp32_kv: flags += ' -DFP32_KV -I'+str(kv_module)
+     if args.scalar_group: flags += ' -DSCALAR_GROUP'
+     if args.fp32_projection_b1: flags += ' -DFP32_PROJECTION_B1 -I'+str(fp32)
+@@ -218,6 +221,7 @@ def main():
+             policy='FP32 archives only use strict flags; stock worker/main/runtime retain original O3 ThinLTO/contraction. B1 FP32; attention FP64, KV storage specified by manifest kv_storage. Prefill precision and verification capacity are specified by the adjacent manifest fields.', kv_storage='fp32' if args.fp32_kv else 'fp64', kv_payload_bytes=28*4096*1024*2*(4 if args.fp32_kv else 8), verification_batch=4 if args.fp32_verification_b4 else 1, prefill_projection='fp32' if args.fp32_prefill_b8 else 'fp64', prefill_unroll_count=1 if args.fp32_prefill_b8 else None)
+     sources = ['rtl/projection_worker.sv', 'rtl/qwen_behavioral.sv', 'rtl/sampling.svh',
+                'sim/full_model.cpp', 'sim/projection_pool.h', 'sim/projection_descriptors.h', 'tools/build_projection_variant.py']
++    if args.worker_qos_experiment:sources.append('sim/experimental_worker_qos.h')
+     if args.fp32_kv:sources.append('rtl/fp32_kv_store.sv')
+     if args.fp32_projection_b1:sources.append('rtl/fp32_projection_kernel.sv')
+     def source_hashes():

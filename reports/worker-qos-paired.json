@@ -1,0 +1,3324 @@
+{
+  "variant_options": [
+    {
+      "storage": "scalar",
+      "lto": true,
+      "unchecked": true,
+      "opt": "O3",
+      "fp_contract": "on",
+      "fast_math": false,
+      "unroll": false,
+      "masked_activation": true,
+      "unsigned_indices": true,
+      "cpu": "generic",
+      "fast_attention": true,
+      "parallel_attention": true,
+      "attention_qk2": true,
+      "attention_value_pairs": true,
+      "attention_head_pairs": true,
+      "batch_attention": true,
+      "attention_dot_lanes8": false,
+      "batched_prefill": true,
+      "block_unroll": true,
+      "compact_projection": true,
+      "prefill_b8": true,
+      "group_projections": true,
+      "static_kv": true,
+      "pool": "cv",
+      "scalar_group": true,
+      "fp32_projection_b1": true,
+      "fp32_verification_b4": true,
+      "worker_qos_experiment": true,
+      "fp32_kv": false,
+      "fp32_prefill_b8": false,
+      "shortreal_compiler": "$WORKSPACE/verilator-shortreal",
+      "tag": "",
+      "print_path": false
+    },
+    {
+      "storage": "scalar",
+      "lto": true,
+      "unchecked": true,
+      "opt": "O3",
+      "fp_contract": "on",
+      "fast_math": false,
+      "unroll": false,
+      "masked_activation": true,
+      "unsigned_indices": true,
+      "cpu": "generic",
+      "fast_attention": true,
+      "parallel_attention": true,
+      "attention_qk2": true,
+      "attention_value_pairs": true,
+      "attention_head_pairs": true,
+      "batch_attention": true,
+      "attention_dot_lanes8": false,
+      "batched_prefill": true,
+      "block_unroll": true,
+      "compact_projection": true,
+      "prefill_b8": true,
+      "group_projections": true,
+      "static_kv": true,
+      "pool": "cv",
+      "scalar_group": true,
+      "fp32_projection_b1": true,
+      "fp32_verification_b4": true,
+      "worker_qos_experiment": true,
+      "fp32_kv": false,
+      "fp32_prefill_b8": false,
+      "shortreal_compiler": "$WORKSPACE/verilator-shortreal",
+      "tag": "",
+      "print_path": false
+    }
+  ],
+  "completed": true,
+  "gpu": false,
+  "pytorch": false,
+  "workers": 8,
+  "tokens": 32,
+  "timestamp_utc": "2026-11-12T01:50:32Z",
+  "binaries": [
+    {
+      "path": "$WORKSPACE/fpga-qwen-worker-qos/build/variants/qos-b3eaa86c6c880192/full/Vqwen_behavioral",
+      "sha256": "aeb20b090143b5b80c5a7e14e664f7c24f6e2322be330d1d692e4de7dd6a3074"
+    },
+    {
+      "path": "$WORKSPACE/fpga-qwen-worker-qos/build/variants/qos-b3eaa86c6c880192/full/Vqwen_behavioral",
+      "sha256": "aeb20b090143b5b80c5a7e14e664f7c24f6e2322be330d1d692e4de7dd6a3074"
+    }
+  ],
+  "model_provenance": {
+    "same_original_checkpoint_for_both_engines": true,
+    "original_checkpoint": {
+      "filename": "model.safetensors",
+      "bytes": 1503300328,
+      "sha256": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+    },
+    "config_tokenizer_template_files": {
+      "config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+      "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+      "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+    },
+    "chat_protocol_source_sha256": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e",
+    "candidate_artifact_limitation": "External quantized weights/calibration artifacts are not discovered automatically; supply their separate manifest before claiming full candidate reproducibility."
+  },
+  "source_hashes": {
+    "compare_worker_qos.py": "ec9522188c075d421c058e270364f223445ee4e837ac96a64533c203f36af56f",
+    "compare_attention_dot.py": "e992c29d910a2f706dd4cf42f2cbdb59eb9c53e7b256af2260d454337d2f5a01",
+    "benchmark_matched.py": "fe8d1b98885f4513623f14689a37fc97d36b9dbec707538caa5e3f272e9dfe60",
+    "rtl_model.py": "b92864b0ec4a7411cc10c6776e6e989558556bfea2f9b873639140df663b79cd",
+    "check_worker_qos_real.py": "dfb1cae7a63eef38a0b29815e10fc1ac4a6ab3c15fd5e11dc8a6d0a31f7d0adb"
+  },
+  "selectors": [
+    "DEFAULT",
+    "USER_INITIATED"
+  ],
+  "policy": "Both requests reset KV and prefill prompt[:-1] in canonical chunks8 with B4 tails; Both use FP64 prefill projections and FP32 scalar final-prompt/decode. Both retain batched prefill attention; Identical compiled math and8workers; only worker startup QoS selector changes DEFAULT to USER_INITIATED. Coordinator untouched, no core placement guarantee. No prefix reuse or suffix verification.",
+  "limitations": "Two resident models; sequential warmed inference in alternating order. Direct acknowledged/closed dumps preserve worker pools after warmup. No OS cache eviction or hard host isolation. Full-logit bits and fixed greedy IDs must match; separate causal/cache/sampled verification gates required.",
+  "profiles": [
+    {
+      "profile": "short",
+      "prompt_ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "prompt_tokens": 85,
+      "warmup": [
+        {
+          "prefill_seconds": 0.6742952499771491,
+          "ttft_seconds": 0.6943487079697661,
+          "decode_seconds": 0.5137935419916175,
+          "decode_tokens_per_second": 60.33551897097562,
+          "total_seconds": 1.2081422499613836,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "final_position": 116,
+          "qos_before": {
+            "selector": "DEFAULT",
+            "coordinator_before": 33,
+            "coordinator_now": 33,
+            "workers": [
+              {
+                "id": 0,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 1,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 2,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 3,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 4,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 5,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 6,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 7,
+                "requested_class": 21,
+                "relative_priority": 0
+              }
+            ],
+            "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+          },
+          "qos_after": {
+            "selector": "DEFAULT",
+            "coordinator_before": 33,
+            "coordinator_now": 33,
+            "workers": [
+              {
+                "id": 0,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 1,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 2,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 3,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 4,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 5,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 6,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 7,
+                "requested_class": 21,
+                "relative_priority": 0
+              }
+            ],
+            "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+          },
+          "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+        },
+        {
+          "prefill_seconds": 0.6691012920346111,
+          "ttft_seconds": 0.6915141670033336,
+          "decode_seconds": 0.4505126249860041,
+          "decode_tokens_per_second": 68.81050226053723,
+          "total_seconds": 1.1420267919893377,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "final_position": 116,
+          "qos_before": {
+            "selector": "USER_INITIATED",
+            "coordinator_before": 33,
+            "coordinator_now": 33,
+            "workers": [
+              {
+                "id": 0,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 1,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 2,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 3,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 4,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 5,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 6,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 7,
+                "requested_class": 25,
+                "relative_priority": 0
+              }
+            ],
+            "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+          },
+          "qos_after": {
+            "selector": "USER_INITIATED",
+            "coordinator_before": 33,
+            "coordinator_now": 33,
+            "workers": [
+              {
+                "id": 0,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 1,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 2,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 3,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 4,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 5,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 6,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 7,
+                "requested_class": 25,
+                "relative_priority": 0
+              }
+            ],
+            "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+          },
+          "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+        }
+      ],
+      "warm_full_logits": {
+        "max_absolute_logit_error": 0.0,
+        "rms_logit_error": 0.0,
+        "full_vocabulary_size": 151936,
+        "top1_ids": [
+          13340,
+          13340
+        ],
+        "bit_identical": true,
+        "interpretation": "Exact full-vocabulary equality required for unchanged per-query arithmetic."
+      },
+      "pairs": [
+        {
+          "index": 0,
+          "order": [
+            0,
+            1
+          ],
+          "baseline": {
+            "prefill_seconds": 0.6655194580089301,
+            "ttft_seconds": 0.6801120419986546,
+            "decode_seconds": 0.48555679101264104,
+            "decode_tokens_per_second": 63.84423114616256,
+            "total_seconds": 1.1656688330112956,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "qos_before": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "candidate": {
+            "prefill_seconds": 0.7523208330385387,
+            "ttft_seconds": 0.7715765000320971,
+            "decode_seconds": 0.4716250830097124,
+            "decode_tokens_per_second": 65.7301766101393,
+            "total_seconds": 1.2432015830418095,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "qos_before": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "ratios": {
+            "prefill_seconds": 0.8846218644789781,
+            "ttft_seconds": 0.8814576933983376,
+            "decode_seconds": 1.029539794435916,
+            "total_seconds": 0.9376346112423617
+          }
+        },
+        {
+          "index": 1,
+          "order": [
+            1,
+            0
+          ],
+          "baseline": {
+            "prefill_seconds": 0.7231367920176126,
+            "ttft_seconds": 0.7425296669825912,
+            "decode_seconds": 0.578337041020859,
+            "decode_tokens_per_second": 53.60196183401975,
+            "total_seconds": 1.3208667080034502,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "qos_before": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "candidate": {
+            "prefill_seconds": 0.6681948750047013,
+            "ttft_seconds": 0.6824506249977276,
+            "decode_seconds": 0.48514358402462676,
+            "decode_tokens_per_second": 63.89860861980684,
+            "total_seconds": 1.1675942090223543,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "qos_before": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "ratios": {
+            "prefill_seconds": 1.0822243915183047,
+            "ttft_seconds": 1.0880342691239584,
+            "decode_seconds": 1.1920945882106144,
+            "total_seconds": 1.1312720616432599
+          }
+        },
+        {
+          "index": 2,
+          "order": [
+            0,
+            1
+          ],
+          "baseline": {
+            "prefill_seconds": 0.7247995000216179,
+            "ttft_seconds": 0.7439189170254394,
+            "decode_seconds": 0.5125539170112461,
+            "decode_tokens_per_second": 60.481441992998796,
+            "total_seconds": 1.2564728340366855,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "qos_before": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "candidate": {
+            "prefill_seconds": 0.7161155000212602,
+            "ttft_seconds": 0.7326899589970708,
+            "decode_seconds": 0.49691670801257715,
+            "decode_tokens_per_second": 62.38470049434397,
+            "total_seconds": 1.229606667009648,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "qos_before": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "ratios": {
+            "prefill_seconds": 1.0121265354542666,
+            "ttft_seconds": 1.015325661134676,
+            "decode_seconds": 1.0314684709661104,
+            "total_seconds": 1.021849399281784
+          }
+        }
+      ],
+      "median_ratios": {
+        "prefill_seconds": 1.0121265354542666,
+        "ttft_seconds": 1.015325661134676,
+        "decode_seconds": 1.0314684709661104,
+        "total_seconds": 1.021849399281784
+      },
+      "ratio_ranges": {
+        "prefill_seconds": [
+          0.8846218644789781,
+          1.0822243915183047
+        ],
+        "ttft_seconds": [
+          0.8814576933983376,
+          1.0880342691239584
+        ],
+        "decode_seconds": [
+          1.029539794435916,
+          1.1920945882106144
+        ],
+        "total_seconds": [
+          0.9376346112423617,
+          1.1312720616432599
+        ]
+      },
+      "final_full_logits": {
+        "max_absolute_logit_error": 0.0,
+        "rms_logit_error": 0.0,
+        "full_vocabulary_size": 151936,
+        "top1_ids": [
+          13340,
+          13340
+        ],
+        "bit_identical": true,
+        "interpretation": "Exact full-vocabulary equality required for unchanged per-query arithmetic."
+      }
+    },
+    {
+      "profile": "long",
+      "prompt_ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        81917,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "prompt_tokens": 452,
+      "warmup": [
+        {
+          "prefill_seconds": 4.4107755000004545,
+          "ttft_seconds": 4.432402374979574,
+          "decode_seconds": 0.7048862079973333,
+          "decode_tokens_per_second": 43.97872968471711,
+          "total_seconds": 5.1372885829769075,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            374,
+            22409,
+            1948,
+            264,
+            17654,
+            323,
+            4938,
+            11,
+            1393,
+            47430,
+            374,
+            264,
+            943,
+            315,
+            4938,
+            6240,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264
+          ],
+          "final_position": 483,
+          "qos_before": {
+            "selector": "DEFAULT",
+            "coordinator_before": 33,
+            "coordinator_now": 33,
+            "workers": [
+              {
+                "id": 0,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 1,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 2,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 3,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 4,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 5,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 6,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 7,
+                "requested_class": 21,
+                "relative_priority": 0
+              }
+            ],
+            "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+          },
+          "qos_after": {
+            "selector": "DEFAULT",
+            "coordinator_before": 33,
+            "coordinator_now": 33,
+            "workers": [
+              {
+                "id": 0,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 1,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 2,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 3,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 4,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 5,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 6,
+                "requested_class": 21,
+                "relative_priority": 0
+              },
+              {
+                "id": 7,
+                "requested_class": 21,
+                "relative_priority": 0
+              }
+            ],
+            "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+          },
+          "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+        },
+        {
+          "prefill_seconds": 4.622236500028521,
+          "ttft_seconds": 4.64404275000561,
+          "decode_seconds": 0.6617997910361737,
+          "decode_tokens_per_second": 46.84196099769628,
+          "total_seconds": 5.305842541041784,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            374,
+            22409,
+            1948,
+            264,
+            17654,
+            323,
+            4938,
+            11,
+            1393,
+            47430,
+            374,
+            264,
+            943,
+            315,
+            4938,
+            6240,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264
+          ],
+          "final_position": 483,
+          "qos_before": {
+            "selector": "USER_INITIATED",
+            "coordinator_before": 33,
+            "coordinator_now": 33,
+            "workers": [
+              {
+                "id": 0,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 1,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 2,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 3,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 4,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 5,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 6,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 7,
+                "requested_class": 25,
+                "relative_priority": 0
+              }
+            ],
+            "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+          },
+          "qos_after": {
+            "selector": "USER_INITIATED",
+            "coordinator_before": 33,
+            "coordinator_now": 33,
+            "workers": [
+              {
+                "id": 0,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 1,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 2,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 3,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 4,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 5,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 6,
+                "requested_class": 25,
+                "relative_priority": 0
+              },
+              {
+                "id": 7,
+                "requested_class": 25,
+                "relative_priority": 0
+              }
+            ],
+            "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+          },
+          "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+        }
+      ],
+      "warm_full_logits": {
+        "max_absolute_logit_error": 0.0,
+        "rms_logit_error": 0.0,
+        "full_vocabulary_size": 151936,
+        "top1_ids": [
+          264,
+          264
+        ],
+        "bit_identical": true,
+        "interpretation": "Exact full-vocabulary equality required for unchanged per-query arithmetic."
+      },
+      "pairs": [
+        {
+          "index": 0,
+          "order": [
+            0,
+            1
+          ],
+          "baseline": {
+            "prefill_seconds": 4.345877667015884,
+            "ttft_seconds": 4.36642999999458,
+            "decode_seconds": 0.6593425829778425,
+            "decode_tokens_per_second": 47.01652949517105,
+            "total_seconds": 5.025772582972422,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "qos_before": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "candidate": {
+            "prefill_seconds": 4.350773541955277,
+            "ttft_seconds": 4.370704999950249,
+            "decode_seconds": 0.6453339169966057,
+            "decode_tokens_per_second": 48.03714663607717,
+            "total_seconds": 5.016038916946854,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "qos_before": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "ratios": {
+            "prefill_seconds": 0.998874711613422,
+            "ttft_seconds": 0.9990218969352272,
+            "decode_seconds": 1.0217076239327902,
+            "total_seconds": 1.001940508474263
+          }
+        },
+        {
+          "index": 1,
+          "order": [
+            1,
+            0
+          ],
+          "baseline": {
+            "prefill_seconds": 4.28070950001711,
+            "ttft_seconds": 4.3004392919829115,
+            "decode_seconds": 0.6469063750118949,
+            "decode_tokens_per_second": 47.920381058897426,
+            "total_seconds": 4.947345666994806,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "qos_before": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "candidate": {
+            "prefill_seconds": 4.358260540990159,
+            "ttft_seconds": 4.378375832980964,
+            "decode_seconds": 0.6451516250381246,
+            "decode_tokens_per_second": 48.05071985700739,
+            "total_seconds": 5.023527458019089,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "qos_before": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "ratios": {
+            "prefill_seconds": 0.9822059649156657,
+            "ttft_seconds": 0.9821996685595191,
+            "decode_seconds": 1.002719903206733,
+            "total_seconds": 0.984835000572621
+          }
+        },
+        {
+          "index": 2,
+          "order": [
+            0,
+            1
+          ],
+          "baseline": {
+            "prefill_seconds": 4.322451500047464,
+            "ttft_seconds": 4.342152125027496,
+            "decode_seconds": 0.6352682500146329,
+            "decode_tokens_per_second": 48.798283243788646,
+            "total_seconds": 4.977420375042129,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "qos_before": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "DEFAULT",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 21,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "candidate": {
+            "prefill_seconds": 4.329422208014876,
+            "ttft_seconds": 4.349724458006676,
+            "decode_seconds": 0.613608000043314,
+            "decode_tokens_per_second": 50.5208537010791,
+            "total_seconds": 4.96333245804999,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "qos_before": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_after": {
+              "selector": "USER_INITIATED",
+              "coordinator_before": 33,
+              "coordinator_now": 33,
+              "workers": [
+                {
+                  "id": 0,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 1,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 2,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 3,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 4,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 5,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 6,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                },
+                {
+                  "id": 7,
+                  "requested_class": 25,
+                  "relative_priority": 0
+                }
+              ],
+              "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+            },
+            "qos_scope": "worker observations are cached startup requested classes; coordinator_now is queried live; no effective in-flight scheduling or placement measurement"
+          },
+          "ratios": {
+            "prefill_seconds": 0.9983899218804516,
+            "ttft_seconds": 0.9982591235255739,
+            "decode_seconds": 1.0352998167719294,
+            "total_seconds": 1.0028383988199883
+          }
+        }
+      ],
+      "median_ratios": {
+        "prefill_seconds": 0.9983899218804516,
+        "ttft_seconds": 0.9982591235255739,
+        "decode_seconds": 1.0217076239327902,
+        "total_seconds": 1.001940508474263
+      },
+      "ratio_ranges": {
+        "prefill_seconds": [
+          0.9822059649156657,
+          0.998874711613422
+        ],
+        "ttft_seconds": [
+          0.9821996685595191,
+          0.9990218969352272
+        ],
+        "decode_seconds": [
+          1.002719903206733,
+          1.0352998167719294
+        ],
+        "total_seconds": [
+          0.984835000572621,
+          1.0028383988199883
+        ]
+      },
+      "final_full_logits": {
+        "max_absolute_logit_error": 0.0,
+        "rms_logit_error": 0.0,
+        "full_vocabulary_size": 151936,
+        "top1_ids": [
+          264,
+          264
+        ],
+        "bit_identical": true,
+        "interpretation": "Exact full-vocabulary equality required for unchanged per-query arithmetic."
+      }
+    }
+  ],
+  "startup_seconds": [
+    0.1258307080133818,
+    0.09703112504212186
+  ],
+  "qos_readback": [
+    {
+      "selector": "DEFAULT",
+      "coordinator_before": 33,
+      "coordinator_now": 33,
+      "workers": [
+        {
+          "id": 0,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 1,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 2,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 3,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 4,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 5,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 6,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 7,
+          "requested_class": 21,
+          "relative_priority": 0
+        }
+      ],
+      "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+    },
+    {
+      "selector": "USER_INITIATED",
+      "coordinator_before": 33,
+      "coordinator_now": 33,
+      "workers": [
+        {
+          "id": 0,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 1,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 2,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 3,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 4,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 5,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 6,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 7,
+          "requested_class": 25,
+          "relative_priority": 0
+        }
+      ],
+      "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+    }
+  ],
+  "engines": [
+    {
+      "weight_storage": "BF16 checkpoint",
+      "arithmetic": "SV FP32 scalar projections; FP64 prefill projections; FP64 attention and other model arithmetic",
+      "kv": "SystemVerilog real / FP64",
+      "parallel_workers": 8,
+      "reduction_lanes": 8,
+      "prefill_block_size": 8,
+      "verification_block_size": 1,
+      "wide_prefill_reduction_lanes": 4,
+      "executable": "$WORKSPACE/fpga-qwen-worker-qos/build/variants/qos-b3eaa86c6c880192/full/Vqwen_behavioral",
+      "cpu_thread_note": "Persistent projection workers plus coordinator; no GPU",
+      "precision_profile": "fp32_b1_fp64_prefill",
+      "routing": "Fresh FP64 B8 prompt[:-1] with B4 tails, then FP32 B1 final prompt token and decode; no prefix reuse or suffix verification",
+      "verified_runtime_capabilities": {
+        "precision_profile": "fp32_b1_fp64_prefill",
+        "scalar_projection": "fp32",
+        "prefill_projection": "fp64",
+        "verification_projection": "fp32",
+        "attention_kv": "fp64",
+        "max_verification_block": 4,
+        "prefix_reuse_supported": false,
+        "canonical_prefix_policy": "fp64_b8_aligned_v1"
+      }
+    },
+    {
+      "weight_storage": "BF16 checkpoint",
+      "arithmetic": "SV FP32 scalar projections; FP64 prefill projections; FP64 attention and other model arithmetic",
+      "kv": "SystemVerilog real / FP64",
+      "parallel_workers": 8,
+      "reduction_lanes": 8,
+      "prefill_block_size": 8,
+      "verification_block_size": 1,
+      "wide_prefill_reduction_lanes": 4,
+      "executable": "$WORKSPACE/fpga-qwen-worker-qos/build/variants/qos-b3eaa86c6c880192/full/Vqwen_behavioral",
+      "cpu_thread_note": "Persistent projection workers plus coordinator; no GPU",
+      "precision_profile": "fp32_b1_fp64_prefill",
+      "routing": "Fresh FP64 B8 prompt[:-1] with B4 tails, then FP32 B1 final prompt token and decode; no prefix reuse or suffix verification",
+      "verified_runtime_capabilities": {
+        "precision_profile": "fp32_b1_fp64_prefill",
+        "scalar_projection": "fp32",
+        "prefill_projection": "fp64",
+        "verification_projection": "fp32",
+        "attention_kv": "fp64",
+        "max_verification_block": 4,
+        "prefix_reuse_supported": false,
+        "canonical_prefix_policy": "fp64_b8_aligned_v1"
+      }
+    }
+  ],
+  "qos_final_readback": [
+    {
+      "selector": "DEFAULT",
+      "coordinator_before": 33,
+      "coordinator_now": 33,
+      "workers": [
+        {
+          "id": 0,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 1,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 2,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 3,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 4,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 5,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 6,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 7,
+          "requested_class": 21,
+          "relative_priority": 0
+        }
+      ],
+      "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+    },
+    {
+      "selector": "USER_INITIATED",
+      "coordinator_before": 33,
+      "coordinator_now": 33,
+      "workers": [
+        {
+          "id": 0,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 1,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 2,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 3,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 4,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 5,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 6,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 7,
+          "requested_class": 25,
+          "relative_priority": 0
+        }
+      ],
+      "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+    }
+  ]
+}

@@ -1,0 +1,258 @@
+{
+  "completed": true,
+  "cases": [
+    {
+      "profile": "short",
+      "engine": 0,
+      "ids": [
+        10642,
+        33394,
+        19257,
+        311
+      ],
+      "position": 88,
+      "full_logits_sha256": "016fbfc5f504ec1497d165031667428043f4c4bf595652f1a482a9c30800e22b",
+      "exact": true
+    },
+    {
+      "profile": "short",
+      "engine": 1,
+      "ids": [
+        10642,
+        33394,
+        19257,
+        311
+      ],
+      "position": 88,
+      "full_logits_sha256": "016fbfc5f504ec1497d165031667428043f4c4bf595652f1a482a9c30800e22b",
+      "exact": true
+    },
+    {
+      "profile": "short",
+      "engine": 2,
+      "ids": [
+        10642,
+        33394,
+        19257,
+        311
+      ],
+      "position": 88,
+      "full_logits_sha256": "016fbfc5f504ec1497d165031667428043f4c4bf595652f1a482a9c30800e22b",
+      "exact": true
+    },
+    {
+      "profile": "short",
+      "engine": 3,
+      "ids": [
+        10642,
+        33394,
+        19257,
+        311
+      ],
+      "position": 88,
+      "full_logits_sha256": "016fbfc5f504ec1497d165031667428043f4c4bf595652f1a482a9c30800e22b",
+      "exact": true
+    },
+    {
+      "profile": "long",
+      "engine": 0,
+      "ids": [
+        10642,
+        33394,
+        19257,
+        311
+      ],
+      "position": 455,
+      "full_logits_sha256": "b2bfaf4d12430f4201fe360f8833d2634773c12cf5943c643c196fbea9579046",
+      "exact": true
+    },
+    {
+      "profile": "long",
+      "engine": 1,
+      "ids": [
+        10642,
+        33394,
+        19257,
+        311
+      ],
+      "position": 455,
+      "full_logits_sha256": "b2bfaf4d12430f4201fe360f8833d2634773c12cf5943c643c196fbea9579046",
+      "exact": true
+    },
+    {
+      "profile": "long",
+      "engine": 2,
+      "ids": [
+        10642,
+        33394,
+        19257,
+        311
+      ],
+      "position": 455,
+      "full_logits_sha256": "b2bfaf4d12430f4201fe360f8833d2634773c12cf5943c643c196fbea9579046",
+      "exact": true
+    },
+    {
+      "profile": "long",
+      "engine": 3,
+      "ids": [
+        10642,
+        33394,
+        19257,
+        311
+      ],
+      "position": 455,
+      "full_logits_sha256": "b2bfaf4d12430f4201fe360f8833d2634773c12cf5943c643c196fbea9579046",
+      "exact": true
+    }
+  ],
+  "telemetry": [
+    {
+      "selector": "UNCHANGED",
+      "coordinator_before": 33,
+      "coordinator_now": 33,
+      "workers": [
+        {
+          "id": 0,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 1,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 2,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 3,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 4,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 5,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 6,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 7,
+          "requested_class": 21,
+          "relative_priority": 0
+        }
+      ],
+      "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+    },
+    {
+      "selector": "DEFAULT",
+      "coordinator_before": 33,
+      "coordinator_now": 33,
+      "workers": [
+        {
+          "id": 0,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 1,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 2,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 3,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 4,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 5,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 6,
+          "requested_class": 21,
+          "relative_priority": 0
+        },
+        {
+          "id": 7,
+          "requested_class": 21,
+          "relative_priority": 0
+        }
+      ],
+      "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+    },
+    {
+      "selector": "USER_INITIATED",
+      "coordinator_before": 33,
+      "coordinator_now": 33,
+      "workers": [
+        {
+          "id": 0,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 1,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 2,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 3,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 4,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 5,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 6,
+          "requested_class": 25,
+          "relative_priority": 0
+        },
+        {
+          "id": 7,
+          "requested_class": 25,
+          "relative_priority": 0
+        }
+      ],
+      "observation": "requested QoS at startup; excludes temporary overrides and does not identify core placement"
+    }
+  ],
+  "binary_sha256": "aeb20b090143b5b80c5a7e14e664f7c24f6e2322be330d1d692e4de7dd6a3074",
+  "reference_sha256": "f17ae654f0c64ac47b63225a3406edc8bcd114cc86e67d56610090bf5d7c075d",
+  "invalid_selector_rejected": true
+}
