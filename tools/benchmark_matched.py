@@ -50,7 +50,7 @@ def timing_result(start, arrivals, ids, text, stopped, backend_timings=None):
 
 class SVEngine:
     def __init__(self, checkpoint, threads, tokenizer, binary=None, lanes=1, block_size=1, prefill_size=None, precision_profile='fp64', verification_capacity=1):
-        if precision_profile not in ('fp64', 'fp32_b1_fp64_prefill', 'fp32_b1_fp32_prefill'):
+        if precision_profile not in ('fp64', 'fp32_b1_fp64_prefill', 'fp32_b1_fp32_prefill', 'fp32_b1_fp64_prefill_fp32_kv'):
             raise ValueError('Unknown simulator precision profile')
         if precision_profile != 'fp64' and (not threads or lanes != 8 or block_size != 1 or prefill_size != 8):
             raise ValueError('Hybrid timing requires workers, eight lanes, B8 prefill and B1 decode')
@@ -68,6 +68,8 @@ class SVEngine:
                              executable=str(binary or ROOT/'build/full/Vqwen_behavioral'),
                              cpu_thread_note='Persistent projection workers plus coordinator; no GPU')
         self.metadata['precision_profile'] = precision_profile
+        if precision_profile == 'fp32_b1_fp64_prefill_fp32_kv':
+            self.metadata['kv'] = 'SystemVerilog shortreal / FP32 storage, exact FP64 widening for attention'
         if precision_profile != 'fp64':
             prefill_precision = 'FP32' if precision_profile == 'fp32_b1_fp32_prefill' else 'FP64'
             self.metadata['arithmetic'] = f'SV FP32 scalar projections; {prefill_precision} prefill projections; FP64 attention and other model arithmetic'
@@ -81,6 +83,9 @@ class SVEngine:
             expected = dict(precision_profile=self.precision_profile, scalar_projection='fp32',
                             prefill_projection='fp32' if self.precision_profile == 'fp32_b1_fp32_prefill' else 'fp64', attention_kv='fp64',
                             max_verification_block=self.verification_capacity, prefix_reuse_supported=False)
+            if self.precision_profile == 'fp32_b1_fp64_prefill_fp32_kv':
+                expected.pop('attention_kv')
+                expected.update(attention_arithmetic='fp64',kv_storage='fp32',canonical_prefix_policy='none')
             if self.verification_capacity == 4:expected['verification_projection']='fp32'
             if self.precision_profile == 'fp32_b1_fp32_prefill':expected['canonical_prefix_policy']='none'
             if not isinstance(capabilities, dict) or any(
