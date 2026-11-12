@@ -60,3 +60,21 @@ long totals improved (1.050–1.101x). Short prefill improved 1.029x, but total
 speedup was 0.983x (0.861–0.991x), with slower decode in all three short pairs.
 These are per-pair ratio medians, not multiplied component gains. The cause of
 the decode regression is unproven. No default or UI promotion is made.
+
+### Context-aware dispatch experiment
+
+`--attention-query-value-dispatch` adds both value paths to one executable.
+Trusted process configuration `QWEN_EXPERIMENTAL_QUERY_VALUE_PAIRS` selects `OFF`
+(default), `ON`, or `MIN_CONTEXT:N` (1–4096). SystemVerilog branches on the actual
+common causal KV window for each query pair and requires a second query; an odd
+singleton retains the original path. This is experimental and not selected by
+the browser. The `query_value_policy` command reports policy and actual SV route
+counters across both worker pools.
+
+Frozen executable `a3459b7dbf1d08e47923005283449cd5b8bd090f304fea94cc6a97b056a2be18`
+compiled successfully. Forced OFF passed 60 exact full-vocabulary comparisons
+against deployed `6c9ab44b`, including tails, sampled/no-logit verification and
+scalar continuation at prefixes 0/63/451. See the `query-value-dispatch-build`
+and `query-value-dispatch-reference-gates` reports. Three-policy threshold,
+capacity, lifecycle and performance checks remain pending. No crossover or
+speed improvement is established for this binary.
