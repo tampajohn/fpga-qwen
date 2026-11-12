@@ -5,6 +5,9 @@ static constexpr int block_capacity=4;
 #endif
 // Transport-only harness: map checkpoint bytes, supply tensor addresses, clock
 // Verilator, and exchange integer token IDs. No neural-network arithmetic here.
+#if defined(FP32_FMA_CANONICAL_PREFIX) && !defined(FP32_PREFILL_FMA)
+#error "Fused canonical prefix capability requires fused FP32 prefill"
+#endif
 #include "Vqwen_behavioral.h"
 #include "Vqwen_behavioral___024root.h"
 #include "Vqwen_behavioral__Dpi.h"
@@ -423,7 +426,11 @@ int main(int argc,char** argv) {
 #ifdef FP32_KV
                 std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill_fp32_kv","scalar_projection":"fp32","prefill_projection":"fp64","verification_projection":"fp32","attention_arithmetic":"fp64","kv_storage":"fp32","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
 #elif defined(FP32_PREFILL_FMA)
+#ifdef FP32_FMA_CANONICAL_PREFIX
+                std::cout<<R"({"precision_profile":"fp32_b1_fp32_fma_prefill","scalar_projection":"fp32","prefill_projection":"fp32","verification_projection":"fp32","vocabulary_projection":"fp32","scalar_accumulation":"separate","prefill_accumulation":"fused","verification_accumulation":"separate","vocabulary_accumulation":"separate","attention_kv":"fp64","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"fp32_fma_b8_aligned_v1"})"<<'\n'<<std::flush;
+#else
                 std::cout<<R"({"precision_profile":"fp32_b1_fp32_fma_prefill","scalar_projection":"fp32","prefill_projection":"fp32","verification_projection":"fp32","vocabulary_projection":"fp32","scalar_accumulation":"separate","prefill_accumulation":"fused","verification_accumulation":"separate","vocabulary_accumulation":"separate","attention_kv":"fp64","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
+#endif
 #elif defined(FP32_PREFILL_B8)
                 std::cout<<R"({"precision_profile":"fp32_b1_fp32_prefill","scalar_projection":"fp32","prefill_projection":"fp32","verification_projection":"fp32","attention_kv":"fp64","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
 #elif defined(FP32_VERIFICATION_B4)

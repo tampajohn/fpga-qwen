@@ -7,12 +7,12 @@ try:
     from .chat_protocol import ChatProtocol, common_prefix
     from .rtl_model import RTLModel, SimulationCancelled
     from .suffix import SuffixDrafter, greedy_accept
-    from .canonical_prefix import CanonicalPrefix, POLICY
+    from .canonical_prefix import CanonicalPrefix, POLICY, FMA_POLICY, PROFILE_POLICIES
 except ImportError:
     from chat_protocol import ChatProtocol, common_prefix
     from rtl_model import RTLModel, SimulationCancelled
     from suffix import SuffixDrafter, greedy_accept
-    from canonical_prefix import CanonicalPrefix, POLICY
+    from canonical_prefix import CanonicalPrefix, POLICY, FMA_POLICY, PROFILE_POLICIES
 
 
 class RTLChatEngine(ChatProtocol):
@@ -21,8 +21,8 @@ class RTLChatEngine(ChatProtocol):
             raise ValueError('Unknown precision profile')
         if type(canonical_prefix_reuse) is not bool:
             raise ValueError('canonical_prefix_reuse must be a boolean')
-        if canonical_prefix_reuse and precision_profile != 'fp32_b1_fp64_prefill':
-            raise ValueError('Canonical reuse requires the explicit hybrid profile')
+        if canonical_prefix_reuse and precision_profile not in PROFILE_POLICIES:
+            raise ValueError('Canonical reuse requires an explicit supported precision profile')
         self.canonical_prefix = CanonicalPrefix() if canonical_prefix_reuse else None
         self.precision_profile = precision_profile
         self.precision_verified = False
@@ -60,7 +60,7 @@ class RTLChatEngine(ChatProtocol):
                     prefill_block_size=self.sim.prefill_size, suffix_supported=self.sim.block_size == 4,
                     max_verified_draft=self.sim.block_size-1,
                     prefix_reuse_enabled=self.reuse_prefix or self.canonical_prefix is not None,
-                    canonical_prefix_policy=POLICY if self.canonical_prefix is not None else None,
+                    canonical_prefix_policy=PROFILE_POLICIES[self.precision_profile] if self.canonical_prefix is not None else None,
                     canonical_reusable_tokens=self.canonical_prefix.end if self.canonical_prefix else 0, cached_tokens=len(self.cache_ids), pytorch_loaded=('torch' in sys.modules))
 
     def close(self):
@@ -80,17 +80,21 @@ class RTLChatEngine(ChatProtocol):
         if self.sim.block_size == 4:
             expected['verification_projection']='fp32'
         if self.precision_profile in ('fp32_b1_fp32_prefill','fp32_b1_fp64_prefill_fp32_kv','fp32_b1_fp32_fma_prefill'):
-            expected['canonical_prefix_policy']='none'
+            expected['canonical_prefix_policy']=(PROFILE_POLICIES[self.precision_profile] if self.canonical_prefix is not None else 'none')
         if self.precision_profile == 'fp32_b1_fp64_prefill_fp32_kv':
             del expected['attention_kv']
             expected.update(attention_arithmetic='fp64',kv_storage='fp32')
         if self.precision_profile == 'fp32_b1_fp32_fma_prefill':
             expected.update(prefill_accumulation='fused',scalar_accumulation='separate',verification_accumulation='separate',vocabulary_projection='fp32',vocabulary_accumulation='separate')
+        if self.precision_profile == 'fp32_b1_fp32_fma_prefill' and self.canonical_prefix is None:
+            del expected['canonical_prefix_policy']
         actual = json.loads(self.sim.command('precision',cancel))
         if not isinstance(actual,dict) or any(type(actual.get(k)) is not type(v) or actual[k] != v for k,v in expected.items()):
             raise RuntimeError('Simulator does not match the requested hybrid precision profile')
-        if self.canonical_prefix is not None and actual.get('canonical_prefix_policy') != POLICY:
-            raise RuntimeError('Simulator does not advertise the canonical FP64 prefix policy')
+        if self.precision_profile == 'fp32_b1_fp32_fma_prefill' and actual.get('canonical_prefix_policy') not in ('none', FMA_POLICY):
+            raise RuntimeError('Simulator advertises an unsupported fused prefix policy')
+        if self.canonical_prefix is not None and actual.get('canonical_prefix_policy') != PROFILE_POLICIES[self.precision_profile]:
+            raise RuntimeError('Simulator does not advertise the requested canonical prefix policy')
         self.precision_verified = True
 
     def stream(self, request, cancel):
@@ -136,7 +140,7 @@ class RTLChatEngine(ChatProtocol):
             self.sim.start(cancel)
             self.verify_precision(cancel)
             if self.canonical_prefix is not None:
-                self.canonical_prefix.bind(self.sim.process)
+                self.canonical_prefix.bind(self.sim.process, (self.precision_profile, PROFILE_POLICIES[self.precision_profile], self.sim.prefill_size, self.sim.lanes))
             if (not self.reuse_prefix and self.canonical_prefix is None) or self.cache_session != request.session:
                 self.sim.reset(cancel)
                 self.cache_ids = []

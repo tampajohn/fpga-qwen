@@ -13,7 +13,7 @@ class FMAPrefillProfile(unittest.TestCase):
         valid=dict(workers=8,lanes=8,block_size=4,prefill_size=8,reuse_prefix=False,
                    precision_profile='fp32_b1_fp32_fma_prefill')
         with patch('tools.rtl_chat.RTLModel') as model:
-            for bad in (dict(canonical_prefix_reuse=True),dict(reuse_prefix=True),dict(block_size=1),
+            for bad in (dict(reuse_prefix=True),dict(block_size=1),
                         dict(workers=0),dict(lanes=1),dict(prefill_size=4)):
                 with self.subTest(bad=bad),self.assertRaises(ValueError):RTLChatEngine(**dict(valid,**bad))
             model.assert_not_called()

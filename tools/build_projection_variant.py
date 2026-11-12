@@ -41,12 +41,14 @@ def main():
     parser.add_argument('--fp32-verification-b4', action='store_true', help='Experimental explicit FP32 B4 verification; FP64 prefill unchanged')
     parser.add_argument('--phase-pools-experiment',action='store_true',help='Persistent12 prefill /8 scalar pools selected by trusted environment')
     parser.add_argument('--fp32-kv', action='store_true', help='Experimental single SV FP32 KV store; distinct no-cache profile')
+    parser.add_argument('--fp32-fma-canonical-prefix', action='store_true', help='Opt-in complete fused B8 canonical prefix capability')
     parser.add_argument('--fp32-prefill-fma', action='store_true', help='Experimental explicit fused FP32 prefill only, separate B1/B4 verification')
     parser.add_argument('--fp32-prefill-b8', action='store_true', help='Experimental FP32 B8 prefill and B4 tails; distinct precision profile')
     parser.add_argument('--shortreal-compiler', default='', help='Reviewed patched Verilator root for isolated FP32 archive')
     parser.add_argument('--tag', default='', help='Extra alphanumeric/dash suffix for a reproducible experiment')
     parser.add_argument('--print-path', action='store_true', help='Print output path without compiling')
     args = parser.parse_args()
+    if args.fp32_fma_canonical_prefix and not args.fp32_prefill_fma:parser.error('--fp32-fma-canonical-prefix requires --fp32-prefill-fma')
     if args.fp32_prefill_fma and not args.fp32_prefill_b8:parser.error('--fp32-prefill-fma requires --fp32-prefill-b8')
     if args.fp32_prefill_b8 and not args.fp32_verification_b4:parser.error('--fp32-prefill-b8 requires --fp32-verification-b4')
     if args.fp32_verification_b4 and not args.fp32_projection_b1:parser.error('--fp32-verification-b4 requires --fp32-projection-b1')
@@ -98,6 +100,7 @@ def main():
     if args.fp32_verification_b4: tag += '-verify-b4'
     if args.fp32_prefill_b8: tag += '-fp32-prefill-b8'
     if args.fp32_prefill_fma: tag += '-prefill-fma'
+    if args.fp32_fma_canonical_prefix: tag += '-fma-canonical-prefix'
     if args.batch_attention: tag += '-batch-attention'
     if args.attention_qk2: tag += '-qk2'
     if args.attention_head_pairs: tag += '-head-pairs'
@@ -125,6 +128,7 @@ def main():
     if args.fp32_kv: flags += ' -DFP32_KV -I'+str(kv_module)
     if args.scalar_group: flags += ' -DSCALAR_GROUP'
     if args.fp32_projection_b1: flags += ' -DFP32_PROJECTION_B1 -I'+str(fp32)
+    if args.fp32_fma_canonical_prefix: flags += ' -DFP32_FMA_CANONICAL_PREFIX'
     if args.fp32_prefill_fma: flags += ' -DFP32_PREFILL_FMA -I'+str(fp32_tail)
     if args.fp32_prefill_b8: flags += ' -DFP32_PREFILL_B8 -I'+str(fp32_b8)
     if args.fp32_verification_b4: flags += ' -DFP32_VERIFICATION_B4 -I'+str(fp32_b4)
