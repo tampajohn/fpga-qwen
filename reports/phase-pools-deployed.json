@@ -2328,5 +2328,6 @@
       "sha256": "f17ae654f0c64ac47b63225a3406edc8bcd114cc86e67d56610090bf5d7c075d"
     },
     "note": "Original gate command supplied this frozen f17 path but its report omitted reference SHA. Identity recorded here from executed command and current matching artifact; not retroactively claimed as a hash captured during that earlier gate."
-  }
+  },
+  "diagnostic_scope": "Output IDs, consumed positions and routing counters were checked for every scored pair. Full-vocabulary dumps were compared after warmup and after the final pair of each profile only; no per-pair full-logit evidence for intermediate scored pairs."
 }

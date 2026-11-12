@@ -3014,5 +3014,6 @@
         ]
       ]
     }
-  ]
+  ],
+  "diagnostic_scope": "Output IDs, consumed positions and routing counters were checked for every scored pair. Full-vocabulary dumps were compared after warmup and after the final pair of each profile only; no per-pair full-logit evidence for intermediate scored pairs."
 }
