@@ -58,12 +58,27 @@ module online_attention_kernel(
         for(int base=0;base<length;base+=TILE) begin
           // Scores keep ascending feature accumulation, independent queries.
           for(int t=0;t<TILE && base+t<length;t++) begin
+`ifdef ONLINE_QK2
+            // Independent query pair stays in local sums across all features.
+            // Same ascending feature order; no horizontal reassociation.
+            for(int q=0;q<count;q+=2) begin
+              sums[0]=0.0;sums[1]=0.0;
+              for(int j=0;j<D;j++) begin
+                key=keys[(base+t)*D+j];
+                sums[0]+=queries[j*Q+q]*key;
+                sums[1]+=queries[j*Q+q+1]*key;
+              end
+              tile_scores[t][q]=sums[0]/$sqrt(128.0);
+              if(q+1<count) tile_scores[t][q+1]=sums[1]/$sqrt(128.0);
+            end
+`else
             for(int q=0;q<count;q++) tile_scores[t][q]=0.0;
             for(int j=0;j<D;j++) begin
               key=keys[(base+t)*D+j];
               for(int q=0;q<count;q++) tile_scores[t][q]+=queries[j*Q+q]*key;
             end
             for(int q=0;q<count;q++) tile_scores[t][q]/=$sqrt(128.0);
+`endif
           end
           for(int q=0;q<count;q++) begin
             visible=length-count+q+1;used=visible-base;

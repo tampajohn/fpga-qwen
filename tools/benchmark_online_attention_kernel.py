@@ -12,9 +12,10 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--iterations',type=int,default=100)
     p.add_argument('--pairs',type=int,default=3)
+    p.add_argument('--paired',action='store_true')
     a=p.parse_args()
     if not 1<=a.iterations<=10000 or not 1<=a.pairs<=5:p.error('Invalid work budget')
-    directory=ROOT/'build/online-attention-kernel';binary=directory/'obj/Vonline_attention_kernel'
+    directory=ROOT/('build/online-attention-kernel-paired' if a.paired else 'build/online-attention-kernel');binary=directory/'obj/Vonline_attention_kernel'
     gate=json.loads((directory/'correctness.json').read_text())
     assert gate['completed'] and len(gate['cases'])==54 and sha(binary)==gate['binary_sha256']
     for name,h in gate['manifest']['sources'].items():assert sha(ROOT/name)==h

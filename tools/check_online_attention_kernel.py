@@ -45,16 +45,18 @@ def run(binary,method,count,length,scenario):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--skip-build',action='store_true');p.add_argument('--quick',action='store_true')
-    a=p.parse_args();directory=ROOT/'build/online-attention-kernel';directory.mkdir(parents=True,exist_ok=True)
+    p.add_argument('--paired',action='store_true',help='Opt-in paired online QK accumulation, separate build directory')
+    a=p.parse_args();directory=ROOT/('build/online-attention-kernel-paired' if a.paired else 'build/online-attention-kernel');directory.mkdir(parents=True,exist_ok=True)
     sources=[ROOT/'rtl/online_attention_kernel.sv',ROOT/'sim/experiments/online_attention_kernel.cpp']
     hashes={str(x.relative_to(ROOT)):sha(x) for x in sources}
     compiler=Path(shutil.which('verilator')).resolve()
     command=[str(compiler),'--cc','--exe','--build','--top-module','online_attention_kernel','--Mdir',str(directory/'obj'),'-j','2','-O3','-Wno-fatal','-CFLAGS','-O3 -flto=thin','-LDFLAGS','-flto=thin','-MAKEFLAGS','OPT_FAST=-O3 OPT_SLOW=-O3',str(sources[0]),str(sources[1])]
+    if a.paired:command.insert(1,'-DONLINE_QK2')
     manifest_path=directory/'manifest.json'
     if not a.skip_build:
         with (directory/'build.log').open('w') as log:subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,check=True)
-        manifest_path.write_text(json.dumps(dict(sources=hashes,compiler=str(compiler),compiler_sha256=sha(compiler),command=command),indent=2)+'\n')
-    manifest=json.loads(manifest_path.read_text());assert manifest['sources']==hashes
+        manifest_path.write_text(json.dumps(dict(paired=a.paired,sources=hashes,compiler=str(compiler),compiler_sha256=sha(compiler),command=command),indent=2)+'\n')
+    manifest=json.loads(manifest_path.read_text());assert manifest['sources']==hashes and manifest.get('paired',False)==a.paired
     binary=directory/'obj/Vonline_attention_kernel';initial=sha(binary)
     report=dict(completed=False,binary_sha256=initial,manifest=manifest,source_driver_sha256=sha(__file__),timing_claim=False,model_quality_claim=False,fixture_budget_absolute=1e-12,oracle_digits=80,cases=[],limitations=['Single head and single module, contiguous KV; excludes deployed DPI/pool/GQA addressing costs.','Q1 is a standalone query, not deployed op6 paired-head decode.','Online tiling changes rounding; cross-method bit equality is not expected.','Only bounded deterministic periodic finite fixtures; no model-quality claim.'])
     try:
