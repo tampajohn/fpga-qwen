@@ -123,6 +123,26 @@ float dot(const float* x,const Half* w,int n) {
     }
     return vaddvq_f32(vaddq_f32(a,b));
 }
+// Four independent rows share activation loads while retaining exactly the
+// scalar-row kernel's two accumulators, increasing-j FMA order and reduction.
+// Call only where four complete rows lie in the same matrix and worker slice.
+void dot4(const float* x,const Half* w,int n,float* y) {
+    float32x4_t a0=vdupq_n_f32(0),b0=a0,a1=a0,b1=a0,a2=a0,b2=a0,a3=a0,b3=a0;
+    for(int j=0;j<n;j+=8) {
+        const float32x4_t xl=vld1q_f32(x+j),xh=vld1q_f32(x+j+4);
+        const float16x8_t w0=vld1q_f16(w+j),w1=vld1q_f16(w+n+j),w2=vld1q_f16(w+2*n+j),w3=vld1q_f16(w+3*n+j);
+        a0=vfmaq_f32(a0,xl,vcvt_f32_f16(vget_low_f16(w0)));
+        b0=vfmaq_f32(b0,xh,vcvt_f32_f16(vget_high_f16(w0)));
+        a1=vfmaq_f32(a1,xl,vcvt_f32_f16(vget_low_f16(w1)));
+        b1=vfmaq_f32(b1,xh,vcvt_f32_f16(vget_high_f16(w1)));
+        a2=vfmaq_f32(a2,xl,vcvt_f32_f16(vget_low_f16(w2)));
+        b2=vfmaq_f32(b2,xh,vcvt_f32_f16(vget_high_f16(w2)));
+        a3=vfmaq_f32(a3,xl,vcvt_f32_f16(vget_low_f16(w3)));
+        b3=vfmaq_f32(b3,xh,vcvt_f32_f16(vget_high_f16(w3)));
+    }
+    y[0]=vaddvq_f32(vaddq_f32(a0,b0));y[1]=vaddvq_f32(vaddq_f32(a1,b1));
+    y[2]=vaddvq_f32(vaddq_f32(a2,b2));y[3]=vaddvq_f32(vaddq_f32(a3,b3));
+}
 void norm(const float* x,const float* w,float* out,int n) {
     float sum=0;for(int j=0;j<n;++j)sum+=x[j]*x[j];
     const float inv=1.0f/std::sqrt(sum/n+1e-6f);
@@ -197,7 +217,11 @@ struct Model::Impl {
         if(batch>1&&!w.wide.empty()) {
             cblas_sgemm(CblasRowMajor,CblasNoTrans,CblasTrans,batch,w.rows,w.cols,1.0f,x,w.cols,w.wide.data(),w.cols,0.0f,y,w.rows);
         } else {
-            pool.run(size_t(batch)*w.rows,[&](size_t begin,size_t end,int){for(size_t i=begin;i<end;++i)y[i]=dot(x+(i/w.rows)*w.cols,w.half+(i%w.rows)*w.cols,w.cols);});
+            pool.run(size_t(batch)*w.rows,[&](size_t begin,size_t end,int){
+                size_t i=begin;
+                if(batch==1)for(;i+4<=end;i+=4)dot4(x,w.half+i*w.cols,w.cols,y+i);
+                for(;i<end;++i)y[i]=dot(x+(i/w.rows)*w.cols,w.half+(i%w.rows)*w.cols,w.cols);
+            });
         }
     }
     // Independent projections sharing one input can share one worker launch.
@@ -211,7 +235,12 @@ struct Model::Impl {
             for(size_t segment=0;segment<N;++segment) {
                 const Tensor& w=*weights[segment];const size_t limit=offset+w.rows;
                 const size_t first=std::max(begin,offset),last=std::min(end,limit);
-                for(size_t i=first;i<last;++i) {
+                size_t i=first;
+                for(;i+4<=last;i+=4) {
+                    const size_t row=i-offset;
+                    dot4(input,w.half+row*w.cols,w.cols,outputs[segment]+row);
+                }
+                for(;i<last;++i) {
                     const size_t row=i-offset;
                     outputs[segment][row]=dot(input,w.half+row*w.cols,w.cols);
                 }
