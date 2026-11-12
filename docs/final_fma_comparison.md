@@ -16,3 +16,29 @@ Against the live phase profile, absolute TTFT medians were0.617→0.559 seconds 
 Both models were resident and warm, with logical KV reset before every request, B8 prefill/B4 tails, separate-rounded FP32 final-prompt/decode/vocabulary and FP64 attention/KV. The candidate and live phase reference each have20 resident worker threads across12-prefill/8-decode pools; isolated FMA has eight. Only one synchronous pool is active per model. Startup, telemetry and closed-file dumps were outside request timing. No OS cache eviction, CPU placement guarantee or hard host isolation was attempted.
 
 This is strictly a fresh-request comparison: canonical capability is validated but no prefix reuse or suffix drafting occurs. Cached behavior and cache/suffix correctness have separate evidence. Live localhost status was sampled every0.5seconds; no busy request was observed, though sampling cannot rule out subinterval activity. The monitored live model remained resident and idle. Reports preserve both sessions separately, plus monitoring evidence. The helper's source hash and frozen binary hashes are included in each report; default/backend settings were not changed.
+# Fresh native comparison with browser exclusion
+
+The [clean native report](../reports/final-native-clean.json) measures the deployed
+6c9ab44 fused backend against CPU-only llama.cpp FP16 and FP32. The user paused
+browser testing, and the serving checkout's benchmark guard held an exclusive
+lock throughout the run. Its flag cleared on successful completion. This does
+not provide OS-wide isolation; existing idle servers were retained.
+
+All engines requested 12 prefill threads/workers and 8 decode threads/workers.
+Counts match, but pool implementations and CPU placement differ. Each used the
+same 85/452-token prompts, fresh logical KV and 32 greedy outputs with EOS
+respected. The figures below are medians of two warm repetitions, following one
+initial request. Output IDs matched across all three engines for both prompts.
+
+| Engine | Short decode tok/s | Long decode tok/s | Short TTFT | Long TTFT |
+|---|---:|---:|---:|---:|
+| Fused SV, 12/8 pools | 67.33 | 47.14 | 0.537 s | 3.458 s |
+| llama.cpp FP16 | 138.07 | 109.98 | 0.246 s | 0.749 s |
+| llama.cpp FP32 | 88.00 | 70.86 | 0.182 s | 0.572 s |
+
+The goal of matching native performance remains unmet. Native uses FP16 KV and
+mixed kernels, while this SV profile retains FP64 attention and KV. GPU build
+backends and runtime offload were disabled. These fresh results supersede older
+8/8-thread comparisons for this specific 12/8 configuration; do not combine
+absolute timings from separate sessions into a speedup claim.
+
