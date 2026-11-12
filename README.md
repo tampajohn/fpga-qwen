@@ -392,8 +392,8 @@ tokens/round into tokens/sec without accounting for those components.
 
 ### Local llama.cpp comparison
 
-The [experimental hybrid FP32 comparison](docs/fp32_hybrid_performance.md)
-measures approximately 55/42 tokens/s for short/long prompts, with bounded quality
+The [earlier hybrid FP32 comparison](docs/fp32_hybrid_performance.md)
+measured approximately 55/42 tokens/s for short/long prompts, with bounded quality
 checks passed. It remains behind llama.cpp and is not the live default.
 When its fixed local artifact is built, choose **SystemVerilog · FP32 hybrid** in
 the browser backend selector. This option uses FP64 B8 prefill and FP32 scalar
