@@ -98,3 +98,23 @@ verification with sequential steps inside the new core. It supports carrying
 forward prior numerical evidence on these matched trajectories, without
 claiming exhaustive equivalence.
 See the [frozen-build exact gate](../reports/native-cpu-build-15-exact-gate.json).
+
+## Isolated candidate15 browser check
+
+The candidate15 browser test passed on localhost:8766, separately from the live
+server. It confirmed capability-aware greedy controls, switching to chat
+unchecking/disabling drafting, a real chat POST carrying `max_draft: 0`, and
+returning to greedy without restoring the earlier checkbox selection. It also
+passed canonical 512-token prefix reuse, focused backend-selector stability
+during polling, visible benchmark blocking, cancellation/restart and backend
+switching. No browser console errors were recorded.
+
+**Every recorded browser request used `max_draft: 0`.** The checkbox was checked
+and then switched to chat before submitting. This test validates mode controls
+and safe request construction; it does not demonstrate browser-submitted
+suffix-on inference. The separate 35-trajectory real-adapter gate exercised
+suffix-on acceptance/rejection. A future browser suffix-on request remains a
+separate coverage item. The isolated server was stopped after testing; this
+result does not deploy candidate15 or change the live build12 release.
+
+Evidence: [isolated browser report](../reports/native-cpu-build-15-browser-isolated.json).
