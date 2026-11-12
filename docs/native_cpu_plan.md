@@ -612,3 +612,34 @@ No new deployment or browser claim follows from this discovery.
 
 Evidence: [exploratory report](../reports/native-cpu-build-11-extended-tutorial-discovery.json)
 and [immutable prompt IDs/messages](../reports/native-cpu-build-11-extended-tutorial-fixtures.json).
+
+## Extended conversation probes and long-context profile
+
+The separate predetermined 18-case suite completed with exact native/llama
+greedy trajectories and stopping behavior, no new case/check regressions, and
+**10/18 strict rubric passes for each engine**. This does not change the frozen
+nine-case suite or establish broad model accuracy. All three reported-loop
+recovery probes and all three recall/quote probes passed these fixtures.
+
+Eight strict failures were retained. Latest-question focus returned “Empty.”
+when asked for the opposite of empty; multi-step arithmetic returned 21 instead
+of 13. Six other failures had the requested answer but violated exact-output
+instructions: corrected destination/owner added punctuation (“York.”, “Eli.”),
+two arithmetic responses added working/explanation, and two missing-evidence
+responses added explanation or punctuation instead of exactly “unknown”. This
+is descriptive diagnosis, not post-hoc regrading: the reported score stays
+10/18, and baseline agreement does not turn any failure into a pass.
+
+A separate warmed build-11 macOS `sample` diagnostic at a 3968-token prompt
+recorded 60,628 top-of-stack observations in the chunk attention worker thunk,
+compared with 654 in the ordinary projection worker thunk and 1,492 in VVEXPF.
+Waiting dominated the aggregate: `__psynch_cvwait` had 181,072 observations.
+These are counts across sampled threads, including sleeping workers, **not CPU
+percentages or wall-time fractions**. Aggregate samples lack timestamps for
+separating prefill from decode, and shared projection symbols do not separate
+vocabulary from layer work. The profile motivates investigating attention; it
+does not quantify the critical-path payoff of an optimization. Attach/overlap
+start was not independently confirmed, and the raw profile remains local.
+
+Evidence: [extended conversation results](../reports/native-cpu-build-11-extended-quality.json)
+and [sanitized 3968-token profile summary](../reports/native-cpu-build-11-profile3968-summary.json).

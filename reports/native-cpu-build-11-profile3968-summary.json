@@ -1,0 +1,121 @@
+{
+  "completed": true,
+  "diagnostic_only": true,
+  "performance_claim_eligible": false,
+  "binary_sha256": "a65a58680995845a8dab0a6ec563180da58ed04b53fc8f280373977998145143",
+  "raw_sample_sha256": "7b2f08aa2251ee83d16ef48a4093f35fc32f709cf6172901a8e79c031b50df11",
+  "prompt_sha256": "09efb528b8c9067981da834b757db999f83cab44a33960f5e32ff98863c82b9b",
+  "prompt_tokens": 3968,
+  "tokens": 32,
+  "fresh_requests": 2,
+  "decode_threads": 12,
+  "prefill_threads": 6,
+  "sample_counts": {
+    "thread_root_count": 17,
+    "thread_stack_observations": 250155,
+    "per_thread_observations_min": 14715,
+    "per_thread_observations_max": 14715,
+    "top_stack_symbols": [
+      {
+        "symbol": "__psynch_cvwait",
+        "thread_stack_observations": 181072
+      },
+      {
+        "symbol": "qwen_cpu::(anonymous namespace)::Pool::run<qwen_cpu::Model::Impl::chunk(int const*, int, qwen_cpu::(anonymous namespace)::Pool&)::'lambda'(unsigned long, unsigned long, int)>(unsigned long, qwen_cpu::Model::Impl::chunk(int const*, int, qwen_cpu::(anonymous namespace)::Pool&)::'lambda'(unsigned long, unsigned long, int))::'lambda'(void*, unsigned long, unsigned long, int)::__invoke(void*, unsigned long, unsigned long, int)",
+        "thread_stack_observations": 60628
+      },
+      {
+        "symbol": "VVEXPF",
+        "thread_stack_observations": 1492
+      },
+      {
+        "symbol": "std::__thread_proxy[abi:nqe210106]<std::tuple<std::unique_ptr<std::__thread_struct>, qwen_cpu::(anonymous namespace)::Pool::Pool(int)::'lambda'()>>(void*)",
+        "thread_stack_observations": 937
+      },
+      {
+        "symbol": "qwen_cpu::Model::Impl::append(std::vector<int> const&, bool)",
+        "thread_stack_observations": 899
+      },
+      {
+        "symbol": "qwen_cpu::(anonymous namespace)::Pool::run<qwen_cpu::Model::Impl::project(qwen_cpu::(anonymous namespace)::Tensor&, float const*, float*, int, qwen_cpu::(anonymous namespace)::Pool&)::'lambda'(unsigned long, unsigned long, int)>(unsigned long, qwen_cpu::Model::Impl::project(qwen_cpu::(anonymous namespace)::Tensor&, float const*, float*, int, qwen_cpu::(anonymous namespace)::Pool&)::'lambda'(unsigned long, unsigned long, int))::'lambda'(void*, unsigned long, unsigned long, int)::__invoke(void*, unsigned long, unsigned long, int)",
+        "thread_stack_observations": 654
+      },
+      {
+        "symbol": "swtch_pri",
+        "thread_stack_observations": 442
+      },
+      {
+        "symbol": "qwen_cpu::(anonymous namespace)::Pool::run<void qwen_cpu::Model::Impl::project_group<2ul>(std::array<qwen_cpu::(anonymous namespace)::Tensor*, 2ul> const&, float const*, std::array<float*, 2ul> const&, qwen_cpu::(anonymous namespace)::Pool&)::'lambda'(unsigned long, unsigned long, int)>(unsigned long, void qwen_cpu::Model::Impl::project_group<2ul>(std::array<qwen_cpu::(anonymous namespace)::Tensor*, 2ul> const&, float const*, std::array<float*, 2ul> const&, qwen_cpu::(anonymous namespace)::Pool&)::'lambda'(unsigned long, unsigned long, int))::'lambda'(void*, unsigned long, unsigned long, int)::__invoke(void*, unsigned long, unsigned long, int)",
+        "thread_stack_observations": 274
+      },
+      {
+        "symbol": "VVTANHF",
+        "thread_stack_observations": 235
+      },
+      {
+        "symbol": "mach_continuous_time",
+        "thread_stack_observations": 206
+      },
+      {
+        "symbol": "qwen_cpu::(anonymous namespace)::Pool::run<void qwen_cpu::Model::Impl::project_group<3ul>(std::array<qwen_cpu::(anonymous namespace)::Tensor*, 3ul> const&, float const*, std::array<float*, 3ul> const&, qwen_cpu::(anonymous namespace)::Pool&)::'lambda'(unsigned long, unsigned long, int)>(unsigned long, void qwen_cpu::Model::Impl::project_group<3ul>(std::array<qwen_cpu::(anonymous namespace)::Tensor*, 3ul> const&, float const*, std::array<float*, 3ul> const&, qwen_cpu::(anonymous namespace)::Pool&)::'lambda'(unsigned long, unsigned long, int))::'lambda'(void*, unsigned long, unsigned long, int)::__invoke(void*, unsigned long, unsigned long, int)",
+        "thread_stack_observations": 201
+      },
+      {
+        "symbol": "clock_gettime",
+        "thread_stack_observations": 20
+      },
+      {
+        "symbol": "__psynch_mutexwait",
+        "thread_stack_observations": 17
+      },
+      {
+        "symbol": "qwen_cpu::Model::Impl::project(qwen_cpu::(anonymous namespace)::Tensor&, float const*, float*, int, qwen_cpu::(anonymous namespace)::Pool&)",
+        "thread_stack_observations": 16
+      },
+      {
+        "symbol": "mach_timebase_info",
+        "thread_stack_observations": 13
+      },
+      {
+        "symbol": "__psynch_cvbroad",
+        "thread_stack_observations": 11
+      },
+      {
+        "symbol": "clock_gettime_nsec_np",
+        "thread_stack_observations": 11
+      },
+      {
+        "symbol": "DYLD-STUB$$clock_gettime",
+        "thread_stack_observations": 9
+      },
+      {
+        "symbol": "DYLD-STUB$$mach_continuous_time",
+        "thread_stack_observations": 8
+      },
+      {
+        "symbol": "DYLD-STUB$$mach_timebase_info",
+        "thread_stack_observations": 8
+      },
+      {
+        "symbol": "__psynch_mutexdrop",
+        "thread_stack_observations": 6
+      },
+      {
+        "symbol": "DYLD-STUB$$std::chrono::steady_clock::now()",
+        "thread_stack_observations": 5
+      },
+      {
+        "symbol": "_platform_memcmp",
+        "thread_stack_observations": 5
+      }
+    ],
+    "interpretation": "Aggregated sampled thread stacks INCLUDING WAITING threads. Counts across threads are not elapsed samples, CPU time, CPU percentages, or wall-time fractions. Symbols do not identify vocabulary versus layer projections when kernels are shared."
+  },
+  "phase_limit": "Aggregate sample has no per-sample timestamps; request windows cannot filter its stacks into prefill/decode. No CPU-share claim.",
+  "attach_limit": "sample has no readiness notification here. Popen/exit windows include attach/finalization; recording start and overlap duration are not independently confirmed.",
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-11-profile3968/summary.json",
+    "raw_source_sha256": "eda25dc5571a2d9e1a84f5197da40577bfbedba47ad51802582da5c1e40d57ca",
+    "sanitization": "Repository/home prefixes replaced; process identifiers/names omitted. Profile summary already contains only aggregate symbols/counts and hashes; raw sample remains local."
+  }
+}
