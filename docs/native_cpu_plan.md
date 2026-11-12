@@ -66,3 +66,28 @@ no established universal winner: the untuned build had the highest observed
 short decode median, and KleidiAI+LTO the highest observed long decode median.
 Two observations are insufficient for a performance claim. Thread discovery,
 numerical checks, profiling and ten-pair confirmation remain pending.
+
+## Numerical contract before native implementation
+
+Phase 0 calibration used the independent NumPy network with FP16-rounded matrix
+weights, original FP32 one-dimensional normalization weights, and FP16-rounded
+current/stored K/V widened for FP32 attention. Four teacher-forced positions at
+contexts 1–4 had maximum absolute logit error 0.001997 or less and RMS error
+0.000472 or less. Four predictions at contexts 452–455 had maximum absolute
+error 0.004605 or less and RMS error 0.001069 or less. Every tested greedy ID
+matched. Calibration is descriptive, not a retrospectively passed gate.
+
+Before Phase 1 code exists, declare its numerical gate: maximum absolute error
+<=0.01, RMS error <=0.002, relative tolerance zero, all full-vocabulary logits
+finite, and greedy identity. These limits allow roughly twice the observed
+baseline error at the target long context while retaining an absolute bound on
+every logit. An independent short-chat trajectory will validate the gate on the
+native baseline before applying it to the new engine. The existing nine-case
+conversation suite remains a separate token-identity/regression requirement;
+matching a wrong baseline answer does not establish answer correctness.
+
+The baseline calibration reports are `native-phase0-f16-oracle-calibration.json`
+and `native-phase0-f16-long-oracle-calibration.json` under `reports/`. The initial
+four-position native build/callback comparison was bit-identical; its first
+diagnostic client did not attach persistent pools, so its timings are excluded
+from profiling conclusions. A corrected client attaches persistent CPU pools.
