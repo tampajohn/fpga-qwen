@@ -64,10 +64,12 @@ class OriginalEngine:
             token = response.get('token')
             if type(token) is not int or not 0 <= token < 151936 or response.get('position') != len(prompt)+index:
                 raise RuntimeError('Invalid native inference response')
+            # Preserve the actual prediction, including terminal EOS, exactly
+            # as llama's return_tokens stream does. Text decoding hides specials.
+            output.append(token); arrivals.append(time.perf_counter())
             if token in EOS:
                 reason = 'eos'
                 break
-            output.append(token); arrivals.append(time.perf_counter())
             if index+1 < count:
                 response = self.client.command(f'step {token}', self.cancel)
         result = timing_result(start, arrivals, output, '', reason,
