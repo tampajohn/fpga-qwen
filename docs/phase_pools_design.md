@@ -1,6 +1,6 @@
 # Proposed persistent pools by command purpose
 
-Status: optional implementation and correctness gates complete; timing pending. Worktree base `4abf9cd`; deployed combined artifact f17 remains immutable. The measured worker sweep motivates testing twelve prefill workers while keeping eight scalar/verification workers. A gain is a hypothesis, not a multiplied estimate from separate sweep results.
+Status: optional implementation and correctness gates complete; same-binary timing complete, deployed comparison pending. Worktree base `4abf9cd`; deployed combined artifact f17 remains immutable. The measured worker sweep motivates testing twelve prefill workers while keeping eight scalar/verification workers. A gain is a hypothesis, not a multiplied estimate from separate sweep results.
 
 ## Bounded first implementation
 
@@ -48,3 +48,9 @@ Frozen artifact `162bed6577d91b19a57ea0f83d244d3fbb2666e329e90733f56f347267e8580
 [Gate evidence](../reports/phase-pools-gates.json) includes exact full-vocabulary/ID comparisons against f17 for all8prefill tails, sampled verification1..4,85/452contexts and no-logits verification1..4 followed by scalar continuation. Logical counters prove12pool receives only prefill and OFF never dispatches it; aggregate groupstats equals the sum of per-pool counters. Policy mocks cover scopes/configuration/exception restoration. Existing canonical-prefix, matching-decode-token exclusion and seeded suffix/rejection/cancellation/restart checks passed in enabled mode.
 
 The first generic canonical run stopped at an intentionally unsupported workers1 reconfiguration, not a numerical mismatch. An explicit `SV_CANONICAL_FIXED_WORKERS=8` test mode then passed the full supported lifecycle path; default fixture1/3/17 behavior remains unchanged. Second-pool startup-failure cleanup was source-reviewed but not independently fault-injected; do not describe it as a tested failure path. Actual maximum4096 capacity and same-binary/deployed timing remain separate gates. No default or UI change is included.
+
+## Same-binary paired timing
+
+The [paired report](../reports/phase-pools-paired.json) compares OFF versus PREFILL_12 in the identical162bed binary, both retaining8+12worker pools. Three alternating pairs per85/452-token prompt generated32fixed greedy outputs. Every pair passed exactIDs/full-vocabulary bits/consumed-position gates and positive phase-dispatch counter checks. Telemetry was collected outside the request clock.
+
+All six prefill and total ratios favored PREFILL_12. Short prefill median1.104× (range1.101–1.143), total1.044× (1.033–1.080); long prefill median1.093× (1.079–1.130), total1.076× (1.066–1.120). Short decode median0.969× (0.953–1.005), long0.997× (0.972–1.061). Thus prefill gains translate to total gains, but the short decode loss means the no-decode-cost objective is not yet established. These ratios must not be treated as direct speedups over deployedf17: OFF also has an idle extra pool and a separately compiled host. A direct frozen-f17 comparison and deployment gates remain necessary. No default/UI change or affinity claim is included.
