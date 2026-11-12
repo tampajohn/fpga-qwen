@@ -522,3 +522,32 @@ and fresh generation, native/llama/native switching, and the polled benchmark
 banner with server-side HTTP409 rejection while locked. This is interface
 validation, not an additional speed measurement. The benchmark lock is released
 and the live server is ready for user testing.
+
+
+## Follow-on work: conversation latency and specialization
+
+The user approved the next path after build-10: safe prefix reuse, 1K/2K/near-4K
+and sustained-decode measurements, profiling this original engine, certified
+vocabulary-head candidate pruning, and then measured suffix drafting. Expand
+conversation-quality coverage in parallel. These are separate deliverables;
+prefix caching alone does not complete this follow-on goal.
+
+Candidate build-11 adds KV rewind and restores sampler presence from retained
+consumed IDs. Browser reuse is session-specific and limited to completed
+canonical 512-token prefill chunks. Partial tails and decoded-token KV are not
+reused; each request recomputes a nonempty tail. This preserves fresh-prefill
+batch shapes. Old binaries continue with fresh prefill via capability detection.
+
+The candidate preserved 44 baseline full-vocabulary arrays exactly. Its new
+cache checker passed 28 cached/fresh transitions across boundary lengths,
+identical/edited prompts, session changes, greedy and seeded sampling, plus
+cancellation/restart and rewind-error checks. Every observed prediction has an
+exact full-logit comparison, not only an answer-text check. These synthetic
+fixtures do not establish broad answer quality or a timing benefit. Performance
+and browser release checks remain pending; build-10 remains the stable binary.
+
+The extended matched runner uses complete tokenized messages of exactly 1024,
+2048, and 3968 tokens, with configurable generation up to 128 tokens. It retains
+natural EOS, identical-output preflight, fresh prompts, CPU-only settings and
+alternating pairs. Cached-versus-fresh measurements use a separate runner so
+cache savings cannot be presented as a dense-engine win against uncached llama.

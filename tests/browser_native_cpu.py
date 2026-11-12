@@ -21,6 +21,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--url', default='http://127.0.0.1:8766')
     parser.add_argument('--live', action='store_true', help='Explicitly allow deployment checks on localhost:8765')
+    parser.add_argument('--expect-prefix-reuse', action='store_true')
     parser.add_argument('--directory', type=Path, required=True)
     parser.add_argument('--guard-state-dir', type=Path, default=ROOT/'build/benchmark-status')
     parser.add_argument('--chrome', default='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
@@ -63,7 +64,7 @@ def main():
             expect(page.locator('#suffix')).to_be_disabled()
             expect(page.locator('#suffix')).not_to_be_checked()
             expect(page.locator('#backend-tag')).to_contain_text('Native CPU')
-            expect(page.locator('#backend-about')).to_contain_text('prefix reuse and suffix drafting are unavailable')
+            expect(page.locator('#backend-about')).to_contain_text('Suffix drafting is unavailable')
             report['checks']['catalog_and_controls'] = True
             page.locator('#decoding').select_option('greedy')
             page.locator('#reply-limit').select_option('128')
@@ -84,9 +85,22 @@ def main():
             expect(page.locator('#reused')).to_have_text('0')
             status = page.request.get(args.url+'/api/status').json()
             assert status['active_backend']=='native-cpu-f16' and status['device']=='cpu'
-            assert status['gpu_inference'] is False and status['prefix_reuse_enabled'] is False
-            assert status['cached_tokens']==0 and status['suffix_supported'] is False
+            assert status['gpu_inference'] is False and status['suffix_supported'] is False
+            assert status['prefix_reuse_enabled'] is args.expect_prefix_reuse
+            if not args.expect_prefix_reuse:
+                assert status['cached_tokens']==0
             report['checks']['fresh_context_status'] = True
+            if args.expect_prefix_reuse:
+                expect(page.locator('#backend-about')).to_contain_text('Reuses completed 512-token prefill blocks', timeout=15000)
+                page.locator('#new-chat').click()
+                send('Background notes:\n' + 'This is filler. ' * 180 + '\nAnswer with the single word blue.')
+                expect(page.locator('#reused')).to_have_text('0')
+                reply = send('Now answer with the single word green.')
+                assert reply.strip().lower().rstrip('.') == 'green', reply
+                reused = int(page.locator('#reused').inner_text().replace(',', ''))
+                assert reused >= 512 and reused % 512 == 0
+                report['checks']['canonical_prefix_reuse_and_changed_question'] = dict(reused_tokens=reused)
+                page.screenshot(path=str(args.directory/'prefix-reuse.png'))
             # Guard visibility is real: hold the same lock, let the browser poll,
             # and verify the server also rejects an attempted bypass before inference.
             handle = gate.acquire(exclusive=True)
