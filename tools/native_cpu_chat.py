@@ -7,6 +7,11 @@ import select
 import subprocess
 import time
 
+try:
+    from .suffix import SuffixDrafter
+except ImportError:
+    from suffix import SuffixDrafter
+
 ROOT = Path(__file__).resolve().parents[1]
 EOS = {151643, 151645}
 
@@ -41,6 +46,12 @@ class NativeCPUChat:
                     and self.ready['prefix_reuse_chunk'] == 512
                     and self.process is not None and self.process.poll() is None)
 
+    def suffix_supported(self):
+        return bool(self.ready and self.ready.get('verify_greedy_b2') is True
+                    and type(self.ready.get('max_verified_draft')) is int
+                    and self.ready['max_verified_draft'] == 1
+                    and self.process is not None and self.process.poll() is None)
+
     def available(self):
         return (self.binary.is_file() and os.access(self.binary, os.X_OK)
                 and self.weights.is_file()
@@ -59,8 +70,8 @@ class NativeCPUChat:
             prefix_reuse_enabled=self.reuse_prefix and self.prefix_reuse_supported(),
             canonical_reusable_tokens=self.canonical_reusable_tokens if self.prefix_reuse_supported() else 0,
             canonical_prefix_policy='native_f16_prefill512_v1' if self.prefix_reuse_supported() else None,
-            suffix_supported=False,
-            max_verified_draft=0, prefill_block_size=None, precision_profile=None,
+            suffix_supported=self.suffix_supported(), suffix_greedy_only=True,
+            max_verified_draft=1 if self.suffix_supported() else 0, prefill_block_size=None, precision_profile=None,
             precision_verified=False, reduction_lanes=None, prefill_reduction_lanes=None)
 
     def close(self):
@@ -111,7 +122,7 @@ class NativeCPUChat:
         operation = command.split(' ', 1)[0]
         # Raw protocol clients may mutate KV outside browser request tracking.
         # Their default contract invalidates reuse metadata, including benchmarks.
-        if operation == 'reset' or (not preserve_cache and operation in ('rewind', 'prefill', 'step')):
+        if operation == 'reset' or (not preserve_cache and operation in ('rewind', 'prefill', 'step', 'verify-greedy')):
             self._invalidate_cache()
         try:
             if cancel.is_set():
@@ -160,13 +171,18 @@ class NativeCPUChat:
         started = time.perf_counter()
         generated, text, first = [], '', None
         metrics = dict(prompt_tokens=len(request.ids), reused_prefix_tokens=0, output_tokens=0,
-            rounds=0, proposed_tokens=0, accepted_tokens=0, tokens_per_round=0,
+            rounds=0, proposed_tokens=0, accepted_tokens=0, rejected_tokens=0, tokens_per_round=0,
+            suffix_enabled=False, verification_calls=0, verified_positions=0,
             decode_tokens_per_second=0, first_token_ms=None, elapsed_seconds=0,
             kv_tokens=0, context_limit=4096)
         reason = 'length'
         try:
+            if request.max_draft and request.decoding != 'greedy':
+                raise ValueError('Native B2 suffix drafting supports greedy decoding only')
             yield dict(type='loading', message='Loading original native CPU engine…')
             self.start(cancel)
+            metrics['suffix_enabled'] = bool(request.max_draft > 0 and request.decoding == 'greedy'
+                                             and self.suffix_supported())
             reuse = 0
             if self.reuse_prefix and self.prefix_reuse_supported() and self.cache_session == request.session:
                 common = 0
@@ -204,27 +220,75 @@ class NativeCPUChat:
             metrics['elapsed_seconds'] = time.perf_counter()-started
             metrics['kv_tokens'] = len(request.ids)
             yield dict(type='prefill', processed_tokens=len(request.ids)-reuse, metrics=dict(metrics))
-            for index in range(request.max_new):
-                token, position = response.get('token'), response.get('position')
-                if type(token) is not int or not 0 <= token < 151936 or position != len(request.ids) + index:
-                    raise RuntimeError('Invalid native token or context position')
-                metrics['kv_tokens'] = position
-                if token in EOS:
-                    reason = 'eos'
+            drafter = SuffixDrafter()
+            pending_tokens = [response.get('token')]
+            if response.get('position') != len(self.cache_ids):
+                raise RuntimeError('Invalid native prefill context position')
+            while len(generated) < request.max_new:
+                metrics['rounds'] += 1
+                metrics['kv_tokens'] = len(self.cache_ids)
+                for token in pending_tokens:
+                    if cancel.is_set():
+                        raise NativeCancelled()
+                    if type(token) is not int or not 0 <= token < 151936:
+                        raise RuntimeError('Invalid native token')
+                    if token in EOS:
+                        reason = 'eos'
+                        break
+                    generated.append(token)
+                    now = time.perf_counter()
+                    if first is None:
+                        first = now
+                        metrics['first_token_ms'] = (now-started)*1000
+                    text = self.protocol.tokenizer.decode(generated, skip_special_tokens=True)
+                    metrics.update(output_tokens=len(generated),
+                        tokens_per_round=len(generated)/metrics['rounds'],
+                        elapsed_seconds=now-started,
+                        decode_tokens_per_second=(len(generated)-1)/(now-first) if now>first else 0)
+                    yield dict(type='update', text=text, token_ids=list(generated), metrics=dict(metrics))
+                if reason == 'eos' or len(generated) >= request.max_new:
                     break
-                generated.append(token)
-                now = time.perf_counter()
-                if first is None:
-                    first = now
-                    metrics['first_token_ms'] = (now-started)*1000
-                text = self.protocol.tokenizer.decode(generated, skip_special_tokens=True)
-                metrics.update(output_tokens=len(generated), rounds=len(generated), tokens_per_round=1,
-                    elapsed_seconds=now-started,
-                    decode_tokens_per_second=(len(generated)-1)/(now-first) if now>first else 0)
-                yield dict(type='update', text=text, token_ids=list(generated), metrics=dict(metrics))
-                if index + 1 < request.max_new:
-                    response = self.command(f'step {token}', cancel, preserve_cache=True)
-                    self.cache_ids.append(token)
+                # The final emitted token is pending: only consumed inputs enter
+                # cache_ids. The canonical reusable ceiling stays prefill-only.
+                pending = generated[-1]
+                remaining = request.max_new-len(generated)
+                proposal = []
+                if (request.max_draft > 0 and self.suffix_supported()
+                        and remaining >= 2 and len(self.cache_ids)+2 <= 4096):
+                    proposal = drafter.propose(self.cache_ids+[pending], 1)
+                if proposal:
+                    draft = proposal[0]
+                    metrics['proposed_tokens'] += 1
+                    metrics['verification_calls'] += 1
+                    response = self.command(f'verify-greedy {pending} {draft}', cancel, preserve_cache=True)
+                    tokens = response.get('tokens')
+                    accepted = response.get('accepted')
+                    committed = response.get('committed_inputs')
+                    if (not isinstance(tokens, list) or not tokens
+                            or any(type(token) is not int or not 0 <= token < 151936 for token in tokens)
+                            or type(accepted) is not int or accepted not in (0, 1)
+                            or accepted != int(tokens[0] == draft)
+                            or type(committed) is not int
+                            or committed != (2 if accepted and tokens[0] not in EOS else 1)
+                            or len(tokens) != committed or len(tokens) > remaining
+                            or any(token in EOS for token in tokens[:-1])
+                            or type(response.get('position')) is not int
+                            or response['position'] != len(self.cache_ids)+committed
+                            or type(response.get('verified_positions')) is not int
+                            or response['verified_positions'] != 2
+                            or response.get('finish_reason') != ('eos' if tokens[-1] in EOS else None)):
+                        raise RuntimeError('Invalid native B2 verification response')
+                    self.cache_ids.extend([pending, draft][:committed])
+                    metrics['accepted_tokens'] += accepted
+                    metrics['rejected_tokens'] += 1-accepted
+                    metrics['verified_positions'] += 2
+                    pending_tokens = tokens
+                else:
+                    response = self.command(f'step {pending}', cancel, preserve_cache=True)
+                    if response.get('position') != len(self.cache_ids)+1:
+                        raise RuntimeError('Invalid native step context position')
+                    self.cache_ids.append(pending)
+                    pending_tokens = [response.get('token')]
             if cancel.is_set():
                 raise NativeCancelled()
         except NativeCancelled:
@@ -234,4 +298,5 @@ class NativeCPUChat:
             self.close()
             raise
         metrics['elapsed_seconds'] = time.perf_counter()-started
+        metrics['tokens_per_round'] = len(generated)/metrics['rounds'] if metrics['rounds'] else 0
         yield dict(type='done', text=text, token_ids=list(generated), metrics=dict(metrics), finish_reason=reason)
