@@ -19,7 +19,8 @@ from native_cpu_chat import NativeCPUChat
 
 SUITES = {
     'original': {0: (2, 16, 85, 452), 3584: (2, 16, 64, 384)},
-    'dispatch-validation': {0: (32, 63, 64, 128, 256, 512), 3584: (2, 16, 64, 384)},
+    'dispatch-validation': {0: (32, 63, 64, 65, 128, 256, 512),
+                            448: (64,), 449: (63, 64), 3584: (2, 16, 64, 384)},
 }
 
 
@@ -82,7 +83,8 @@ def main():
         timing_scope='Only prefill tail command: CLI internal seconds and pipe round-trip wall seconds. Prefix priming, rewind, startup, dump IPC and validation are excluded.',
         limitations=['These token slices are numerical prefill-shape fixtures, not complete user messages or conversation quality tests.',
                      'Two processes remain resident; all priming and measured inference executes serially.',
-                     'Prefix3584 is primed once per process per phase, then retained through rewind; this is not fresh-request TTFT.',
+                     'Each nonzero prefix is primed once per process per phase, then retained through rewind; this is not fresh-request TTFT.',
+                     'Prefixes448/449 are numerical API fixtures, not canonical512-block browser prefix reuse. Both engines consume identical complete prefix IDs before tail execution.',
                      'Reference and candidate may differ in resident memory; OS activity/placement remain uncontrolled.',
                      'Separate shape intervals are unadjusted; no threshold is chosen from the fastest observed shape and no pooled/llama speed claim.'])
     clients = {}
