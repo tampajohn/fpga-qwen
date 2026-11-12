@@ -402,3 +402,32 @@ See [511 gate](../reports/native-cpu-boundary-511-oracle-gate.json),
 [512 gate](../reports/native-cpu-boundary-512-oracle-gate.json),
 [513 gate](../reports/native-cpu-boundary-513-oracle-gate.json), and
 [fixture metadata, messages, IDs and raw hashes](../reports/native-cpu-boundary-fixtures.json).
+
+## Candidate-09 auxiliary cache: correctness and memory cost
+
+Candidate-09 constructs a BF16 auxiliary representation only when every value
+in a loaded FP16 matrix widens to exactly the same FP32 bit pattern as the BF16
+representation. It does not round weights again; any inexact value disables the
+cache for that entire tensor. The canonical model's actual startup reported
+**1,191,968,768 additional cache bytes** (about 1.19 GB decimal), beyond mapped
+FP16 weights, widened FP32 prefill weights, KV, and other working memory. This
+extra memory is a cost, not a compression of the existing resident model.
+
+The exact-logit check and nine-case conversation check passed. The explicit
+fallback experiment cloned the pack and changed only the embedding's first
+FP16 word to `0x3c01` (1.0009765625), a value not exactly representable in BF16.
+The entire 311,164,928-byte embedding auxiliary cache disappeared, leaving
+880,803,840 bytes. Build-08 and candidate-09 returned bit-identical full logits
+and greedy IDs on the changed fixture. Row-zero's first logit changed from
+5.9522008896 to 13.1209831238 versus the normal capture, demonstrating that the
+modified weight was exercised. The canonical pack hash remained unchanged.
+This is fallback correctness evidence, not quality evidence for an altered model.
+
+Candidate-09 is **not adopted**. A direct paired build-08/build-09 comparison is
+pending; no speed advantage or justification for the extra cache is claimed.
+Candidate-10 scheduling work starts from the build-08 arithmetic/cache baseline
+and reports zero auxiliary BF16 cache bytes. The live backend remains unchanged.
+
+Evidence: [exact logits](../reports/native-cpu-build-09-exact-gate.json),
+[conversation quality](../reports/native-cpu-build-09-quality.json), and
+[real changed-weight fallback](../reports/native-cpu-build-09-fallback.json).

@@ -1,0 +1,160 @@
+{
+  "completed": true,
+  "passed": true,
+  "diagnostic_only": true,
+  "timing_claim": false,
+  "performance_claim_eligible": false,
+  "gpu": false,
+  "pytorch": false,
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Validate exact fallback for non-BF16-representable weights",
+      "started_at": "2026-11-12T06:27:35.867952+00:00"
+    }
+  },
+  "purpose": "Intentional changed-weight fixture exercises whole-embedding BF16 fallback; not canonical model quality",
+  "runs": [
+    {
+      "label": "reference",
+      "binary": "$REPO/build/native-cpu/build-08/qwen_cpu",
+      "predictions": [
+        0,
+        358
+      ],
+      "dumps": [
+        {
+          "path": "$REPO/build/native-cpu/build-09-fallback/reference/step-0.f32",
+          "sha256": "4c3c9899ab7bcb024cb459dbcffc07132fb76d581118084b11ea2d5aed3ea1fb"
+        },
+        {
+          "path": "$REPO/build/native-cpu/build-09-fallback/reference/step-1.f32",
+          "sha256": "8815c234417df580a4d100ef0962ab3b8114ce90b21ef5a5a3d7e34694f1c219"
+        }
+      ],
+      "startup": {
+        "ready": true,
+        "protocol": 1,
+        "position": 0,
+        "decode_threads": 12,
+        "prefill_threads": 6,
+        "context": 16,
+        "gpu": false,
+        "pytorch": false,
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_precision": "f16",
+        "prefix_reuse": false,
+        "suffix_drafting": false
+      },
+      "command": [
+        "$REPO/build/native-cpu/build-08/qwen_cpu",
+        "--weights",
+        "$REPO/build/native-cpu/build-09-fallback/weights.bin",
+        "--threads",
+        "12",
+        "--prefill-threads",
+        "6",
+        "--context",
+        "16"
+      ],
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "candidate",
+      "binary": "$REPO/build/native-cpu/build-09/qwen_cpu",
+      "predictions": [
+        0,
+        358
+      ],
+      "dumps": [
+        {
+          "path": "$REPO/build/native-cpu/build-09-fallback/candidate/step-0.f32",
+          "sha256": "4c3c9899ab7bcb024cb459dbcffc07132fb76d581118084b11ea2d5aed3ea1fb"
+        },
+        {
+          "path": "$REPO/build/native-cpu/build-09-fallback/candidate/step-1.f32",
+          "sha256": "8815c234417df580a4d100ef0962ab3b8114ce90b21ef5a5a3d7e34694f1c219"
+        }
+      ],
+      "startup": {
+        "ready": true,
+        "protocol": 1,
+        "position": 0,
+        "decode_threads": 12,
+        "prefill_threads": 6,
+        "context": 16,
+        "lossless_bf16_decode_cache_bytes": 880803840,
+        "gpu": false,
+        "pytorch": false,
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_precision": "f16",
+        "prefix_reuse": false,
+        "suffix_drafting": false
+      },
+      "command": [
+        "$REPO/build/native-cpu/build-09/qwen_cpu",
+        "--weights",
+        "$REPO/build/native-cpu/build-09-fallback/weights.bin",
+        "--threads",
+        "12",
+        "--prefill-threads",
+        "6",
+        "--context",
+        "16"
+      ],
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "inputs": {
+    "$REPO/build/native-cpu/build-08/qwen_cpu": "b814edc547ca4a8b1b01b0b43bcf9e051d581482d51bf8383b83644785755f3f",
+    "$REPO/build/native-cpu/build-09/qwen_cpu": "ada4d08039129acc36388404a031269c76eb42ae3c2a859fb82049c2e6e30960",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/build-09-tiny-logits/report.json": "ad6c4efc5fa61e4a21bffda722800e497f104005cf3ffe8c58695dc6c2263e6c",
+    "$REPO/tools/check_native_cpu_bf16_fallback.py": "d08fe7bb675cb6c736f1c325f48e858c65fc70e97959d4cbcb612f08d8759530"
+  },
+  "copy_method": "APFS clone",
+  "mutation": {
+    "tensor": "model.embed_tokens.weight",
+    "offset_bytes": 64,
+    "original_fp16_hex": "c0a0",
+    "replacement_fp16_bits": "0x3c01",
+    "replacement_value": 1.0009765625,
+    "explanation": "FP16 widened FP32 bits0x3f802000 have nonzero low16bits, forbidding lossless BF16 representation",
+    "all_other_bytes_equal": true,
+    "fixture_has_manifest": false
+  },
+  "fixture": {
+    "path": "$REPO/build/native-cpu/build-09-fallback/weights.bin",
+    "sha256": "01ee80b561856a785b2c6a09504499020996b856f826492b4f594e8607c08756",
+    "index_sha256": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7"
+  },
+  "checks": {
+    "full_logits_bit_identical": true,
+    "greedy_ids_equal": true,
+    "normal_cache_bytes": 1191968768,
+    "embedding_bytes": 311164928,
+    "fixture_cache_bytes": 880803840,
+    "whole_tensor_fallback": true,
+    "normal_row0_logit": 5.952200889587402,
+    "fixture_row0_logit": 13.120983123779297,
+    "changed_weight_exercised": true
+  },
+  "guard_after": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Validate exact fallback for non-BF16-representable weights",
+      "started_at": "2026-11-12T06:27:35.867952+00:00"
+    }
+  },
+  "canonical_unchanged": true,
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-09-fallback/report.json",
+    "raw_source_sha256": "a64dab6ed162509d89941c287070728f3ba21ba8759b9857971a1ac5e3cfa7a6",
+    "sanitization": "Repository/home prefixes replaced; PID/PPID and process names removed. Host CPU percent retains original ps column index2; embedded hashes reference raw artifacts."
+  }
+}
