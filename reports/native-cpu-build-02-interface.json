@@ -1,0 +1,20 @@
+{
+  "completed": true,
+  "passed": true,
+  "gpu": false,
+  "pytorch": false,
+  "inputs": {
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/build-02/qwen_cpu": "508ec922bac5f94cb0a6aa3283389454b8804fd43e4efeba402701a941c931ec",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7"
+  },
+  "checks": {
+    "seeded_chat_repeat": [
+      323,
+      323
+    ],
+    "inflight_cancellation_reaped_process": true,
+    "restart_after_cancellation": true,
+    "capacity_and_invalid_id_reset": true
+  }
+}

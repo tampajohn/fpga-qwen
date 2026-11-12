@@ -134,7 +134,7 @@ Evidence: [confirmation](../reports/native-phase0-f16-confirmation.json),
 [paired uncertainty](../reports/native-phase0-f16-confirmation-analysis.json),
 and [conversation gate](../reports/native-phase0-f16-confirmation-quality.json).
 Phase 0 profiling and separate FP32/Q4 measurements remain in progress.
-The four-hour Phase 1 implementation clock has not started.
+The four-hour Phase 1 implementation clock had not started when these FP16 results were recorded.
 
 ## Q4 discovery boundary
 
@@ -276,3 +276,24 @@ Four-hour wall-clock implementation/evaluation budget. The FP16 target is
 ON/ON 12 decode / 6 prefill, with the frozen numerical and conversation gates.
 Phase 0 is complete; constrained Q4 exclusions and profiling limits remain
 explicit. No native engine performance result exists at this start point.
+
+## First plain engine correctness evidence
+
+Build 02 is original C++/NEON plus Accelerate with no llama/ggml neural runtime,
+Torch or GPU dependency. It stores FP16 matrices and KV, uses FP32 activations
+and normalization, and eagerly widens layer matrices for batched prefill
+(approximately 1.76 GB additional cache, excluding mapped weights and KV).
+The first build attempt failed because the direct Xcode compiler did not locate
+C++ headers; using the system compiler shim produced the verified build.
+
+All sixteen selected full-vocabulary positions passed the predeclared NumPy
+gate: contexts 1–4, 85–92 and 452–455, maximum absolute error 0.008078 and
+maximum RMS 0.001455, with all greedy IDs matching. Each captured trajectory
+was repeated with identical logits. See the build-02 tiny/short/long gate
+reports in `reports/`. These are finite-position checks, not universal quality.
+
+Actual process tests passed seeded sampling repeatability, reset, in-flight
+cancellation and process reaping, clean restart, context overflow and invalid
+token handling. Existing nine-case conversation and matched speed tests remain
+pending. The browser backend is registered as experimental and unavailable
+until explicit binary promotion; the live server has not been restarted.

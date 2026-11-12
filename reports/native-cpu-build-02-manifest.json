@@ -1,0 +1,42 @@
+{
+  "completed": true,
+  "gpu": false,
+  "pytorch": false,
+  "guard": {
+    "directory": "/Users/jadams/workspace/sandbox/fpga-qwen/build/benchmark-status",
+    "metadata": {
+      "name": "Build original native CPU engine v2",
+      "pid": 11421,
+      "started_at": "2026-11-12T05:28:43.961391+00:00"
+    }
+  },
+  "command": [
+    "/usr/bin/clang++",
+    "-std=c++20",
+    "-O3",
+    "-mcpu=native",
+    "-flto=thin",
+    "-ffp-contract=fast",
+    "-fno-math-errno",
+    "-pthread",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/engine/core.cpp",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/engine/main.cpp",
+    "-framework",
+    "Accelerate",
+    "-o",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/build-02/qwen_cpu"
+  ],
+  "source_sha256": {
+    "/Users/jadams/workspace/sandbox/fpga-qwen/engine/core.cpp": "6f5073d0f1d442f81a2ac16f4f71ba2f9ee8d03e425819cdbad17e1caf2b2069",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/engine/core.hpp": "21152e59559d191431ea625202c9bf6bcc8ddc50e31de087ac0be2744b68de56",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/engine/main.cpp": "342014c7d26688bba9465e543fe67f230da42246fd087c8bb3e58b1c117e18c8",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/build_native_cpu.py": "e100b8687f3cba52d94db9bb2e1700c6669f7081a6dde55609695f0b1d5d325a"
+  },
+  "removed_environment_keys": [],
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "started_at": "2026-11-12T05:28:44Z",
+  "exit_code": 0,
+  "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/build-02/qwen_cpu",
+  "binary_sha256": "508ec922bac5f94cb0a6aa3283389454b8804fd43e4efeba402701a941c931ec",
+  "linked_libraries": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/build-02/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+}
