@@ -454,3 +454,13 @@ keeps its configurable worker count. The option appears only when the trusted
 phase-pool artifact is installed. It verifies the numerical profile and phase
 policy on every request, including process restarts. Suffix drafting remains off
 by default. This option does not change the default FP64 backend.
+
+The optional **Fused FP32 prefill · 12 prefill / 8 decode** backend uses explicitly
+fused FP32 prefill arithmetic, separate FP32 decode and verification, and FP64
+attention/KV. It reuses complete fused B8 prefill blocks under its own cache policy.
+Worker counts are fixed; 20 worker threads remain resident with one pool active.
+Existing FP64 and hybrid/phase choices remain available. The browser selects the
+newest available backend on initial page load and preserves manual selection
+during the session. Suffix drafting
+is optional and off by default. This remains CPU behavioral simulation, not FPGA
+cycle timing.

@@ -21,6 +21,7 @@ HYBRID_BINARY = FAST_BINARY.parents[1].with_name(
 
 
 PHASE_BINARY = ROOT / 'build/variants/phase-pools-b3eaa86c6c880192/full/Vqwen_behavioral'
+FMA_PHASE_BINARY = ROOT / 'build/variants/fma-prefill-752d43807904a35f/full/Vqwen_behavioral'
 
 def prepare_layout(model):
     model = locate_model(model)

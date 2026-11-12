@@ -10,13 +10,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class BackendRouter:
-    def __init__(self, simulation, hybrid=None, phase=None):
+    def __init__(self, simulation, hybrid=None, phase=None, fused_phase=None):
         self.simulation = simulation
         self.simulations = {"rtl": simulation}
         if hybrid is not None:
             self.simulations["rtl-fp32"] = hybrid
         if phase is not None:
             self.simulations['rtl-fp32-phase'] = phase
+        if fused_phase is not None:
+            self.simulations['rtl-fp32-fused-phase'] = fused_phase
         self.process = None
         self.loaded = None
         self.port = None
@@ -28,7 +30,8 @@ class BackendRouter:
 
     def catalog(self):
         simulations = [dict(id=key,
-            label=('SystemVerilog · FP32 hybrid · 12 prefill / 8 decode' if key == 'rtl-fp32-phase' else
+            label=('SystemVerilog · Fused FP32 prefill · 12 prefill / 8 decode' if key == 'rtl-fp32-fused-phase' else
+                   'SystemVerilog · FP32 hybrid · 12 prefill / 8 decode' if key == 'rtl-fp32-phase' else
                    'SystemVerilog · FP32 hybrid' if key == 'rtl-fp32' else
                    'SystemVerilog · fast' if engine.sim.lanes == 8 else 'SystemVerilog · reference'),
             available=True, cpu_threads=engine.threads, simulation=True,
@@ -45,6 +48,9 @@ class BackendRouter:
                                     available=False,simulation=True,min_workers=1,suffix_supported=False))
         if 'rtl-fp32-phase' not in self.simulations:
             simulations.append(dict(id='rtl-fp32-phase',label='SystemVerilog · FP32 hybrid · 12 prefill / 8 decode',
+                                    available=False,simulation=True,min_workers=1,fixed_workers=8,suffix_supported=False))
+        if 'rtl-fp32-fused-phase' not in self.simulations:
+            simulations.append(dict(id='rtl-fp32-fused-phase',label='SystemVerilog · Fused FP32 prefill · 12 prefill / 8 decode',
                                     available=False,simulation=True,min_workers=1,fixed_workers=8,suffix_supported=False))
         return simulations + [
             dict(id=key, label=label, available=self.binary.is_file() and self.models[key].is_file(),

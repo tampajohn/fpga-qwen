@@ -2,19 +2,20 @@
 import json
 try:
     from .rtl_chat import RTLChatEngine
-    from .rtl_model import PHASE_BINARY
+    from .rtl_model import PHASE_BINARY, FMA_PHASE_BINARY
 except ImportError:
     from rtl_chat import RTLChatEngine
-    from rtl_model import PHASE_BINARY
+    from rtl_model import PHASE_BINARY, FMA_PHASE_BINARY
 
 
 class PhasePoolChatEngine(RTLChatEngine):
     fixed_workers = 8
+    numerical_profile = 'fp32_b1_fp64_prefill'
 
     def __init__(self, model=None, binary=PHASE_BINARY):
         super().__init__(model, workers=8, binary=binary, lanes=8, block_size=4,
                          prefill_size=8, reuse_prefix=False,
-                         precision_profile='fp32_b1_fp64_prefill', canonical_prefix_reuse=True)
+                         precision_profile=self.numerical_profile, canonical_prefix_reuse=True)
         self.sim.phase_pool_selector = 'PREFILL_12'
         self.phase_verified = False
 
@@ -51,3 +52,11 @@ class PhasePoolChatEngine(RTLChatEngine):
                 event['metrics'].update(prefill_workers=12, decode_workers=8,
                                         resident_worker_threads=20)
             yield event
+
+
+class FusedPhasePoolChatEngine(PhasePoolChatEngine):
+    """Explicit fused-prefill profile; separate decode/verification arithmetic."""
+    numerical_profile = 'fp32_b1_fp32_fma_prefill'
+
+    def __init__(self, model=None, binary=FMA_PHASE_BINARY):
+        super().__init__(model=model, binary=binary)

@@ -10,13 +10,13 @@ from urllib.parse import urlsplit
 try:
     from .rtl_chat import RTLChatEngine
     from .chat_backends import BackendRouter
-    from .rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY
-    from .phase_chat import PhasePoolChatEngine
+    from .rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY, FMA_PHASE_BINARY
+    from .phase_chat import PhasePoolChatEngine, FusedPhasePoolChatEngine
 except ImportError:
     from rtl_chat import RTLChatEngine
     from chat_backends import BackendRouter
-    from rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY
-    from phase_chat import PhasePoolChatEngine
+    from rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY, FMA_PHASE_BINARY
+    from phase_chat import PhasePoolChatEngine, FusedPhasePoolChatEngine
 
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / 'web'
@@ -189,10 +189,11 @@ def main():
     hybrid = (RTLChatEngine(args.model,workers=max(1,args.workers),binary=HYBRID_BINARY,
               lanes=8,block_size=4,prefill_size=8,reuse_prefix=False,
               precision_profile='fp32_b1_fp64_prefill',canonical_prefix_reuse=True) if HYBRID_BINARY.is_file() else None)
+    fused_phase = FusedPhasePoolChatEngine(args.model) if FMA_PHASE_BINARY.is_file() else None
     phase = PhasePoolChatEngine(args.model) if PHASE_BINARY.is_file() else None
     engine = BackendRouter(RTLChatEngine(args.model, workers=args.workers, binary=binary,
                                          lanes=8 if args.simulator == 'fast' else 1, block_size=block_size,
-                                         prefill_size=prefill_size),hybrid=hybrid,phase=phase)
+                                         prefill_size=prefill_size),hybrid=hybrid,phase=phase,fused_phase=fused_phase)
     server = make_server(engine, args.port)
     print(f'Local chat ready: http://127.0.0.1:{server.server_port}', flush=True)
     print('Default: full behavioral SystemVerilog simulation; not synthesizable or cycle-accurate.', flush=True)

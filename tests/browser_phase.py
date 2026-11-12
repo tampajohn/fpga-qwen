@@ -7,7 +7,11 @@ from playwright.sync_api import sync_playwright,expect
 
 def main():
     url=os.environ.get('CHAT_URL','http://127.0.0.1:8766')
-    output=Path(__file__).resolve().parents[1]/'build/browser-phase'
+    backend=os.environ.get('PHASE_BROWSER_BACKEND','rtl-fp32-phase')
+    if backend not in ('rtl-fp32-phase','rtl-fp32-fused-phase'):raise ValueError('Unsupported phase backend')
+    fused=backend=='rtl-fp32-fused-phase'
+    policy='fp32_fma_b8_aligned_v1' if fused else 'fp64_b8_aligned_v1'
+    output=Path(__file__).resolve().parents[1]/('build/browser-fused-phase' if fused else 'build/browser-phase')
     output.mkdir(parents=True,exist_ok=True)
     with sync_playwright() as p:
         browser=p.chromium.launch(headless=True,args=['--disable-gpu'],executable_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
@@ -15,9 +19,12 @@ def main():
             page=browser.new_page();errors=[]
             page.on('pageerror',lambda error:errors.append(str(error)))
             page.goto(url);expect(page.locator('#prompt')).to_be_enabled()
-            expect(page.locator('#backend')).to_have_value('rtl')
+            if fused:
+                expect(page.locator('#backend')).to_have_value(backend)
+                assert page.locator('#backend option').first.get_attribute('value')==backend
+                page.locator('#backend').select_option('rtl')
             page.locator('#workers').select_option('2')
-            page.locator('#backend').select_option('rtl-fp32-phase')
+            page.locator('#backend').select_option(backend)
             expect(page.locator('#workers')).to_have_value('8')
             expect(page.locator('#workers')).to_be_disabled()
             expect(page.locator('#suffix')).to_be_enabled()
@@ -35,7 +42,9 @@ def main():
             status=page.request.get(url+'/api/status').json()
             assert status['phase_verified'] and status['precision_verified']
             assert status['prefill_workers']==12 and status['decode_workers']==8
-            assert status['canonical_prefix_policy']=='fp64_b8_aligned_v1'
+            assert status['canonical_prefix_policy']==policy
+            assert status['precision_profile']==('fp32_b1_fp32_fma_prefill' if fused else 'fp32_b1_fp64_prefill')
+            assert int(page.locator('#uncached').inner_text().replace(',',''))>0
             assert '12 prefill / 8 decode' in page.locator('.assistant .reply-meta').last.inner_text()
             page.locator('#suffix').check()
             third=send('Repeat blue three times.')
@@ -47,11 +56,19 @@ def main():
             generic=page.request.get(url+'/api/status').json()
             assert generic['active_backend']=='rtl-fp32' and generic['simulation_workers']==2
             assert not generic.get('phase_verified',False)
+            restart_status=None
+            if fused:
+                page.locator('#backend').select_option(backend)
+                send('Answer with the single word blue.')
+                restart_status=page.request.get(url+'/api/status').json()
+                assert restart_status['phase_verified'] and restart_status['precision_verified']
+                assert restart_status['canonical_prefix_policy']==policy
+                assert int(page.locator('#reused').inner_text().replace(',',''))==0
             page.locator('#backend').select_option('rtl')
             expect(page.locator('#workers')).to_be_enabled()
             assert not errors
             page.screenshot(path=str(output/'phase.png'))
-            (output/'result.json').write_text(json.dumps(dict(passed=True,replies=[first,second,third,fourth],reused_prefix_tokens=reused,status=status,generic_status=generic,javascript_errors=errors,timing_claim=False),indent=2)+'\n')
+            (output/'result.json').write_text(json.dumps(dict(passed=True,backend=backend,restart_status=restart_status,replies=[first,second,third,fourth],reused_prefix_tokens=reused,status=status,generic_status=generic,javascript_errors=errors,timing_claim=False),indent=2)+'\n')
         finally:browser.close()
 
 if __name__=='__main__':main()
