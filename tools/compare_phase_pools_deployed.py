@@ -120,7 +120,10 @@ def main():
                     if any(r['output_token_ids']!=expected or len(r['output_token_ids'])!=args.tokens for r in results.values()):raise AssertionError('Scored fixed-count greedy IDs differ')
                     if any(r['final_position']!=len(prompt)+args.tokens-1 for r in results.values()):raise AssertionError('Scored consumed work differs')
                     ratios={k:results[0][k]/results[1][k]for k in ('prefill_seconds','ttft_seconds','decode_seconds','total_seconds')}
-                    record['pairs'].append(dict(index=pair,order=order,baseline=results[0],candidate=results[1],ratios=ratios))
+                    # Verify every scored pair outside the request clocks, not
+                    # only warmup and the final pair of each prompt profile.
+                    full_logits=diagnostics(models,[results[0],results[1]],directory)
+                    record['pairs'].append(dict(index=pair,order=order,baseline=results[0],candidate=results[1],ratios=ratios,full_logits=full_logits))
                     args.output.write_text(json.dumps(report,indent=2)+'\n')
                     print(json.dumps(dict(profile=profile,pair=pair,ratios=ratios)),flush=True)
                 record['median_ratios']={k:statistics.median(p['ratios'][k]for p in record['pairs'])for k in ratios}
