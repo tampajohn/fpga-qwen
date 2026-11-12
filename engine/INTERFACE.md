@@ -51,6 +51,13 @@ Commands (one line, one response):
 - `dump PATH`: write current full vocabulary FP32 little-endian logits;
   response `{"ok":true,"count":151936,"position":...}`. Path is remainder
   of command line, so spaces are retained. No newline paths.
+- `dump-hidden PATH`: diagnostic export of the current final RMS-normalized
+  1024-element hidden vector, already computed for the current logits. Writes
+  FP32 little endian and responds with
+  `{"ok":true,"count":1024,"position":...,"format":"f32le"}`. It adds no
+  forward computation. Reset/rewind invalidates this export just like `dump`.
+  The C++ `hidden()` accessor returns a borrowed `span<const float>` valid only
+  until the next model mutation; callers must copy it if they need persistence.
 - `stats`: return current position/settings.
 - `quit`: acknowledge then exit.
 
