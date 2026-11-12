@@ -31,8 +31,11 @@ function backendChanged() {
       ? `Optional · up to ${backend.max_draft} verified tokens; helps repeated text, little benefit on prose`
       : `Verified n-gram drafts · up to ${backend.max_draft} tokens; sampled and greedy`)
     : 'Unavailable in this backend';
-  $('backend-tag').textContent = rtl ? 'Full SV simulation' : 'llama.cpp · CPU only';
-  $('backend-about').textContent = $('backend').value === 'rtl-fp32-fused-phase'
+  $('backend-tag').textContent = rtl ? 'Full SV simulation'
+    : backend?.id === 'native-cpu-f16' ? 'Native CPU · experimental' : 'llama.cpp · CPU only';
+  $('backend-about').textContent = backend?.id === 'native-cpu-f16'
+    ? 'Original C++ CPU engine with FP16 matrix weights, FP32 norms and arithmetic, and FP16 KV storage. Layer weights also have a widened FP32 cache for prefill. Uses 12 decode / 6 prefill threads; no GPU or PyTorch. Each message processes the full conversation: prefix reuse and suffix drafting are unavailable.'
+    : $('backend').value === 'rtl-fp32-fused-phase'
     ? 'Experimental fused FP32 prefill with 12 workers; separate FP32 decode and verification with 8 workers. Attention and KV remain FP64. Reuses only complete fused prefill blocks. Both pools stay resident; only one runs at a time. Optional suffix drafting is off by default. CPU only; not cycle-accurate FPGA timing.'
     : backend?.fixed_workers
     ? 'Same FP32 hybrid math and canonical prefix reuse, with 12 workers for prefill and 8 for decoding and verification. Both pools stay resident; only one runs at a time. Worker counts are fixed. Optional suffix drafting is off by default. CPU only; not cycle-accurate FPGA timing.'
