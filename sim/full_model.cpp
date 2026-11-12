@@ -36,6 +36,9 @@ static constexpr int block_capacity=4;
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#ifdef ATTENTION_QUERY_VALUE_DISPATCH
+#include <sstream>
+#endif
 static const uint16_t* weights;
 static size_t words;
 static std::vector<int64_t> offsets;
@@ -413,7 +416,23 @@ int main(int argc,char** argv) {
                 std::cout<<values[0]<<' '<<values[1]<<' '<<values[2]<<' '<<values[3]<<'\n'<<std::flush;
 #endif
 #ifdef ATTENTION_QUERY_VALUE_DISPATCH
-            } else if(command=="query_value_policy") {
+            } else if(command=="query_value_policy" || command=="query_value_set") {
+                if(command=="query_value_set") {
+                    // Commands are handled only after the prior synchronous
+                    // inference/pool jobs finish. No pool, KV or counters reset.
+                    std::string remainder,selector,extra;
+                    std::getline(std::cin,remainder);
+                    std::istringstream arguments(remainder);
+                    bool valid=bool(arguments>>selector) && !(arguments>>extra);
+                    if(valid) {
+                        try {query_value::set_policy(selector);}
+                        catch(const std::runtime_error&) {valid=false;}
+                    }
+                    if(!valid) {
+                        std::cout<<R"({"error":"Invalid query-value policy; expected OFF, ON or MIN_CONTEXT:N (1..4096)"})"<<'\n'<<std::flush;
+                        continue;
+                    }
+                }
                 const auto& policy=query_value::configured_policy();
                 std::array<uint64_t,2> counts{};
                 if(pool) counts=pool->query_value_stats();
@@ -422,6 +441,7 @@ int main(int argc,char** argv) {
                 for(int i=0;i<2;i++)counts[i]+=extra[i];
 #endif
                 std::cout<<"{\"selector\":\""<<policy.selector<<"\",\"min_context\":"<<policy.min_context
+                    <<",\"epoch\":"<<query_value::policy_epoch()
                     <<",\"context_metric\":\"paired_query_common_kv_tokens\",\"requires_second_query\":true,\"paired_head_pairs\":"<<counts[0]
                     <<",\"fallback_head_pairs\":"<<counts[1]<<"}\n"<<std::flush;
 #endif

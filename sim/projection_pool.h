@@ -92,6 +92,7 @@ class ProjectionPool {
 #ifdef ATTENTION_QUERY_VALUE_DISPATCH
     // Workers write disjoint slots; run() completion publishes them to coordinator.
     std::array<std::array<uint64_t,2>,32> query_value_counts{};
+    int query_value_job_min_context=-1;
 #endif
     const double* input=nullptr;
     double* output=nullptr;
@@ -102,7 +103,7 @@ class ProjectionPool {
             auto model=std::make_unique<Vprojection_worker>(context.get());
             model->reduction_lanes=reduction_lanes;
 #ifdef ATTENTION_QUERY_VALUE_DISPATCH
-            model->query_value_min_context=query_value::configured_policy().min_context;
+            model->query_value_min_context=-1; // Updated by every published op5 job.
 #endif
             model->start=0;model->clk=0;model->eval();
 #ifdef FP32_PROJECTION_B1
@@ -154,6 +155,9 @@ class ProjectionPool {
 #ifdef PARALLEL_ATTENTION
                 model->operation=operation;
                 model->attention_layer=attention_layer;model->attention_position=attention_position;
+#ifdef ATTENTION_QUERY_VALUE_DISPATCH
+                if(operation==5) model->query_value_min_context=query_value_job_min_context;
+#endif
                 int copy_scale=operation==1?128:1;
 #ifdef ATTENTION_HEAD_PAIRS
                 if(operation==6)copy_scale=256;
@@ -441,6 +445,11 @@ public:
         if(error) std::rethrow_exception(error);
 #ifdef PARALLEL_ATTENTION
         operation=requested_operation;attention_layer=layer;attention_position=position;
+#ifdef ATTENTION_QUERY_VALUE_DISPATCH
+        // Coordinator snapshots under mutex; CV/generation or release/acquire
+        // publication below makes it visible before worker eval in either pool.
+        if(requested_operation==5) query_value_job_min_context=query_value::configured_policy().min_context;
+#endif
 #ifdef BATCH_PREFILL
         batch_count=requested_batch_count;
 #endif
