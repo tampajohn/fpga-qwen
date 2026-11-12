@@ -87,10 +87,34 @@ class PrefillModelTests(unittest.TestCase):
     @unittest.skipUnless(os.environ.get('RUN_PREFILL_CAPACITY')=='1','Explicit expensive actual 4096 boundary gate')
     def test_actual_capacity_boundary(self):
         model=self.model()
-        for start in range(0,4088,8):self.assertEqual(model.prefill([9707]*8)[-1][1],start+8)
-        self.assertEqual(model.prefill([9707]*8)[-1][1],4096)
-        self.assertEqual(model.command('truncate 4095'),'truncated')
-        self.assertEqual(model.prefill([9707])[-1][1],4096)
-        self.assertEqual(model.command('truncate 4092'),'truncated')
-        with self.assertRaises(RuntimeError):model.command('prefill 5 9707 9707 9707 9707 9707')
-        self.assertEqual(model.process.wait(timeout=2),1)
+        exact=os.environ.get('RUN_PREFILL_CAPACITY_EXACT')=='1'
+        models=[model,self.model(True)] if exact else [model]
+        for start in range(0,4088,8):
+            for current in models:self.assertEqual(current.prefill([9707]*8)[-1][1],start+8)
+        for current in models:self.assertEqual(current.prefill([9707]*8)[-1][1],4096)
+        report=dict(completed=False,fp64_b8_prefill_reached=4096,reference_checked=exact,
+                    timing_claim=False,max_causal_position=4095)
+        if exact:
+            # The prefill wire intentionally has no logits. Explicit verification
+            # observes operation5 at the same maximum causal position with a head.
+            predictions=[]
+            for current in models:
+                self.assertEqual(current.command('truncate 4092'),'truncated')
+                predictions.append(current.block([9707]*4,logits=True))
+            self.assertEqual([r[:2]for r in predictions[0]],[r[:2]for r in predictions[1]])
+            self.assertEqual([r[1]for r in predictions[0]],[4093,4094,4095,4096])
+            with tempfile.TemporaryDirectory()as directory:
+                arrays=[read_dump_logits(current,Path(directory)/str(i))for i,current in enumerate(models)]
+            self.assertEqual(arrays[0].tobytes(),arrays[1].tobytes())
+            report.update(max_position_fp32_b4_verification_ids_positions=[r[:2]for r in predictions[0]],
+                          full_logits_bit_identical=True)
+        for current in models:
+            self.assertEqual(current.command('truncate 4095'),'truncated')
+            self.assertEqual(current.prefill([9707])[-1][1],4096)
+            self.assertEqual(current.command('truncate 4092'),'truncated')
+            with self.assertRaises(RuntimeError):current.command('prefill 5 9707 9707 9707 9707 9707')
+            self.assertEqual(current.process.wait(timeout=2),1)
+        report.update(completed=True,valid_single_token_tail=True,overflow_rejected=True)
+        if exact:
+            output=Path(os.environ.get('PREFILL_CAPACITY_REPORT','build/prefill-capacity-exact.json'))
+            output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(report,indent=2)+'\n')

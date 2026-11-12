@@ -1,0 +1,41 @@
+{
+  "completed": true,
+  "fp64_b8_prefill_reached": 4096,
+  "reference_checked": true,
+  "timing_claim": false,
+  "max_causal_position": 4095,
+  "max_position_fp32_b4_verification_ids_positions": [
+    [
+      21806,
+      4093
+    ],
+    [
+      21806,
+      4094
+    ],
+    [
+      21806,
+      4095
+    ],
+    [
+      21806,
+      4096
+    ]
+  ],
+  "full_logits_bit_identical": true,
+  "valid_single_token_tail": true,
+  "overflow_rejected": true,
+  "candidate_sha256": "4d45e071a8a8aec353b638356c90dd42f9c90e69aaee929725e17e20dec7ebc3",
+  "reference_sha256": "97572eb39dde3ebbab0d01c79c824a8842c677e3333b35a687005f145e87606b",
+  "session": 67729,
+  "exit_code": 0,
+  "test_seconds_not_performance": 484.079,
+  "overflow_diagnostic": "Invalid prefill request",
+  "source_sha256": "3a22d78a36b628a468ab6c4548fb5efc5b22458a24d59df2a63702a45b44c1c1",
+  "scope": "Maximum FP64 B8 prefill acknowledges4096 without logits; full finite vocabulary bits compared after FP32 B4 verification at4093..4096, which exercises new attention dispatch at causalposition4095. Valid single-token FP64 tail and crossingoverflow separately checked.",
+  "interrupted_superseded_run": {
+    "session": 70430,
+    "exit_code": 130,
+    "reason": "Switched from initial07e artifact to actual deployment MAIN4d45; no result claimed"
+  }
+}
