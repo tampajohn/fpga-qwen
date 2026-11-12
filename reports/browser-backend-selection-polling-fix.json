@@ -1,0 +1,52 @@
+{
+  "completed": true,
+  "gpu_inference": false,
+  "inference_interface": "Actual localhost browser chat",
+  "url": "http://127.0.0.1:8765",
+  "live_deployment_check": true,
+  "checks": {
+    "latest_release_first_and_default_after_reload": true,
+    "focused_backend_stable_during_status_polling": true,
+    "catalog_and_controls": true,
+    "fresh_context_status": true,
+    "guard_visible_and_server_blocks": true,
+    "cancel_then_fresh_request": true,
+    "backend_switch_roundtrip": true
+  },
+  "replies": [
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-10 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.11 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "What word did you just say? Answer with that word only.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-10 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.17 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word green.",
+      "text": "green",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-10 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.46 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "llama.cpp \u00b7 FP16 \u00b7 Greedy \u00b7 Complete \u00b7 2 tokens \u00b7 0.58 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-10 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.44 s \u00b7 0 prefix tokens reused"
+    }
+  ],
+  "console_errors": [],
+  "initial_selection": "native-cpu-f16",
+  "regression": {
+    "previous_script_commit": "1e516c1^",
+    "previous_focused_option_mutations": 36,
+    "fixed_focused_option_mutations": 0,
+    "fixed_script_sha256": "5052b3763c1749fe0f11dbb95c1b37c38e86a230e33f61997516e3a71018ea24",
+    "scope": "DOM stability while focused and selection persistence; headless native OS popup keyboard behavior is not asserted."
+  }
+}

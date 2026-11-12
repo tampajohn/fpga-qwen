@@ -59,6 +59,25 @@ def main():
                 expect(page.locator('#backend')).to_have_value('native-cpu-f16')
                 report['checks']['latest_release_first_and_default_after_reload'] = True
             report['initial_selection'] = page.locator('#backend').input_value()
+            # Native OS popups are not reliably driven in headless Chrome. Check
+            # the DOM mutation that dismisses them while the select has focus.
+            page.evaluate("""() => {
+                window.backendMutations = 0;
+                window.backendObserver = new MutationObserver(rows => window.backendMutations += rows.length);
+                window.backendObserver.observe(document.querySelector('#backend'),
+                    {subtree: true, childList: true, attributes: true, characterData: true});
+            }""")
+            available = page.locator('#backend option:not([disabled])').evaluate_all('(options) => options.map(o => o.value)')
+            page.locator('#backend').focus()
+            page.wait_for_timeout(3200)
+            assert page.evaluate('window.backendMutations') == 0, 'Status polling mutated focused backend options'
+            page.locator('#backend').select_option(available[1])
+            expect(page.locator('#backend')).to_have_value(available[1])
+            page.locator('#prompt').focus()
+            page.wait_for_timeout(2200)
+            expect(page.locator('#backend')).to_have_value(available[1])
+            page.evaluate('window.backendObserver.disconnect()')
+            report['checks']['focused_backend_stable_during_status_polling'] = True
             page.locator('#backend').select_option('native-cpu-f16')
             expect(page.locator('#workers-row')).to_be_hidden()
             expect(page.locator('#suffix')).to_be_disabled()
