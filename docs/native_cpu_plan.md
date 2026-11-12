@@ -91,3 +91,19 @@ and `native-phase0-f16-long-oracle-calibration.json` under `reports/`. The initi
 four-position native build/callback comparison was bit-identical; its first
 diagnostic client did not attach persistent pools, so its timings are excluded
 from profiling conclusions. A corrected client attaches persistent CPU pools.
+
+## Held-out gate and final baseline selection
+
+The independently held-out short-chat trajectory passed the predeclared gate
+at all eight positions (contexts 85–92): maximum absolute error 0.007021,
+maximum position RMS error 0.001554, and zero greedy mismatches. See
+[the gate report](../reports/native-phase0-f16-short-oracle-gate.json).
+This establishes baseline compatibility with the chosen tolerance on these
+positions; it is not yet a result for the unimplemented native engine.
+
+The final two-round discovery remains exploratory and shows substantial
+run-to-run scheduling variation, especially above twelve decode threads.
+Ten-round confirmation compares KleidiAI+LTO at 10/6, 12/6, and 12/4
+decode/prefill threads against the KleidiAI-off/LTO-off 8/6 control.
+Normal priority and polling 50 are retained. A priority-1 probe failed preflight
+with macOS permission denied; no elevated scheduling is claimed or required.

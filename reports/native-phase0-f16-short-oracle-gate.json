@@ -1,0 +1,1247 @@
+{
+  "completed": true,
+  "calibration_only": false,
+  "passed": true,
+  "timing_claim": false,
+  "gpu": false,
+  "pytorch": false,
+  "guard_before": {
+    "directory": "/Users/jadams/workspace/sandbox/fpga-qwen/build/benchmark-status",
+    "metadata": {
+      "name": "Validate declared FP16 full-logit tolerances on short chat",
+      "pid": 56805,
+      "started_at": "2026-11-12T05:04:30.779902+00:00"
+    }
+  },
+  "declared_tolerances": {
+    "atol": 0.01,
+    "rtol": 0.0,
+    "rms_atol": 0.002,
+    "greedy_identity_required": true
+  },
+  "inputs": {
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/f16-short-logits/report.json": "72a28040868820caf0ea28a701320356d29dcd8ebad633472865fa801779774f",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/f16-short-logits/logits/run-0-step-0.f32": "61995cb849dbebb0c3c495128a75862cd4fbc8612a8a7e6646289962e031d9a4",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/f16-short-logits/logits/run-0-step-1.f32": "36a5783e5680a76c1a9655a0f23438486f32c84173c0d45c05f3bed43d83f202",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/f16-short-logits/logits/run-0-step-2.f32": "04e6892b79a711b331355a4f7360d693f9554574614d5d0dafa453653aa36964",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/f16-short-logits/logits/run-0-step-3.f32": "12c1f0dd3a0796b3c3cb1edb1cc8ea1295702c649760b2476a1435fa6fb51e27",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/f16-short-logits/logits/run-0-step-4.f32": "b4e904c5d309d8102d2eb536370cd544c9e80ae8a0f83f97ac35bc697a213f46",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/f16-short-logits/logits/run-0-step-5.f32": "a2372a2faf4c135a2d7b78ad961c007e932b35b45e5cb8723b28eeff2da5c612",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/f16-short-logits/logits/run-0-step-6.f32": "b6a3abc735262bbe468f92f443c06d4948961f850d1c8b9e2586962e852de4dc",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/f16-short-logits/logits/run-0-step-7.f32": "08688646b4cf024833d06bbd29c118f883b8f27d845e01bb20a054c5aa23b819",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/bench/qwen3-0.6b-f16.gguf": "b91afb05689ed9ad8096f1e1274c416cff25f4db9fead4733806f7a669cadb1e",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/prompt-short.json": "58e00bf8b3d31e4acefb5eb3fa2caa3874f426b931bbb3131e3565821b17a848",
+    "/Users/jadams/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/model.safetensors": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+  },
+  "source_hashes": {
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/check_native_logits.py": "32be3d14fb38aa4ba7afe6fac849b97b43b50f793e74c1f560930df7625f731f",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tests/test_full_model.py": "5d56aa9784ec89a98f34cfdfd14aa7a0be9d356dd804754a8ec52c1b6e5fc439",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713"
+  },
+  "oracle": {
+    "checkpoint": "/Users/jadams/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca",
+    "weight_precision": "f16",
+    "kv_precision": "f16",
+    "arithmetic": "NumPy FP32 network math; existing FP64 RoPE angle generation then FP32 sine/cosine.",
+    "kv_representation": "FP16-rounded values widened to FP32 before attention and cached as FP32",
+    "matrix_weight_rounding_only": true,
+    "norm_weights": "Original BF16 checkpoint values widened to FP32 without FP16 rounding",
+    "numpy_version": "2.5.4",
+    "library_threads": {
+      "VECLIB_MAXIMUM_THREADS": "4",
+      "OPENBLAS_NUM_THREADS": "4"
+    }
+  },
+  "captures": [
+    {
+      "path": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/f16-short-logits/report.json",
+      "wrapped_provenance": true,
+      "configuration": {
+        "model": "/Users/jadams/workspace/sandbox/fpga-qwen/build/bench/qwen3-0.6b-f16.gguf",
+        "model_file_type": "1",
+        "architecture": "qwen3",
+        "layers": 28,
+        "hidden": 1024,
+        "query_heads": 16,
+        "kv_heads": 8,
+        "vocabulary": 151936,
+        "threads": 12,
+        "batch_threads": 6,
+        "context": 4096,
+        "batch_size": 512,
+        "kv_type": "f16",
+        "flash_attn_requested": "auto",
+        "callback": "off",
+        "registered_devices": [
+          {
+            "name": "BLAS",
+            "type": 3
+          },
+          {
+            "name": "CPU",
+            "type": 0
+          }
+        ],
+        "n_gpu_layers": 0,
+        "offload_kqv": false,
+        "op_offload": false,
+        "threadpools": {
+          "attached": true,
+          "persistent": true,
+          "pool_constructions": 2,
+          "decode_threads_requested": 12,
+          "prefill_threads_requested": 6,
+          "thread_count_evidence": "Successful public pool construction with these requested counts; this llama revision has no implemented pool-count getter",
+          "shared_when_thread_counts_equal": false,
+          "poll": 50,
+          "priority": "normal",
+          "strict_cpu": false,
+          "cpu_affinity": "inherited/default, not pinned",
+          "initial_decode_paused": true,
+          "initial_prefill_paused": false,
+          "lifetime": "Created once before context inference; retained across all warmups and requests"
+        }
+      },
+      "run_index": 0,
+      "warmup": false,
+      "native_mode": "greedy",
+      "prompt": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "consumed": [
+        10642,
+        33394,
+        19257,
+        311,
+        279,
+        4628,
+        518
+      ],
+      "predictions": [
+        10642,
+        33394,
+        19257,
+        311,
+        279,
+        4628,
+        518,
+        892
+      ],
+      "eog_prediction_steps": [],
+      "client_manifest": {
+        "binary": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/profile-v2a-kleidi-on-lto-on/profile_native_cpu",
+        "binary_sha256": "fdd89c279e18b9d7d86163990b8d3dcbeb68a06d2170e93119faf60df9b77c9e",
+        "command": [
+          "/usr/bin/clang++",
+          "-std=c++17",
+          "-O3",
+          "-DNDEBUG",
+          "-Wall",
+          "-Wextra",
+          "-I/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp/include",
+          "-I/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp/ggml/include",
+          "-I/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp/vendor",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/tools/profile_native_cpu.cpp",
+          "-L/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/bin",
+          "-Wl,-rpath,/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/bin",
+          "-lllama",
+          "-lggml",
+          "-lggml-cpu",
+          "-lggml-base",
+          "-o",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/profile-v2a-kleidi-on-lto-on/profile_native_cpu"
+        ],
+        "compiler_version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+        "llama_source": "/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp",
+        "llama_build": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on",
+        "llama_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb",
+        "source_hashes": {
+          "/Users/jadams/workspace/sandbox/fpga-qwen/tools/profile_native_cpu.cpp": "53fa8eb78f6dbfe6bac3fc2121ac9189cb4f88f10165330b41586b8a5e3e685b",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/tools/profile_native_cpu.py": "2e380287c0f83b9dde18e8aee4a24558cb26f2f93a82c39051ede4f5415d6558",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp/include/llama.h": "a806cb05ff2f218945acefc0d5e49681f41d76af5d7ef7613d954fc18c81fe2a",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp/ggml/include/ggml.h": "c9400b4ea60067c690fa08fcdf365e0b2b747bd815db84d26c562eda8e99ba25",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp/ggml/include/ggml-backend.h": "34464da4b46314c710cd634626578c6f2a6811431d41eddaf5e8aa77082fea2a",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp/ggml/include/ggml-cpu.h": "316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp/vendor/nlohmann/json.hpp": "08f19bbcc66ff3082f5caf58867b1232987dba98d82e2b29d870722fce42776b"
+        },
+        "libraries": {
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/bin/libggml-base.0.29.0.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/bin/libggml-blas.0.29.0.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/bin/libggml-cpu.0.29.0.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/bin/libggml.0.29.0.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/bin/libllama-bench-impl.dylib": "5fbdbf965c84a890ea38327e9e4528704a07d23f9078943cea8030b266539b50",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/bin/libllama-common.0.9.0.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/bin/libllama-server-impl.dylib": "fee8cf534d504a305849086b7d078b7eba381417bf6eb42921f2affd36987632",
+          "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/bin/libllama.0.9.0.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4"
+        },
+        "native_build": {
+          "path": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/CMakeCache.txt",
+          "sha256": "6dc36d8fd67fa902b4aae2d7da05d6012153d164a873893c4dbe9ad60f4318b5",
+          "options": {
+            "ACCELERATE_FRAMEWORK": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework",
+            "BLAS_Accelerate_LIBRARY": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework",
+            "BUILD_SHARED_LIBS": "ON",
+            "CMAKE_ADDR2LINE": "CMAKE_ADDR2LINE-NOTFOUND",
+            "CMAKE_AR": "/usr/bin/ar",
+            "CMAKE_ASM_COMPILER": "/usr/bin/cc",
+            "CMAKE_ASM_FLAGS": "",
+            "CMAKE_ASM_FLAGS_DEBUG": "-g",
+            "CMAKE_ASM_FLAGS_MINSIZEREL": "-Os -DNDEBUG",
+            "CMAKE_ASM_FLAGS_RELEASE": "-O3 -DNDEBUG",
+            "CMAKE_ASM_FLAGS_RELWITHDEBINFO": "-O2 -g -DNDEBUG",
+            "CMAKE_BUILD_TYPE": "Release",
+            "CMAKE_COLOR_MAKEFILE": "ON",
+            "CMAKE_CXX_COMPILER": "/usr/bin/c++",
+            "CMAKE_CXX_FLAGS": "",
+            "CMAKE_CXX_FLAGS_DEBUG": "-g",
+            "CMAKE_CXX_FLAGS_MINSIZEREL": "-Os -DNDEBUG",
+            "CMAKE_CXX_FLAGS_RELEASE": "-O3 -DNDEBUG",
+            "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-O2 -g -DNDEBUG",
+            "CMAKE_C_COMPILER": "/usr/bin/cc",
+            "CMAKE_C_FLAGS": "",
+            "CMAKE_C_FLAGS_DEBUG": "-g",
+            "CMAKE_C_FLAGS_MINSIZEREL": "-Os -DNDEBUG",
+            "CMAKE_C_FLAGS_RELEASE": "-O3 -DNDEBUG",
+            "CMAKE_C_FLAGS_RELWITHDEBINFO": "-O2 -g -DNDEBUG",
+            "CMAKE_DLLTOOL": "CMAKE_DLLTOOL-NOTFOUND",
+            "CMAKE_EXE_LINKER_FLAGS": "",
+            "CMAKE_EXE_LINKER_FLAGS_DEBUG": "",
+            "CMAKE_EXE_LINKER_FLAGS_MINSIZEREL": "",
+            "CMAKE_EXE_LINKER_FLAGS_RELEASE": "",
+            "CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO": "",
+            "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+            "CMAKE_FIND_PACKAGE_REDIRECTS_DIR": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/CMakeFiles/pkgRedirects",
+            "CMAKE_INSTALL_BINDIR": "bin",
+            "CMAKE_INSTALL_DATADIR": "",
+            "CMAKE_INSTALL_DATAROOTDIR": "share",
+            "CMAKE_INSTALL_DOCDIR": "",
+            "CMAKE_INSTALL_INCLUDEDIR": "include",
+            "CMAKE_INSTALL_INFODIR": "",
+            "CMAKE_INSTALL_LIBDIR": "lib",
+            "CMAKE_INSTALL_LIBEXECDIR": "libexec",
+            "CMAKE_INSTALL_LOCALEDIR": "",
+            "CMAKE_INSTALL_LOCALSTATEDIR": "var",
+            "CMAKE_INSTALL_MANDIR": "",
+            "CMAKE_INSTALL_NAME_TOOL": "/usr/bin/install_name_tool",
+            "CMAKE_INSTALL_OLDINCLUDEDIR": "/usr/include",
+            "CMAKE_INSTALL_PREFIX": "/usr/local",
+            "CMAKE_INSTALL_RUNSTATEDIR": "",
+            "CMAKE_INSTALL_SBINDIR": "sbin",
+            "CMAKE_INSTALL_SHAREDSTATEDIR": "com",
+            "CMAKE_INSTALL_SYSCONFDIR": "etc",
+            "CMAKE_LINKER": "/usr/bin/ld",
+            "CMAKE_MAKE_PROGRAM": "/usr/bin/make",
+            "CMAKE_MODULE_LINKER_FLAGS": "",
+            "CMAKE_MODULE_LINKER_FLAGS_DEBUG": "",
+            "CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL": "",
+            "CMAKE_MODULE_LINKER_FLAGS_RELEASE": "",
+            "CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO": "",
+            "CMAKE_NM": "/usr/bin/nm",
+            "CMAKE_OBJCOPY": "CMAKE_OBJCOPY-NOTFOUND",
+            "CMAKE_OBJDUMP": "/usr/bin/objdump",
+            "CMAKE_OSX_ARCHITECTURES": "",
+            "CMAKE_OSX_DEPLOYMENT_TARGET": "",
+            "CMAKE_OSX_SYSROOT": "",
+            "CMAKE_PROJECT_COMPAT_VERSION": "",
+            "CMAKE_PROJECT_DESCRIPTION": "",
+            "CMAKE_PROJECT_HOMEPAGE_URL": "",
+            "CMAKE_PROJECT_NAME": "llama.cpp",
+            "CMAKE_PROJECT_SPDX_LICENSE": "",
+            "CMAKE_PROJECT_VERSION": "1.32.0",
+            "CMAKE_PROJECT_VERSION_MAJOR": "1",
+            "CMAKE_PROJECT_VERSION_MINOR": "32",
+            "CMAKE_PROJECT_VERSION_PATCH": "0",
+            "CMAKE_PROJECT_VERSION_TWEAK": "",
+            "CMAKE_RANLIB": "/usr/bin/ranlib",
+            "CMAKE_READELF": "CMAKE_READELF-NOTFOUND",
+            "CMAKE_SHARED_LINKER_FLAGS": "",
+            "CMAKE_SHARED_LINKER_FLAGS_DEBUG": "",
+            "CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL": "",
+            "CMAKE_SHARED_LINKER_FLAGS_RELEASE": "",
+            "CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO": "",
+            "CMAKE_SKIP_INSTALL_RPATH": "NO",
+            "CMAKE_SKIP_RPATH": "NO",
+            "CMAKE_STATIC_LINKER_FLAGS": "",
+            "CMAKE_STATIC_LINKER_FLAGS_DEBUG": "",
+            "CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL": "",
+            "CMAKE_STATIC_LINKER_FLAGS_RELEASE": "",
+            "CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO": "",
+            "CMAKE_STRIP": "/usr/bin/strip",
+            "CMAKE_TAPI": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/tapi",
+            "CMAKE_VERBOSE_MAKEFILE": "FALSE",
+            "FETCHCONTENT_BASE_DIR": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/_deps",
+            "FETCHCONTENT_FULLY_DISCONNECTED": "OFF",
+            "FETCHCONTENT_QUIET": "ON",
+            "FETCHCONTENT_SOURCE_DIR_KLEIDIAI": "",
+            "FETCHCONTENT_UPDATES_DISCONNECTED": "OFF",
+            "FETCHCONTENT_UPDATES_DISCONNECTED_KLEIDIAI": "OFF",
+            "GGML_ACCELERATE": "ON",
+            "GGML_ALL_WARNINGS_3RD_PARTY": "OFF",
+            "GGML_AMX_BF16": "OFF",
+            "GGML_AMX_INT8": "OFF",
+            "GGML_AMX_TILE": "OFF",
+            "GGML_AVX": "OFF",
+            "GGML_AVX2": "OFF",
+            "GGML_AVX512": "OFF",
+            "GGML_AVX512_BF16": "OFF",
+            "GGML_AVX512_VBMI": "OFF",
+            "GGML_AVX512_VNNI": "OFF",
+            "GGML_AVX_VNNI": "OFF",
+            "GGML_BACKEND_DIR": "",
+            "GGML_BACKEND_DL": "OFF",
+            "GGML_BIN_INSTALL_DIR": "bin",
+            "GGML_BLAS": "ON",
+            "GGML_BLAS_VENDOR": "Apple",
+            "GGML_BMI2": "OFF",
+            "GGML_BUILD_EXAMPLES": "OFF",
+            "GGML_BUILD_TESTS": "OFF",
+            "GGML_CCACHE": "ON",
+            "GGML_CCACHE_FOUND": "/opt/homebrew/bin/ccache",
+            "GGML_CPU": "ON",
+            "GGML_CPU_ALL_VARIANTS": "OFF",
+            "GGML_CPU_ARM_ARCH": "",
+            "GGML_CPU_HBM": "OFF",
+            "GGML_CPU_KLEIDIAI": "ON",
+            "GGML_CPU_POWERPC_CPUTYPE": "",
+            "GGML_CPU_REPACK": "ON",
+            "GGML_CUDA": "OFF",
+            "GGML_CUDA_CCCL_VERSION": "",
+            "GGML_CUDA_COMPRESSION_MODE": "size",
+            "GGML_CUDA_FA": "ON",
+            "GGML_CUDA_FA_ALL_QUANTS": "OFF",
+            "GGML_CUDA_FA_QUANTS": "q4_0-q4_0;q8_0-q8_0;f16-f16;bf16-bf16;f8_e4m3-f8_e4m3",
+            "GGML_CUDA_FORCE_CUBLAS": "OFF",
+            "GGML_CUDA_FORCE_MMQ": "OFF",
+            "GGML_CUDA_GRAPHS": "ON",
+            "GGML_CUDA_NCCL": "ON",
+            "GGML_CUDA_NO_PEER_COPY": "OFF",
+            "GGML_CUDA_NO_VMM": "OFF",
+            "GGML_ET": "OFF",
+            "GGML_ET_SYSEMU": "OFF",
+            "GGML_F16C": "OFF",
+            "GGML_FMA": "OFF",
+            "GGML_GPROF": "OFF",
+            "GGML_HEXAGON": "OFF",
+            "GGML_HIP": "OFF",
+            "GGML_HIP_EXPORT_METRICS": "OFF",
+            "GGML_HIP_GRAPHS": "ON",
+            "GGML_HIP_MMQ_MFMA": "ON",
+            "GGML_HIP_NO_VMM": "ON",
+            "GGML_HIP_RCCL": "OFF",
+            "GGML_INCLUDE_INSTALL_DIR": "include",
+            "GGML_LASX": "ON",
+            "GGML_LIB_INSTALL_DIR": "lib",
+            "GGML_LLAMAFILE": "ON",
+            "GGML_LSX": "ON",
+            "GGML_LTO": "ON",
+            "GGML_METAL": "OFF",
+            "GGML_METAL_EMBED_LIBRARY": "OFF",
+            "GGML_METAL_MACOSX_VERSION_MIN": "",
+            "GGML_METAL_NDEBUG": "OFF",
+            "GGML_METAL_SHADER_DEBUG": "OFF",
+            "GGML_METAL_STD": "",
+            "GGML_METAL_TARGET_OS": "macos",
+            "GGML_MUSA": "OFF",
+            "GGML_MUSA_GRAPHS": "OFF",
+            "GGML_MUSA_MUDNN_COPY": "OFF",
+            "GGML_NATIVE": "ON",
+            "GGML_OPENCL": "OFF",
+            "GGML_OPENCL_EMBED_KERNELS": "ON",
+            "GGML_OPENCL_PROFILING": "OFF",
+            "GGML_OPENCL_TARGET_VERSION": "300",
+            "GGML_OPENCL_USE_ADRENO_KERNELS": "ON",
+            "GGML_OPENMP": "OFF",
+            "GGML_OPENMP_FETCH": "OFF",
+            "GGML_OPENVINO": "OFF",
+            "GGML_RPC": "OFF",
+            "GGML_RVV": "ON",
+            "GGML_RV_ZFH": "ON",
+            "GGML_RV_ZICBOP": "ON",
+            "GGML_RV_ZIHINTPAUSE": "ON",
+            "GGML_RV_ZVFBFWMA": "OFF",
+            "GGML_RV_ZVFH": "ON",
+            "GGML_SANITIZE_ADDRESS": "OFF",
+            "GGML_SANITIZE_THREAD": "OFF",
+            "GGML_SANITIZE_UNDEFINED": "OFF",
+            "GGML_SCCACHE_FOUND": "GGML_SCCACHE_FOUND-NOTFOUND",
+            "GGML_SCHED_MAX_COPIES": "4",
+            "GGML_SCHED_NO_REALLOC": "OFF",
+            "GGML_SSE42": "OFF",
+            "GGML_STATIC": "OFF",
+            "GGML_SYCL": "OFF",
+            "GGML_SYCL_DEVICE_ARCH": "",
+            "GGML_SYCL_DNN": "ON",
+            "GGML_SYCL_F16": "OFF",
+            "GGML_SYCL_GRAPH": "ON",
+            "GGML_SYCL_HOST_MEM_FALLBACK": "ON",
+            "GGML_SYCL_SUPPORT_LEVEL_ZERO_API": "ON",
+            "GGML_SYCL_SUPPORT_XMX": "ON",
+            "GGML_SYCL_TARGET": "INTEL",
+            "GGML_VIRTGPU": "OFF",
+            "GGML_VIRTGPU_BACKEND": "OFF",
+            "GGML_VULKAN": "OFF",
+            "GGML_VULKAN_CHECK_RESULTS": "OFF",
+            "GGML_VULKAN_DEBUG": "OFF",
+            "GGML_VULKAN_MEMORY_DEBUG": "OFF",
+            "GGML_VULKAN_RUN_TESTS": "OFF",
+            "GGML_VULKAN_SHADERS_GEN_TOOLCHAIN": "",
+            "GGML_VULKAN_SHADER_DEBUG_INFO": "OFF",
+            "GGML_VULKAN_VALIDATE": "OFF",
+            "GGML_VXE": "ON",
+            "GGML_WEBGPU": "OFF",
+            "GGML_WEBGPU_CPU_PROFILE": "OFF",
+            "GGML_WEBGPU_DEBUG": "OFF",
+            "GGML_WEBGPU_GPU_PROFILE": "OFF",
+            "GGML_WEBGPU_JSPI": "ON",
+            "GGML_XTHEADVECTOR": "OFF",
+            "GGML_ZDNN": "OFF",
+            "GGML_ZENDNN": "OFF",
+            "GIT_EXE": "/opt/homebrew/bin/git",
+            "GIT_EXECUTABLE": "/opt/homebrew/bin/git",
+            "KLEIDIAI_BUILD_BENCHMARK": "OFF",
+            "KLEIDIAI_BUILD_TESTS": "OFF",
+            "KLEIDIAI_ENABLE_CLANG_TIDY": "OFF",
+            "KLEIDIAI_ERROR_TRAP": "OFF",
+            "KleidiAI_BINARY_DIR": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/_deps/kleidiai-build",
+            "KleidiAI_IS_TOP_LEVEL": "OFF",
+            "KleidiAI_SOURCE_DIR": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/_deps/kleidiai-src",
+            "LLAMA_ALL_WARNINGS": "ON",
+            "LLAMA_ALL_WARNINGS_3RD_PARTY": "OFF",
+            "LLAMA_BIN_INSTALL_DIR": "bin",
+            "LLAMA_BUILD_APP": "OFF",
+            "LLAMA_BUILD_COMMON": "ON",
+            "LLAMA_BUILD_EXAMPLES": "OFF",
+            "LLAMA_BUILD_IS_DEV": "ON",
+            "LLAMA_BUILD_MTMD": "OFF",
+            "LLAMA_BUILD_SERVER": "ON",
+            "LLAMA_BUILD_TESTS": "OFF",
+            "LLAMA_BUILD_TOOLS": "ON",
+            "LLAMA_BUILD_UI": "OFF",
+            "LLAMA_CONNECT": "OFF",
+            "LLAMA_FATAL_WARNINGS": "OFF",
+            "LLAMA_INCLUDE_INSTALL_DIR": "include",
+            "LLAMA_LIB_INSTALL_DIR": "lib",
+            "LLAMA_LLGUIDANCE": "OFF",
+            "LLAMA_OPENSSL": "OFF",
+            "LLAMA_SANITIZE_ADDRESS": "OFF",
+            "LLAMA_SANITIZE_THREAD": "OFF",
+            "LLAMA_SANITIZE_UNDEFINED": "OFF",
+            "LLAMA_SUBPROCESS": "ON",
+            "LLAMA_TESTS_INSTALL": "ON",
+            "LLAMA_TOOLS_INSTALL": "ON",
+            "LLAMA_UI_GZIP": "ON",
+            "LLAMA_UI_HF_BUCKET": "ggml-org/llama-ui",
+            "LLAMA_USE_PREBUILT_UI": "ON",
+            "LLAMA_USE_SYSTEM_GGML": "OFF",
+            "LLAMA_WASM_MEM64": "ON",
+            "MTMD_VIDEO": "ON",
+            "OPENSSL_NO_ASM": "ON",
+            "ZENDNN_ROOT": "OFF",
+            "ggml_BINARY_DIR": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on/ggml",
+            "ggml_IS_TOP_LEVEL": "OFF",
+            "ggml_SOURCE_DIR": "/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp/ggml",
+            "llama.cpp_BINARY_DIR": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on",
+            "llama.cpp_IS_TOP_LEVEL": "ON",
+            "llama.cpp_SOURCE_DIR": "/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp",
+            "BLAS_Accelerate_LIBRARY-ADVANCED": "1",
+            "BLAS_Accelerate_WORKS": "1",
+            "CMAKE_ADDR2LINE-ADVANCED": "1",
+            "CMAKE_AR-ADVANCED": "1",
+            "CMAKE_ASM_COMPILER-ADVANCED": "1",
+            "CMAKE_ASM_COMPILER_WORKS": "1",
+            "CMAKE_ASM_FLAGS-ADVANCED": "1",
+            "CMAKE_ASM_FLAGS_DEBUG-ADVANCED": "1",
+            "CMAKE_ASM_FLAGS_MINSIZEREL-ADVANCED": "1",
+            "CMAKE_ASM_FLAGS_RELEASE-ADVANCED": "1",
+            "CMAKE_ASM_FLAGS_RELWITHDEBINFO-ADVANCED": "1",
+            "CMAKE_CACHEFILE_DIR": "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-phase0/kleidi-on-lto-on",
+            "CMAKE_CACHE_MAJOR_VERSION": "4",
+            "CMAKE_CACHE_MINOR_VERSION": "3",
+            "CMAKE_CACHE_PATCH_VERSION": "2",
+            "CMAKE_COLOR_MAKEFILE-ADVANCED": "1",
+            "CMAKE_COMMAND": "/opt/homebrew/bin/cmake",
+            "CMAKE_CPACK_COMMAND": "/opt/homebrew/bin/cpack",
+            "CMAKE_CTEST_COMMAND": "/opt/homebrew/bin/ctest",
+            "CMAKE_CXX_COMPILER-ADVANCED": "1",
+            "CMAKE_CXX_FLAGS-ADVANCED": "1",
+            "CMAKE_CXX_FLAGS_DEBUG-ADVANCED": "1",
+            "CMAKE_CXX_FLAGS_MINSIZEREL-ADVANCED": "1",
+            "CMAKE_CXX_FLAGS_RELEASE-ADVANCED": "1",
+            "CMAKE_CXX_FLAGS_RELWITHDEBINFO-ADVANCED": "1",
+            "CMAKE_C_COMPILER-ADVANCED": "1",
+            "CMAKE_C_FLAGS-ADVANCED": "1",
+            "CMAKE_C_FLAGS_DEBUG-ADVANCED": "1",
+            "CMAKE_C_FLAGS_MINSIZEREL-ADVANCED": "1",
+            "CMAKE_C_FLAGS_RELEASE-ADVANCED": "1",
+            "CMAKE_C_FLAGS_RELWITHDEBINFO-ADVANCED": "1",
+            "CMAKE_DLLTOOL-ADVANCED": "1",
+            "CMAKE_EDIT_COMMAND": "/opt/homebrew/bin/ccmake",
+            "CMAKE_EXECUTABLE_FORMAT": "MACHO",
+            "CMAKE_EXE_LINKER_FLAGS-ADVANCED": "1",
+            "CMAKE_EXE_LINKER_FLAGS_DEBUG-ADVANCED": "1",
+            "CMAKE_EXE_LINKER_FLAGS_MINSIZEREL-ADVANCED": "1",
+            "CMAKE_EXE_LINKER_FLAGS_RELEASE-ADVANCED": "1",
+            "CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED": "1",
+            "CMAKE_EXTRA_GENERATOR": "",
+            "CMAKE_GENERATOR": "Unix Makefiles",
+            "CMAKE_GENERATOR_INSTANCE": "",
+            "CMAKE_GENERATOR_PLATFORM": "",
+            "CMAKE_GENERATOR_TOOLSET": "",
+            "CMAKE_HAVE_LIBC_PTHREAD": "1",
+            "CMAKE_HOME_DIRECTORY": "/Users/jadams/workspace/sandbox/fpga-qwen/build/llama.cpp",
+            "CMAKE_INSTALL_BINDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_DATADIR-ADVANCED": "1",
+            "CMAKE_INSTALL_DATAROOTDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_DOCDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_INCLUDEDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_INFODIR-ADVANCED": "1",
+            "CMAKE_INSTALL_LIBDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_LIBEXECDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_LOCALEDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_LOCALSTATEDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_MANDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_NAME_TOOL-ADVANCED": "1",
+            "CMAKE_INSTALL_OLDINCLUDEDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_RUNSTATEDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_SBINDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_SHAREDSTATEDIR-ADVANCED": "1",
+            "CMAKE_INSTALL_SYSCONFDIR-ADVANCED": "1",
+            "CMAKE_LINKER-ADVANCED": "1",
+            "CMAKE_LIST_FILE_NAME": "CMakeLists.txt",
+            "CMAKE_MAKE_PROGRAM-ADVANCED": "1",
+            "CMAKE_MODULE_LINKER_FLAGS-ADVANCED": "1",
+            "CMAKE_MODULE_LINKER_FLAGS_DEBUG-ADVANCED": "1",
+            "CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL-ADVANCED": "1",
+            "CMAKE_MODULE_LINKER_FLAGS_RELEASE-ADVANCED": "1",
+            "CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED": "1",
+            "CMAKE_NM-ADVANCED": "1",
+            "CMAKE_NUMBER_OF_MAKEFILES": "34",
+            "CMAKE_OBJCOPY-ADVANCED": "1",
+            "CMAKE_OBJDUMP-ADVANCED": "1",
+            "CMAKE_PLATFORM_INFO_INITIALIZED": "1",
+            "CMAKE_RANLIB-ADVANCED": "1",
+            "CMAKE_READELF-ADVANCED": "1",
+            "CMAKE_ROOT": "/opt/homebrew/share/cmake",
+            "CMAKE_SHARED_LINKER_FLAGS-ADVANCED": "1",
+            "CMAKE_SHARED_LINKER_FLAGS_DEBUG-ADVANCED": "1",
+            "CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL-ADVANCED": "1",
+            "CMAKE_SHARED_LINKER_FLAGS_RELEASE-ADVANCED": "1",
+            "CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED": "1",
+            "CMAKE_SKIP_INSTALL_RPATH-ADVANCED": "1",
+            "CMAKE_SKIP_RPATH-ADVANCED": "1",
+            "CMAKE_STATIC_LINKER_FLAGS-ADVANCED": "1",
+            "CMAKE_STATIC_LINKER_FLAGS_DEBUG-ADVANCED": "1",
+            "CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL-ADVANCED": "1",
+            "CMAKE_STATIC_LINKER_FLAGS_RELEASE-ADVANCED": "1",
+            "CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED": "1",
+            "CMAKE_STRIP-ADVANCED": "1",
+            "CMAKE_TAPI-ADVANCED": "1",
+            "CMAKE_UNAME": "/usr/bin/uname",
+            "CMAKE_VERBOSE_MAKEFILE-ADVANCED": "1",
+            "FIND_PACKAGE_MESSAGE_DETAILS_BLAS": "[/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework][v()]",
+            "FIND_PACKAGE_MESSAGE_DETAILS_Git": "[/opt/homebrew/bin/git][v2.56.0()]",
+            "FIND_PACKAGE_MESSAGE_DETAILS_Threads": "[TRUE][v()]",
+            "GGML_AVAILABLE_BACKENDS": "ggml-cpu;ggml-blas",
+            "GGML_COMPILER_SUPPORTS_FP16_FORMAT_I3E": "",
+            "GGML_CUDA_COMPRESSION_MODE-STRINGS": "none;speed;balance;size",
+            "GGML_MACHINE_SUPPORTS_dotprod": "1",
+            "GGML_MACHINE_SUPPORTS_dotprod_COMPILED": "TRUE",
+            "GGML_MACHINE_SUPPORTS_dotprod_EXITCODE": "0",
+            "GGML_MACHINE_SUPPORTS_i8mm": "1",
+            "GGML_MACHINE_SUPPORTS_i8mm_COMPILED": "TRUE",
+            "GGML_MACHINE_SUPPORTS_i8mm_EXITCODE": "0",
+            "GGML_MACHINE_SUPPORTS_nosve": "1",
+            "GGML_MACHINE_SUPPORTS_sme": "1",
+            "GGML_MACHINE_SUPPORTS_sme_COMPILED": "TRUE",
+            "GGML_MACHINE_SUPPORTS_sme_EXITCODE": "0",
+            "GGML_MACHINE_SUPPORTS_sve": "",
+            "GGML_MACHINE_SUPPORTS_sve_COMPILED": "TRUE",
+            "GGML_MACHINE_SUPPORTS_sve_EXITCODE": "FAILED_TO_RUN",
+            "GGML_OPENMP_ENABLED": "OFF",
+            "GIT_EXECUTABLE-ADVANCED": "1",
+            "HAVE_DOTPROD": "1",
+            "HAVE_FMA": "1",
+            "HAVE_FP16_VECTOR_ARITHMETIC": "1",
+            "HAVE_MATMUL_INT8": "1",
+            "HAVE_SME": "1",
+            "HAVE_SVE": "",
+            "KLEIDIAI_HAS_BUILTIN_ASSUME0": "",
+            "KLEIDIAI_HAS_BUILTIN_UNREACHABLE": "1",
+            "_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX": "/usr/local"
+          }
+        },
+        "diagnostic_only": true,
+        "source_policy": "Original profiling client; linked public llama/ggml APIs, no copied kernels."
+      },
+      "precision_matched": true
+    }
+  ],
+  "selected_steps": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "comparisons": [
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.007020711898803711,
+      "rms_error": 0.0013653883499954499,
+      "max_error_token_id": 25021,
+      "native_at_max_error": -2.138190984725952,
+      "oracle_at_max_error": -2.145211696624756,
+      "native_predicted_id": 10642,
+      "native_argmax_id": 10642,
+      "oracle_argmax_id": 10642,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 10642,
+          "logit": 27.5090389251709
+        },
+        {
+          "id": 334,
+          "logit": 21.373973846435547
+        },
+        {
+          "id": 12,
+          "logit": 21.346580505371094
+        },
+        {
+          "id": 18816,
+          "logit": 19.70138168334961
+        },
+        {
+          "id": 16,
+          "logit": 19.42836570739746
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 10642,
+          "logit": 27.509201049804688
+        },
+        {
+          "id": 334,
+          "logit": 21.377561569213867
+        },
+        {
+          "id": 12,
+          "logit": 21.348766326904297
+        },
+        {
+          "id": 18816,
+          "logit": 19.70138931274414
+        },
+        {
+          "id": 16,
+          "logit": 19.42438507080078
+        }
+      ],
+      "native_top1_margin": 6.135065078735352,
+      "oracle_top1_margin": 6.13163948059082,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 0,
+      "context_tokens": 85,
+      "oracle_logits_sha256": "c248d463d7e862fa096073e018d9c7d053942dfbd69f17bda3a9183e60dfc985",
+      "native_logits_sha256": "61995cb849dbebb0c3c495128a75862cd4fbc8612a8a7e6646289962e031d9a4"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.005834221839904785,
+      "rms_error": 0.001052278521564238,
+      "max_error_token_id": 88774,
+      "native_at_max_error": -1.2852972745895386,
+      "oracle_at_max_error": -1.2911314964294434,
+      "native_predicted_id": 33394,
+      "native_argmax_id": 33394,
+      "oracle_argmax_id": 33394,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 33394,
+          "logit": 30.149944305419922
+        },
+        {
+          "id": 16936,
+          "logit": 21.73406219482422
+        },
+        {
+          "id": 3070,
+          "logit": 20.029237747192383
+        },
+        {
+          "id": 4938,
+          "logit": 19.05245590209961
+        },
+        {
+          "id": 7055,
+          "logit": 18.634082794189453
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 33394,
+          "logit": 30.148435592651367
+        },
+        {
+          "id": 16936,
+          "logit": 21.733531951904297
+        },
+        {
+          "id": 3070,
+          "logit": 20.032390594482422
+        },
+        {
+          "id": 4938,
+          "logit": 19.051433563232422
+        },
+        {
+          "id": 7055,
+          "logit": 18.633834838867188
+        }
+      ],
+      "native_top1_margin": 8.415882110595703,
+      "oracle_top1_margin": 8.41490364074707,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 1,
+      "context_tokens": 86,
+      "oracle_logits_sha256": "592b1793aba67eaaaa33e25db4f2a601333e008abf7a8c3d60a2e27ab437cab1",
+      "native_logits_sha256": "36a5783e5680a76c1a9655a0f23438486f32c84173c0d45c05f3bed43d83f202"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.005476951599121094,
+      "rms_error": 0.0015534880486483369,
+      "max_error_token_id": 49561,
+      "native_at_max_error": -8.14523983001709,
+      "oracle_at_max_error": -8.150716781616211,
+      "native_predicted_id": 19257,
+      "native_argmax_id": 19257,
+      "oracle_argmax_id": 19257,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 19257,
+          "logit": 25.426342010498047
+        },
+        {
+          "id": 374,
+          "logit": 23.095754623413086
+        },
+        {
+          "id": 35616,
+          "logit": 18.071123123168945
+        },
+        {
+          "id": 6147,
+          "logit": 17.878068923950195
+        },
+        {
+          "id": 26569,
+          "logit": 17.75693702697754
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 19257,
+          "logit": 25.424583435058594
+        },
+        {
+          "id": 374,
+          "logit": 23.09569549560547
+        },
+        {
+          "id": 35616,
+          "logit": 18.070653915405273
+        },
+        {
+          "id": 6147,
+          "logit": 17.877107620239258
+        },
+        {
+          "id": 26569,
+          "logit": 17.758291244506836
+        }
+      ],
+      "native_top1_margin": 2.330587387084961,
+      "oracle_top1_margin": 2.328887939453125,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 2,
+      "context_tokens": 87,
+      "oracle_logits_sha256": "90ae785031bc45bc31cd666344f6794bd925c908355f431e3f4cbd9b3474fb90",
+      "native_logits_sha256": "04e6892b79a711b331355a4f7360d693f9554574614d5d0dafa453653aa36964"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.004001617431640625,
+      "rms_error": 0.0009037063234193203,
+      "max_error_token_id": 18690,
+      "native_at_max_error": -6.156460762023926,
+      "oracle_at_max_error": -6.160462379455566,
+      "native_predicted_id": 311,
+      "native_argmax_id": 311,
+      "oracle_argmax_id": 311,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 311,
+          "logit": 28.67823028564453
+        },
+        {
+          "id": 279,
+          "logit": 13.614718437194824
+        },
+        {
+          "id": 3070,
+          "logit": 13.491190910339355
+        },
+        {
+          "id": 2346,
+          "logit": 13.189047813415527
+        },
+        {
+          "id": 5961,
+          "logit": 12.832514762878418
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 311,
+          "logit": 28.678924560546875
+        },
+        {
+          "id": 279,
+          "logit": 13.616162300109863
+        },
+        {
+          "id": 3070,
+          "logit": 13.491499900817871
+        },
+        {
+          "id": 2346,
+          "logit": 13.188787460327148
+        },
+        {
+          "id": 5961,
+          "logit": 12.831890106201172
+        }
+      ],
+      "native_top1_margin": 15.063511848449707,
+      "oracle_top1_margin": 15.062762260437012,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 3,
+      "context_tokens": 88,
+      "oracle_logits_sha256": "87ac4bedb16aa025cfa59cc9f0fcf0cae083f5249cdefc6816b8e12f577c81f4",
+      "native_logits_sha256": "12c1f0dd3a0796b3c3cb1edb1cc8ea1295702c649760b2476a1435fa6fb51e27"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.005588054656982422,
+      "rms_error": 0.00117511294540518,
+      "max_error_token_id": 63270,
+      "native_at_max_error": -5.3552751541137695,
+      "oracle_at_max_error": -5.360863208770752,
+      "native_predicted_id": 279,
+      "native_argmax_id": 279,
+      "oracle_argmax_id": 279,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 279,
+          "logit": 27.57468605041504
+        },
+        {
+          "id": 1246,
+          "logit": 25.013296127319336
+        },
+        {
+          "id": 264,
+          "logit": 16.28752899169922
+        },
+        {
+          "id": 3070,
+          "logit": 15.167271614074707
+        },
+        {
+          "id": 821,
+          "logit": 14.943785667419434
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 279,
+          "logit": 27.575027465820312
+        },
+        {
+          "id": 1246,
+          "logit": 25.01306915283203
+        },
+        {
+          "id": 264,
+          "logit": 16.28706932067871
+        },
+        {
+          "id": 3070,
+          "logit": 15.166439056396484
+        },
+        {
+          "id": 821,
+          "logit": 14.94610595703125
+        }
+      ],
+      "native_top1_margin": 2.561389923095703,
+      "oracle_top1_margin": 2.5619583129882812,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 4,
+      "context_tokens": 89,
+      "oracle_logits_sha256": "3011b5124b2b40a43771304616d1e6ab6bfde1d77c4cb7cc06039d3cc84ba922",
+      "native_logits_sha256": "b4e904c5d309d8102d2eb536370cd544c9e80ae8a0f83f97ac35bc697a213f46"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.005417823791503906,
+      "rms_error": 0.001099414660283781,
+      "max_error_token_id": 39538,
+      "native_at_max_error": -8.70606803894043,
+      "oracle_at_max_error": -8.700650215148926,
+      "native_predicted_id": 4628,
+      "native_argmax_id": 4628,
+      "oracle_argmax_id": 4628,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 4628,
+          "logit": 22.810924530029297
+        },
+        {
+          "id": 4379,
+          "logit": 22.634923934936523
+        },
+        {
+          "id": 3311,
+          "logit": 21.002559661865234
+        },
+        {
+          "id": 7192,
+          "logit": 20.99085235595703
+        },
+        {
+          "id": 5726,
+          "logit": 19.174901962280273
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 4628,
+          "logit": 22.81277847290039
+        },
+        {
+          "id": 4379,
+          "logit": 22.636859893798828
+        },
+        {
+          "id": 3311,
+          "logit": 21.001867294311523
+        },
+        {
+          "id": 7192,
+          "logit": 20.989097595214844
+        },
+        {
+          "id": 5726,
+          "logit": 19.17633056640625
+        }
+      ],
+      "native_top1_margin": 0.17600059509277344,
+      "oracle_top1_margin": 0.1759185791015625,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 5,
+      "context_tokens": 90,
+      "oracle_logits_sha256": "cd12cd98e0282cf2705ce6c4d7b1b732154a32298c469dbae563c51cea85a957",
+      "native_logits_sha256": "a2372a2faf4c135a2d7b78ad961c007e932b35b45e5cb8723b28eeff2da5c612"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.004136979579925537,
+      "rms_error": 0.0008731946918167843,
+      "max_error_token_id": 106344,
+      "native_at_max_error": -0.14453130960464478,
+      "oracle_at_max_error": -0.1486682891845703,
+      "native_predicted_id": 518,
+      "native_argmax_id": 518,
+      "oracle_argmax_id": 518,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 518,
+          "logit": 25.881858825683594
+        },
+        {
+          "id": 315,
+          "logit": 20.441097259521484
+        },
+        {
+          "id": 323,
+          "logit": 20.27129554748535
+        },
+        {
+          "id": 448,
+          "logit": 19.37104606628418
+        },
+        {
+          "id": 476,
+          "logit": 15.72948169708252
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 518,
+          "logit": 25.882110595703125
+        },
+        {
+          "id": 315,
+          "logit": 20.44190216064453
+        },
+        {
+          "id": 323,
+          "logit": 20.268638610839844
+        },
+        {
+          "id": 448,
+          "logit": 19.370304107666016
+        },
+        {
+          "id": 476,
+          "logit": 15.728134155273438
+        }
+      ],
+      "native_top1_margin": 5.440761566162109,
+      "oracle_top1_margin": 5.440208435058594,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 6,
+      "context_tokens": 91,
+      "oracle_logits_sha256": "373e398edeaa39c9d1edd2d204941152a12c42dc49b06d42c6d8de8e47b76e7f",
+      "native_logits_sha256": "b6a3abc735262bbe468f92f443c06d4948961f850d1c8b9e2586962e852de4dc"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.003983497619628906,
+      "rms_error": 0.0007228057127386145,
+      "max_error_token_id": 47429,
+      "native_at_max_error": -5.693474769592285,
+      "oracle_at_max_error": -5.689491271972656,
+      "native_predicted_id": 892,
+      "native_argmax_id": 892,
+      "oracle_argmax_id": 892,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 892,
+          "logit": 32.197235107421875
+        },
+        {
+          "id": 8206,
+          "logit": 19.972692489624023
+        },
+        {
+          "id": 15920,
+          "logit": 18.623754501342773
+        },
+        {
+          "id": 133669,
+          "logit": 16.072994232177734
+        },
+        {
+          "id": 23085,
+          "logit": 15.599871635437012
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 892,
+          "logit": 32.19803237915039
+        },
+        {
+          "id": 8206,
+          "logit": 19.973716735839844
+        },
+        {
+          "id": 15920,
+          "logit": 18.62545394897461
+        },
+        {
+          "id": 133669,
+          "logit": 16.073867797851562
+        },
+        {
+          "id": 23085,
+          "logit": 15.601211547851562
+        }
+      ],
+      "native_top1_margin": 12.224542617797852,
+      "oracle_top1_margin": 12.224315643310547,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 7,
+      "context_tokens": 92,
+      "oracle_logits_sha256": "d87b1262b3a08e3a756900a9e9bd0731c17bc3974f71a781c107aa467e116a44",
+      "native_logits_sha256": "08688646b4cf024833d06bbd29c118f883b8f27d845e01bb20a054c5aa23b819"
+    }
+  ],
+  "limitations": [
+    "Oracle replays native consumed IDs, including supplied teacher forcing after an EOS prediction; this is not an autonomous conversation-quality test.",
+    "Native mixed-precision kernels and reduction orders differ from independent NumPy FP32 math. Calibration reports errors and never declares a tolerance pass.",
+    "A gate applies only supplied limits at selected positions; tolerances must be justified before a separate validation run, not fitted retrospectively to these measurements.",
+    "One-dimensional norm tensors stay FP32; f16 rounds only two-dimensional checkpoint matrices. No quantized-weight oracle is provided."
+  ],
+  "summary": {
+    "compared_positions": 8,
+    "max_absolute_error": 0.007020711898803711,
+    "max_position_rms_error": 0.0015534880486483369,
+    "greedy_mismatches": 0
+  },
+  "guard_after": {
+    "directory": "/Users/jadams/workspace/sandbox/fpga-qwen/build/benchmark-status",
+    "metadata": {
+      "name": "Validate declared FP16 full-logit tolerances on short chat",
+      "pid": 56805,
+      "started_at": "2026-11-12T05:04:30.779902+00:00"
+    }
+  }
+}
