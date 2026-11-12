@@ -1,0 +1,2855 @@
+{
+  "variant_options": [
+    {
+      "storage": "scalar",
+      "lto": true,
+      "unchecked": true,
+      "opt": "O3",
+      "fp_contract": "on",
+      "fast_math": false,
+      "unroll": false,
+      "masked_activation": true,
+      "unsigned_indices": true,
+      "cpu": "generic",
+      "fast_attention": true,
+      "parallel_attention": true,
+      "attention_qk2": true,
+      "attention_value_pairs": true,
+      "attention_head_pairs": true,
+      "batch_attention": true,
+      "attention_dot_lanes8": false,
+      "batched_prefill": true,
+      "block_unroll": true,
+      "compact_projection": true,
+      "prefill_b8": true,
+      "group_projections": true,
+      "static_kv": true,
+      "pool": "cv",
+      "scalar_group": true,
+      "fp32_projection_b1": true,
+      "fp32_verification_b4": true,
+      "phase_pools_experiment": true,
+      "fp32_kv": false,
+      "fp32_prefill_b8": false,
+      "shortreal_compiler": "$WORKSPACE/verilator-shortreal",
+      "tag": "",
+      "print_path": false
+    },
+    {
+      "storage": "scalar",
+      "lto": true,
+      "unchecked": true,
+      "opt": "O3",
+      "fp_contract": "on",
+      "fast_math": false,
+      "unroll": false,
+      "masked_activation": true,
+      "unsigned_indices": true,
+      "cpu": "generic",
+      "fast_attention": true,
+      "parallel_attention": true,
+      "attention_qk2": true,
+      "attention_value_pairs": true,
+      "attention_head_pairs": true,
+      "batch_attention": true,
+      "attention_dot_lanes8": false,
+      "batched_prefill": true,
+      "block_unroll": true,
+      "compact_projection": true,
+      "prefill_b8": true,
+      "group_projections": true,
+      "static_kv": true,
+      "pool": "cv",
+      "scalar_group": true,
+      "fp32_projection_b1": true,
+      "fp32_verification_b4": true,
+      "phase_pools_experiment": true,
+      "fp32_kv": false,
+      "fp32_fma_canonical_prefix": true,
+      "fp32_prefill_fma": true,
+      "fp32_prefill_b8": true,
+      "shortreal_compiler": "$WORKSPACE/verilator-fma32",
+      "tag": "",
+      "print_path": false
+    }
+  ],
+  "completed": true,
+  "gpu": false,
+  "pytorch": false,
+  "workers": 8,
+  "tokens": 32,
+  "timestamp_utc": "2026-11-12T03:37:17Z",
+  "binaries": [
+    {
+      "path": "$WORKSPACE/fpga-qwen-phase-pools/build/variants/phase-pools-b3eaa86c6c880192/full/Vqwen_behavioral",
+      "sha256": "162bed6577d91b19a57ea0f83d244d3fbb2666e329e90733f56f347267e8580d"
+    },
+    {
+      "path": "$WORKSPACE/fpga-qwen-fma-canonical-cache/build/variants/fma-prefill-752d43807904a35f/full/Vqwen_behavioral",
+      "sha256": "6c9ab44bf49b9f35ebf1a86897c284640041fb2a1a811f38184bff306f9e1b89"
+    }
+  ],
+  "model_provenance": {
+    "same_original_checkpoint_for_both_engines": true,
+    "original_checkpoint": {
+      "filename": "model.safetensors",
+      "bytes": 1503300328,
+      "sha256": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+    },
+    "config_tokenizer_template_files": {
+      "config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+      "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+      "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+    },
+    "chat_protocol_source_sha256": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e",
+    "candidate_artifact_limitation": "External quantized weights/calibration artifacts are not discovered automatically; supply their separate manifest before claiming full candidate reproducibility."
+  },
+  "source_hashes": {
+    "compare_final_fma.py": "d251263cbe49794e12ea435ddcf2a470475ed7f31c511a665d24cc52570a65a2",
+    "compare_attention_dot.py": "e992c29d910a2f706dd4cf42f2cbdb59eb9c53e7b256af2260d454337d2f5a01",
+    "benchmark_matched.py": "b9ab09734e12145b3397ef3817f0a1be0fe31d2fb0e4af4fd9b29adbcae85d93",
+    "rtl_model.py": "abf984aef0b3a7c15f75b94498afada92ddfc9bba9fe6ed2009f833459f53115",
+    "check_phase_pools_real.py": "d2c4efc011b37c04d3e01a27faf4e1db28b42f12a4d3295168cce323c0ee0bcc"
+  },
+  "reference_profile": "fp32_b1_fp64_prefill",
+  "cross_profile_bit_exact_required": false,
+  "resident_worker_threads": [
+    20,
+    20
+  ],
+  "prefill_workers": [
+    12,
+    12
+  ],
+  "decode_workers": [
+    8,
+    8
+  ],
+  "selectors": [
+    "PREFILL_12",
+    "PREFILL_12"
+  ],
+  "policy": "Fresh logical KV reset before every request; canonical B8 prefill, separate FP32 scalar decode/head; no cache reuse or suffix. Candidate uses fused FP32 prefill with12 workers and8 decode; reference either live FP64 prefill with12/8 or isolated FMA with8/8. Two separately linked resident models. No placement guarantees.",
+  "limitations": "Two resident models, alternating warmed requests; no OS cache eviction or hard isolation. Direct closed dumps preserve pools. Cross-profile logits differ and are descriptive only; each profile must reproduce its own full logit bits and both profiles must produce identical fixed-count greedy IDs. Separate real quality/replay/suffix gates required.",
+  "profiles": [
+    {
+      "profile": "short",
+      "prompt_ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "prompt_tokens": 85,
+      "warmup": [
+        {
+          "prefill_seconds": 0.6496432090061717,
+          "ttft_seconds": 0.675304916978348,
+          "decode_seconds": 0.6108322080108337,
+          "decode_tokens_per_second": 50.75043456033704,
+          "total_seconds": 1.2861371249891818,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "final_position": 116,
+          "phase_before": {
+            "selector": "PREFILL_12",
+            "resident_decode_workers": 8,
+            "resident_prefill_workers": 12,
+            "prefill_workers": 12,
+            "decode_workers": 8,
+            "pool_constructions": 2,
+            "dispatch_counts": [
+              [
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0
+              ]
+            ],
+            "group_counters": [
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ]
+            ]
+          },
+          "phase_after": {
+            "selector": "PREFILL_12",
+            "resident_decode_workers": 8,
+            "resident_prefill_workers": 12,
+            "prefill_workers": 12,
+            "decode_workers": 8,
+            "pool_constructions": 2,
+            "dispatch_counts": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                1540,
+                0
+              ]
+            ],
+            "group_counters": [
+              [
+                1792,
+                4480,
+                2688,
+                176160768
+              ],
+              [
+                616,
+                1540,
+                924,
+                693633024
+              ]
+            ]
+          },
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              1540,
+              0
+            ]
+          ]
+        },
+        {
+          "prefill_seconds": 0.5557879579719156,
+          "ttft_seconds": 0.5805921659921296,
+          "decode_seconds": 0.5158080420223996,
+          "decode_tokens_per_second": 60.09987723040151,
+          "total_seconds": 1.0964002080145292,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "final_position": 116,
+          "phase_before": {
+            "selector": "PREFILL_12",
+            "resident_decode_workers": 8,
+            "resident_prefill_workers": 12,
+            "prefill_workers": 12,
+            "decode_workers": 8,
+            "pool_constructions": 2,
+            "dispatch_counts": [
+              [
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0
+              ]
+            ],
+            "group_counters": [
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ]
+            ]
+          },
+          "phase_after": {
+            "selector": "PREFILL_12",
+            "resident_decode_workers": 8,
+            "resident_prefill_workers": 12,
+            "prefill_workers": 12,
+            "decode_workers": 8,
+            "pool_constructions": 2,
+            "dispatch_counts": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                1540,
+                0
+              ]
+            ],
+            "group_counters": [
+              [
+                1792,
+                4480,
+                2688,
+                176160768
+              ],
+              [
+                616,
+                1540,
+                924,
+                693633024
+              ]
+            ]
+          },
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              1540,
+              0
+            ]
+          ]
+        }
+      ],
+      "warm_full_logits": {
+        "max_absolute_logit_error": 1.621246337890625e-05,
+        "rms_logit_error": 3.26915704345171e-06,
+        "full_vocabulary_size": 151936,
+        "top1_ids": [
+          13340,
+          13340
+        ],
+        "bit_identical": false,
+        "interpretation": "Cross-precision differences are descriptive; finite full-vocabulary dumps and matching greedy IDs are required. No quality threshold is inferred."
+      },
+      "pairs": [
+        {
+          "index": 0,
+          "order": [
+            0,
+            1
+          ],
+          "baseline": {
+            "prefill_seconds": 0.5991387910326011,
+            "ttft_seconds": 0.6169397500343621,
+            "decode_seconds": 0.4885901249945164,
+            "decode_tokens_per_second": 63.447864404439045,
+            "total_seconds": 1.1055298750288785,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  1792,
+                  4480,
+                  2688,
+                  176160768
+                ],
+                [
+                  616,
+                  1540,
+                  924,
+                  693633024
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  9024,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  3080,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  3584,
+                  8960,
+                  5376,
+                  352321536
+                ],
+                [
+                  1232,
+                  3080,
+                  1848,
+                  1387266048
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                1540,
+                0
+              ]
+            ]
+          },
+          "candidate": {
+            "prefill_seconds": 0.5431988330092281,
+            "ttft_seconds": 0.5593330829869956,
+            "decode_seconds": 0.5075679169967771,
+            "decode_tokens_per_second": 61.07557030677501,
+            "total_seconds": 1.0669009999837726,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  1792,
+                  4480,
+                  2688,
+                  176160768
+                ],
+                [
+                  616,
+                  1540,
+                  924,
+                  693633024
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  9024,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  3080,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  3584,
+                  8960,
+                  5376,
+                  352321536
+                ],
+                [
+                  1232,
+                  3080,
+                  1848,
+                  1387266048
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                1540,
+                0
+              ]
+            ]
+          },
+          "ratios": {
+            "prefill_seconds": 1.1029824709185683,
+            "ttft_seconds": 1.1029917035118515,
+            "decode_seconds": 0.9626103396870508,
+            "total_seconds": 1.036206616214338
+          },
+          "within_profile_full_logits_exact": true
+        },
+        {
+          "index": 1,
+          "order": [
+            1,
+            0
+          ],
+          "baseline": {
+            "prefill_seconds": 0.6108575830003247,
+            "ttft_seconds": 0.627645666943863,
+            "decode_seconds": 0.4615695000393316,
+            "decode_tokens_per_second": 67.16215000635528,
+            "total_seconds": 1.0892151669831946,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  9024,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  3080,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  3584,
+                  8960,
+                  5376,
+                  352321536
+                ],
+                [
+                  1232,
+                  3080,
+                  1848,
+                  1387266048
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  13536,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4620,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  5376,
+                  13440,
+                  8064,
+                  528482304
+                ],
+                [
+                  1848,
+                  4620,
+                  2772,
+                  2080899072
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                1540,
+                0
+              ]
+            ]
+          },
+          "candidate": {
+            "prefill_seconds": 0.5723780000116676,
+            "ttft_seconds": 0.5934575000428595,
+            "decode_seconds": 0.6191171669634059,
+            "decode_tokens_per_second": 50.07129773520286,
+            "total_seconds": 1.2125746670062654,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  9024,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  3080,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  3584,
+                  8960,
+                  5376,
+                  352321536
+                ],
+                [
+                  1232,
+                  3080,
+                  1848,
+                  1387266048
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  13536,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4620,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  5376,
+                  13440,
+                  8064,
+                  528482304
+                ],
+                [
+                  1848,
+                  4620,
+                  2772,
+                  2080899072
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                1540,
+                0
+              ]
+            ]
+          },
+          "ratios": {
+            "prefill_seconds": 1.0672275716185329,
+            "ttft_seconds": 1.0576084503077887,
+            "decode_seconds": 0.7455285116760678,
+            "total_seconds": 0.8982664710226597
+          },
+          "within_profile_full_logits_exact": true
+        },
+        {
+          "index": 2,
+          "order": [
+            0,
+            1
+          ],
+          "baseline": {
+            "prefill_seconds": 0.59592245798558,
+            "ttft_seconds": 0.6102201659814455,
+            "decode_seconds": 0.461522875004448,
+            "decode_tokens_per_second": 67.16893501692897,
+            "total_seconds": 1.0717430409858935,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  13536,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4620,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  5376,
+                  13440,
+                  8064,
+                  528482304
+                ],
+                [
+                  1848,
+                  4620,
+                  2772,
+                  2080899072
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  18048,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  6160,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  7168,
+                  17920,
+                  10752,
+                  704643072
+                ],
+                [
+                  2464,
+                  6160,
+                  3696,
+                  2774532096
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                1540,
+                0
+              ]
+            ]
+          },
+          "candidate": {
+            "prefill_seconds": 0.5305635840049945,
+            "ttft_seconds": 0.5492052089539357,
+            "decode_seconds": 0.46337887505069375,
+            "decode_tokens_per_second": 66.89989913029288,
+            "total_seconds": 1.0125840840046294,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "final_position": 116,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  13536,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4620,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  5376,
+                  13440,
+                  8064,
+                  528482304
+                ],
+                [
+                  1848,
+                  4620,
+                  2772,
+                  2080899072
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  18048,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  6160,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  7168,
+                  17920,
+                  10752,
+                  704643072
+                ],
+                [
+                  2464,
+                  6160,
+                  3696,
+                  2774532096
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                1540,
+                0
+              ]
+            ]
+          },
+          "ratios": {
+            "prefill_seconds": 1.1231876366018558,
+            "ttft_seconds": 1.111096828713122,
+            "decode_seconds": 0.9959946381974303,
+            "total_seconds": 1.0584237476331828
+          },
+          "within_profile_full_logits_exact": true
+        }
+      ],
+      "median_ratios": {
+        "prefill_seconds": 1.1029824709185683,
+        "ttft_seconds": 1.1029917035118515,
+        "decode_seconds": 0.9626103396870508,
+        "total_seconds": 1.036206616214338
+      },
+      "ratio_ranges": {
+        "prefill_seconds": [
+          1.0672275716185329,
+          1.1231876366018558
+        ],
+        "ttft_seconds": [
+          1.0576084503077887,
+          1.111096828713122
+        ],
+        "decode_seconds": [
+          0.7455285116760678,
+          0.9959946381974303
+        ],
+        "total_seconds": [
+          0.8982664710226597,
+          1.0584237476331828
+        ]
+      },
+      "final_full_logits": {
+        "max_absolute_logit_error": 1.621246337890625e-05,
+        "rms_logit_error": 3.26915704345171e-06,
+        "full_vocabulary_size": 151936,
+        "top1_ids": [
+          13340,
+          13340
+        ],
+        "bit_identical": false,
+        "interpretation": "Cross-precision differences are descriptive; finite full-vocabulary dumps and matching greedy IDs are required. No quality threshold is inferred."
+      }
+    },
+    {
+      "profile": "long",
+      "prompt_ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        81917,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "prompt_tokens": 452,
+      "warmup": [
+        {
+          "prefill_seconds": 3.7288204999640584,
+          "ttft_seconds": 3.751465457957238,
+          "decode_seconds": 0.5874906670069322,
+          "decode_tokens_per_second": 52.76679569725694,
+          "total_seconds": 4.33895612496417,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            374,
+            22409,
+            1948,
+            264,
+            17654,
+            323,
+            4938,
+            11,
+            1393,
+            47430,
+            374,
+            264,
+            943,
+            315,
+            4938,
+            6240,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264
+          ],
+          "final_position": 483,
+          "phase_before": {
+            "selector": "PREFILL_12",
+            "resident_decode_workers": 8,
+            "resident_prefill_workers": 12,
+            "prefill_workers": 12,
+            "decode_workers": 8,
+            "pool_constructions": 2,
+            "dispatch_counts": [
+              [
+                18048,
+                0,
+                0
+              ],
+              [
+                0,
+                6160,
+                0
+              ]
+            ],
+            "group_counters": [
+              [
+                7168,
+                17920,
+                10752,
+                704643072
+              ],
+              [
+                2464,
+                6160,
+                3696,
+                2774532096
+              ]
+            ]
+          },
+          "phase_after": {
+            "selector": "PREFILL_12",
+            "resident_decode_workers": 8,
+            "resident_prefill_workers": 12,
+            "prefill_workers": 12,
+            "decode_workers": 8,
+            "pool_constructions": 2,
+            "dispatch_counts": [
+              [
+                22560,
+                0,
+                0
+              ],
+              [
+                0,
+                14140,
+                0
+              ]
+            ],
+            "group_counters": [
+              [
+                8960,
+                22400,
+                13440,
+                880803840
+              ],
+              [
+                5656,
+                14140,
+                8484,
+                6506938368
+              ]
+            ]
+          },
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              7980,
+              0
+            ]
+          ]
+        },
+        {
+          "prefill_seconds": 3.3646165000391193,
+          "ttft_seconds": 3.384509750001598,
+          "decode_seconds": 0.5973580420250073,
+          "decode_tokens_per_second": 51.895174784810614,
+          "total_seconds": 3.9818677920266055,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            374,
+            22409,
+            1948,
+            264,
+            17654,
+            323,
+            4938,
+            11,
+            1393,
+            47430,
+            374,
+            264,
+            943,
+            315,
+            4938,
+            6240,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264
+          ],
+          "final_position": 483,
+          "phase_before": {
+            "selector": "PREFILL_12",
+            "resident_decode_workers": 8,
+            "resident_prefill_workers": 12,
+            "prefill_workers": 12,
+            "decode_workers": 8,
+            "pool_constructions": 2,
+            "dispatch_counts": [
+              [
+                18048,
+                0,
+                0
+              ],
+              [
+                0,
+                6160,
+                0
+              ]
+            ],
+            "group_counters": [
+              [
+                7168,
+                17920,
+                10752,
+                704643072
+              ],
+              [
+                2464,
+                6160,
+                3696,
+                2774532096
+              ]
+            ]
+          },
+          "phase_after": {
+            "selector": "PREFILL_12",
+            "resident_decode_workers": 8,
+            "resident_prefill_workers": 12,
+            "prefill_workers": 12,
+            "decode_workers": 8,
+            "pool_constructions": 2,
+            "dispatch_counts": [
+              [
+                22560,
+                0,
+                0
+              ],
+              [
+                0,
+                14140,
+                0
+              ]
+            ],
+            "group_counters": [
+              [
+                8960,
+                22400,
+                13440,
+                880803840
+              ],
+              [
+                5656,
+                14140,
+                8484,
+                6506938368
+              ]
+            ]
+          },
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              7980,
+              0
+            ]
+          ]
+        }
+      ],
+      "warm_full_logits": {
+        "max_absolute_logit_error": 2.09808349609375e-05,
+        "rms_logit_error": 3.7727134078258376e-06,
+        "full_vocabulary_size": 151936,
+        "top1_ids": [
+          264,
+          264
+        ],
+        "bit_identical": false,
+        "interpretation": "Cross-precision differences are descriptive; finite full-vocabulary dumps and matching greedy IDs are required. No quality threshold is inferred."
+      },
+      "pairs": [
+        {
+          "index": 0,
+          "order": [
+            0,
+            1
+          ],
+          "baseline": {
+            "prefill_seconds": 3.7586024579941295,
+            "ttft_seconds": 3.776595166011248,
+            "decode_seconds": 0.5841333749704063,
+            "decode_tokens_per_second": 53.070071542429055,
+            "total_seconds": 4.360728540981654,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  22560,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  14140,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  8960,
+                  22400,
+                  13440,
+                  880803840
+                ],
+                [
+                  5656,
+                  14140,
+                  8484,
+                  6506938368
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  27072,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  22120,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  10752,
+                  26880,
+                  16128,
+                  1056964608
+                ],
+                [
+                  8848,
+                  22120,
+                  13272,
+                  10239344640
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                7980,
+                0
+              ]
+            ]
+          },
+          "candidate": {
+            "prefill_seconds": 3.367688458005432,
+            "ttft_seconds": 3.3883338749874383,
+            "decode_seconds": 0.5770998750231229,
+            "decode_tokens_per_second": 53.71687179581855,
+            "total_seconds": 3.965433750010561,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  22560,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  14140,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  8960,
+                  22400,
+                  13440,
+                  880803840
+                ],
+                [
+                  5656,
+                  14140,
+                  8484,
+                  6506938368
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  27072,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  22120,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  10752,
+                  26880,
+                  16128,
+                  1056964608
+                ],
+                [
+                  8848,
+                  22120,
+                  13272,
+                  10239344640
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                7980,
+                0
+              ]
+            ]
+          },
+          "ratios": {
+            "prefill_seconds": 1.1160778394032989,
+            "ttft_seconds": 1.1145876720974697,
+            "decode_seconds": 1.0121876649981973,
+            "total_seconds": 1.0996851330500832
+          },
+          "within_profile_full_logits_exact": true
+        },
+        {
+          "index": 1,
+          "order": [
+            1,
+            0
+          ],
+          "baseline": {
+            "prefill_seconds": 3.8190607909928076,
+            "ttft_seconds": 3.8371291249641217,
+            "decode_seconds": 0.5607500410405919,
+            "decode_tokens_per_second": 55.28309894096995,
+            "total_seconds": 4.397879166004714,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  27072,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  22120,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  10752,
+                  26880,
+                  16128,
+                  1056964608
+                ],
+                [
+                  8848,
+                  22120,
+                  13272,
+                  10239344640
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  31584,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  30100,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  12544,
+                  31360,
+                  18816,
+                  1233125376
+                ],
+                [
+                  12040,
+                  30100,
+                  18060,
+                  13971750912
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                7980,
+                0
+              ]
+            ]
+          },
+          "candidate": {
+            "prefill_seconds": 3.416100708011072,
+            "ttft_seconds": 3.435101166018285,
+            "decode_seconds": 0.6046293340041302,
+            "decode_tokens_per_second": 51.27108172986566,
+            "total_seconds": 4.039730500022415,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  27072,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  22120,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  10752,
+                  26880,
+                  16128,
+                  1056964608
+                ],
+                [
+                  8848,
+                  22120,
+                  13272,
+                  10239344640
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  31584,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  30100,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  12544,
+                  31360,
+                  18816,
+                  1233125376
+                ],
+                [
+                  12040,
+                  30100,
+                  18060,
+                  13971750912
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                7980,
+                0
+              ]
+            ]
+          },
+          "ratios": {
+            "prefill_seconds": 1.117959075982964,
+            "ttft_seconds": 1.1170352602487799,
+            "decode_seconds": 0.9274277801360551,
+            "total_seconds": 1.0886565739918321
+          },
+          "within_profile_full_logits_exact": true
+        },
+        {
+          "index": 2,
+          "order": [
+            0,
+            1
+          ],
+          "baseline": {
+            "prefill_seconds": 3.867691084044054,
+            "ttft_seconds": 3.887292333994992,
+            "decode_seconds": 0.6291048750281334,
+            "decode_tokens_per_second": 49.276362702822304,
+            "total_seconds": 4.5163972090231255,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  31584,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  30100,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  12544,
+                  31360,
+                  18816,
+                  1233125376
+                ],
+                [
+                  12040,
+                  30100,
+                  18060,
+                  13971750912
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  36096,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  38080,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  14336,
+                  35840,
+                  21504,
+                  1409286144
+                ],
+                [
+                  15232,
+                  38080,
+                  22848,
+                  17704157184
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                7980,
+                0
+              ]
+            ]
+          },
+          "candidate": {
+            "prefill_seconds": 3.3806630420149304,
+            "ttft_seconds": 3.399225207976997,
+            "decode_seconds": 0.6207772920024581,
+            "decode_tokens_per_second": 49.93739365047078,
+            "total_seconds": 4.020002499979455,
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "final_position": 483,
+            "phase_before": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  31584,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  30100,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  12544,
+                  31360,
+                  18816,
+                  1233125376
+                ],
+                [
+                  12040,
+                  30100,
+                  18060,
+                  13971750912
+                ]
+              ]
+            },
+            "phase_after": {
+              "selector": "PREFILL_12",
+              "resident_decode_workers": 8,
+              "resident_prefill_workers": 12,
+              "prefill_workers": 12,
+              "decode_workers": 8,
+              "pool_constructions": 2,
+              "dispatch_counts": [
+                [
+                  36096,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  38080,
+                  0
+                ]
+              ],
+              "group_counters": [
+                [
+                  14336,
+                  35840,
+                  21504,
+                  1409286144
+                ],
+                [
+                  15232,
+                  38080,
+                  22848,
+                  17704157184
+                ]
+              ]
+            },
+            "phase_dispatch_delta": [
+              [
+                4512,
+                0,
+                0
+              ],
+              [
+                0,
+                7980,
+                0
+              ]
+            ]
+          },
+          "ratios": {
+            "prefill_seconds": 1.1440628764169432,
+            "ttft_seconds": 1.1435818741496278,
+            "decode_seconds": 1.0134147674745202,
+            "total_seconds": 1.1234811941152294
+          },
+          "within_profile_full_logits_exact": true
+        }
+      ],
+      "median_ratios": {
+        "prefill_seconds": 1.117959075982964,
+        "ttft_seconds": 1.1170352602487799,
+        "decode_seconds": 1.0121876649981973,
+        "total_seconds": 1.0996851330500832
+      },
+      "ratio_ranges": {
+        "prefill_seconds": [
+          1.1160778394032989,
+          1.1440628764169432
+        ],
+        "ttft_seconds": [
+          1.1145876720974697,
+          1.1435818741496278
+        ],
+        "decode_seconds": [
+          0.9274277801360551,
+          1.0134147674745202
+        ],
+        "total_seconds": [
+          1.0886565739918321,
+          1.1234811941152294
+        ]
+      },
+      "final_full_logits": {
+        "max_absolute_logit_error": 2.09808349609375e-05,
+        "rms_logit_error": 3.7727134078258376e-06,
+        "full_vocabulary_size": 151936,
+        "top1_ids": [
+          264,
+          264
+        ],
+        "bit_identical": false,
+        "interpretation": "Cross-precision differences are descriptive; finite full-vocabulary dumps and matching greedy IDs are required. No quality threshold is inferred."
+      }
+    }
+  ],
+  "startup_seconds": [
+    0.10417495801812038,
+    0.10511320899240673
+  ],
+  "capabilities": [
+    {
+      "precision_profile": "fp32_b1_fp64_prefill",
+      "scalar_projection": "fp32",
+      "prefill_projection": "fp64",
+      "verification_projection": "fp32",
+      "attention_kv": "fp64",
+      "max_verification_block": 4,
+      "prefix_reuse_supported": false,
+      "canonical_prefix_policy": "fp64_b8_aligned_v1"
+    },
+    {
+      "precision_profile": "fp32_b1_fp32_fma_prefill",
+      "scalar_projection": "fp32",
+      "prefill_projection": "fp32",
+      "verification_projection": "fp32",
+      "vocabulary_projection": "fp32",
+      "scalar_accumulation": "separate",
+      "prefill_accumulation": "fused",
+      "verification_accumulation": "separate",
+      "vocabulary_accumulation": "separate",
+      "attention_kv": "fp64",
+      "max_verification_block": 4,
+      "prefix_reuse_supported": false,
+      "canonical_prefix_policy": "fp32_fma_b8_aligned_v1"
+    }
+  ]
+}
