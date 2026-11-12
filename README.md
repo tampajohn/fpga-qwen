@@ -52,7 +52,7 @@ uses 128. Natural EOS remains enabled. Ratios above 1 favor this engine:
 
 | Prompt tokens | Decode throughput ratio (95% interval) | TTFT speedup (95% interval) | Request-time speedup (95% interval) |
 | --- | ---: | ---: | ---: |
-| 85 | 0.945× (0.915–0.979) | 1.395× (1.333–1.540) | 1.102× (1.058–1.132) |
+| 85 | 0.944× (0.915–0.979) | 1.395× (1.333–1.540) | 1.102× (1.058–1.132) |
 | 452 | 0.949× (0.852–0.997) | 1.080× (1.008–1.179) | 1.029× (0.963–1.091) |
 | 1,024 | 1.000× (0.981–1.027) | 0.987× (0.955–1.113) | 0.993× (0.966–1.068) |
 | 2,048 | 1.017× (0.900–1.047) | 0.846× (0.821–1.002) | 0.888× (0.859–1.010) |
@@ -171,7 +171,7 @@ ln -s my-build/qwen_cpu build/native-cpu/qwen_cpu
 ```
 
 This command expects no existing stable path. On the development machine the
-stable link currently points to `build-12/qwen_cpu`; preserve immutable
+stable link currently points to `build-18/qwen_cpu`; preserve immutable
 build directories when changing releases.
 
 ## Validation and development
