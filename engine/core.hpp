@@ -6,6 +6,7 @@
 
 namespace qwen_cpu {
 inline constexpr int vocabulary = 151936;
+inline constexpr int prefix_reuse_chunk = 512;
 struct Options {
     int decode_threads = 12;
     int prefill_threads = 6;
@@ -20,6 +21,9 @@ public:
     Model(const Model&) = delete;
     Model& operator=(const Model&) = delete;
     void reset();
+    // Retain KV [0, position), discard logits. Invalid positions leave state
+    // unchanged. Exact prefix reuse additionally requires canonical batch bounds.
+    void truncate(int position);
     // Append IDs, computing final-position full-vocabulary logits.
     void prefill(const std::vector<int>& ids);
     void step(int token);

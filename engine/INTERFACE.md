@@ -26,6 +26,10 @@ rounded to FP16, 1D preserved FP32. Reject nonfinite or overflowed values.
 headers only. Root owns `main.cpp`, build tooling and core API changes.
 `prefill` appends all IDs and computes logits only at its last position; `step`
 appends one ID and computes logits. `reset` invalidates all logical KV/logits.
+`truncate(position)` retains KV before that position and invalidates logits,
+including when position equals the current position. It checks the range
+`0..current_position` before changing state; invalid targets leave the core
+state unchanged. The CLI error handler subsequently resets all state on errors.
 KV is FP16 at the current position before attention, not only past positions.
 Output is full FP32 logits. Exceptions report errors; no silent truncation.
 
@@ -37,7 +41,11 @@ Startup emits `{"ready":true,"protocol":1,...}` with actual precision/settings.
 Commands (one line, one response):
 
 - `reset`: clear KV/history; response `{"ok":true,"position":0}`.
-- `mode greedy` or `mode chat SEED`: choose decoding; response `{"ok":true}`.
+- `rewind N`: retain the first N consumed token IDs and their KV; rebuild sampler
+  presence from those retained IDs and discard logits; response
+  `{"ok":true,"position":N}`. Require `0 <= N <= current_position`.
+- `mode greedy` or `mode chat SEED`: choose decoding and reset the RNG;
+  response `{"ok":true}`. Call again for each request, including cache hits.
 - `prefill ID ID ...`: append IDs; response has `token`, `position`, `seconds`.
 - `step ID`: append one ID; same response fields.
 - `dump PATH`: write current full vocabulary FP32 little-endian logits;
@@ -48,13 +56,25 @@ Commands (one line, one response):
 
 Greedy chooses the lowest ID on exact ties. Chat uses temperature .7, top-k20,
 top-p .8, presence penalty1.5 with request history, matching existing UI values.
-Errors emit `{"error":"..."}`; callers must reset/restart after inference errors.
+Errors emit `{"error":"...","position":0}` and reset all model, consumed-token
+history and sampler-presence state, including invalid rewind commands. Callers
+must reset/restart after inference errors. Rewind does not itself reset the RNG.
 Process owns CPU threads and mmap, with no model download or build at launch.
 
 ## Browser and benchmark adapter
 
-New backend ID `native-cpu-f16`. Initially prefix/suffix reuse unsupported;
-advertise this truthfully. Preserve ChatProtocol and existing NDJSON event
+Backend ID `native-cpu-f16`. Startup/stats advertise `prefix_reuse: true` and
+`prefix_reuse_chunk: 512`; older binaries advertising false require fresh prefill.
+Exact reuse is restricted to complete canonical 512-token prefill chunks. The
+adapter intersects the new token common prefix with previously completed full
+prefill chunks, rounds down to 512, and retains at least one new-request token
+to recompute logits. It must not promote decoded KV or a partial prefill chunk
+into that cache: changing SGEMM batch shapes can change numerical results.
+After rewind, prefill the entire remaining suffix so its chunk boundaries match
+a fresh request. These restrictions belong to the adapter; the core rewind
+primitive permits arbitrary valid positions without promising fresh-request
+bit identity for arbitrary batch histories. Suffix drafting remains unsupported.
+Preserve ChatProtocol and existing NDJSON event
 contracts, EOS handling, natural cap and cancellation. No promotion/default
 selection until correctness and performance evidence. Python adapter may use
 tokenizers/stdlib; no Python neural math in inference. Benchmark adapter uses

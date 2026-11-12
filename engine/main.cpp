@@ -73,7 +73,7 @@ void settings(const qwen_cpu::Options& options, const qwen_cpu::Model& model, bo
         << ",\"context\":" << options.context
         << ",\"lossless_bf16_decode_cache_bytes\":" << model.lossless_bf16_cache_bytes()
         << ",\"gpu\":false,\"pytorch\":false,\"weight_precision\":\"f16\",\"norm_precision\":\"f32\","
-           "\"activation_precision\":\"f32\",\"kv_precision\":\"f16\",\"prefix_reuse\":false,\"suffix_drafting\":false}\n" << std::flush;
+           "\"activation_precision\":\"f32\",\"kv_precision\":\"f16\",\"prefix_reuse\":true,\"prefix_reuse_chunk\":" << qwen_cpu::prefix_reuse_chunk << ",\"suffix_drafting\":false}\n" << std::flush;
 }
 }
 int main(int argc,char** argv) {
@@ -93,6 +93,7 @@ int main(int argc,char** argv) {
         if(weights.empty()) throw std::runtime_error("--weights is required");
         qwen_cpu::Model model(weights,options);
         Sampler sampler;
+        std::vector<int> consumed_history;consumed_history.reserve(options.context);
         settings(options,model,true);
         std::string line;
         while(std::getline(std::cin,line)) {
@@ -102,8 +103,20 @@ int main(int argc,char** argv) {
                 std::istringstream input(line);std::string command;input>>command;
                 if(command=="quit") { no_extra(input);std::cout<<"{\"ok\":true}\n"<<std::flush;break; }
                 if(command=="reset") {
-                    no_extra(input);model.reset();sampler.reset();
+                    no_extra(input);model.reset();sampler.reset();consumed_history.clear();
                     std::cout<<"{\"ok\":true,\"position\":0}\n";
+                } else if(command=="rewind") {
+                    std::string target;
+                    if(!(input>>target))throw std::runtime_error("Rewind position required");
+                    no_extra(input);
+                    const int retained=integer<int>(target);
+                    if(consumed_history.size()!=size_t(model.position()))throw std::runtime_error("Consumed history does not match model position");
+                    // Model validates the target before any KV/logit mutation.
+                    model.truncate(retained);
+                    consumed_history.resize(size_t(retained));
+                    sampler.reset();
+                    for(int id:consumed_history)sampler.consumed(id);
+                    std::cout<<"{\"ok\":true,\"position\":"<<retained<<"}\n";
                 } else if(command=="mode") {
                     std::string mode,seed;input>>mode;
                     if(mode=="greedy") {no_extra(input);sampler.mode(false,0);}
@@ -116,8 +129,10 @@ int main(int argc,char** argv) {
                     if(ids.empty() || (command=="step" && ids.size()!=1)) throw std::runtime_error("Invalid token count");
                     for(int id:ids) if(id<0 || id>=qwen_cpu::vocabulary) throw std::runtime_error("Token outside vocabulary");
                     if(ids.size()>size_t(options.context-model.position()))throw std::runtime_error("Context capacity exceeded");
+                    if(consumed_history.size()!=size_t(model.position()))throw std::runtime_error("Consumed history does not match model position");
                     const auto start=Clock::now();
                     if(command=="step") model.step(ids[0]); else model.prefill(ids);
+                    consumed_history.insert(consumed_history.end(),ids.begin(),ids.end());
                     for(int id:ids) sampler.consumed(id);
                     const int selected=sampler.select(model.logits());
                     const double elapsed=std::chrono::duration<double>(Clock::now()-start).count();
@@ -135,7 +150,7 @@ int main(int argc,char** argv) {
                 } else if(command=="stats") {no_extra(input);settings(options,model,true);continue;}
                 else throw std::runtime_error("Unknown command");
             } catch(const std::exception& error) {
-                model.reset();sampler.reset();
+                model.reset();sampler.reset();consumed_history.clear();
                 std::cout<<"{\"error\":"<<quote(error.what())<<",\"position\":0}\n";
             }
             std::cout<<std::flush;

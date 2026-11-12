@@ -26,7 +26,7 @@
 namespace qwen_cpu {
 namespace {
 constexpr int H=1024, D=128, Q=16, K=8, F=3072, L=28;
-constexpr size_t prefill_chunk=512;
+constexpr size_t prefill_chunk=prefix_reuse_chunk;
 using Half=__fp16;
 static_assert(sizeof(Half)==2 && sizeof(float)==4);
 static_assert(std::endian::native==std::endian::little,"Weight pack requires little endian");
@@ -355,6 +355,10 @@ struct Model::Impl {
 Model::Model(const std::string& path,Options options):impl_(std::make_unique<Impl>(path,options)){}
 Model::~Model()=default;
 void Model::reset(){impl_->pos=0;impl_->output.clear();}
+void Model::truncate(int position){
+    require(position>=0&&position<=impl_->pos,"Rewind position out of range");
+    impl_->pos=position;impl_->output.clear();
+}
 void Model::prefill(const std::vector<int>& ids){impl_->append(ids,true);}
 void Model::step(int token){impl_->append(std::vector<int>{token},false);}
 const std::vector<float>& Model::logits()const{return impl_->output;}
