@@ -289,8 +289,10 @@ def main():
     parser.add_argument('--profiles', default='short,medium,long')
     parser.add_argument('--model')
     parser.add_argument('--sv-binary', type=Path, help='Trusted local simulator executable; never accepted through HTTP')
-    parser.add_argument('--sv-precision-profile', choices=['fp64', 'fp32_b1_fp64_prefill'], default='fp64',
+    parser.add_argument('--sv-precision-profile', choices=['fp64', 'fp32_b1_fp64_prefill', 'fp32_b1_fp32_prefill'], default='fp64',
                         help='Hybrid profile requires matching runtime precision capabilities')
+    parser.add_argument('--sv-verification-capacity', type=int, choices=[1,4], default=1,
+                        help='Expected simulator verification capability; timed decoding remains sequential')
     parser.add_argument('--sv-lanes', type=int, choices=[1,8], default=1)
     parser.add_argument('--sv-block-size', type=int, choices=[1,4], default=1,
                         help='Explicitly enable B4 prefill for a block-capable SV executable')
@@ -354,7 +356,7 @@ def main():
         report['llama_commit'] = (subprocess.check_output(['git','-C',str(ROOT/'build/llama.cpp'),'rev-parse','HEAD'],text=True).strip()
                                   if (ROOT/'build/llama.cpp/.git').exists() else None)
         for name in args.engines.split(','):
-            engine = SVEngine(checkpoint,args.threads,protocol.tokenizer,args.sv_binary,args.sv_lanes,args.sv_block_size,args.sv_prefill_size,args.sv_precision_profile) if name=='rtl' else NativeEngine(name.removeprefix('llama-'),args.threads,args.output.parent)
+            engine = SVEngine(checkpoint,args.threads,protocol.tokenizer,args.sv_binary,args.sv_lanes,args.sv_block_size,args.sv_prefill_size,args.sv_precision_profile,args.sv_verification_capacity) if name=='rtl' else NativeEngine(name.removeprefix('llama-'),args.threads,args.output.parent)
             try:
                 startup = engine.start()
                 for profile in profiles:
