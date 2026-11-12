@@ -10,6 +10,38 @@ from tools.evaluate_projection_quality import read_dump_logits
 
 @unittest.skipUnless(os.environ.get('SV_BATCH_ATTENTION_BINARY') and os.environ.get('SV_BATCH_ATTENTION_REFERENCE'), 'explicit artifacts required')
 class BatchedAttentionParity(unittest.TestCase):
+    def test_all_batch_counts_and_empty_head_partitions(self):
+        models=[RTLModel(binary=os.environ[key],workers=1,lanes=8,block_size=4,prefill_size=8)
+                for key in ('SV_BATCH_ATTENTION_BINARY','SV_BATCH_ATTENTION_REFERENCE')]
+        seed=[9707,11,358,525,264,17847,13,198]
+        rows=[]
+        try:
+            for m in models:m.start()
+            with tempfile.TemporaryDirectory()as temporary:
+                for workers in (1,3,17):
+                    for m in models:m.set_workers(workers)
+                    for mode,maximum in (('prefill',8),('verification',4)):
+                        for count in range(1,maximum+1):
+                            results=[]
+                            for m in models:
+                                m.reset();m.prefill(seed)
+                                if mode=='prefill':
+                                    m.prefill(seed[:count])
+                                    results.append([m.token(198,uniform=.42)])
+                                else:
+                                    results.append(m.block(seed[:count],logits=True,uniforms=[.42]*count))
+                            self.assertEqual([r[:2]for r in results[0]],[r[:2]for r in results[1]])
+                            self.assertEqual(results[0][-1][1],8+count+(mode=='prefill'))
+                            a=read_dump_logits(models[0],Path(temporary)/'a')
+                            b=read_dump_logits(models[1],Path(temporary)/'b')
+                            self.assertEqual(a.tobytes(),b.tobytes(),(workers,mode,count))
+                            rows.append(dict(workers=workers,mode=mode,count=count,ids_positions=[r[:2]for r in results[0]],full_logits_bit_identical=True))
+            output=Path(os.environ.get('BATCH_PARTITION_REPORT','build/batched-attention-partitions.json'))
+            output.parent.mkdir(parents=True,exist_ok=True)
+            output.write_text(json.dumps(dict(completed=True,cases=rows),indent=2)+'\n')
+        finally:
+            for m in models:m.close()
+
     def test_causal_tails_contexts_and_rollback(self):
         models=[RTLModel(binary=os.environ[key],workers=8,lanes=8,block_size=4,prefill_size=8)
                 for key in ('SV_BATCH_ATTENTION_BINARY','SV_BATCH_ATTENTION_REFERENCE')]

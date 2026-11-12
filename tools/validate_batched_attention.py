@@ -24,6 +24,7 @@ def main():
     stem=args.output.with_suffix('')
     os.environ.update(SV_BATCH_ATTENTION_BINARY=str(paths[1]),SV_BATCH_ATTENTION_REFERENCE=str(paths[0]),
         SV_CANONICAL_BINARY=str(paths[1]),SV_CANONICAL_BLOCK_SIZE='4',
+        BATCH_PARTITION_REPORT=str(stem)+'-partitions.json',
         CANONICAL_REPORT=str(stem)+'-canonical.json',CANONICAL_DECODE_REPORT=str(stem)+'-decode-exclusion.json',
         SV_FP32_VERIFY_BINARY=str(paths[1]),FP32_SUFFIX_REPORT=str(stem)+'-suffix.json')
     suites=['tests.test_batched_attention_real.BatchedAttentionParity',
@@ -41,7 +42,7 @@ def main():
         suites=suites,tests_run=result.testsRun,failures=len(result.failures),errors=len(result.errors),skipped=result.skipped,
         log=log.getvalue(),exactness='Full finite151936 binary64 logit bytes and IDs at matched logical positions; no tolerance',
         coverage=['prefill1..8 tails andoverwrite','85/127/128/129/255/256/452 contexts andcontinuations',
-            'workers1/3/17 sampledB4','futuretoken exclusion aftertruncate','prefillcancel/restart',
+            'all prefill1..8 and verification1..4 counts at workers1/3/17','futuretoken exclusion aftertruncate','prefillcancel/restart',
             'existing33canonicalcomparisons andmatchingdecode exclusion','existing14suffixcomparisons+cancelrecovery'],
         timing_claim=False,source_hashes={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in
             [Path(__file__),ROOT/'tests/test_batched_attention_real.py',ROOT/'tests/test_canonical_prefix_real.py',ROOT/'tests/test_suffix_real.py']})

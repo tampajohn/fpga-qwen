@@ -1,0 +1,525 @@
+{
+  "completed": true,
+  "cases": [
+    {
+      "workers": 1,
+      "mode": "prefill",
+      "count": 1,
+      "ids_positions": [
+        [
+          40,
+          10
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "prefill",
+      "count": 2,
+      "ids_positions": [
+        [
+          40,
+          11
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "prefill",
+      "count": 3,
+      "ids_positions": [
+        [
+          40,
+          12
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "prefill",
+      "count": 4,
+      "ids_positions": [
+        [
+          64,
+          13
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "prefill",
+      "count": 5,
+      "ids_positions": [
+        [
+          77091,
+          14
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "prefill",
+      "count": 6,
+      "ids_positions": [
+        [
+          40,
+          15
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "prefill",
+      "count": 7,
+      "ids_positions": [
+        [
+          40,
+          16
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "prefill",
+      "count": 8,
+      "ids_positions": [
+        [
+          40,
+          17
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "verification",
+      "count": 1,
+      "ids_positions": [
+        [
+          0,
+          9
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "verification",
+      "count": 2,
+      "ids_positions": [
+        [
+          0,
+          9
+        ],
+        [
+          358,
+          10
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "verification",
+      "count": 3,
+      "ids_positions": [
+        [
+          0,
+          9
+        ],
+        [
+          358,
+          10
+        ],
+        [
+          1079,
+          11
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 1,
+      "mode": "verification",
+      "count": 4,
+      "ids_positions": [
+        [
+          0,
+          9
+        ],
+        [
+          358,
+          10
+        ],
+        [
+          1079,
+          11
+        ],
+        [
+          264,
+          12
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "prefill",
+      "count": 1,
+      "ids_positions": [
+        [
+          40,
+          10
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "prefill",
+      "count": 2,
+      "ids_positions": [
+        [
+          40,
+          11
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "prefill",
+      "count": 3,
+      "ids_positions": [
+        [
+          40,
+          12
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "prefill",
+      "count": 4,
+      "ids_positions": [
+        [
+          64,
+          13
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "prefill",
+      "count": 5,
+      "ids_positions": [
+        [
+          77091,
+          14
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "prefill",
+      "count": 6,
+      "ids_positions": [
+        [
+          40,
+          15
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "prefill",
+      "count": 7,
+      "ids_positions": [
+        [
+          40,
+          16
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "prefill",
+      "count": 8,
+      "ids_positions": [
+        [
+          40,
+          17
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "verification",
+      "count": 1,
+      "ids_positions": [
+        [
+          0,
+          9
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "verification",
+      "count": 2,
+      "ids_positions": [
+        [
+          0,
+          9
+        ],
+        [
+          358,
+          10
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "verification",
+      "count": 3,
+      "ids_positions": [
+        [
+          0,
+          9
+        ],
+        [
+          358,
+          10
+        ],
+        [
+          1079,
+          11
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 3,
+      "mode": "verification",
+      "count": 4,
+      "ids_positions": [
+        [
+          0,
+          9
+        ],
+        [
+          358,
+          10
+        ],
+        [
+          1079,
+          11
+        ],
+        [
+          264,
+          12
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "prefill",
+      "count": 1,
+      "ids_positions": [
+        [
+          40,
+          10
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "prefill",
+      "count": 2,
+      "ids_positions": [
+        [
+          40,
+          11
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "prefill",
+      "count": 3,
+      "ids_positions": [
+        [
+          40,
+          12
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "prefill",
+      "count": 4,
+      "ids_positions": [
+        [
+          64,
+          13
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "prefill",
+      "count": 5,
+      "ids_positions": [
+        [
+          77091,
+          14
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "prefill",
+      "count": 6,
+      "ids_positions": [
+        [
+          40,
+          15
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "prefill",
+      "count": 7,
+      "ids_positions": [
+        [
+          40,
+          16
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "prefill",
+      "count": 8,
+      "ids_positions": [
+        [
+          40,
+          17
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "verification",
+      "count": 1,
+      "ids_positions": [
+        [
+          0,
+          9
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "verification",
+      "count": 2,
+      "ids_positions": [
+        [
+          0,
+          9
+        ],
+        [
+          358,
+          10
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "verification",
+      "count": 3,
+      "ids_positions": [
+        [
+          0,
+          9
+        ],
+        [
+          358,
+          10
+        ],
+        [
+          1079,
+          11
+        ]
+      ],
+      "full_logits_bit_identical": true
+    },
+    {
+      "workers": 17,
+      "mode": "verification",
+      "count": 4,
+      "ids_positions": [
+        [
+          0,
+          9
+        ],
+        [
+          358,
+          10
+        ],
+        [
+          1079,
+          11
+        ],
+        [
+          264,
+          12
+        ]
+      ],
+      "full_logits_bit_identical": true
+    }
+  ],
+  "binaries": [
+    {
+      "path": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4/full/Vqwen_behavioral",
+      "sha256": "97572eb39dde3ebbab0d01c79c824a8842c677e3333b35a687005f145e87606b"
+    },
+    {
+      "path": "/Users/jadams/workspace/sandbox/fpga-qwen-batched-attention/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-batch-attention/full/Vqwen_behavioral",
+      "sha256": "07e22976b2c72325e9ff2a62ca7e12e733762a1b8ac957d8987fb1cd511bbed7"
+    }
+  ],
+  "session": 96415,
+  "exit_code": 0,
+  "test_seconds": 18.129,
+  "source_sha256": "65930a35b01db0069adecf196327a9990371d404b230917ff48d69b2dd4b3411",
+  "timing_claim": false,
+  "scope": "36 comparisons across all prefill1..8/verification1..4 counts and workers1/3/17, including empty partition"
+}
