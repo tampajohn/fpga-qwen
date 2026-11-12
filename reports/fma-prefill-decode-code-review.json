@@ -1,0 +1,32 @@
+{
+  "method": "Read-only linked assembly comparison; normalizes branch/data addresses and ADRP page displacements, preserving remaining instructions/operands. Not a timing measurement.",
+  "functions": {
+    "__ZN23Vfp32_projection_kernel7evalNbaEv": {
+      "separate": {
+        "candidate_instructions": 215,
+        "reference_instructions": 215,
+        "equal_after_address_and_adrp_relocation_normalization": true
+      },
+      "deployed": {
+        "candidate_instructions": 215,
+        "reference_instructions": 215,
+        "equal_after_address_and_adrp_relocation_normalization": true
+      }
+    },
+    "__ZN18Vprojection_worker7evalNbaEv": {
+      "separate": {
+        "candidate_instructions": 2090,
+        "reference_instructions": 2090,
+        "equal_after_address_and_adrp_relocation_normalization": true
+      },
+      "deployed": {
+        "candidate_instructions": 2090,
+        "reference_instructions": 2090,
+        "equal_after_address_and_adrp_relocation_normalization": true
+      }
+    }
+  },
+  "tail_array_payload_bytes_per_worker": 294912,
+  "tail_array_payload_bytes_eight_workers": 2359296,
+  "payload_scope": "Generated activation/result/converted arrays only; excludes scalar state, model/context overhead and allocator effects; not measured RSS. Tail module remains resident but is not evaluated on scalar decode."
+}
