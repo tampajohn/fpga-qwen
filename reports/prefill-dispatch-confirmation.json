@@ -1,0 +1,2638 @@
+{
+  "source_sha256": "0ab8064072617c05b336785293df324e706df8ed659cdc6dc68d4a2e91db4689",
+  "completed": true,
+  "gpu": false,
+  "pytorch": false,
+  "binaries": [
+    {
+      "path": "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/full/Vqwen_behavioral",
+      "sha256": "6be080e382e89179d3071ea4df2e7dc658a6fdfb9aad451f399e49c3fde31be0",
+      "manifest": {
+        "fp32": {
+          "compiler_binary_sha256": "70df52bf26b8852b199d5c8d4e94dd0514e0f499ae6d7ff786bfb297de05989f",
+          "git_head": "c607db496a5cb5207a14cfa70e1639edb742a4b1",
+          "runtime_header_hashes": {
+            "verilated.h": "6a7461171978c893f50edaae440aaaca1f135aab979cf4b0a0cc342c46620da2",
+            "verilated_types.h": "cfefa84195f0ff462a5a35c1ee33fbc2e6146cc9855424eb6423268f43f51df4",
+            "verilated_threads.h": "25916863c4db8a163875a96ef90e0fb5493c74b658d1a7442533a528bfd1324f"
+          },
+          "policy": "FP32 archives only use strict flags; stock worker/main/runtime retain original O3 ThinLTO/contraction. B1 FP32; attention/KV FP64. Prefill precision and verification capacity are specified by the adjacent manifest fields.",
+          "verification_batch": 4,
+          "prefill_projection": "fp64",
+          "prefill_unroll_count": null
+        },
+        "options": {
+          "storage": "scalar",
+          "lto": true,
+          "unchecked": true,
+          "opt": "O3",
+          "fp_contract": "on",
+          "fast_math": false,
+          "unroll": false,
+          "masked_activation": true,
+          "unsigned_indices": true,
+          "cpu": "generic",
+          "fast_attention": true,
+          "parallel_attention": true,
+          "attention_dot_lanes8": false,
+          "batched_prefill": true,
+          "block_unroll": true,
+          "compact_projection": true,
+          "prefill_b8": true,
+          "group_projections": true,
+          "static_kv": false,
+          "pool": "cv",
+          "scalar_group": true,
+          "fp32_projection_b1": true,
+          "fp32_verification_b4": true,
+          "fp32_prefill_b8": false,
+          "shortreal_compiler": "$WORKSPACE/verilator-shortreal",
+          "profile_dispatch": true,
+          "tag": "",
+          "print_path": false
+        },
+        "commands": [
+          [
+            "$WORKSPACE/verilator-shortreal/bin/verilator",
+            "--cc",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "fp32_projection_kernel",
+            "--Mdir",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/fp32",
+            "-Wall",
+            "-Wno-BLKSEQ",
+            "-Wno-fatal",
+            "-CFLAGS",
+            "-std=c++17 -O3 -flto=thin -fno-fast-math -ffp-contract=off",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-O3",
+            "+define+KERNEL_BATCH=1",
+            "+define+KERNEL_ROWS=151936",
+            "$WORKSPACE/fpga-qwen-prefill-profile/rtl/fp32_projection_kernel.sv"
+          ],
+          [
+            "$WORKSPACE/verilator-shortreal/bin/verilator",
+            "--prefix",
+            "Vfp32_verification_kernel",
+            "--cc",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "fp32_projection_kernel",
+            "--Mdir",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/fp32-b4",
+            "-Wall",
+            "-Wno-BLKSEQ",
+            "-Wno-fatal",
+            "-CFLAGS",
+            "-std=c++17 -O3 -flto=thin -fno-fast-math -ffp-contract=off",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-O3",
+            "+define+KERNEL_BATCH=4",
+            "+define+KERNEL_ROWS=3072",
+            "$WORKSPACE/fpga-qwen-prefill-profile/rtl/fp32_projection_kernel.sv"
+          ],
+          [
+            "verilator",
+            "--cc",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "projection_worker",
+            "--Mdir",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/projection",
+            "-Wall",
+            "-Wno-BLKSEQ",
+            "-CFLAGS",
+            "-std=c++17 -O3 -flto=thin -DSCALAR_GROUP -DFP32_PROJECTION_B1 -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/fp32 -DPROFILE_DISPATCH -DFP32_VERIFICATION_B4 -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/fp32-b4 -DPARALLEL_ATTENTION -DBATCH_PREFILL -DGROUP_PROJECTIONS -DPREFILL_B8 -DWIDE_BATCH=8 -DWIDE_FOUR_LANES",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-O3",
+            "+define+UNCHECKED_WEIGHTS",
+            "+define+MASK_ACTIVATION_INDEX",
+            "+define+BLOCK_UNROLL",
+            "+define+UNSIGNED_PROJECTION_INDEX",
+            "+define+PARALLEL_ATTENTION",
+            "+define+BATCH_PREFILL",
+            "+define+WIDE_BATCH=8",
+            "+define+WIDE_FOUR_LANES",
+            "$WORKSPACE/fpga-qwen-prefill-profile/rtl/projection_worker.sv"
+          ],
+          [
+            "verilator",
+            "--cc",
+            "--exe",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "qwen_behavioral",
+            "--Mdir",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/full",
+            "-I$WORKSPACE/fpga-qwen-prefill-profile/rtl",
+            "-Wno-fatal",
+            "--public-flat-rw",
+            "-CFLAGS",
+            "-std=c++17 -O3 -flto=thin -DSCALAR_GROUP -DFP32_PROJECTION_B1 -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/fp32 -DPROFILE_DISPATCH -DFP32_VERIFICATION_B4 -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/fp32-b4 -DPARALLEL_ATTENTION -DBATCH_PREFILL -DGROUP_PROJECTIONS -DPREFILL_B8 -DWIDE_BATCH=8 -DWIDE_FOUR_LANES -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/projection",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-O3",
+            "+define+SCALAR_GROUP",
+            "+define+PARALLEL_ATTENTION",
+            "+define+BATCH_PREFILL",
+            "+define+FAST_ATTENTION",
+            "+define+COMPACT_PROJECTION_BUFFER",
+            "+define+GROUP_PROJECTIONS",
+            "+define+PREFILL_B8",
+            "-LDFLAGS",
+            "-flto=thin",
+            "$WORKSPACE/fpga-qwen-prefill-profile/rtl/qwen_behavioral.sv",
+            "$WORKSPACE/fpga-qwen-prefill-profile/sim/full_model.cpp",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/projection/Vprojection_worker__ALL.a",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/fp32/Vfp32_projection_kernel__ALL.a",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/fp32-b4/Vfp32_verification_kernel__ALL.a"
+          ]
+        ],
+        "sources": {
+          "rtl/projection_worker.sv": "0c3a166902dd28e6e3daa05a137271d766a0bf380889f741a730a1549cba555e",
+          "rtl/qwen_behavioral.sv": "1e3184f1e39596cf921e6e653f8cb4ab1e68626adb40667402f24a6b880595a0",
+          "rtl/sampling.svh": "0dbc0e7afbe0f74c5deea579739171256629dcf8c374770a16de0ca49102c01a",
+          "sim/full_model.cpp": "b1a8d1773084f79456fb7f06b19d0e6cef185d8a360cf9c40a5d1b5ee021b1bb",
+          "sim/projection_pool.h": "2e7f9179d17cb1adf8c539183b2d1f0315914841a738650dc6c5ada6db333251",
+          "sim/projection_descriptors.h": "476090efcd9a0941acb9190c9ab0b7e609de438f86a323cba2c7ae19074f233c",
+          "tools/build_projection_variant.py": "91f7be77af9b254a750ffde8cf09386f5f62c9af8456085f6939fe6f56e9b93d",
+          "sim/dispatch_profile.h": "3cced43f3814ee1ce22e62b452c69c8d3fe3aed54cba5c48c945630b2a1f6e94",
+          "rtl/fp32_projection_kernel.sv": "385ccd251f83c8fc5e8f552a7aaf55e7c15c466415b8731edf5a239daad7c4e2"
+        },
+        "binary_sha256": "6be080e382e89179d3071ea4df2e7dc658a6fdfb9aad451f399e49c3fde31be0",
+        "verilator": "Verilator 5.054 2026-11-01 rev vUNKNOWN-built20261101",
+        "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)"
+      }
+    },
+    {
+      "path": "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/full/Vqwen_behavioral",
+      "sha256": "a3d6dd8c250403a3a964c9b1c41ecd4c986a976b02f18dfb81f3d8ecaaee4bb8",
+      "manifest": {
+        "fp32": {
+          "compiler_binary_sha256": "70df52bf26b8852b199d5c8d4e94dd0514e0f499ae6d7ff786bfb297de05989f",
+          "git_head": "c607db496a5cb5207a14cfa70e1639edb742a4b1",
+          "runtime_header_hashes": {
+            "verilated.h": "6a7461171978c893f50edaae440aaaca1f135aab979cf4b0a0cc342c46620da2",
+            "verilated_types.h": "cfefa84195f0ff462a5a35c1ee33fbc2e6146cc9855424eb6423268f43f51df4",
+            "verilated_threads.h": "25916863c4db8a163875a96ef90e0fb5493c74b658d1a7442533a528bfd1324f"
+          },
+          "policy": "FP32 archives only use strict flags; stock worker/main/runtime retain original O3 ThinLTO/contraction. B1 FP32; attention/KV FP64. Prefill precision and verification capacity are specified by the adjacent manifest fields.",
+          "verification_batch": 4,
+          "prefill_projection": "fp32",
+          "prefill_unroll_count": 1
+        },
+        "options": {
+          "storage": "scalar",
+          "lto": true,
+          "unchecked": true,
+          "opt": "O3",
+          "fp_contract": "on",
+          "fast_math": false,
+          "unroll": false,
+          "masked_activation": true,
+          "unsigned_indices": true,
+          "cpu": "generic",
+          "fast_attention": true,
+          "parallel_attention": true,
+          "attention_dot_lanes8": false,
+          "batched_prefill": true,
+          "block_unroll": true,
+          "compact_projection": true,
+          "prefill_b8": true,
+          "group_projections": true,
+          "static_kv": false,
+          "pool": "cv",
+          "scalar_group": true,
+          "fp32_projection_b1": true,
+          "fp32_verification_b4": true,
+          "fp32_prefill_b8": true,
+          "shortreal_compiler": "$WORKSPACE/verilator-shortreal",
+          "profile_dispatch": true,
+          "tag": "",
+          "print_path": false
+        },
+        "commands": [
+          [
+            "$WORKSPACE/verilator-shortreal/bin/verilator",
+            "--cc",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "fp32_projection_kernel",
+            "--Mdir",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32",
+            "-Wall",
+            "-Wno-BLKSEQ",
+            "-Wno-fatal",
+            "-CFLAGS",
+            "-std=c++17 -O3 -flto=thin -fno-fast-math -ffp-contract=off",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-O3",
+            "+define+KERNEL_BATCH=1",
+            "+define+KERNEL_ROWS=151936",
+            "$WORKSPACE/fpga-qwen-prefill-profile/rtl/fp32_projection_kernel.sv"
+          ],
+          [
+            "$WORKSPACE/verilator-shortreal/bin/verilator",
+            "--prefix",
+            "Vfp32_verification_kernel",
+            "--cc",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "fp32_projection_kernel",
+            "--Mdir",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32-b4",
+            "-Wall",
+            "-Wno-BLKSEQ",
+            "-Wno-fatal",
+            "-CFLAGS",
+            "-std=c++17 -O3 -flto=thin -fno-fast-math -ffp-contract=off",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-O3",
+            "+define+KERNEL_BATCH=4",
+            "+define+KERNEL_ROWS=3072",
+            "$WORKSPACE/fpga-qwen-prefill-profile/rtl/fp32_projection_kernel.sv"
+          ],
+          [
+            "$WORKSPACE/verilator-shortreal/bin/verilator",
+            "--prefix",
+            "Vfp32_prefill_kernel",
+            "--unroll-count",
+            "1",
+            "--cc",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "fp32_projection_kernel",
+            "--Mdir",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32-b8",
+            "-Wall",
+            "-Wno-BLKSEQ",
+            "-Wno-fatal",
+            "-CFLAGS",
+            "-std=c++17 -O3 -flto=thin -fno-fast-math -ffp-contract=off",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-O3",
+            "+define+KERNEL_BATCH=8",
+            "+define+KERNEL_ROWS=3072",
+            "$WORKSPACE/fpga-qwen-prefill-profile/rtl/fp32_projection_kernel.sv"
+          ],
+          [
+            "verilator",
+            "--cc",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "projection_worker",
+            "--Mdir",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/projection",
+            "-Wall",
+            "-Wno-BLKSEQ",
+            "-CFLAGS",
+            "-std=c++17 -O3 -flto=thin -DSCALAR_GROUP -DFP32_PROJECTION_B1 -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32 -DPROFILE_DISPATCH -DFP32_PREFILL_B8 -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32-b8 -DFP32_VERIFICATION_B4 -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32-b4 -DPARALLEL_ATTENTION -DBATCH_PREFILL -DGROUP_PROJECTIONS -DPREFILL_B8 -DWIDE_BATCH=8 -DWIDE_FOUR_LANES",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-O3",
+            "+define+UNCHECKED_WEIGHTS",
+            "+define+MASK_ACTIVATION_INDEX",
+            "+define+BLOCK_UNROLL",
+            "+define+UNSIGNED_PROJECTION_INDEX",
+            "+define+PARALLEL_ATTENTION",
+            "+define+BATCH_PREFILL",
+            "+define+WIDE_BATCH=8",
+            "+define+WIDE_FOUR_LANES",
+            "$WORKSPACE/fpga-qwen-prefill-profile/rtl/projection_worker.sv"
+          ],
+          [
+            "verilator",
+            "--cc",
+            "--exe",
+            "--build",
+            "-j",
+            "4",
+            "--top-module",
+            "qwen_behavioral",
+            "--Mdir",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/full",
+            "-I$WORKSPACE/fpga-qwen-prefill-profile/rtl",
+            "-Wno-fatal",
+            "--public-flat-rw",
+            "-CFLAGS",
+            "-std=c++17 -O3 -flto=thin -DSCALAR_GROUP -DFP32_PROJECTION_B1 -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32 -DPROFILE_DISPATCH -DFP32_PREFILL_B8 -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32-b8 -DFP32_VERIFICATION_B4 -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32-b4 -DPARALLEL_ATTENTION -DBATCH_PREFILL -DGROUP_PROJECTIONS -DPREFILL_B8 -DWIDE_BATCH=8 -DWIDE_FOUR_LANES -I$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/projection",
+            "-MAKEFLAGS",
+            "OPT_FAST=-O3",
+            "-O3",
+            "+define+SCALAR_GROUP",
+            "+define+PARALLEL_ATTENTION",
+            "+define+BATCH_PREFILL",
+            "+define+FAST_ATTENTION",
+            "+define+COMPACT_PROJECTION_BUFFER",
+            "+define+GROUP_PROJECTIONS",
+            "+define+PREFILL_B8",
+            "-LDFLAGS",
+            "-flto=thin",
+            "$WORKSPACE/fpga-qwen-prefill-profile/rtl/qwen_behavioral.sv",
+            "$WORKSPACE/fpga-qwen-prefill-profile/sim/full_model.cpp",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/projection/Vprojection_worker__ALL.a",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32/Vfp32_projection_kernel__ALL.a",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32-b4/Vfp32_verification_kernel__ALL.a",
+            "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/fp32-b8/Vfp32_prefill_kernel__ALL.a"
+          ]
+        ],
+        "sources": {
+          "rtl/projection_worker.sv": "0c3a166902dd28e6e3daa05a137271d766a0bf380889f741a730a1549cba555e",
+          "rtl/qwen_behavioral.sv": "1e3184f1e39596cf921e6e653f8cb4ab1e68626adb40667402f24a6b880595a0",
+          "rtl/sampling.svh": "0dbc0e7afbe0f74c5deea579739171256629dcf8c374770a16de0ca49102c01a",
+          "sim/full_model.cpp": "b1a8d1773084f79456fb7f06b19d0e6cef185d8a360cf9c40a5d1b5ee021b1bb",
+          "sim/projection_pool.h": "2e7f9179d17cb1adf8c539183b2d1f0315914841a738650dc6c5ada6db333251",
+          "sim/projection_descriptors.h": "476090efcd9a0941acb9190c9ab0b7e609de438f86a323cba2c7ae19074f233c",
+          "tools/build_projection_variant.py": "91f7be77af9b254a750ffde8cf09386f5f62c9af8456085f6939fe6f56e9b93d",
+          "sim/dispatch_profile.h": "3cced43f3814ee1ce22e62b452c69c8d3fe3aed54cba5c48c945630b2a1f6e94",
+          "rtl/fp32_projection_kernel.sv": "385ccd251f83c8fc5e8f552a7aaf55e7c15c466415b8731edf5a239daad7c4e2"
+        },
+        "binary_sha256": "a3d6dd8c250403a3a964c9b1c41ecd4c986a976b02f18dfb81f3d8ecaaee4bb8",
+        "verilator": "Verilator 5.054 2026-11-01 rev vUNKNOWN-built20261101",
+        "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)"
+      }
+    }
+  ],
+  "model_provenance": {
+    "same_original_checkpoint_for_both_engines": true,
+    "original_checkpoint": {
+      "filename": "model.safetensors",
+      "bytes": 1503300328,
+      "sha256": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+    },
+    "config_tokenizer_template_files": {
+      "config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+      "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+      "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+    },
+    "chat_protocol_source_sha256": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e",
+    "candidate_artifact_limitation": "External quantized weights/calibration artifacts are not discovered automatically; supply their separate manifest before claiming full candidate reproducibility."
+  },
+  "profiles": [
+    {
+      "workload": "short",
+      "prompt_ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "engines": [
+        {
+          "profile": "fp32_b1_fp64_prefill",
+          "runs": [
+            {
+              "enabled": false,
+              "output_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323
+              ],
+              "phases": [
+                {
+                  "name": "prefill",
+                  "wall_seconds": 0.7396225410047919,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                },
+                {
+                  "name": "first_prediction",
+                  "wall_seconds": 0.015231249970383942,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                },
+                {
+                  "name": "decode",
+                  "wall_seconds": 0.22953345900168642,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                }
+              ],
+              "pair": 0
+            },
+            {
+              "enabled": true,
+              "output_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323
+              ],
+              "phases": [
+                {
+                  "name": "prefill",
+                  "wall_seconds": 0.772500749968458,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 308,
+                      "nanoseconds": 85089676
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 308,
+                      "nanoseconds": 125865750
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 2352,
+                      "nanoseconds": 128721249
+                    },
+                    "qkv_group": {
+                      "calls": 308,
+                      "nanoseconds": 138379635
+                    },
+                    "gate_up_group": {
+                      "calls": 308,
+                      "nanoseconds": 193375249
+                    },
+                    "eval_tick": {
+                      "calls": 11,
+                      "nanoseconds": 771744708
+                    }
+                  },
+                  "eval_seconds": 0.771744708,
+                  "dispatch_seconds": 0.671431559,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.10031314899999999,
+                  "outside_eval_transport_seconds": 0.0007560419684580211
+                },
+                {
+                  "name": "first_prediction",
+                  "wall_seconds": 0.016578499984461814,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 28,
+                      "nanoseconds": 1789205
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 28,
+                      "nanoseconds": 2492497
+                    },
+                    "vocabulary": {
+                      "calls": 1,
+                      "nanoseconds": 1559167
+                    },
+                    "attention": {
+                      "calls": 28,
+                      "nanoseconds": 2908127
+                    },
+                    "qkv_group": {
+                      "calls": 28,
+                      "nanoseconds": 2849876
+                    },
+                    "gate_up_group": {
+                      "calls": 28,
+                      "nanoseconds": 3788623
+                    },
+                    "eval_tick": {
+                      "calls": 1,
+                      "nanoseconds": 16540209
+                    }
+                  },
+                  "eval_seconds": 0.016540209,
+                  "dispatch_seconds": 0.015387495,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.0011527140000000009,
+                  "outside_eval_transport_seconds": 3.8290984461814004e-05
+                },
+                {
+                  "name": "decode",
+                  "wall_seconds": 0.24754741694778204,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 420,
+                      "nanoseconds": 27269864
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 420,
+                      "nanoseconds": 36512917
+                    },
+                    "vocabulary": {
+                      "calls": 15,
+                      "nanoseconds": 24868458
+                    },
+                    "attention": {
+                      "calls": 420,
+                      "nanoseconds": 47273280
+                    },
+                    "qkv_group": {
+                      "calls": 420,
+                      "nanoseconds": 41359957
+                    },
+                    "gate_up_group": {
+                      "calls": 420,
+                      "nanoseconds": 52489166
+                    },
+                    "eval_tick": {
+                      "calls": 15,
+                      "nanoseconds": 246738666
+                    }
+                  },
+                  "eval_seconds": 0.246738666,
+                  "dispatch_seconds": 0.229773642,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.016965023999999995,
+                  "outside_eval_transport_seconds": 0.0008087509477820443
+                }
+              ],
+              "pair": 0
+            }
+          ],
+          "on_off_phase_wall_ratios": [
+            {
+              "prefill": 1.044452686527104,
+              "first_prediction": 1.0884530170995488,
+              "decode": 1.0784807497104953
+            }
+          ],
+          "exact_on_off_logits": true
+        },
+        {
+          "profile": "fp32_b1_fp32_prefill",
+          "runs": [
+            {
+              "enabled": false,
+              "output_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323
+              ],
+              "phases": [
+                {
+                  "name": "prefill",
+                  "wall_seconds": 0.811346374975983,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                },
+                {
+                  "name": "first_prediction",
+                  "wall_seconds": 0.016351499943993986,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                },
+                {
+                  "name": "decode",
+                  "wall_seconds": 0.23695533396676183,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                }
+              ],
+              "pair": 0
+            },
+            {
+              "enabled": true,
+              "output_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323
+              ],
+              "phases": [
+                {
+                  "name": "prefill",
+                  "wall_seconds": 0.8006433749687858,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 308,
+                      "nanoseconds": 86987199
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 308,
+                      "nanoseconds": 124275323
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 2352,
+                      "nanoseconds": 162895181
+                    },
+                    "qkv_group": {
+                      "calls": 308,
+                      "nanoseconds": 133352961
+                    },
+                    "gate_up_group": {
+                      "calls": 308,
+                      "nanoseconds": 188567167
+                    },
+                    "eval_tick": {
+                      "calls": 11,
+                      "nanoseconds": 799814624
+                    }
+                  },
+                  "eval_seconds": 0.799814624,
+                  "dispatch_seconds": 0.696077831,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.10373679300000005,
+                  "outside_eval_transport_seconds": 0.000828750968785763
+                },
+                {
+                  "name": "first_prediction",
+                  "wall_seconds": 0.017689375032205135,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 28,
+                      "nanoseconds": 2034666
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 28,
+                      "nanoseconds": 2625793
+                    },
+                    "vocabulary": {
+                      "calls": 1,
+                      "nanoseconds": 1591792
+                    },
+                    "attention": {
+                      "calls": 28,
+                      "nanoseconds": 3238040
+                    },
+                    "qkv_group": {
+                      "calls": 28,
+                      "nanoseconds": 3089752
+                    },
+                    "gate_up_group": {
+                      "calls": 28,
+                      "nanoseconds": 3950585
+                    },
+                    "eval_tick": {
+                      "calls": 1,
+                      "nanoseconds": 17632583
+                    }
+                  },
+                  "eval_seconds": 0.017632583,
+                  "dispatch_seconds": 0.016530628,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.0011019550000000017,
+                  "outside_eval_transport_seconds": 5.6792032205134346e-05
+                },
+                {
+                  "name": "decode",
+                  "wall_seconds": 0.29056449997005984,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 420,
+                      "nanoseconds": 34999778
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 420,
+                      "nanoseconds": 44182130
+                    },
+                    "vocabulary": {
+                      "calls": 15,
+                      "nanoseconds": 26135001
+                    },
+                    "attention": {
+                      "calls": 420,
+                      "nanoseconds": 55163388
+                    },
+                    "qkv_group": {
+                      "calls": 420,
+                      "nanoseconds": 49634088
+                    },
+                    "gate_up_group": {
+                      "calls": 420,
+                      "nanoseconds": 62102659
+                    },
+                    "eval_tick": {
+                      "calls": 15,
+                      "nanoseconds": 289709207
+                    }
+                  },
+                  "eval_seconds": 0.289709207,
+                  "dispatch_seconds": 0.272217044,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.017492163000000005,
+                  "outside_eval_transport_seconds": 0.0008552929700598177
+                }
+              ],
+              "pair": 0
+            }
+          ],
+          "on_off_phase_wall_ratios": [
+            {
+              "prefill": 0.9868083467957639,
+              "first_prediction": 1.081819716404828,
+              "decode": 1.2262416511409608
+            }
+          ],
+          "exact_on_off_logits": true
+        }
+      ]
+    },
+    {
+      "workload": "long",
+      "prompt_ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        81917,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "engines": [
+        {
+          "profile": "fp32_b1_fp64_prefill",
+          "runs": [
+            {
+              "enabled": false,
+              "output_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                17654,
+                323,
+                4938
+              ],
+              "phases": [
+                {
+                  "name": "prefill",
+                  "wall_seconds": 6.14359620801406,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                },
+                {
+                  "name": "first_prediction",
+                  "wall_seconds": 0.02682450000429526,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                },
+                {
+                  "name": "decode",
+                  "wall_seconds": 0.40993154200259596,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                }
+              ],
+              "pair": 0
+            },
+            {
+              "enabled": true,
+              "output_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                17654,
+                323,
+                4938
+              ],
+              "phases": [
+                {
+                  "name": "prefill",
+                  "wall_seconds": 6.035784666950349,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 1596,
+                      "nanoseconds": 485088245
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 1596,
+                      "nanoseconds": 696716573
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 12628,
+                      "nanoseconds": 2403251602
+                    },
+                    "qkv_group": {
+                      "calls": 1596,
+                      "nanoseconds": 772580791
+                    },
+                    "gate_up_group": {
+                      "calls": 1596,
+                      "nanoseconds": 1094536849
+                    },
+                    "eval_tick": {
+                      "calls": 57,
+                      "nanoseconds": 6031169292
+                    }
+                  },
+                  "eval_seconds": 6.031169292,
+                  "dispatch_seconds": 5.45217406,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.5789952320000005,
+                  "outside_eval_transport_seconds": 0.004615374950348361
+                },
+                {
+                  "name": "first_prediction",
+                  "wall_seconds": 0.02372329100035131,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 28,
+                      "nanoseconds": 1697415
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 28,
+                      "nanoseconds": 2364584
+                    },
+                    "vocabulary": {
+                      "calls": 1,
+                      "nanoseconds": 2424209
+                    },
+                    "attention": {
+                      "calls": 28,
+                      "nanoseconds": 9889084
+                    },
+                    "qkv_group": {
+                      "calls": 28,
+                      "nanoseconds": 2614082
+                    },
+                    "gate_up_group": {
+                      "calls": 28,
+                      "nanoseconds": 3470458
+                    },
+                    "eval_tick": {
+                      "calls": 1,
+                      "nanoseconds": 23665333
+                    }
+                  },
+                  "eval_seconds": 0.023665333,
+                  "dispatch_seconds": 0.022459832,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.0012055010000000012,
+                  "outside_eval_transport_seconds": 5.7958000351309574e-05
+                },
+                {
+                  "name": "decode",
+                  "wall_seconds": 0.372358417022042,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 420,
+                      "nanoseconds": 27654667
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 420,
+                      "nanoseconds": 36327988
+                    },
+                    "vocabulary": {
+                      "calls": 15,
+                      "nanoseconds": 30005373
+                    },
+                    "attention": {
+                      "calls": 420,
+                      "nanoseconds": 164915839
+                    },
+                    "qkv_group": {
+                      "calls": 420,
+                      "nanoseconds": 40929787
+                    },
+                    "gate_up_group": {
+                      "calls": 420,
+                      "nanoseconds": 53071959
+                    },
+                    "eval_tick": {
+                      "calls": 15,
+                      "nanoseconds": 371435456
+                    }
+                  },
+                  "eval_seconds": 0.371435456,
+                  "dispatch_seconds": 0.352905613,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.01852984299999999,
+                  "outside_eval_transport_seconds": 0.0009229610220419793
+                }
+              ],
+              "pair": 0
+            }
+          ],
+          "on_off_phase_wall_ratios": [
+            {
+              "prefill": 0.9824513953369729,
+              "first_prediction": 0.8843889353595642,
+              "decode": 0.9083429277068998
+            }
+          ],
+          "exact_on_off_logits": true
+        },
+        {
+          "profile": "fp32_b1_fp32_prefill",
+          "runs": [
+            {
+              "enabled": false,
+              "output_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                17654,
+                323,
+                4938
+              ],
+              "phases": [
+                {
+                  "name": "prefill",
+                  "wall_seconds": 5.69314841600135,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                },
+                {
+                  "name": "first_prediction",
+                  "wall_seconds": 0.023177583003416657,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                },
+                {
+                  "name": "decode",
+                  "wall_seconds": 0.36538020794978365,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "qkv_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "gate_up_group": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "eval_tick": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    }
+                  },
+                  "eval_seconds": null,
+                  "dispatch_seconds": null,
+                  "residual_main_sv_wrappers_coordinator_seconds": null,
+                  "outside_eval_transport_seconds": null
+                }
+              ],
+              "pair": 0
+            },
+            {
+              "enabled": true,
+              "output_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                17654,
+                323,
+                4938
+              ],
+              "phases": [
+                {
+                  "name": "prefill",
+                  "wall_seconds": 5.595330916985404,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 1596,
+                      "nanoseconds": 451986570
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 1596,
+                      "nanoseconds": 640166169
+                    },
+                    "vocabulary": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "attention": {
+                      "calls": 12628,
+                      "nanoseconds": 2236781416
+                    },
+                    "qkv_group": {
+                      "calls": 1596,
+                      "nanoseconds": 712361126
+                    },
+                    "gate_up_group": {
+                      "calls": 1596,
+                      "nanoseconds": 982015872
+                    },
+                    "eval_tick": {
+                      "calls": 57,
+                      "nanoseconds": 5591133581
+                    }
+                  },
+                  "eval_seconds": 5.591133581,
+                  "dispatch_seconds": 5.023311153,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.5678224280000004,
+                  "outside_eval_transport_seconds": 0.004197335985403505
+                },
+                {
+                  "name": "first_prediction",
+                  "wall_seconds": 0.025579749955795705,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 28,
+                      "nanoseconds": 1864126
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 28,
+                      "nanoseconds": 2471753
+                    },
+                    "vocabulary": {
+                      "calls": 1,
+                      "nanoseconds": 2013125
+                    },
+                    "attention": {
+                      "calls": 28,
+                      "nanoseconds": 11571462
+                    },
+                    "qkv_group": {
+                      "calls": 28,
+                      "nanoseconds": 2714877
+                    },
+                    "gate_up_group": {
+                      "calls": 28,
+                      "nanoseconds": 3603624
+                    },
+                    "eval_tick": {
+                      "calls": 1,
+                      "nanoseconds": 25524167
+                    }
+                  },
+                  "eval_seconds": 0.025524167,
+                  "dispatch_seconds": 0.024238967,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.0012852000000000002,
+                  "outside_eval_transport_seconds": 5.5582955795704936e-05
+                },
+                {
+                  "name": "decode",
+                  "wall_seconds": 0.39080245897639543,
+                  "counters": {
+                    "q": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "k": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "v": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "o": {
+                      "calls": 420,
+                      "nanoseconds": 29218746
+                    },
+                    "gate": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "up": {
+                      "calls": 0,
+                      "nanoseconds": 0
+                    },
+                    "down": {
+                      "calls": 420,
+                      "nanoseconds": 38509835
+                    },
+                    "vocabulary": {
+                      "calls": 15,
+                      "nanoseconds": 28228957
+                    },
+                    "attention": {
+                      "calls": 420,
+                      "nanoseconds": 177672080
+                    },
+                    "qkv_group": {
+                      "calls": 420,
+                      "nanoseconds": 43413464
+                    },
+                    "gate_up_group": {
+                      "calls": 420,
+                      "nanoseconds": 55266614
+                    },
+                    "eval_tick": {
+                      "calls": 15,
+                      "nanoseconds": 390017957
+                    }
+                  },
+                  "eval_seconds": 0.390017957,
+                  "dispatch_seconds": 0.372309696,
+                  "residual_main_sv_wrappers_coordinator_seconds": 0.017708261000000003,
+                  "outside_eval_transport_seconds": 0.000784501976395402
+                }
+              ],
+              "pair": 0
+            }
+          ],
+          "on_off_phase_wall_ratios": [
+            {
+              "prefill": 0.9828183824013762,
+              "first_prediction": 1.103641822877948,
+              "decode": 1.0695775262958571
+            }
+          ],
+          "exact_on_off_logits": true
+        }
+      ]
+    }
+  ],
+  "boundaries": "Dispatch scopes enclose synchronous pool.run/run_group including transport, scheduling, SV worker evaluation and waits. Eval surrounds both clock edges. Residual includes main SV arithmetic, generated wrapper copies and coordinator work, NOT pure host overhead. Outside-eval wall includes IPC and Python transport. Group timings cannot split constituent Q/K/V or gate/up.",
+  "limitations": "Dynamic enabled/disabled comparison only measures instrumentation effects inside same executable; compiling timers can change code layout. Two resident models, OS caches warm, host drift possible. Diagnostic attribution, not optimization speed claim.",
+  "metadata": [
+    {
+      "weight_storage": "BF16 checkpoint",
+      "arithmetic": "SV FP32 scalar projections; FP64 prefill projections; FP64 attention and other model arithmetic",
+      "kv": "SystemVerilog real / FP64",
+      "parallel_workers": 8,
+      "reduction_lanes": 8,
+      "prefill_block_size": 8,
+      "verification_block_size": 1,
+      "wide_prefill_reduction_lanes": 4,
+      "executable": "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/full/Vqwen_behavioral",
+      "cpu_thread_note": "Persistent projection workers plus coordinator; no GPU",
+      "precision_profile": "fp32_b1_fp64_prefill",
+      "routing": "Fresh FP64 B8 prompt[:-1] with B4 tails, then FP32 B1 final prompt token and decode; no prefix reuse or suffix verification",
+      "verified_runtime_capabilities": {
+        "precision_profile": "fp32_b1_fp64_prefill",
+        "scalar_projection": "fp32",
+        "prefill_projection": "fp64",
+        "verification_projection": "fp32",
+        "attention_kv": "fp64",
+        "max_verification_block": 4,
+        "prefix_reuse_supported": false,
+        "canonical_prefix_policy": "fp64_b8_aligned_v1"
+      }
+    },
+    {
+      "weight_storage": "BF16 checkpoint",
+      "arithmetic": "SV FP32 scalar projections; FP32 prefill projections; FP64 attention and other model arithmetic",
+      "kv": "SystemVerilog real / FP64",
+      "parallel_workers": 8,
+      "reduction_lanes": 8,
+      "prefill_block_size": 8,
+      "verification_block_size": 1,
+      "wide_prefill_reduction_lanes": 4,
+      "executable": "$WORKSPACE/fpga-qwen-prefill-profile/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/full/Vqwen_behavioral",
+      "cpu_thread_note": "Persistent projection workers plus coordinator; no GPU",
+      "precision_profile": "fp32_b1_fp32_prefill",
+      "routing": "Fresh FP32 B8 prompt[:-1] with B4 tails, then FP32 B1 final prompt token and decode; no prefix reuse or suffix verification",
+      "verified_runtime_capabilities": {
+        "precision_profile": "fp32_b1_fp32_prefill",
+        "scalar_projection": "fp32",
+        "prefill_projection": "fp32",
+        "verification_projection": "fp32",
+        "attention_kv": "fp64",
+        "max_verification_block": 4,
+        "prefix_reuse_supported": false,
+        "canonical_prefix_policy": "none"
+      }
+    }
+  ]
+}

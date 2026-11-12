@@ -1,0 +1,362 @@
+[
+  {
+    "binary": "build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-fp32-prefill-b8-dispatch-profile/full/Vqwen_behavioral",
+    "exact_original_and_on_off": true,
+    "phases": [
+      {
+        "name": "prefill",
+        "wall_seconds": 0.12498929200228304,
+        "counters": {
+          "q": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "k": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "v": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "o": {
+            "calls": 56,
+            "nanoseconds": 15108166
+          },
+          "gate": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "up": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "down": {
+            "calls": 56,
+            "nanoseconds": 20859792
+          },
+          "vocabulary": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "attention": {
+            "calls": 448,
+            "nanoseconds": 13728014
+          },
+          "qkv_group": {
+            "calls": 56,
+            "nanoseconds": 23225461
+          },
+          "gate_up_group": {
+            "calls": 56,
+            "nanoseconds": 33178959
+          },
+          "eval_tick": {
+            "calls": 2,
+            "nanoseconds": 124870375
+          }
+        },
+        "eval_seconds": 0.124870375,
+        "dispatch_seconds": 0.106100392,
+        "residual_main_sv_wrappers_coordinator_seconds": 0.018769983000000004,
+        "outside_eval_transport_seconds": 0.00011891700228303104
+      },
+      {
+        "name": "first_prediction",
+        "wall_seconds": 0.014258707989938557,
+        "counters": {
+          "q": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "k": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "v": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "o": {
+            "calls": 28,
+            "nanoseconds": 1669665
+          },
+          "gate": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "up": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "down": {
+            "calls": 28,
+            "nanoseconds": 2333624
+          },
+          "vocabulary": {
+            "calls": 1,
+            "nanoseconds": 1684833
+          },
+          "attention": {
+            "calls": 28,
+            "nanoseconds": 1108790
+          },
+          "qkv_group": {
+            "calls": 28,
+            "nanoseconds": 2674000
+          },
+          "gate_up_group": {
+            "calls": 28,
+            "nanoseconds": 3474041
+          },
+          "eval_tick": {
+            "calls": 1,
+            "nanoseconds": 14212333
+          }
+        },
+        "eval_seconds": 0.014212333,
+        "dispatch_seconds": 0.012944953,
+        "residual_main_sv_wrappers_coordinator_seconds": 0.0012673800000000002,
+        "outside_eval_transport_seconds": 4.6374989938556543e-05
+      },
+      {
+        "name": "decode",
+        "wall_seconds": 0.027602249989286065,
+        "counters": {
+          "q": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "k": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "v": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "o": {
+            "calls": 56,
+            "nanoseconds": 3283334
+          },
+          "gate": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "up": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "down": {
+            "calls": 56,
+            "nanoseconds": 4462830
+          },
+          "vocabulary": {
+            "calls": 2,
+            "nanoseconds": 3319084
+          },
+          "attention": {
+            "calls": 56,
+            "nanoseconds": 2215583
+          },
+          "qkv_group": {
+            "calls": 56,
+            "nanoseconds": 5019660
+          },
+          "gate_up_group": {
+            "calls": 56,
+            "nanoseconds": 6787205
+          },
+          "eval_tick": {
+            "calls": 2,
+            "nanoseconds": 27492249
+          }
+        },
+        "eval_seconds": 0.027492249,
+        "dispatch_seconds": 0.025087696,
+        "residual_main_sv_wrappers_coordinator_seconds": 0.0024045530000000002,
+        "outside_eval_transport_seconds": 0.00011000098928606525
+      }
+    ]
+  },
+  {
+    "binary": "build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-dispatch-profile/full/Vqwen_behavioral",
+    "exact_original_and_on_off": true,
+    "phases": [
+      {
+        "name": "prefill",
+        "wall_seconds": 0.12992866698186845,
+        "counters": {
+          "q": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "k": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "v": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "o": {
+            "calls": 56,
+            "nanoseconds": 14598336
+          },
+          "gate": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "up": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "down": {
+            "calls": 56,
+            "nanoseconds": 22260415
+          },
+          "vocabulary": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "attention": {
+            "calls": 448,
+            "nanoseconds": 16572578
+          },
+          "qkv_group": {
+            "calls": 56,
+            "nanoseconds": 23784042
+          },
+          "gate_up_group": {
+            "calls": 56,
+            "nanoseconds": 34227126
+          },
+          "eval_tick": {
+            "calls": 2,
+            "nanoseconds": 129804916
+          }
+        },
+        "eval_seconds": 0.129804916,
+        "dispatch_seconds": 0.111442497,
+        "residual_main_sv_wrappers_coordinator_seconds": 0.01836241899999999,
+        "outside_eval_transport_seconds": 0.00012375098186845346
+      },
+      {
+        "name": "first_prediction",
+        "wall_seconds": 0.012532500026281923,
+        "counters": {
+          "q": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "k": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "v": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "o": {
+            "calls": 28,
+            "nanoseconds": 1494876
+          },
+          "gate": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "up": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "down": {
+            "calls": 28,
+            "nanoseconds": 2013708
+          },
+          "vocabulary": {
+            "calls": 1,
+            "nanoseconds": 1647000
+          },
+          "attention": {
+            "calls": 28,
+            "nanoseconds": 1078378
+          },
+          "qkv_group": {
+            "calls": 28,
+            "nanoseconds": 2209997
+          },
+          "gate_up_group": {
+            "calls": 28,
+            "nanoseconds": 2902630
+          },
+          "eval_tick": {
+            "calls": 1,
+            "nanoseconds": 12480333
+          }
+        },
+        "eval_seconds": 0.012480333,
+        "dispatch_seconds": 0.011346589,
+        "residual_main_sv_wrappers_coordinator_seconds": 0.001133743999999999,
+        "outside_eval_transport_seconds": 5.216702628192335e-05
+      },
+      {
+        "name": "decode",
+        "wall_seconds": 0.027859624999109656,
+        "counters": {
+          "q": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "k": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "v": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "o": {
+            "calls": 56,
+            "nanoseconds": 3374746
+          },
+          "gate": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "up": {
+            "calls": 0,
+            "nanoseconds": 0
+          },
+          "down": {
+            "calls": 56,
+            "nanoseconds": 4440622
+          },
+          "vocabulary": {
+            "calls": 2,
+            "nanoseconds": 3128000
+          },
+          "attention": {
+            "calls": 56,
+            "nanoseconds": 2262709
+          },
+          "qkv_group": {
+            "calls": 56,
+            "nanoseconds": 5218876
+          },
+          "gate_up_group": {
+            "calls": 56,
+            "nanoseconds": 7099712
+          },
+          "eval_tick": {
+            "calls": 2,
+            "nanoseconds": 27757750
+          }
+        },
+        "eval_seconds": 0.02775775,
+        "dispatch_seconds": 0.025524665,
+        "residual_main_sv_wrappers_coordinator_seconds": 0.0022330850000000027,
+        "outside_eval_transport_seconds": 0.00010187499910965445
+      }
+    ]
+  }
+]

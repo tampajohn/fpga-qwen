@@ -1,0 +1,276 @@
+diff --git a/sim/dispatch_profile.h b/sim/dispatch_profile.h
+new file mode 100644
+index 0000000..8acdb94
+--- /dev/null
++++ b/sim/dispatch_profile.h
+@@ -0,0 +1,33 @@
++#pragma once
++// Experimental transport-only wall timing. No neural arithmetic or worker timing.
++#ifdef PROFILE_DISPATCH
++#include <array>
++#include <chrono>
++#include <cstdint>
++#include <iostream>
++#include <unordered_map>
++namespace dispatch_profile {
++using Clock=std::chrono::steady_clock;
++inline bool enabled=false;
++inline constexpr int total=11;
++inline const char* names[]={"q","k","v","o","gate","up","down","vocabulary","attention","qkv_group","gate_up_group","eval_tick"};
++inline std::array<uint64_t,12> nanos{},calls{};
++inline std::unordered_map<int64_t,int> family;
++struct Scope {
++    int id; bool active; Clock::time_point begin;
++    explicit Scope(int category):id(category),active(enabled) {if(active)begin=Clock::now();}
++    ~Scope(){if(active){nanos[id]+=std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-begin).count();++calls[id];}}
++};
++inline int category(int64_t base){return family.at(base);}
++inline void output(){
++    std::cout<<"{\"enabled\":"<<(enabled?"true":"false")<<",\"categories\":{";
++    for(int i=0;i<12;++i){if(i)std::cout<<',';std::cout<<'"'<<names[i]<<"\":{\"calls\":"<<calls[i]<<",\"nanoseconds\":"<<nanos[i]<<'}';}
++    std::cout<<"}}\n"<<std::flush;
++}
++}
++#define PROFILE_SCOPE(id) dispatch_profile::Scope profile_scope(id)
++#define PROFILE_PROJECTION(base) dispatch_profile::Scope profile_scope(dispatch_profile::enabled?dispatch_profile::category(base):0)
++#else
++#define PROFILE_SCOPE(id) ((void)0)
++#define PROFILE_PROJECTION(base) ((void)0)
++#endif
+diff --git a/sim/full_model.cpp b/sim/full_model.cpp
+index 6e1b4cb..8848412 100644
+--- a/sim/full_model.cpp
++++ b/sim/full_model.cpp
+@@ -9,6 +9,7 @@ static constexpr int block_capacity=4;
+ #include "Vqwen_behavioral___024root.h"
+ #include "verilated.h"
+ #include "projection_pool.h"
++#include "dispatch_profile.h"
+ #include <chrono>
+ #include <iomanip>
+ #include <sys/mman.h>
+@@ -83,6 +84,7 @@ extern "C" void dispatch_attention(int layer,int position,const svOpenArrayHandl
+     const auto* q=static_cast<const double*>(svGetArrayPtr(query));
+     auto* a=static_cast<double*>(svGetArrayPtr(output));
+     if(!pool || !q || !a || !attention_root) throw std::runtime_error("Invalid attention dispatch");
++    PROFILE_SCOPE(8);
+     pool->run(0,16,2048,q,a,1,layer,position);
+ }
+ // This guard is destroyed before the main model, including exception unwinding.
+@@ -96,6 +98,7 @@ extern "C" void dispatch_projection(int64_t base,int rows,int width,
+     const auto* x=static_cast<const double*>(svGetArrayPtr(input));
+     auto* y=static_cast<double*>(svGetArrayPtr(output));
+     if(!pool || !x || !y) throw std::runtime_error("Invalid projection dispatch");
++    PROFILE_PROJECTION(base);
+     pool->run(base,rows,width,x,y);
+ }
+ #ifdef BATCH_PREFILL
+@@ -104,6 +107,7 @@ extern "C" void dispatch_block_projection(int64_t base,int rows,int width,int co
+     const auto* x=static_cast<const double*>(svGetArrayPtr(input));
+     auto* y=static_cast<double*>(svGetArrayPtr(output));
+     if(!pool || !x || !y) throw std::runtime_error("Invalid block projection dispatch");
++    PROFILE_PROJECTION(base);
+     pool->run(base,rows,width,x,y,verification_command?4:(count>4?3:2),0,0,count);
+ }
+ #endif
+@@ -123,6 +127,7 @@ extern "C" void dispatch_scalar_group(const svOpenArrayHandle bases,
+         throw std::runtime_error("Invalid scalar group storage/count");
+     std::array<ProjectionDescriptor,3> jobs{};
+     for(int i=0;i<count;++i)jobs[i]={b[i],r[i],1024,o[i]};
++    PROFILE_SCOPE(count==3?9:10);
+     pool->run_group(jobs,count,1,x,y,true);
+ }
+ #endif
+@@ -143,6 +148,7 @@ extern "C" void dispatch_projection_group(const svOpenArrayHandle bases,
+     if(count<2 || count>3) throw std::runtime_error("Invalid projection group count");
+     std::array<ProjectionDescriptor,3> jobs{};
+     for(int i=0;i<count;++i) jobs[i]={b[i],r[i],1024,o[i]};
++    PROFILE_SCOPE(count==3?9:10);
+     pool->run_group(jobs,count,tokens,x,y,false,verification_command);
+ }
+ #endif
+@@ -160,6 +166,14 @@ int main(int argc,char** argv) {
+         std::ifstream layout(argv[2]); int64_t offset;
+         while(layout>>offset) offsets.push_back(offset);
+         if(offsets.size()!=311) throw std::runtime_error("Invalid tensor layout");
++#ifdef PROFILE_DISPATCH
++        dispatch_profile::family[offsets.at(2)]=7;
++        for(int layer=0;layer<28;++layer) {
++            const int slots[]={1,2,3,4,8,9,10};
++            for(int category=0;category<7;++category)
++                dispatch_profile::family[offsets.at(3+layer*11+slots[category])]=category;
++        }
++#endif
+         int count=argc==4?std::stoi(argv[3]):0;
+         if(count<0 || count>32) throw std::runtime_error("Invalid worker count");
+ #ifdef FP32_PROJECTION_B1
+@@ -175,7 +189,7 @@ int main(int argc,char** argv) {
+         attention_root=d->rootp;
+         AttentionLifetime attention_lifetime;
+ #endif
+-        auto tick=[&](){d->clk=0;d->eval();d->clk=1;d->eval();};
++        auto tick=[&](){PROFILE_SCOPE(11);d->clk=0;d->eval();d->clk=1;d->eval();};
+ #ifdef BATCH_PREFILL
+         d->block_start=0;
+ #endif
+@@ -185,6 +199,16 @@ int main(int argc,char** argv) {
+         std::string command;
+         while(std::cin>>command) {
+             if(command=="quit") break;
++#ifdef PROFILE_DISPATCH
++            if(command=="profile") {
++                std::string action;std::cin>>action;
++                if(action=="on")dispatch_profile::enabled=true;
++                else if(action=="off")dispatch_profile::enabled=false;
++                else if(action=="reset"){dispatch_profile::nanos.fill(0);dispatch_profile::calls.fill(0);}
++                else if(action!="read")throw std::runtime_error("Invalid profile action");
++                dispatch_profile::output();continue;
++            }
++#endif
+             if(command=="reset") {
+                 d->start=0;d->rst_n=0;tick();d->rst_n=1;
+                 std::cout<<"reset\n"<<std::flush;
+diff --git a/tools/build_projection_variant.py b/tools/build_projection_variant.py
+index 8eacb30..d36fce4 100644
+--- a/tools/build_projection_variant.py
++++ b/tools/build_projection_variant.py
+@@ -37,6 +37,7 @@ def main():
+     parser.add_argument('--fp32-verification-b4', action='store_true', help='Experimental explicit FP32 B4 verification; FP64 prefill unchanged')
+     parser.add_argument('--fp32-prefill-b8', action='store_true', help='Experimental FP32 B8 prefill and B4 tails; distinct precision profile')
+     parser.add_argument('--shortreal-compiler', default='', help='Reviewed patched Verilator root for isolated FP32 archive')
++    parser.add_argument('--profile-dispatch', action='store_true')
+     parser.add_argument('--tag', default='', help='Extra alphanumeric/dash suffix for a reproducible experiment')
+     parser.add_argument('--print-path', action='store_true', help='Print output path without compiling')
+     args = parser.parse_args()
+@@ -83,6 +84,7 @@ def main():
+     if args.fp32_projection_b1: tag += '-fp32-b1'
+     if args.fp32_verification_b4: tag += '-verify-b4'
+     if args.fp32_prefill_b8: tag += '-fp32-prefill-b8'
++    if args.profile_dispatch: tag += '-dispatch-profile'
+     if args.tag: tag += '-'+args.tag
+     directory = ROOT / 'build/variants' / tag
+     projection, full = directory / 'projection', directory / 'full'
+@@ -98,6 +100,7 @@ def main():
+     flags = '-std=c++17 -' + args.opt + (' -flto=thin' if args.lto else '')
+     if args.scalar_group: flags += ' -DSCALAR_GROUP'
+     if args.fp32_projection_b1: flags += ' -DFP32_PROJECTION_B1 -I'+str(fp32)
++    if args.profile_dispatch: flags += ' -DPROFILE_DISPATCH'
+     if args.fp32_prefill_b8: flags += ' -DFP32_PREFILL_B8 -I'+str(fp32_b8)
+     if args.fp32_verification_b4: flags += ' -DFP32_VERIFICATION_B4 -I'+str(fp32_b4)
+     if args.cpu == 'native': flags += ' -mcpu=native'
+@@ -185,6 +188,7 @@ def main():
+             policy='FP32 archives only use strict flags; stock worker/main/runtime retain original O3 ThinLTO/contraction. B1 FP32; attention/KV FP64. Prefill precision and verification capacity are specified by the adjacent manifest fields.', verification_batch=4 if args.fp32_verification_b4 else 1, prefill_projection='fp32' if args.fp32_prefill_b8 else 'fp64', prefill_unroll_count=1 if args.fp32_prefill_b8 else None)
+     sources = ['rtl/projection_worker.sv', 'rtl/qwen_behavioral.sv', 'rtl/sampling.svh',
+                'sim/full_model.cpp', 'sim/projection_pool.h', 'sim/projection_descriptors.h', 'tools/build_projection_variant.py']
++    sources.append('sim/dispatch_profile.h')
+     if args.fp32_projection_b1:sources.append('rtl/fp32_projection_kernel.sv')
+     def source_hashes():
+         return {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sources}
+diff --git a/tools/profile_prefill_dispatch.py b/tools/profile_prefill_dispatch.py
+new file mode 100644
+index 0000000..0a71095
+--- /dev/null
++++ b/tools/profile_prefill_dispatch.py
+@@ -0,0 +1,102 @@
++"""Wall attribution of two explicit prefill profiles; no host neural arithmetic."""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import tempfile
++import time
++import numpy as np
++from benchmark_matched import SVEngine, make_prompt
++from chat_protocol import ChatProtocol
++from experiment import locate_model
++from evaluate_projection_quality import validate_logits, model_provenance
++
++def read_dump_logits(model,path):
++    # These new profiling artifacts explicitly close/check before acknowledging.
++    # Do not issue the historical lanes barrier: it recreates the worker pool.
++    path=Path(path)
++    if model.command(f"dump {path}")!="dumped":raise RuntimeError("Invalid dump acknowledgement")
++    if path.stat().st_size!=151936*8:raise ValueError("Wrong full-vocabulary dump byte count")
++    return validate_logits(np.fromfile(path,dtype=np.float64))
++
++
++def phase(model, name, enabled, action, ticks, blocks, attention_tokens, heads):
++    model.command('profile off');model.command('profile reset')
++    model.command('profile on' if enabled else 'profile off')
++    start=time.perf_counter();result=action();elapsed=time.perf_counter()-start
++    counters=json.loads(model.command('profile off'))['categories']
++    total=counters['eval_tick']['nanoseconds']/1e9
++    dispatch=sum(v['nanoseconds'] for k,v in counters.items() if k!='eval_tick')/1e9
++    if enabled:
++        expected={'eval_tick':ticks,'qkv_group':28*blocks,'gate_up_group':28*blocks,
++                  'o':28*blocks,'down':28*blocks,'attention':28*attention_tokens,'vocabulary':heads}
++        for key,count in expected.items():
++            if counters[key]['calls']!=count:raise AssertionError((name,key,counters[key]['calls'],count))
++        if dispatch>total:raise AssertionError('Dispatch scopes exceed enclosing eval')
++    return result,dict(name=name,wall_seconds=elapsed,counters=counters,
++        eval_seconds=total if enabled else None,dispatch_seconds=dispatch if enabled else None,
++        residual_main_sv_wrappers_coordinator_seconds=total-dispatch if enabled else None,
++        outside_eval_transport_seconds=elapsed-total if enabled else None)
++
++
++def run(model,prompt,count,enabled):
++    model.command('profile off');model.reset()
++    def prefill():
++        for start in range(0,len(prompt)-1,8):model.prefill(prompt[start:min(start+8,len(prompt)-1)])
++    _,p=phase(model,'prefill',enabled,prefill,(len(prompt)+6)//8,(len(prompt)+6)//8,len(prompt)-1,0)
++    first,f=phase(model,'first_prediction',enabled,lambda:model.token(prompt[-1]),1,1,1,1)
++    ids=[first[0]]
++    def decode():
++        for _ in range(count-1):ids.append(model.token(ids[-1])[0])
++    _,d=phase(model,'decode',enabled,decode,count-1,count-1,count-1,count-1)
++    if any(t in (151643,151645) for t in ids):raise AssertionError('EOS invalidates workload')
++    return dict(enabled=enabled,output_ids=ids,phases=[p,f,d])
++
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--reference',type=Path,required=True);parser.add_argument('--candidate',type=Path,required=True)
++    parser.add_argument('--pairs',type=int,default=2);parser.add_argument('--tokens',type=int,default=16)
++    parser.add_argument('--output',type=Path,required=True);args=parser.parse_args()
++    if not 1<=args.pairs<=3 or not 2<=args.tokens<=32:parser.error('Invalid bounded workload')
++    checkpoint=locate_model(None);protocol=ChatProtocol(checkpoint)
++    paths=[args.reference.resolve(),args.candidate.resolve()]
++    profiles=['fp32_b1_fp64_prefill','fp32_b1_fp32_prefill']
++    engines=[SVEngine(checkpoint,8,protocol.tokenizer,p,8,block_size=1,prefill_size=8,precision_profile=profile,verification_capacity=4) for p,profile in zip(paths,profiles)]
++    def sha(p):return hashlib.file_digest(p.open('rb'),'sha256').hexdigest()
++    report=dict(source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), completed=False,gpu=False,pytorch=False,binaries=[dict(path=str(p),sha256=sha(p),manifest=json.loads((p.parent.parent/'manifest.json').read_text())) for p in paths],model_provenance=model_provenance(checkpoint),profiles=[],
++        boundaries='Dispatch scopes enclose synchronous pool.run/run_group including transport, scheduling, SV worker evaluation and waits. Eval surrounds both clock edges. Residual includes main SV arithmetic, generated wrapper copies and coordinator work, NOT pure host overhead. Outside-eval wall includes IPC and Python transport. Group timings cannot split constituent Q/K/V or gate/up.',
++        limitations='Dynamic enabled/disabled comparison only measures instrumentation effects inside same executable; compiling timers can change code layout. Two resident models, OS caches warm, host drift possible. Diagnostic attribution, not optimization speed claim.')
++    args.output.parent.mkdir(parents=True,exist_ok=True)
++    try:
++        for e in engines:e.start()
++        report['metadata']=[e.metadata for e in engines]
++        with tempfile.TemporaryDirectory()as directory:
++            for workload in ('short','long'):
++                prompt=make_prompt(protocol,workload);entry=dict(workload=workload,prompt_ids=prompt,engines=[]);report['profiles'].append(entry)
++                for engine in engines:run(engine.model,prompt,args.tokens,False)
++                rows=[[],[]];references=[None,None]
++                for pair in range(args.pairs):
++                    for index in ((0,1) if pair%2==0 else (1,0)):
++                        for enabled in ((False,True) if pair%2==0 else (True,False)):
++                            row=run(engines[index].model,prompt,args.tokens,enabled)
++                            bits=read_dump_logits(engines[index].model,Path(directory)/'logits').tobytes()
++                            if references[index] is None:references[index]=(row['output_ids'],bits)
++                            if references[index]!=(row['output_ids'],bits):raise AssertionError('Profiler altered output/logit bits')
++                            row['pair']=pair;rows[index].append(row)
++                            print(workload,index,pair,enabled,flush=True)
++                if references[0][0]!=references[1][0]:raise AssertionError('Cross-profile greedy IDs differ')
++                for index,runs in enumerate(rows):
++                    overhead=[]
++                    for pair in range(args.pairs):
++                        by_mode={r['enabled']:r for r in runs if r['pair']==pair}
++                        overhead.append({a['name']:a['wall_seconds']/b['wall_seconds'] for a,b in zip(by_mode[True]['phases'],by_mode[False]['phases'])})
++                    entry['engines'].append(dict(profile=profiles[index],runs=runs,on_off_phase_wall_ratios=overhead,exact_on_off_logits=True))
++                args.output.write_text(json.dumps(report,indent=2)+'\n')
++        if any(sha(p)!=b['sha256'] for p,b in zip(paths,report['binaries'])):raise AssertionError('Binary changed')
++        report['completed']=True
++    finally:
++        for engine in engines:engine.close()
++        args.output.write_text(json.dumps(report,indent=2)+'\n')
++
++if __name__=='__main__':main()
