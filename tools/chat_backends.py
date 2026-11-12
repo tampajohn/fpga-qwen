@@ -85,8 +85,9 @@ class BackendRouter:
             prefix_reuse_enabled=native_status['prefix_reuse_enabled'],
             canonical_prefix_policy=native_status['canonical_prefix_policy'],
             canonical_reusable_tokens=native_status['canonical_reusable_tokens'],
-            suffix_supported=False,
-            max_draft=0, default_eligible=True)] + simulations + [
+            suffix_supported=native_status['suffix_supported'],
+            suffix_greedy_only=native_status['suffix_greedy_only'],
+            max_draft=native_status['max_verified_draft'], default_eligible=True)] + simulations + [
             dict(id=key, label=label, available=self.binary.is_file() and self.models[key].is_file(),
                  cpu_threads=6, suffix_supported=False)
             for key, label in [('llama-q4', 'llama.cpp · Q4_K_M'), ('llama-f16', 'llama.cpp · FP16'), ('llama-f32', 'llama.cpp · FP32')]]
@@ -118,6 +119,8 @@ class BackendRouter:
                    if simulation is not None else ChatProtocol.prepare(self.protocol, payload))
         if request.max_draft and not entry['suffix_supported']:
             raise ValueError('Suffix drafting is unavailable for the selected backend')
+        if request.max_draft and entry.get('suffix_greedy_only') and request.decoding != 'greedy':
+            raise ValueError('Suffix drafting is available only in greedy mode for the selected backend')
         if backend in self.simulations:
             workers = payload.get('simulation_workers', simulation.sim.workers)
             if type(workers) is not int or workers not in (0, 1, 2, 4, 8):

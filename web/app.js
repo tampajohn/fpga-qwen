@@ -17,6 +17,10 @@ function connectionLabel() {
   return `Local engine · ${selectedBackend()?.cpu_threads ?? 6} CPU threads`;
 }
 function selectedBackend() { return backends.find(b => b.id === $('backend').value); }
+function suffixAllowed() {
+  const backend = selectedBackend();
+  return Boolean(backend?.suffix_supported && (!backend.suffix_greedy_only || $('decoding').value === 'greedy'));
+}
 function refreshBackendOptions() {
   const select = $('backend');
   // Native select popups can close when even an unchanged option is rewritten.
@@ -52,7 +56,9 @@ function renderBackendDetails() {
   const backend = selectedBackend();
   const rtl = backend?.simulation === true;
   $('suffix-note').textContent = backend?.suffix_supported
-    ? ($('backend').value.startsWith('rtl-fp32')
+    ? (backend.suffix_greedy_only
+      ? ($('decoding').value === 'greedy' ? 'Optional · one verified n-gram draft token; off by default' : 'Greedy only · choose Greedy to enable verified drafts')
+      : $('backend').value.startsWith('rtl-fp32')
       ? `Optional · up to ${backend.max_draft} verified tokens; helps repeated text, little benefit on prose`
       : `Verified n-gram drafts · up to ${backend.max_draft} tokens; sampled and greedy`)
     : 'Unavailable in this backend';
@@ -63,7 +69,7 @@ function renderBackendDetails() {
       ? 'Reuses completed 512-token prefill blocks in the same conversation; partial tails are recomputed.'
       : backend.prefix_reuse_supported
       ? 'This engine supports completed 512-token prefill blocks, but prefix reuse is disabled.'
-      : 'Prefix reuse is not enabled for the current engine; messages are fully recomputed. Supporting engines reuse completed 512-token prefill blocks and recompute partial tails.'} Suffix drafting is unavailable.`
+      : 'Prefix reuse is not enabled for the current engine; messages are fully recomputed. Supporting engines reuse completed 512-token prefill blocks and recompute partial tails.'} ${backend.suffix_supported ? 'Optional one-token n-gram verification is available in Greedy mode and is off by default.' : 'Suffix drafting is unavailable in this engine.'}`
     : $('backend').value === 'rtl-fp32-fused-phase'
     ? 'Experimental fused FP32 prefill with 12 workers; separate FP32 decode and verification with 8 workers. Attention and KV remain FP64. Reuses only complete fused prefill blocks. Both pools stay resident; only one runs at a time. Optional suffix drafting is off by default. CPU only; not cycle-accurate FPGA timing.'
     : backend?.fixed_workers
@@ -77,6 +83,11 @@ function renderBackendDetails() {
 $('backend').addEventListener('change', backendChanged);
 $('backend').addEventListener('blur', () => queueMicrotask(refreshBackendOptions));
 $('workers').addEventListener('change', backendChanged);
+$('decoding').addEventListener('change', () => {
+  if (!suffixAllowed()) $('suffix').checked = false;
+  renderBackendDetails();
+  controls();
+});
 
 function showError(message) {
   $('error').textContent = message;
@@ -86,7 +97,7 @@ function controls() {
   $('send').disabled = !ready || busy || benchmarkRunning || !$('prompt').value.trim();
   $('prompt').disabled = !ready || busy;
   $('new-chat').disabled = busy;
-  $('suffix').disabled = !ready || busy || !selectedBackend()?.suffix_supported;
+  $('suffix').disabled = !ready || busy || !suffixAllowed();
   const backendDisabled = busy || !ready;
   if ($('backend').disabled !== backendDisabled) $('backend').disabled = backendDisabled;
   $('workers').disabled = busy || !ready || Boolean(selectedBackend()?.fixed_workers);
@@ -166,7 +177,7 @@ async function checkStatus() {
       const current = new Map(status.backends.map(backend => [backend.id, backend]));
       backends = backends.map(backend => current.get(backend.id) ?? backend);
       refreshBackendOptions();
-      if (!selectedBackend()?.suffix_supported) $('suffix').checked = false;
+      if (!suffixAllowed()) $('suffix').checked = false;
       renderBackendDetails();
     }
     $('connection').textContent = connectionLabel();
@@ -207,7 +218,7 @@ async function send(event) {
     const response = await fetch('/api/chat', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ request_id: requestId, session, backend: $('backend').value, simulation_workers: Number($('workers').value), decoding: $('decoding').value, messages: submitted,
-        max_new_tokens: Number($('reply-limit').value), max_draft: $('suffix').checked ? (selectedBackend()?.max_draft ?? 0) : 0 })
+        max_new_tokens: Number($('reply-limit').value), max_draft: $('suffix').checked && suffixAllowed() ? (selectedBackend()?.max_draft ?? 0) : 0 })
     });
     if (!response.ok) {
       const detail = await response.json();
@@ -234,7 +245,7 @@ async function send(event) {
         userStopped = event.finish_reason === 'stopped';
         const m = event.metrics;
         const end = userStopped ? 'Stopped' : event.finish_reason === 'length' ? 'Reply limit reached' : 'Complete';
-        const suffixLabel = m.effective_max_draft ? ` · ${m.accepted_tokens}/${m.proposed_tokens} drafts accepted` : '';
+        const suffixLabel = (m.effective_max_draft || m.suffix_enabled) ? ` · ${m.accepted_tokens}/${m.proposed_tokens} drafts accepted` : '';
         const workerLabel = m.prefill_workers ? ` · ${m.prefill_workers} prefill / ${m.decode_workers} decode workers` : m.simulation_workers === undefined ? '' : m.simulation_workers ? ` · ${m.simulation_workers} workers` : ' · serial';
         reply.meta.textContent = `${selectedBackend()?.label ?? "SystemVerilog"}${workerLabel} · ${$('decoding').value === 'chat' ? 'Sampled' : 'Greedy'} · ${end} · ${m.output_tokens} tokens · ${m.elapsed_seconds.toFixed(2)} s · ${m.reused_prefix_tokens} prefix tokens reused${suffixLabel}`;
         if (event.text.trim()) messages = [...submitted, { role: 'assistant', content: event.text }];
