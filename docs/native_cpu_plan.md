@@ -506,3 +506,19 @@ Evidence: [immutable build manifest](../reports/native-cpu-build-10-manifest.jso
 [interface checks](../reports/native-cpu-build-10-interface.json).
 Raw report hashes are retained in each sanitized archive's provenance; embedded
 artifact hashes continue to identify the original immutable inputs.
+
+
+## Local build-10 release
+
+The stable native executable now resolves to the immutable build-10 binary.
+The localhost:8765 browser runs `tools/chat_server.py --native-only --port 8765`:
+it needs no simulator binary or imports and selects the latest native build
+first. Available llama.cpp comparison options remain selectable. Full-context
+processing is explicit; prefix reuse and suffix drafting remain unsupported.
+
+The [live browser report](../reports/native-cpu-build-10-browser-live.json)
+records successful default selection after reload, two-turn recall, cancellation
+and fresh generation, native/llama/native switching, and the polled benchmark
+banner with server-side HTTP409 rejection while locked. This is interface
+validation, not an additional speed measurement. The benchmark lock is released
+and the live server is ready for user testing.

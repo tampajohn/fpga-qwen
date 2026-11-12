@@ -1,0 +1,58 @@
+{
+  "completed": true,
+  "gpu_inference": false,
+  "inference_interface": "Actual localhost browser chat",
+  "url": "http://127.0.0.1:8765",
+  "live_deployment_check": true,
+  "checks": {
+    "latest_release_first_and_default_after_reload": true,
+    "catalog_and_controls": true,
+    "fresh_context_status": true,
+    "guard_visible_and_server_blocks": true,
+    "cancel_then_fresh_request": true,
+    "backend_switch_roundtrip": true
+  },
+  "replies": [
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-10 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.52 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "What word did you just say? Answer with that word only.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-10 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.16 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word green.",
+      "text": "green",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-10 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.49 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "llama.cpp \u00b7 FP16 \u00b7 Greedy \u00b7 Complete \u00b7 2 tokens \u00b7 0.53 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-10 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.49 s \u00b7 0 prefix tokens reused"
+    }
+  ],
+  "console_errors": [],
+  "initial_selection": "native-cpu-f16",
+  "release": {
+    "build": "build-10",
+    "binary_sha256": "2155b895cd7ebba244b441cc5b1662acd9a48b57e1511d59bde3d1550eb45a3c",
+    "stable_target": "build-10/qwen_cpu",
+    "launcher": "tools/chat_server.py --native-only --port 8765",
+    "sources": {
+      "tests/browser_native_cpu.py": "be086353ab29eff06642df65a226a3e91e0e879fd24d3e5bcca80bee742070bc",
+      "tools/chat_server.py": "1c5c18e8177838cdbeefe8d658457c98360c197bb287794062549fe341217c35",
+      "tools/chat_backends.py": "009abd59a3f913faccbee8bbc5f0486eeb256fd6caf3bf5b313c4a5b16ed8770",
+      "tools/native_cpu_chat.py": "e7a024421812dc295fca7fa7c9052c62f3a87f2d233164aeda9ddfa0db8c8775",
+      "web/app.js": "fcbd98fe9f17a0bfca4bc69e5acb88683e15ce63558c6ed6dc463a14391c8a7c"
+    }
+  },
+  "scope": "Actual live localhost deployment; UI behavior, not a performance or broad answer-quality benchmark."
+}

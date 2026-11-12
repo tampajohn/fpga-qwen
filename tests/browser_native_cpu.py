@@ -1,4 +1,4 @@
-"""Opt-in real browser native chat checks against an isolated localhost:8766 server.
+"""Opt-in real browser native chat checks against a localhost server.
 
 Start the existing chat server separately after native asset promotion, then run
 this file outside benchmark_guard (chat itself acquires the shared guard). The
@@ -20,18 +20,20 @@ from playwright.sync_api import sync_playwright, expect
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--url', default='http://127.0.0.1:8766')
+    parser.add_argument('--live', action='store_true', help='Explicitly allow deployment checks on localhost:8765')
     parser.add_argument('--directory', type=Path, required=True)
     parser.add_argument('--guard-state-dir', type=Path, default=ROOT/'build/benchmark-status')
     parser.add_argument('--chrome', default='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
     args = parser.parse_args()
     url = urlparse(args.url)
-    if url.scheme != 'http' or url.hostname not in ('127.0.0.1','localhost') or url.port != 8766:
-        parser.error('Use the isolated local chat server on port8766')
+    if url.scheme != 'http' or url.hostname not in ('127.0.0.1','localhost') or url.port != (8765 if args.live else 8766):
+        parser.error('Use localhost:8766, or explicitly pass --live for localhost:8765')
     gate = BenchmarkGate(args.guard_state_dir)
     if gate.status()['running']:
         raise RuntimeError('Wait for the active benchmark before browser inference')
     args.directory.mkdir(parents=True, exist_ok=False)
     report = dict(completed=False, gpu_inference=False, inference_interface='Actual localhost browser chat',
+                  url=args.url, live_deployment_check=args.live,
                   checks={}, replies=[], console_errors=[])
     def save():
         (args.directory/'report.json').write_text(json.dumps(report,indent=2)+'\n')
@@ -48,6 +50,13 @@ def main():
             assert entry['available'] is True
             if entry.get('default_eligible') is False:
                 assert page.locator('#backend').input_value() != 'native-cpu-f16'
+            else:
+                expect(page.locator('#backend')).to_have_value('native-cpu-f16')
+                assert page.locator('#backend option').first.get_attribute('value') == 'native-cpu-f16'
+                page.reload()
+                expect(page.locator('#prompt')).to_be_enabled(timeout=30000)
+                expect(page.locator('#backend')).to_have_value('native-cpu-f16')
+                report['checks']['latest_release_first_and_default_after_reload'] = True
             report['initial_selection'] = page.locator('#backend').input_value()
             page.locator('#backend').select_option('native-cpu-f16')
             expect(page.locator('#workers-row')).to_be_hidden()

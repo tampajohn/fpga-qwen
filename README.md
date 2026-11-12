@@ -22,47 +22,47 @@ It also matched tuned llama.cpp's exact token trajectories, EOS behavior, text,
 and grades on the existing nine-case conversation suite. Both scored **4/9**:
 matching baseline mistakes is not a model-quality improvement.
 
-**Build-08 is the current evaluated candidate.** It combines improved worker
-scheduling, grouped/four-row projection dispatch, larger prefill chunks, and
-CPU vector-library nonlinear functions. It passed the unchanged numerical gates
-at contexts 1–4, 85–92, and 452–455, and matched tuned llama.cpp on the nine-case
-exact-trajectory suite (both still 4/9). Additional synthetic boundary predictions
-for 511/512/513-token prompts (two predictions each) passed for both engines
-against NumPy; this is chunk-carry
-coverage, not an answer-quality benchmark.
+**Build-10 is the selected native candidate.** It combines persistent workers,
+grouped/four-row projection dispatch, larger prefill chunks, vector-library
+nonlinear functions, and balanced causal-attention work during prefill. Its
+full logits are bit-identical to build-08 at all 22 checked positions, including
+511/512/513-token chunk boundaries; build-08 passed the unchanged NumPy gates
+there. The nine-case exact-trajectory suite still matches llama.cpp (both 4/9).
 
-Ten alternating paired rounds used 85/452-token uncached prompts and 32 identical
-greedy output tokens:
+Thirty alternating paired rounds used 85/452-token uncached prompts and 32
+identical greedy output tokens, with three warmups before each measured profile:
 
-| Engine, 12 decode / 6 prefill threads | 85-token prompt decode | 452-token prompt decode |
-| --- | ---: | ---: |
-| Tuned llama.cpp FP16, KleidiAI + LTO | 141.35 tokens/s | 130.55 tokens/s |
-| Original CPU engine, build-08 | 148.35 tokens/s | 136.93 tokens/s |
+| Engine, 12 decode / 6 prefill threads | 85-token prompt decode | 452-token prompt decode | First token, short / long |
+| --- | ---: | ---: | ---: |
+| Tuned llama.cpp FP16, KleidiAI + LTO | 134.42 tokens/s | 129.18 tokens/s | 0.216 / 0.628 s |
+| Original CPU engine, build-10 | 135.32 tokens/s | 129.50 tokens/s | 0.124 / 0.532 s |
 
-Median **paired** native/llama decode ratios were **1.014x** (95% paired-bootstrap
-interval 0.812–1.114) and **1.055x** (0.949–1.196). Both intervals cross 1:
-point estimates are competitive, but **no decode win is established**. Paired
-ratios are not quotients of the table's independent medians. Native first-token
-medians were 0.100/0.603 seconds versus llama's 0.160/0.559 seconds: shorter
-context improved, while longer-context TTFT remained behind.
+Median **paired** native/llama decode ratios were **1.028x** (95% paired-bootstrap
+interval 0.954–1.079) and **0.980x** (0.905–1.022). This meets the Phase 1
+within-10% competitive target on these workloads; **no decode win is established**.
+Paired first-token speedups were 1.647x (1.563–1.911) and 1.143x (1.099–1.241).
+Paired ratios are not quotients of the table's independent medians.
 
-See [confirmation](reports/native-cpu-build-08-confirmation.json),
-[paired uncertainty](reports/native-cpu-build-08-confirmation-analysis.json),
-[conversation quality](reports/native-cpu-build-08-quality.json), and
-[511](reports/native-cpu-boundary-511-oracle-gate.json),
+See [confirmation](reports/native-cpu-build-10-confirmation.json),
+[paired uncertainty](reports/native-cpu-build-10-confirmation-analysis.json),
+[conversation quality](reports/native-cpu-build-10-quality.json), and
+[exact-logit comparison](reports/native-cpu-build-10-exact-gate.json).
+Underlying NumPy coverage includes [511](reports/native-cpu-boundary-511-oracle-gate.json),
 [512](reports/native-cpu-boundary-512-oracle-gate.json), and
-[513-token boundary gates](reports/native-cpu-boundary-513-oracle-gate.json), plus
-[reproducible fixtures](reports/native-cpu-boundary-fixtures.json).
-Earlier build-02 and build-03 evidence remains in the
-[current plan](docs/native_cpu_plan.md); comparisons across historical runs do
-not establish isolated optimization gains. Native subprocess transport differs
-from llama.cpp's HTTP streaming, native prefill retains widened FP32 layer
-weights, and background scheduling remains uncontrolled.
+[513-token boundary gates](reports/native-cpu-boundary-513-oracle-gate.json).
+Earlier and negative results remain in the [current plan](docs/native_cpu_plan.md).
+Candidate-09's auxiliary cache was rejected: it added 1.19 GB and regressed short
+context decode without an established long-context gain.
 
-An isolated actual-browser check was completed for build-06; it is not a
-build-08 browser validation. The live backend is unchanged and no candidate has
-been promoted. Candidate-09's lossless BF16 auxiliary-cache source has no result
-reported here. All three boundary gates and their exact fixture IDs are now archived.
+These are single-stream measurements on this Apple M5 Max. Native subprocess
+transport differs from llama.cpp HTTP streaming; native prefill retains a
+1.76 GB widened FP32 layer cache; background scheduling remains uncontrolled.
+The numerical suite does not establish accuracy at every supported context or
+answer quality beyond the stated tests. Build-10 is deployed locally and passed
+[actual live-browser checks](reports/native-cpu-build-10-browser-live.json):
+latest-first/default selection, multi-turn chat, cancellation, backend switching,
+and the browser-polled benchmark lock. Runtime checks cover worker counts 1/64,
+idle/reset cycles, malformed packs, and context-limit handling.
 
 The primary target remains the tuned **FP16** baseline. FP32 and constrained
 KleidiAI-OFF Q4 measurements are separate precision classes, not interchangeable
@@ -78,28 +78,30 @@ It binds only to localhost, with one active request. It performs no automatic
 model download. Supply a local unsharded Qwen3-0.6B checkpoint containing
 `model.safetensors`, configuration files, and tokenizer files.
 
-Install the locked Python dependencies and start the existing service:
+Install the locked Python dependencies, prepare the native assets below, then start:
 
 ```sh
 make setup
-.venv/bin/python tools/chat_server.py --model /path/to/Qwen3-0.6B --port 8765
+.venv/bin/python tools/chat_server.py --native-only --model /path/to/Qwen3-0.6B --port 8765
 ```
 
-Open **http://127.0.0.1:8765**. The current shared launcher still requires an
-already-built historical simulator asset, even when selecting a native backend;
-it fails explicitly if that asset is missing. Starting this command does not
-build the original engine or export its weights. This is a transitional launcher,
-not a standalone native-only installation flow.
+Open **http://127.0.0.1:8765**. The installed native release appears first and
+is selected automatically. The local deployment uses **build-10**, with 12
+decode / 6 prefill threads; simulator worker controls do not apply. The
+`--native-only` launcher needs no simulator binary or simulator imports. Omit
+that flag to include any installed legacy simulator choices. Starting the
+server does not build the engine, export weights, or download a model.
 
-The **Native CPU · FP16 · experimental** option is available only when the
-explicitly prepared assets below are installed. It is not automatically selected
-or promoted by this work. Its worker counts are 12 decode / 6 prefill; simulator
-worker controls do not apply. Native prefix reuse and suffix drafting are
-unsupported: every message processes the full conversation again. Stop terminates
-the active native process, and the next request starts with fresh KV state.
+Native prefix reuse and suffix drafting are unsupported: every message processes
+the full conversation again. Stop terminates the active native process, and the
+next request starts with fresh KV state. Benchmark jobs block generation and
+show a banner through browser polling.
 
-Existing simulator and llama.cpp choices remain for comparison; their caching
-and suffix capabilities differ and are displayed per backend. Do not infer a
+Installed llama.cpp choices remain available; the default launcher also offers
+installed simulator choices. The browser llama.cpp entries currently use the
+existing six-thread comparison build; the published contest above uses a
+separate tuned 12/6-thread build. Their caching and suffix capabilities differ
+and are displayed per backend. Do not infer a
 native feature from a simulator control. Browser history is held in memory and
 is lost on refresh. The server is single-user without built-in authentication;
 exposing localhost through a tunnel requires your own access controls.
@@ -133,7 +135,15 @@ output paths. The manifest records hashes and rounding rules.
 Browser availability additionally requires an explicitly installed executable
 at `build/native-cpu/qwen_cpu`. Builds remain in their own directories until
 correctness, performance, and browser checks justify installing that stable
-path. Neither the build command nor this README installs or promotes a build.
+path. After validating a new build, install it explicitly, for example:
+
+```sh
+ln -s my-build/qwen_cpu build/native-cpu/qwen_cpu
+```
+
+This command expects no existing stable path. On the development machine the
+verified stable link already points to `build-10/qwen_cpu`; preserve immutable
+build directories when changing releases.
 
 ## Validation and development
 
@@ -154,7 +164,7 @@ IDs, natural EOS, declared precision, and immutable build artifacts:
   server or build assets automatically.
 
 Reports distinguish numerical agreement, token identity, answer accuracy, and
-performance. Passing one does not establish the others. The current Phase 1
-implementation has a four-hour budget and a stop rule: if a correct plain engine
-cannot reach 90% of tuned FP16 decode by the deadline, report the gap rather than
-claim success or continue an open-ended optimization sweep.
+performance. Passing one does not establish the others. Phase 1 met its
+within-10% decode target before the four-hour deadline. This result permits
+further specialization; it does not establish a decode win or a general result
+for other models, machines, context lengths, or precision classes.
