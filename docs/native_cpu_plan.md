@@ -431,3 +431,24 @@ and reports zero auxiliary BF16 cache bytes. The live backend remains unchanged.
 Evidence: [exact logits](../reports/native-cpu-build-09-exact-gate.json),
 [conversation quality](../reports/native-cpu-build-09-quality.json), and
 [real changed-weight fallback](../reports/native-cpu-build-09-fallback.json).
+
+## Candidate-09 rejected after direct comparison
+
+Ten alternating paired rounds compared build-09 directly with build-08 using
+the same original-engine transport, FP16 pack, twelve decode/six prefill threads,
+and three warmups per context per visit. Exact output-ID preflight remained
+required. The auxiliary cache gave a short-context median paired decode ratio
+of **0.92553x** (95% paired-bootstrap interval **0.72308–0.98871**), indicating
+a regression. The long-context ratio was **1.00727x** (**0.84068–1.62179**),
+with no established gain. TTFT was approximately unchanged.
+
+Reject the auxiliary cache for the current candidate: its measured additional
+1,191,968,768 bytes are not justified by these results. Correctness and real
+fallback evidence remain valid, but do not make the optimization worthwhile.
+This direct comparison evaluates the cache change; it is not a performance win
+against tuned llama. Candidate-10 retains build-08's FP16 path and zero auxiliary
+BF16 cache, adding only balanced prefill attention work assignment. Its evaluation
+is ongoing, and the live backend remains unchanged.
+
+Evidence: [direct paired report](../reports/native-cpu-build-09-versus08-confirmation.json)
+and [paired uncertainty](../reports/native-cpu-build-09-versus08-analysis.json).
