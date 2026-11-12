@@ -1,0 +1,217 @@
+{
+  "completed": true,
+  "gpu_inference": false,
+  "inference_interface": "Actual localhost browser chat",
+  "url": "http://127.0.0.1:8765",
+  "live_deployment_check": true,
+  "expect_greedy_suffix": false,
+  "checks": {
+    "latest_release_first_and_default_after_reload": true,
+    "focused_backend_stable_during_status_polling": true,
+    "catalog_and_controls": true,
+    "fresh_context_status": true,
+    "old_binary_suffix_unavailable": true,
+    "canonical_prefix_reuse_and_changed_question": {
+      "reused_tokens": 512
+    },
+    "guard_visible_and_server_blocks": true,
+    "cancel_then_fresh_request": true,
+    "backend_switch_roundtrip": true
+  },
+  "replies": [
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "requested_max_new_tokens": 128,
+      "token_ids": [
+        12203
+      ],
+      "finish_reason": "eos",
+      "metrics": {
+        "prompt_tokens": 81,
+        "reused_prefix_tokens": 0,
+        "output_tokens": 1,
+        "rounds": 1,
+        "proposed_tokens": 0,
+        "accepted_tokens": 0,
+        "tokens_per_round": 1,
+        "kv_tokens": 82,
+        "context_limit": 4096,
+        "evaluated_prompt_tokens": 81
+      },
+      "request": {
+        "backend": "native-cpu-f16",
+        "decoding": "greedy",
+        "max_draft": 0
+      },
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.12 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "What word did you just say? Answer with that word only.",
+      "text": "blue",
+      "requested_max_new_tokens": 128,
+      "token_ids": [
+        12203
+      ],
+      "finish_reason": "eos",
+      "metrics": {
+        "prompt_tokens": 144,
+        "reused_prefix_tokens": 0,
+        "output_tokens": 1,
+        "rounds": 1,
+        "proposed_tokens": 0,
+        "accepted_tokens": 0,
+        "tokens_per_round": 1,
+        "kv_tokens": 145,
+        "context_limit": 4096,
+        "evaluated_prompt_tokens": 144
+      },
+      "request": {
+        "backend": "native-cpu-f16",
+        "decoding": "greedy",
+        "max_draft": 0
+      },
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.16 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Background notes:\nThis is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. \nAnswer with the single word blue.",
+      "text": "blue",
+      "requested_max_new_tokens": 128,
+      "token_ids": [
+        12203
+      ],
+      "finish_reason": "eos",
+      "metrics": {
+        "prompt_tokens": 805,
+        "reused_prefix_tokens": 0,
+        "output_tokens": 1,
+        "rounds": 1,
+        "proposed_tokens": 0,
+        "accepted_tokens": 0,
+        "tokens_per_round": 1,
+        "kv_tokens": 806,
+        "context_limit": 4096,
+        "evaluated_prompt_tokens": 805
+      },
+      "request": {
+        "backend": "native-cpu-f16",
+        "decoding": "greedy",
+        "max_draft": 0
+      },
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 1.00 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Now answer with the single word green.",
+      "text": "green",
+      "requested_max_new_tokens": 128,
+      "token_ids": [
+        13250
+      ],
+      "finish_reason": "eos",
+      "metrics": {
+        "prompt_tokens": 863,
+        "reused_prefix_tokens": 512,
+        "output_tokens": 1,
+        "rounds": 1,
+        "proposed_tokens": 0,
+        "accepted_tokens": 0,
+        "tokens_per_round": 1,
+        "kv_tokens": 864,
+        "context_limit": 4096,
+        "evaluated_prompt_tokens": 351
+      },
+      "request": {
+        "backend": "native-cpu-f16",
+        "decoding": "greedy",
+        "max_draft": 0
+      },
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.55 s \u00b7 512 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word green.",
+      "text": "green",
+      "requested_max_new_tokens": 128,
+      "token_ids": [
+        13250
+      ],
+      "finish_reason": "eos",
+      "metrics": {
+        "prompt_tokens": 81,
+        "reused_prefix_tokens": 0,
+        "output_tokens": 1,
+        "rounds": 1,
+        "proposed_tokens": 0,
+        "accepted_tokens": 0,
+        "tokens_per_round": 1,
+        "kv_tokens": 82,
+        "context_limit": 4096,
+        "evaluated_prompt_tokens": 81
+      },
+      "request": {
+        "backend": "native-cpu-f16",
+        "decoding": "greedy",
+        "max_draft": 0
+      },
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.45 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "requested_max_new_tokens": 128,
+      "token_ids": null,
+      "finish_reason": "eos",
+      "metrics": {
+        "prompt_tokens": 81,
+        "reused_prefix_tokens": 0,
+        "output_tokens": 2,
+        "rounds": 0,
+        "proposed_tokens": 0,
+        "accepted_tokens": 0,
+        "tokens_per_round": 0,
+        "kv_tokens": 83,
+        "context_limit": 4096
+      },
+      "request": {
+        "backend": "llama-f16",
+        "decoding": "greedy",
+        "max_draft": 0
+      },
+      "metadata": "llama.cpp \u00b7 FP16 \u00b7 Greedy \u00b7 Complete \u00b7 2 tokens \u00b7 0.45 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "requested_max_new_tokens": 128,
+      "token_ids": [
+        12203
+      ],
+      "finish_reason": "eos",
+      "metrics": {
+        "prompt_tokens": 81,
+        "reused_prefix_tokens": 0,
+        "output_tokens": 1,
+        "rounds": 1,
+        "proposed_tokens": 0,
+        "accepted_tokens": 0,
+        "tokens_per_round": 1,
+        "kv_tokens": 82,
+        "context_limit": 4096,
+        "evaluated_prompt_tokens": 81
+      },
+      "request": {
+        "backend": "native-cpu-f16",
+        "decoding": "greedy",
+        "max_draft": 0
+      },
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.43 s \u00b7 0 prefix tokens reused"
+    }
+  ],
+  "console_errors": [],
+  "initial_selection": "native-cpu-f16",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/browser-build-12-final-live/report.json",
+    "source_sha256": "6c43aafb3e74f6f60c10337fd50be3edc3f824213318238b4f2710c53135972c",
+    "sanitization": "Local path prefixes anonymized; PID fields and unscored numeric timing metrics omitted. Rendered UI metadata retained for interface evidence only."
+  },
+  "scope": "Actual live build12 browser regression; not performance or near-4K numerical evidence."
+}

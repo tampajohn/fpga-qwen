@@ -24,7 +24,7 @@ Newer experiments remain separate from that live release. Candidate 15 adds
 opt-in greedy two-token verification and has passed exact-logit, conversation,
 EOS and rollback checks. Its first paired suffix benchmark established no
 request-speed gain, so drafting stays off by default; see the
-[suffix evidence and remaining checks](docs/native_suffix_b2.md).
+[suffix correctness and timing evidence](docs/native_suffix_b2.md).
 The [standalone vocabulary-routing prototype](docs/native_head_probe.md)
 also passed its scoped correctness checks but was slower than the dense head.
 Neither experiment establishes a new speed win over llama.cpp.
@@ -51,13 +51,53 @@ outside the measured request; these are not fresh-prompt speedups.
 | 3,968 | 11.719 → 1.974 s | 5.744× (5.512–6.512) |
 
 All decode-speed intervals in that cache comparison include 1: no decode gain
-is established. A separate [ten-pair uncached comparison against tuned llama](reports/native-cpu-build-12-standard-confirmation.json)
-was slower: median paired native/llama decode ratios were **0.687×** at 85
-prompt tokens and **0.772×** at 452, with [95% intervals](reports/native-cpu-build-12-standard-confirmation-analysis.json)
-**0.487–0.914** and **0.658–0.923**. The user reported heavy concurrent machine
-activity. That is a possible confound, not an established explanation; the
-cause remains unresolved, and the result does not isolate a build-change effect.
-There is no fresh-request speed-win claim for build-12.
+is established from prefix reuse.
+
+The latest [ten-pair fresh-request confirmation](reports/native-cpu-build-12-final-standard-confirmation.json)
+retains build-12 against tuned KleidiAI-ON/LTO-ON llama FP16, both with 12 decode /
+6 prefill threads, identical 85/452-token prompts and 32 output tokens. Every
+visit has one unscored warmup per prompt; configurations alternate order.
+[Paired bootstrap intervals](reports/native-cpu-build-12-final-standard-analysis.json)
+retain all ten rounds. Ratios above 1 favor the original engine.
+
+| Prompt tokens | Decode throughput ratio (95% interval) | TTFT speedup (95% interval) | Request-time speedup (95% interval) |
+| --- | ---: | ---: | ---: |
+| 85 | 0.974× (0.939–1.042) | 1.380× (1.313–1.715) | 1.109× (1.063–1.253) |
+| 452 | 0.953× (0.917–0.978) | 1.079× (1.010–1.181) | 1.040× (1.001–1.098) |
+
+These workloads show lower TTFT and request time, **not a decode win**. The
+452-token decode interval indicates a slowdown; both decode intervals remain
+within the declared 10% allowance at their lower bounds. The 452-token request
+interval barely excludes 1, and these are separate, unadjusted workload/metric
+intervals. They do not establish broad superiority.
+
+**Near-4K numerical validation failed for the selected build-12.** The fixed
+NumPy contract remains maximum absolute error ≤0.01 and RMS ≤0.002. The
+[3968/3969-position control](reports/native-cpu-build-12-context3968-oracle-control.json)
+reported maximum errors 0.0148945 / 0.0106325 and RMS errors 0.00166184 /
+0.00204414. Both positions fail; the second exceeds both limits. Greedy IDs
+still matched, which does not satisfy the full-logit contract. The
+[1024/1025](reports/native-cpu-build-12-context1024-oracle-control.json) and
+[2048/2049](reports/native-cpu-build-12-context2048-oracle-control.json)
+controls passed, within those selected positions' scope. The completed
+[128-output extended timing run](reports/native-cpu-build-12-final-extended-confirmation.json)
+is retained, but near-4K timing is diagnostic evidence and cannot support a
+qualified speed win. The numerical gap remains unresolved; the follow-on goal
+is not complete, and tolerances have not been relaxed.
+
+For the two shorter extended workloads, the [ten-pair 128-output analysis](reports/native-cpu-build-12-final-extended-analysis.json)
+reports decode ratios 0.991× (0.913–1.039) at 1024 prompt tokens and 1.077×
+(0.947–1.175) at 2048. Neither establishes a decode improvement; their TTFT
+and whole-request intervals also include 1. Independent oracle checks cover
+two positions per prompt, not all 128 outputs. These scoped results must not
+be pooled with the numerically failed near-4K workload.
+
+The earlier [unfavorable ten-pair comparison](reports/native-cpu-build-12-standard-confirmation.json)
+is retained separately: paired decode ratios were 0.687× and 0.772×, with
+[intervals](reports/native-cpu-build-12-standard-confirmation-analysis.json)
+0.487–0.914 and 0.658–0.923. Reported concurrent machine activity remains a
+possible confound, not an established explanation. The newer run does not erase
+those measurements or establish why results differed.
 
 Build-10's earlier [30-pair confirmation](reports/native-cpu-build-10-confirmation.json)
 met the Phase 1 within-10% decode target, with paired native/llama ratios 1.028×
@@ -70,7 +110,7 @@ transport differs from llama.cpp HTTP streaming; native prefill retains a
 1.76 GB widened FP32 layer cache; background activity is uncontrolled. Numerical
 and conversation checks cover their declared fixtures, not every context or
 all model behavior. Build-12 is exposed locally at the user's request; its
-[live browser checks](reports/native-cpu-build-12-browser-live.json) passed: default/reload,
+[latest live browser checks](reports/native-cpu-build-12-final-browser-live.json) passed: default/reload,
 dropdown interaction across status polls, cached-prefix replies to changed
 questions, cancellation/new chat, backend switching and the benchmark lock.
 

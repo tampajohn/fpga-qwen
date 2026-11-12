@@ -758,3 +758,92 @@ A [saved-array comparison](../reports/native-cpu-build-14-vs12-context1024-array
 Source review of commit 0880a99, whose core hash matches binary 14's build manifest, found that QK SGEMM changes the original 128-term dot reduction order and PV SGEMM changes the ascending causal-time accumulation into a library reduction over the full packed column extent. Causal lengths, zeroed future probabilities, packing and scatter appear consistent. Reassociation can change later FP16 KV rounding and propagate through layers/chunks; this is a plausible mechanism, not a localization proved by final logits alone. No obvious masking or stride defect was identified in the source review.
 
 The experiment is rejected under the predeclared numerical contract. Its source remains reverted, binary 14 was never live, and no timing or promotion follows. The serialized script stopped at the failed 1024 gate; **2048 and 3968 captures/gates were not run**. Earlier passes and the favorable 1025 row remain published together with the failure; no tolerance change or selective performance claim is made.
+
+## Follow-on acceptance audit
+
+The selected release remains immutable build 12; later attention candidates have
+not replaced it. This finite follow-on continues the approved work after the
+completed Phase 0 baseline and Phase 1 within-10% result. Historical phase
+milestones do not establish current performance; the final selected-binary
+comparisons are separate evidence.
+
+| Approved deliverable | Evidence and current scope |
+|---|---|
+| Safe prefix reuse | [28-case exact prefix gate](../reports/native-cpu-build-12-prefix-check.json), [ten-pair primed edited-tail comparison](../reports/native-cpu-build-12-prefix-confirmation.json), and [live browser gate](../reports/native-cpu-build-12-browser-live.json). Complete canonical 512-token blocks only; scoped TTFT benefit, no established decode benefit. |
+| Extended contexts and sustained decode | Final ten-pair [standard32](../reports/native-cpu-build-12-final-standard-confirmation.json) and [extended128](../reports/native-cpu-build-12-final-extended-confirmation.json) runs completed. Independent controls passed at 1024/1025 and 2048/2049 but failed at3968/3969 under unchanged tolerances. Near-4K timing remains diagnostic, not a qualified performance win; no pooling across contexts. |
+| Profile the original engine | [85-token](../reports/native-cpu-build-11-profile85-summary.json) and [3968-token](../reports/native-cpu-build-11-profile3968-summary.json) diagnostics delivered. Counts include sleeping threads and lack phase timestamps; they are not CPU percentages or wall-time attribution. |
+| Certified vocabulary-head experiment | [Saved-state correctness and six ten-pair component comparisons](../reports/native-head-probe-short-v1.json) delivered. The prototype was slower; keep the dense head. Coverage is eight saved states, not a general correctness proof inferred from a corpus. |
+| Measured suffix drafting | [Ten-pair off/on comparison](../reports/native-cpu-build-15-suffix-confirmation-v2.json), [cached lifecycle checks](../reports/native-cpu-build-15-suffix-lifecycle.json), and [actual isolated browser suffix-on gate](../reports/native-cpu-build-15-browser-suffix-on.json) delivered. No established benefit; experimental greedy-only drafting stays off and is unavailable in live build 12. |
+| Expanded conversation quality | [18 predetermined cases](../reports/native-cpu-build-11-extended-quality.json) matched baseline trajectories, both 10/18; unchanged nine-case suite remains 4/9. Failed answers remain failures. |
+| Current browser and GitHub | Build-12 historical live checks passed. [Final actual live build-12 browser recheck](../reports/native-cpu-build-12-final-browser-live.json) passed default/reload, polling controls, prefix replies, cancellation, backend switching and benchmark lock. Final repository publication remains a separate step; the near-4K numerical gap is unresolved and blocks a completed follow-on acceptance claim. |
+
+This table is an acceptance audit, not a declaration that the follow-on goal is
+complete. Independent numerical fixtures cover selected positions; exact
+128-output timing preflight does not replace full-logit oracle coverage.
+
+## Deferred model and GPU exploration
+
+The user explicitly parked Qwen3.5 and Metal exploration while current CPU
+validation finishes. The official [Qwen3.5-0.8B model card](https://huggingface.co/Qwen/Qwen3.5-0.8B)
+describes a hybrid language model with 18 Gated DeltaNet layers and six gated
+attention layers; supporting it would require a separate architecture effort.
+A future Metal comparison could use MLX, but no implementation, timing estimate
+or performance promise is scheduled here. The current Qwen3-0.6B CPU-only,
+zero-GPU goal and its fixed numerical contract remain unchanged.
+
+
+### Selected build 12: unresolved near-4K numerical gap
+
+The independent [2048/2049 control](../reports/native-cpu-build-12-context2048-oracle-control.json)
+passed both positions: maximum absolute error 0.00843525 and maximum per-position
+RMS 0.00164769. The earlier [1024/1025 control](../reports/native-cpu-build-12-context1024-oracle-control.json)
+also passed. These are selected-position results, not exhaustive context-range
+coverage.
+
+The [3968/3969 control](../reports/native-cpu-build-12-context3968-oracle-control.json)
+completed and **failed** the same fixed maximum-absolute ≤0.01 / RMS ≤0.002
+contract:
+
+| Context position | Maximum absolute error | RMS error | Result |
+|---|---:|---:|---|
+| 3968 | 0.014894485 | 0.001661845 | Absolute-error failure |
+| 3969 | 0.010632515 | 0.002044139 | Absolute-error and RMS failure |
+
+Both full-vocabulary arrays were finite and greedy predictions matched the
+oracle. The extended timing suite's 128-token baseline identity also passed,
+but neither fact replaces the failed numerical requirement. Preserve the
+near-4K timings as diagnostic measurements with an unresolved numerical gap;
+do not report them as a quality-qualified win, loosen limits, or mark the
+follow-on goal complete. Standard and shorter extended results retain their
+own scoped numerical/quality evidence. The cause of this discrepancy has not
+been established.
+
+
+### Final selected-build scoreboard and browser status
+
+The [standard ten-pair confirmation](../reports/native-cpu-build-12-final-standard-confirmation.json)
+and [analysis](../reports/native-cpu-build-12-final-standard-analysis.json) compare
+unchanged selected build12 against tuned ON/ON FP16 llama, 12 decode / 6 prefill
+threads, 32 outputs and one warmup per profile per visit. Median paired decode
+ratios are 0.97350 (95% interval 0.93936–1.04235) at 85 prompt tokens and0.95329
+(0.91724–0.97823) at 452. This is no decode win; 452 decode is slower, although
+both lower bounds remain above 0.9 on these fixtures. TTFT speedups are 1.37980
+(1.31343–1.71488) and 1.07949 (1.01027–1.18097); request speedups are 1.10889
+(1.06350–1.25256) and 1.03971 (1.00094–1.09759). Intervals are unadjusted and
+the 452 request interval barely excludes 1. The previous unfavorable build12
+comparison remains preserved; the reason for run-to-run differences is unresolved.
+
+The [extended ten-pair 128-output analysis](../reports/native-cpu-build-12-final-extended-analysis.json)
+has scoped passing sampled oracle evidence at 1024 and 2048. Decode ratios
+are 0.991 (0.913–1.039) and 1.077 (0.947–1.175), respectively; neither establishes
+a decode improvement. TTFT and request intervals at both contexts also include 1.
+All 128 output IDs match the baseline, but the independent oracle covers only
+two positions per prompt. The 3968 timing remains diagnostic because the
+unchanged full-logit contract failed, as recorded above; no pooled or near-4K
+quality-qualified performance claim follows.
+
+The [final actual localhost browser gate](../reports/native-cpu-build-12-final-browser-live.json)
+passed with build12 still selected and suffix unavailable. This validates the
+current interface, not the unresolved near-4K arithmetic. Qwen3.5 and Metal
+remain deferred. **The follow-on goal is not complete while this numerical
+gap remains unresolved.**
