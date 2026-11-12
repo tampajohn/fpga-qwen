@@ -27,7 +27,7 @@ def save(path, report):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--binary', type=Path, default=ROOT/'build/native-cpu/build-12/qwen_cpu')
+    parser.add_argument('--binary', type=Path, default=ROOT/'build/native-cpu/build-15/qwen_cpu')
     parser.add_argument('--weights', type=Path, default=ROOT/'build/native-cpu/weights.bin')
     parser.add_argument('--prompt', type=Path, default=ROOT/'build/native-cpu/extended-tutorial-fixtures/context3968.json')
     parser.add_argument('--continuation', type=Path, default=ROOT/'build/native-cpu/extended-tutorial-fixtures/context3968-continuation1.json')
@@ -42,7 +42,7 @@ def main():
     report = dict(completed=False, diagnostic_only=True, timing_claim=False,
         performance_claim_eligible=False, gpu=False, pytorch=False, guard_before=guarded,
         prefix_tokens=3584, tail_tokens=384, compared_contexts=[3968,3969], branches=[],
-        scope='Prime canonical3584 once, then final384 via one prefill versus384 explicit teacher-forced steps after rewind. Same explicit next input in both branches.',
+        scope='Diagnostic build15 (hidden-dump capable, not live build12) primes canonical3584 once, then final384 via one prefill versus384 explicit teacher-forced steps after rewind. Same fixed next input in both branches; A must match frozen12 full logits.',
         limitations=['Not an independent oracle gate or a proof of numerical cause.',
                      'BranchB changes final-tail projection batching; earlier3584-token KV remains the identical shared prefill state.',
                      'Intermediate predictions do not select inputs. Every tail/continuation input is fixed by frozen fixtures.',
@@ -73,8 +73,27 @@ def main():
         require(old.get('completed')is True and old.get('gpu')is False and old.get('pytorch')is False
                 and old.get('prompt_ids')==ids and old.get('requested_steps')==2 and len(old.get('runs',[]))==2,
                 'Reference trajectory mismatch')
-        for path in (binary,weights,Path(str(weights)+'.index'),Path(str(weights)+'.manifest.json')):
+        for path in (weights,Path(str(weights)+'.index'),Path(str(weights)+'.manifest.json')):
             require(old['inputs'].get(str(path))==sha(path), 'Reference input scope mismatch')
+        # Older capture schema records its executable in inputs, not configuration.
+        reference_binaries = [Path(path).resolve() for path in old['inputs'] if Path(path).name == 'qwen_cpu']
+        require(len(reference_binaries)==1, 'Ambiguous reference executable provenance')
+        reference_binary = reference_binaries[0]
+        require(old['inputs'][str(reference_binary)]==sha(reference_binary), 'Frozen reference binary changed')
+        reference_manifest_path = reference_binary.parent/'manifest.json'
+        reference_build = json.loads(reference_manifest_path.read_text())
+        require(reference_build.get('completed')is True and reference_build.get('gpu')is False
+                and reference_build.get('pytorch')is False
+                and reference_build.get('binary_sha256')==sha(reference_binary), 'Reference build provenance mismatch')
+        if str(reference_manifest_path) in old['inputs']:
+            require(old['inputs'][str(reference_manifest_path)]==sha(reference_manifest_path), 'Captured reference manifest changed')
+        for path in (reference_binary,reference_manifest_path):
+            report['inputs'][str(path)]=sha(path)
+        report['reference_binary']=dict(path=str(reference_binary),sha256=sha(reference_binary),
+            manifest_path=str(reference_manifest_path),manifest_sha256=sha(reference_manifest_path),
+            manifest_recorded_in_original_capture=str(reference_manifest_path)in old['inputs'])
+        report['diagnostic_binary']=dict(path=str(binary),sha256=sha(binary),
+            role='Hidden-dump capable diagnostic; not a claim that reference and diagnostic executables are identical')
         reference = {}
         for run in old['runs']:
             require(run.get('consumed_continuation_ids')==teacher
