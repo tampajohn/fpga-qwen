@@ -1,0 +1,46 @@
+{
+  "completed": true,
+  "gpu": false,
+  "pytorch": false,
+  "guard": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Build balanced causal attention prefill",
+      "started_at": "2026-11-12T06:33:43.093323+00:00"
+    }
+  },
+  "command": [
+    "/usr/bin/clang++",
+    "-std=c++20",
+    "-O3",
+    "-mcpu=native",
+    "-flto=thin",
+    "-ffp-contract=fast",
+    "-fno-math-errno",
+    "-pthread",
+    "$REPO/engine/core.cpp",
+    "$REPO/engine/main.cpp",
+    "-framework",
+    "Accelerate",
+    "-o",
+    "$REPO/build/native-cpu/build-10/qwen_cpu"
+  ],
+  "source_sha256": {
+    "$REPO/engine/core.cpp": "f8c9498dc19721cf1f0cac226ad6738ead510470c8c1482098a1f6804be09562",
+    "$REPO/engine/core.hpp": "6fe108c809b373e56db3ee7eb6089b53fc4d8e3db1ce7b21197429e114a18522",
+    "$REPO/engine/main.cpp": "b7055c413978a77b81b11fb7b2970f4838c6c9566a65d3122bbcc2b66bf943a3",
+    "$REPO/tools/build_native_cpu.py": "e100b8687f3cba52d94db9bb2e1700c6669f7081a6dde55609695f0b1d5d325a"
+  },
+  "removed_environment_keys": [],
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "started_at": "2026-11-12T06:33:43Z",
+  "exit_code": 0,
+  "binary": "$REPO/build/native-cpu/build-10/qwen_cpu",
+  "binary_sha256": "2155b895cd7ebba244b441cc5b1662acd9a48b57e1511d59bde3d1550eb45a3c",
+  "linked_libraries": "$REPO/build/native-cpu/build-10/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-10/manifest.json",
+    "raw_source_sha256": "e6fbf37208dd53c271fb785f24aafdec20dc10b4ab4dd06af56b9a62b5e2bdf0",
+    "sanitization": "Repository/home prefixes replaced; PID/PPID and host process names omitted. CPU percentages preserve original ps field index2; embedded hashes identify raw artifacts."
+  }
+}

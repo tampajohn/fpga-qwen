@@ -452,3 +452,57 @@ is ongoing, and the live backend remains unchanged.
 
 Evidence: [direct paired report](../reports/native-cpu-build-09-versus08-confirmation.json)
 and [paired uncertainty](../reports/native-cpu-build-09-versus08-analysis.json).
+
+## Build-10 confirmation: competitive decode and lower first-token latency
+
+Build-10 uses the proven build-08 FP16 arithmetic path, with causal-attention
+work assigned by cumulative context length during batched prefill. It retains
+zero auxiliary BF16 cache bytes. Thirty alternating paired rounds compared it
+with the tuned KleidiAI-ON/LTO-ON llama baseline, both configured for twelve
+decode and six prefill workers, using identical uncached 85/452-token prompts
+and 32 greedy output tokens. Each visit warmed both contexts three times.
+The original engine's Accelerate prefill implementation controls its own BLAS
+threads; the six-worker setting describes its custom pool.
+
+| Context | Median paired decode ratio | 95% paired-bootstrap interval | Median paired TTFT speedup |
+| --- | ---: | ---: | ---: |
+| 85 tokens | 1.02835x | 0.95439–1.07877 | 1.64681x |
+| 452 tokens | 0.98020x | 0.90520–1.02219 | 1.14327x |
+
+These results meet the within-10% decode target on the two tested workloads,
+including the lower bounds of the reported intervals. They **do not establish
+a decode speed advantage**: both decode intervals include 1.0. The TTFT
+speedup intervals were 1.56292–1.91121 short and 1.09918–1.24135 long. Median
+native throughput was 135.32/129.50 tokens/s versus 134.42/129.18 for llama;
+these marginal medians are descriptive, while the paired ratios above account
+for visit pairing. Native median TTFT was 0.124/0.532 seconds versus
+0.216/0.628 seconds. Scheduling variation remains substantial, and this is a
+comparison of complete CPU inference paths and their transports on this host,
+not a universal kernel or hardware speed claim.
+
+Correctness evidence is deliberately separate. Build-10 matched build-08
+bit-for-bit across 44 complete FP32 vocabulary arrays: 22 evaluated positions
+with repeated captures, including 511/512/513-token boundary prompts and their
+continuations. Those build-08 captures passed the independent NumPy gates at
+the unchanged declared limits. The build-10 numerical conclusion is therefore
+transitive on those exact trajectories; it is not an exhaustive model proof.
+The nine-case conversation suite matched all reference output IDs, stopping
+behavior and grades; both models answered 4/9 correctly. This establishes no
+new regression on the suite, not strong general answer quality.
+
+The runtime robustness gate also passed: worker counts 1/64 produced identical
+full logits across repeated resets and 0/2/50-ms idle intervals; parked workers
+shut down cleanly; seven malformed header/index fixtures were rejected without
+changing canonical weights. The interface gate passed seeded-chat repeatability,
+in-flight cancellation/restart, small-context capacity and invalid-ID handling.
+These checks do not establish numerical accuracy at the full 4096-token limit.
+
+Evidence: [immutable build manifest](../reports/native-cpu-build-10-manifest.json),
+[exact-array gate](../reports/native-cpu-build-10-exact-gate.json),
+[conversation gate](../reports/native-cpu-build-10-quality.json),
+[30-round confirmation](../reports/native-cpu-build-10-confirmation.json),
+[paired uncertainty](../reports/native-cpu-build-10-confirmation-analysis.json),
+[runtime robustness](../reports/native-cpu-build-10-robustness.json), and
+[interface checks](../reports/native-cpu-build-10-interface.json).
+Raw report hashes are retained in each sanitized archive's provenance; embedded
+artifact hashes continue to identify the original immutable inputs.

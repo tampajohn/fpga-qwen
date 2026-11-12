@@ -1,0 +1,25 @@
+{
+  "completed": true,
+  "passed": true,
+  "gpu": false,
+  "pytorch": false,
+  "inputs": {
+    "$REPO/build/native-cpu/build-10/qwen_cpu": "2155b895cd7ebba244b441cc5b1662acd9a48b57e1511d59bde3d1550eb45a3c",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7"
+  },
+  "checks": {
+    "seeded_chat_repeat": [
+      323,
+      323
+    ],
+    "inflight_cancellation_reaped_process": true,
+    "restart_after_cancellation": true,
+    "capacity_and_invalid_id_reset": true
+  },
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-10-interface.json",
+    "raw_source_sha256": "f4aa95acd0a94b17de23a6c86bfa6e901ab0d00c7c914ed7e4e1c6ebd67e64c5",
+    "sanitization": "Repository/home prefixes replaced; PID/PPID and host process names omitted. CPU percentages preserve original ps field index2; embedded hashes identify raw artifacts."
+  }
+}

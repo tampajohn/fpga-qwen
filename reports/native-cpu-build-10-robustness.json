@@ -1,0 +1,250 @@
+{
+  "completed": true,
+  "passed": true,
+  "diagnostic_only": true,
+  "performance_claim_eligible": false,
+  "gpu": false,
+  "pytorch": false,
+  "guard": {
+    "directory": "$REPO/build/benchmark-status"
+  },
+  "runs": [
+    {
+      "workers": 1,
+      "ready": {
+        "ready": true,
+        "protocol": 1,
+        "position": 0,
+        "decode_threads": 1,
+        "prefill_threads": 1,
+        "context": 8,
+        "lossless_bf16_decode_cache_bytes": 0,
+        "gpu": false,
+        "pytorch": false,
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_precision": "f16",
+        "prefix_reuse": false,
+        "suffix_drafting": false
+      },
+      "rounds": [
+        {
+          "idle_seconds": 0.0,
+          "records": [
+            {
+              "position": 2,
+              "token": 358,
+              "sha256": "557e70abac196920f0291a76627312dc0af58b499345317fb1f1f51cbcacd4d6"
+            },
+            {
+              "position": 3,
+              "token": 11,
+              "sha256": "554420b05266644305ae8b18249e50e8f14307ecee8358bbada2eba6c97a182d"
+            },
+            {
+              "position": 4,
+              "token": 358,
+              "sha256": "3921e542ddc5a8285328e36f0f37cde03b18371262b2028ccf5a2ef5dc4e1590"
+            }
+          ]
+        },
+        {
+          "idle_seconds": 0.002,
+          "records": [
+            {
+              "position": 2,
+              "token": 358,
+              "sha256": "557e70abac196920f0291a76627312dc0af58b499345317fb1f1f51cbcacd4d6"
+            },
+            {
+              "position": 3,
+              "token": 11,
+              "sha256": "554420b05266644305ae8b18249e50e8f14307ecee8358bbada2eba6c97a182d"
+            },
+            {
+              "position": 4,
+              "token": 358,
+              "sha256": "3921e542ddc5a8285328e36f0f37cde03b18371262b2028ccf5a2ef5dc4e1590"
+            }
+          ]
+        },
+        {
+          "idle_seconds": 0.05,
+          "records": [
+            {
+              "position": 2,
+              "token": 358,
+              "sha256": "557e70abac196920f0291a76627312dc0af58b499345317fb1f1f51cbcacd4d6"
+            },
+            {
+              "position": 3,
+              "token": 11,
+              "sha256": "554420b05266644305ae8b18249e50e8f14307ecee8358bbada2eba6c97a182d"
+            },
+            {
+              "position": 4,
+              "token": 358,
+              "sha256": "3921e542ddc5a8285328e36f0f37cde03b18371262b2028ccf5a2ef5dc4e1590"
+            }
+          ]
+        }
+      ],
+      "clean_shutdown": true
+    },
+    {
+      "workers": 64,
+      "ready": {
+        "ready": true,
+        "protocol": 1,
+        "position": 0,
+        "decode_threads": 64,
+        "prefill_threads": 64,
+        "context": 8,
+        "lossless_bf16_decode_cache_bytes": 0,
+        "gpu": false,
+        "pytorch": false,
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_precision": "f16",
+        "prefix_reuse": false,
+        "suffix_drafting": false
+      },
+      "rounds": [
+        {
+          "idle_seconds": 0.0,
+          "records": [
+            {
+              "position": 2,
+              "token": 358,
+              "sha256": "557e70abac196920f0291a76627312dc0af58b499345317fb1f1f51cbcacd4d6"
+            },
+            {
+              "position": 3,
+              "token": 11,
+              "sha256": "554420b05266644305ae8b18249e50e8f14307ecee8358bbada2eba6c97a182d"
+            },
+            {
+              "position": 4,
+              "token": 358,
+              "sha256": "3921e542ddc5a8285328e36f0f37cde03b18371262b2028ccf5a2ef5dc4e1590"
+            }
+          ]
+        },
+        {
+          "idle_seconds": 0.002,
+          "records": [
+            {
+              "position": 2,
+              "token": 358,
+              "sha256": "557e70abac196920f0291a76627312dc0af58b499345317fb1f1f51cbcacd4d6"
+            },
+            {
+              "position": 3,
+              "token": 11,
+              "sha256": "554420b05266644305ae8b18249e50e8f14307ecee8358bbada2eba6c97a182d"
+            },
+            {
+              "position": 4,
+              "token": 358,
+              "sha256": "3921e542ddc5a8285328e36f0f37cde03b18371262b2028ccf5a2ef5dc4e1590"
+            }
+          ]
+        },
+        {
+          "idle_seconds": 0.05,
+          "records": [
+            {
+              "position": 2,
+              "token": 358,
+              "sha256": "557e70abac196920f0291a76627312dc0af58b499345317fb1f1f51cbcacd4d6"
+            },
+            {
+              "position": 3,
+              "token": 11,
+              "sha256": "554420b05266644305ae8b18249e50e8f14307ecee8358bbada2eba6c97a182d"
+            },
+            {
+              "position": 4,
+              "token": 358,
+              "sha256": "3921e542ddc5a8285328e36f0f37cde03b18371262b2028ccf5a2ef5dc4e1590"
+            }
+          ]
+        }
+      ],
+      "clean_shutdown": true
+    }
+  ],
+  "checks": {
+    "worker_idle_reset_exact": true,
+    "malformed_packs": [
+      {
+        "case": "bad_header",
+        "returncode": 1,
+        "expected_error": "Invalid weight pack header",
+        "index_sha256": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+        "binary_kind": "64-byte invalid-header fixture"
+      },
+      {
+        "case": "bad_count",
+        "returncode": 1,
+        "expected_error": "Invalid weight index header/count",
+        "index_sha256": "d191e3e06b63f48c5bcee76eb5dfba1ae2f89b9051f17403ceffa5b995437278",
+        "binary_kind": "read-only canonical symlink"
+      },
+      {
+        "case": "wrong_shape",
+        "returncode": 1,
+        "expected_error": "Wrong tensor shape",
+        "index_sha256": "a473ee372095599645ef4dc5b4754f47a70b2a00caa9c119b685802dd9582522",
+        "binary_kind": "read-only canonical symlink"
+      },
+      {
+        "case": "out_of_bounds",
+        "returncode": 1,
+        "expected_error": "Invalid tensor range",
+        "index_sha256": "290fe8cbb52cd5fc91b6164ad592eb4ce4735578bc9b5653e04a0bddfee69b35",
+        "binary_kind": "read-only canonical symlink"
+      },
+      {
+        "case": "unaligned",
+        "returncode": 1,
+        "expected_error": "Invalid tensor range",
+        "index_sha256": "72abe5dff0951cd598d4b4dee6d3cbd5cdfcc3d872315a5201ae11f284e45690",
+        "binary_kind": "read-only canonical symlink"
+      },
+      {
+        "case": "duplicate",
+        "returncode": 1,
+        "expected_error": "Unexpected or duplicate tensor",
+        "index_sha256": "ffae6c1292823e5f4056391bc79a73c2606678600e974b5916bab48535e74cd9",
+        "binary_kind": "read-only canonical symlink"
+      },
+      {
+        "case": "overlap",
+        "returncode": 1,
+        "expected_error": "Overlapping tensors",
+        "index_sha256": "6e71440cc060a6fe49b8a69e0124be144ba2e4551d9b3960a27b64f7f3d8a5f1",
+        "binary_kind": "read-only canonical symlink"
+      }
+    ]
+  },
+  "scope": "Tiny four-token trajectory; exact worker-count/idle/reset equivalence and malformed-pack rejection. Not a full-context or throughput gate.",
+  "inputs": {
+    "$REPO/build/native-cpu/build-10/qwen_cpu": "2155b895cd7ebba244b441cc5b1662acd9a48b57e1511d59bde3d1550eb45a3c",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/tools/check_native_cpu_robustness.py": "159a5826814436a8887f3b1a8793e73ef96cd07535b3309a8612d16a9d3c3faf",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e"
+  },
+  "environment": {
+    "removed_names": [],
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-10-robustness/report.json",
+    "raw_source_sha256": "e3e6e2ed0fbdcd66610960d548e245a0a33537f6b517a45c2585eb1a283d03a4",
+    "sanitization": "Repository/home prefixes replaced; PID/PPID and host process names omitted. CPU percentages preserve original ps field index2; embedded hashes identify raw artifacts."
+  }
+}
