@@ -81,7 +81,7 @@ def build_client(args):
         subprocess.run(command, check=True, stdout=log, stderr=subprocess.STDOUT)
     if hashes != {str(p): sha(p) for p in inputs} or libraries != native_libraries(build) or cache != cpu_build(build):
         raise RuntimeError('Build inputs changed during client compilation')
-    manifest = dict(binary=str(binary), binary_sha256=sha(binary), command=command,
+    manifest = dict(client_version=3, binary=str(binary), binary_sha256=sha(binary), command=command,
                     compiler_version=subprocess.check_output([compiler, '--version'], text=True),
                     llama_source=str(source_tree), llama_build=str(build),
                     llama_commit=subprocess.check_output(['git', '-C', str(source_tree), 'rev-parse', 'HEAD'], text=True).strip(),
@@ -126,6 +126,10 @@ def run_client(args):
                '--repetitions', str(args.repetitions), '--callback', args.callback,
                '--flash-attn', args.flash_attn, '--context', str(args.context),
                '--batch-size', str(args.batch_size), '--output', str(directory / 'client.json')]
+    if args.ubatch_size is not None:
+        if manifest.get('client_version', 2) < 3:
+            raise RuntimeError('Explicit ubatch size requires a new version3 client')
+        command += ['--ubatch-size', str(args.ubatch_size)]
     if args.continuation_ids:
         continuation = args.continuation_ids.resolve()
         input_files.append(continuation)
@@ -161,10 +165,36 @@ def run_client(args):
         report['guard_after'] = guard(args.guard_state_dir)
         actual_dumps = set((directory / 'logits').glob('*.f32'))
         expected_dumps = set()
-        rows = report['client_report']['runs']
+        client = report['client_report']
+        if client.get('client_version', 2) >= 3:
+            configuration = client['configuration']
+            requested_ubatch = args.batch_size if args.ubatch_size is None else args.ubatch_size
+            if (configuration['batch_size'] != args.batch_size
+                    or configuration['ubatch_size_requested'] != requested_ubatch
+                    or configuration['submission_batch_limit'] != min(args.batch_size, configuration['logical_batch_actual'])
+                    or not 1 <= configuration['physical_batch_actual'] <= min(requested_ubatch, configuration['logical_batch_actual'])):
+                raise RuntimeError('Logical/physical batch metadata mismatch')
+        rows = client['runs']
         if len(rows) != args.warmups + args.repetitions:
             raise RuntimeError('Wrong diagnostic request count')
         for row in rows:
+            if client.get('client_version', 2) >= 3:
+                limit = client['configuration']['submission_batch_limit']
+                expected_offset = 0
+                submissions = row['prefill_submissions']
+                for submission in submissions:
+                    count = min(limit, len(client['prompt_ids']) - expected_offset)
+                    if (count <= 0 or submission['offset'] != expected_offset or submission['tokens'] != count
+                            or submission['context_tokens_after'] != expected_offset + count
+                            or submission['actual_last_position'] != expected_offset + count - 1
+                            or submission['sampled'] is not False
+                            or submission['head_callbacks'] != (1 if args.callback == 'on' else 0)):
+                        raise RuntimeError('Invalid prompt submission metadata')
+                    expected_offset += count
+                if expected_offset != len(client['prompt_ids']):
+                    raise RuntimeError('Incomplete multi-batch prompt')
+                if args.callback == 'on' and len(row['head_windows']) != len(submissions) + args.tokens - 1:
+                    raise RuntimeError('Head windows do not cover all prompt/decode submissions')
             if len(row['logit_dumps']) != (args.tokens if args.dump_logits else 0):
                 raise RuntimeError('Wrong per-request logit dump count')
             for step, item in enumerate(row['logit_dumps']):
@@ -204,6 +234,7 @@ def main():
     for name, default in (('threads', 8), ('batch-threads', 12), ('tokens', 32), ('warmups', 1),
                           ('repetitions', 3), ('context', 4096), ('batch-size', 512)):
         run.add_argument('--' + name, type=int, default=default)
+    run.add_argument('--ubatch-size', type=int, help='Physical batch capacity; default equals --batch-size (legacy behavior)')
     run.add_argument('--callback', choices=('off', 'on'), required=True)
     run.add_argument('--flash-attn', choices=('off', 'on', 'auto'), default='auto')
     args = parser.parse_args()

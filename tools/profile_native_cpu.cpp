@@ -141,14 +141,14 @@ static Json dump_logits(llama_context* context,const fs::path& directory,int run
 }
 
 int main(int argc,char** argv) {
-    Json report{{"completed",false},{"diagnostic_only",true},{"client_version",2},{"gpu",false},{"pytorch",false}};
+    Json report{{"completed",false},{"diagnostic_only",true},{"client_version",3},{"gpu",false},{"pytorch",false}};
     fs::path output;
     bool output_owned=false;
     try {
         std::map<std::string,std::string> args;
         const std::vector<std::string> allowed={"--model","--prompt-ids","--continuation-ids","--threads",
             "--batch-threads","--tokens","--warmups","--repetitions","--callback","--flash-attn",
-            "--context","--batch-size","--output","--dump-logits-dir"};
+            "--context","--batch-size","--ubatch-size","--output","--dump-logits-dir"};
         for(int i=1;i<argc;i+=2) {
             if(i+1>=argc || std::find(allowed.begin(),allowed.end(),argv[i])==allowed.end() || args.count(argv[i]))
                 throw std::runtime_error("Unknown, repeated, or missing command-line argument");
@@ -173,14 +173,15 @@ int main(int argc,char** argv) {
         const int tokens=integer("--tokens",32,2,512),warmups=integer("--warmups",1,0,10);
         const int repetitions=integer("--repetitions",3,1,100),context=integer("--context",4096,32,4096);
         const int batch_size=integer("--batch-size",512,1,4096);
+        const int ubatch_size=integer("--ubatch-size",batch_size,1,4096);
         const std::string callback=get("--callback","off"),flash=get("--flash-attn","auto");
         if(callback!="off" && callback!="on") throw std::runtime_error("--callback must be off or on");
         if(flash!="off" && flash!="on" && flash!="auto") throw std::runtime_error("Invalid --flash-attn");
         auto prompt=read_ids(get("--prompt-ids"));
         const bool teacher_forced=args.count("--continuation-ids");
         auto continuation=teacher_forced?read_ids(get("--continuation-ids")):std::vector<llama_token>{};
-        if(prompt.empty() || prompt.size()>size_t(batch_size) || prompt.size()+tokens-1>size_t(context))
-            throw std::runtime_error("Prompt must fit one physical batch and the requested context");
+        if(prompt.empty() || prompt.size()+tokens-1>size_t(context))
+            throw std::runtime_error("Prompt and consumed continuation must fit the requested context");
         if(teacher_forced && continuation.size()!=size_t(tokens-1))
             throw std::runtime_error("Continuation must contain exactly --tokens minus one consumed IDs");
         const fs::path dump_dir=get("--dump-logits-dir");
@@ -210,9 +211,9 @@ int main(int argc,char** argv) {
            llama_model_n_embd(model.get())!=1024 || llama_model_n_head(model.get())!=16 ||
            llama_model_n_head_kv(model.get())!=8 || llama_vocab_n_tokens(vocab)!=151936)
             throw std::runtime_error("This diagnostic requires Qwen3-0.6B dimensions");
-        CallbackState state;state.storage.resize(tokens+2);
+        CallbackState state;state.storage.resize(tokens+prompt.size()+2);
         auto params=llama_context_default_params();
-        params.n_ctx=context;params.n_batch=batch_size;params.n_ubatch=batch_size;params.n_seq_max=1;
+        params.n_ctx=context;params.n_batch=batch_size;params.n_ubatch=ubatch_size;params.n_seq_max=1;
         params.n_threads=threads;params.n_threads_batch=batch_threads;
         params.type_k=GGML_TYPE_F16;params.type_v=GGML_TYPE_F16;
         params.offload_kqv=false;params.op_offload=false;params.no_perf=false;
@@ -226,6 +227,9 @@ int main(int argc,char** argv) {
         std::unique_ptr<llama_context,decltype(&llama_free)> ctx(llama_init_from_model(model.get(),params),llama_free);
         if(!ctx) throw std::runtime_error("Context creation failed");
         PoolAttachment attachment(ctx.get(),pools);
+        const int logical_batch=std::min(batch_size,int(llama_n_batch(ctx.get())));
+        if(logical_batch<1) throw std::runtime_error("Invalid effective logical batch");
+        const size_t prompt_submissions=(prompt.size()+logical_batch-1)/logical_batch;
         auto sampler_params=llama_sampler_chain_default_params();sampler_params.no_perf=false;
         std::unique_ptr<llama_sampler,decltype(&llama_sampler_free)> sampler(llama_sampler_chain_init(sampler_params),llama_sampler_free);
         if(!sampler) throw std::runtime_error("Sampler creation failed");
@@ -235,7 +239,9 @@ int main(int argc,char** argv) {
         report["configuration"]={{"model",get("--model")},{"model_file_type",metadata(model.get(),"general.file_type")},
             {"architecture","qwen3"},{"layers",28},{"hidden",1024},{"query_heads",16},{"kv_heads",8},{"vocabulary",151936},
             {"threads",llama_n_threads(ctx.get())},{"batch_threads",llama_n_threads_batch(ctx.get())},
-            {"context",llama_n_ctx(ctx.get())},{"batch_size",batch_size},{"kv_type","f16"},{"flash_attn_requested",flash},
+            {"context",llama_n_ctx(ctx.get())},{"batch_size",batch_size},{"ubatch_size_requested",ubatch_size},
+            {"logical_batch_actual",llama_n_batch(ctx.get())},{"physical_batch_actual",llama_n_ubatch(ctx.get())},
+            {"submission_batch_limit",logical_batch},{"kv_type","f16"},{"flash_attn_requested",flash},
             {"callback",callback},{"registered_devices",devices},{"n_gpu_layers",0},{"offload_kqv",false},{"op_offload",false}};
         report["configuration"]["threadpools"]=pools.settings();
         report["prompt_ids"]=prompt;report["continuation_ids"]=continuation;
@@ -247,6 +253,8 @@ int main(int argc,char** argv) {
             "Decode step sums include decode, synchronization and greedy sampling; exclude inter-step bookkeeping and optional full-logit disk writes.",
             "Dumping logits occurs outside timed steps but changes cache/timing conditions. Dump-enabled results are numerical diagnostics only.",
             "Teacher-forced mode consumes the provided IDs even if a greedy prediction is EOS; greedy mode stops naturally and rejects a shortened fixed workload.",
+            "Multi-batch prefill computes an unused final-row head per submission; no sampling occurs until the entire prompt. Head prefill windows sum all submission heads, not only the final prompt head.",
+            "Logical/physical batch capacities and submission sizes are recorded; internal kernel schedule and resolved automatic flash attention are not independently certified.",
             "CPU worker placement is not pinned; this client does not measure per-thread CPU time or full application/server overhead."};
         std::vector<llama_token> reference;
         for(int run=0;run<warmups+repetitions;run++) {
@@ -264,9 +272,29 @@ int main(int argc,char** argv) {
             const auto anchor_wall=std::chrono::system_clock::now();
             const auto anchor_after=Clock::now();
             state.origin=Clock::now();
-            if(llama_decode(ctx.get(),llama_batch_get_one(prompt.data(),int(prompt.size())))!=0)
-                throw std::runtime_error("Prompt decode failed");
-            llama_synchronize(ctx.get());
+            row["prefill_submissions"]=Json::array();
+            for(size_t offset=0;offset<prompt.size();offset+=logical_batch) {
+                const int count=int(std::min(size_t(logical_batch),prompt.size()-offset));
+                const size_t callbacks_before=state.count;
+                const auto submission_begin=Clock::now();
+                // Public API infers consecutive positions from the retained KV.
+                // get_one requests the last row; intermediate predictions are
+                // deliberately neither sampled nor added to sampler history.
+                if(llama_decode(ctx.get(),llama_batch_get_one(prompt.data()+offset,count))!=0)
+                    throw std::runtime_error("Prompt submission decode failed");
+                llama_synchronize(ctx.get());
+                const auto submission_end=Clock::now();
+                const auto actual_last_position=llama_memory_seq_pos_max(llama_get_memory(ctx.get()),0);
+                if(actual_last_position!=llama_pos(offset+count-1))
+                    throw std::runtime_error("Prompt submission position mismatch");
+                row["prefill_submissions"].push_back(Json{{"offset",offset},{"tokens",count},
+                    {"context_tokens_after",offset+count},{"actual_last_position",actual_last_position},{"sampled",false},
+                    {"head_callbacks",state.count-callbacks_before},
+                    {"begin_seconds",seconds(state.origin,submission_begin)},
+                    {"end_seconds",seconds(state.origin,submission_end)}});
+                if(callback=="on" && (state.invalid || state.pending || state.count!=callbacks_before+1))
+                    throw std::runtime_error("Unexpected prompt-submission callback sequence");
+            }
             const auto prefilled=Clock::now();
             llama_token next=llama_sampler_sample(sampler.get(),ctx.get(),-1);
             const auto first=Clock::now();
@@ -287,7 +315,7 @@ int main(int argc,char** argv) {
                 if(!dump_dir.empty()) row["logit_dumps"].push_back(dump_logits(ctx.get(),dump_dir,run,step,prompt.size()+step));
             }
             const auto completed=Clock::now();
-            if(callback=="on" && (state.invalid || state.pending || state.count!=ids.size()))
+            if(callback=="on" && (state.invalid || state.pending || state.count!=prompt_submissions+ids.size()-1))
                 throw std::runtime_error("Unexpected sparse callback boundary sequence");
             row["predicted_token_ids"]=ids;row["consumed_continuation_ids"]=consumed;row["eog_prediction_steps"]=eog_steps;
             row["prefill_seconds"]=seconds(state.origin,prefilled);row["ttft_seconds"]=seconds(state.origin,first);
