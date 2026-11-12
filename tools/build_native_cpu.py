@@ -22,6 +22,8 @@ def sha(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--directory', type=Path, required=True)
+    parser.add_argument('--source-directory', type=Path, default=ROOT / 'engine',
+                        help='Engine source directory; defaults to the shared engine checkout')
     parser.add_argument('--guard-state-dir', type=Path, default=ROOT / 'build/benchmark-status')
     args = parser.parse_args()
     guarded = guard(args.guard_state_dir)
@@ -30,7 +32,7 @@ def main():
     dest = args.directory.resolve()
     if dest.exists():
         parser.error('Choose a new directory; existing builds are immutable')
-    source = ROOT / 'engine'
+    source = args.source_directory.expanduser().resolve()
     files = sorted([*source.glob('*.cpp'), *source.glob('*.hpp')])
     if not (source / 'core.cpp').is_file() or not (source / 'main.cpp').is_file():
         parser.error('Core and CLI sources must exist before building')
@@ -51,7 +53,7 @@ def main():
             removed.append(key)
             environment.pop(key)
     report = dict(completed=False, gpu=False, pytorch=False, guard=guarded,
-                  command=command, source_sha256=inputs, removed_environment_keys=removed,
+                  command=command, source_directory=str(source), source_sha256=inputs, removed_environment_keys=removed,
                   compiler=subprocess.check_output([compiler, '--version'], text=True),
                   started_at=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()))
     try:
