@@ -998,6 +998,36 @@ rounds remain included. Background scheduling and process placement are not
 isolated causes. Do not multiply these ratios by earlier build12/llama results
 to invent a candidate/llama comparison.
 
-Extended implementation-cost timing, browser and suffix acceptance remain
-separate pending steps. This standard run alone does not promote the candidate,
+Extended implementation-cost timing subsequently completed as recorded below;
+browser and suffix acceptance remain separate pending steps. This standard run alone does not promote the candidate,
 repair the live build12 artifact, or complete the follow-on goal.
+
+
+### Norm candidate versus build12: extended implementation cost
+
+The [extended confirmation](../reports/native-cpu-norm-f64-vs12-extended-confirmation.json),
+[paired analysis](../reports/native-cpu-norm-f64-vs12-extended-analysis.json), and
+[completed run plan](../reports/native-cpu-norm-f64-vs12-remaining-plan.json)
+retain ten alternating pairs per context and 128 fixed outputs, with both
+engines using the same transport and requested 12/6 threads. Ratios above 1
+favor the norm candidate; intervals are 95% paired bootstrap intervals.
+
+| Prompt tokens | Decode ratio | TTFT speedup | Request speedup |
+|---|---:|---:|---:|
+| 1024 | 0.994 (0.891–1.064) | 1.009 (0.981–1.090) | 1.010 (0.901–1.078) |
+| 2048 | 1.028 (0.984–1.204) | 1.040 (1.012–1.090) | 1.032 (1.008–1.105) |
+| 3968 | 0.971 (0.863–1.00024) | 1.048 (0.988–1.131) | 1.036 (0.952–1.144) |
+
+All decode intervals include 1; no decode improvement or regression is
+established. The near-4K upper bound is shown with extra precision because it
+is slightly above 1. The 1024 and 3968 lower bounds also prevent claiming a
+within-10% decode guarantee on these runs. At 2048 only, TTFT and request
+intervals exclude 1 in favor of the candidate; these separate unadjusted
+comparisons support a scoped observation, not a general performance gain.
+Every round and outlier is preserved, without pooling workloads.
+
+This remains an implementation-cost comparison against build12, whose
+near-4K numerical failure is still recorded. It is not a new candidate-versus-
+llama target result, and it does not imply release acceptance. Rebuilt candidate18
+still needs its own artifact-bound validation and browser/suffix checks before
+promotion. No new browser release follows from this archive.
