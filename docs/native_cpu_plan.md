@@ -927,8 +927,19 @@ mixed-precision diagnostic, not evidence that an unchanged all-FP32 engine now
 passes. The separate [short held-out oracle gate](../reports/native-cpu-norm-f64-short-oracle.json)
 passed all eight positions 85–92 under unchanged limits: maximum absolute error
 0.007540464 and maximum per-position RMS 0.001723343, with all greedy IDs matching.
-Further 452/1024/2048 numerical checks and broader quality validation remain
-pending; no result is inferred for them from this short pass.
+The subsequent held-out checks also completed under the unchanged limits:
+
+| Evaluated positions | Maximum absolute error | Maximum per-position RMS | Result |
+|---|---:|---:|---|
+| [452–455](../reports/native-cpu-norm-f64-long-oracle.json) | 0.005344391 | 0.000998609 | Pass, all greedy IDs matched |
+| [1024–1025](../reports/native-cpu-norm-f64-context1024-oracle.json) | 0.008427620 | 0.001841804 | Pass, all greedy IDs matched |
+| [2048–2049](../reports/native-cpu-norm-f64-context2048-oracle.json) | 0.008694649 | 0.001480302 | Pass, all greedy IDs matched |
+
+Together with the short and near-4K checks, this is finite-fixture numerical
+evidence for the disclosed FP64 norm accumulator. It does not cover every
+intermediate position or establish a general error bound. Tiny and chunk-boundary
+numerical checks, conversation quality, prefix behavior and performance remain
+pending. No promotion or performance result follows from these passes.
 
 The candidate is **not released or promoted**. Live build12 and its original
 near-4K failures remain unchanged, and the follow-on goal remains open. There
