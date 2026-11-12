@@ -12,6 +12,9 @@
 // One coordinator owns run()/shutdown(); concurrent calls are not supported.
 #pragma once
 #include "Vprojection_worker.h"
+#ifdef ATTENTION_QUERY_VALUE_DISPATCH
+#include "query_value_policy.h"
+#endif
 #ifdef FP32_PROJECTION_B1
 #include "Vfp32_projection_kernel.h"
 #ifdef FP32_VERIFICATION_B4
@@ -86,6 +89,10 @@ class ProjectionPool {
     int group_count=0;
     std::array<uint64_t,4> group_counters{};
 #endif
+#ifdef ATTENTION_QUERY_VALUE_DISPATCH
+    // Workers write disjoint slots; run() completion publishes them to coordinator.
+    std::array<std::array<uint64_t,2>,32> query_value_counts{};
+#endif
     const double* input=nullptr;
     double* output=nullptr;
     void worker(int id, int count) {
@@ -94,6 +101,9 @@ class ProjectionPool {
             context->threads(1);
             auto model=std::make_unique<Vprojection_worker>(context.get());
             model->reduction_lanes=reduction_lanes;
+#ifdef ATTENTION_QUERY_VALUE_DISPATCH
+            model->query_value_min_context=query_value::configured_policy().min_context;
+#endif
             model->start=0;model->clk=0;model->eval();
 #ifdef FP32_PROJECTION_B1
             auto fp32_context=std::make_unique<VerilatedContext>();
@@ -286,6 +296,9 @@ class ProjectionPool {
 #ifdef GROUP_PROJECTIONS
                 }
 #endif
+#ifdef ATTENTION_QUERY_VALUE_DISPATCH
+                if(operation==5) query_value_counts[id]={model->query_value_paired_count,model->query_value_fallback_count};
+#endif
 #ifdef PROJECTION_HYBRID_WAIT
                 // The release sequence carries every partition's writes to run().
                 bool last=pending.fetch_sub(1,std::memory_order_acq_rel)==1;
@@ -318,7 +331,17 @@ class ProjectionPool {
         }
     }
 public:
+#ifdef ATTENTION_QUERY_VALUE_DISPATCH
+    std::array<uint64_t,2> query_value_stats() const {
+        std::array<uint64_t,2> total{};
+        for(const auto& counts:query_value_counts) {total[0]+=counts[0];total[1]+=counts[1];}
+        return total;
+    }
+#endif
     explicit ProjectionPool(int count,int lanes=1) : reduction_lanes(lanes) {
+#ifdef ATTENTION_QUERY_VALUE_DISPATCH
+        (void)query_value::configured_policy(); // Validate before starting any threads.
+#endif
 #ifdef FP32_PROJECTION_B1
         if(lanes!=8) throw std::runtime_error("FP32 scalar projections require eight reduction lanes");
 #endif

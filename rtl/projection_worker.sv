@@ -6,6 +6,10 @@ module projection_worker (
 `ifdef PARALLEL_ATTENTION
     input int operation, attention_layer, attention_position,
 `endif
+`ifdef ATTENTION_QUERY_VALUE_DISPATCH
+    input int query_value_min_context,
+    output longint unsigned query_value_paired_count, query_value_fallback_count,
+`endif
     input int first_row, end_row, width, reduction_lanes,
 `ifdef BATCH_PREFILL
     input int batch_count,
@@ -182,6 +186,9 @@ module projection_worker (
     real pair_scores[4096][2];
 `ifdef ATTENTION_QUERY_VALUE_PAIRS
     real query_pair_values[128][2];
+`ifdef ATTENTION_QUERY_VALUE_DISPATCH
+    initial begin query_value_paired_count=0;query_value_fallback_count=0;end
+`endif
 `endif
     // Independent queries share each key load. Each query keeps ascending-j
     // accumulation and ascending-t softmax/value order; no horizontal reduction.
@@ -190,10 +197,20 @@ module projection_worker (
 `ifdef ATTENTION_QUERY_VALUE_PAIRS
         real denoms[2], scales[2], value;
 `endif
+`ifdef ATTENTION_QUERY_VALUE_DISPATCH
+        bit use_pair_values;
+`endif
         int index, kvhead;
         for (int head=first_row;head<end_row;head++) begin
             kvhead=head/2;
             for (int query=0;query<batch_count;query+=2) begin
+`ifdef ATTENTION_QUERY_VALUE_DISPATCH
+                // Causal window shared by this actual pair, including its first query.
+                use_pair_values=query_value_min_context>=0 && query+1<batch_count &&
+                    attention_position+query+1>=query_value_min_context;
+                if(use_pair_values) query_value_paired_count++;
+                else query_value_fallback_count++;
+`endif
                 maximum[0]=-1.0e300;maximum[1]=-1.0e300;
                 for (int t=0;t<=attention_position+query;t++) begin
                     sums[0]=0.0;sums[1]=0.0;
@@ -228,6 +245,17 @@ module projection_worker (
                     end
 `ifdef ATTENTION_QUERY_VALUE_PAIRS
                     denoms[lane]=denom;
+`ifdef ATTENTION_QUERY_VALUE_DISPATCH
+                    if(!use_pair_values) begin
+                        for (int j=0;j<128;j++) result[head*128+j]=0.0;
+                        for (int t=0;t<=attention_position+query+lane;t++) begin
+                            scale=pair_scores[t][lane]/denom;
+                            index=(attention_layer*4096+t)*1024+kvhead*128;
+                            for (int j=0;j<128;j++) result[head*128+j]+=scale*attention_value_value(index+j);
+                        end
+                        for (int j=0;j<128;j++) wide_result[(head*128+j)*8+query+lane]=result[head*128+j];
+                    end
+`endif
 `else
                     for (int j=0;j<128;j++) result[head*128+j]=0.0;
                     for (int t=0;t<=attention_position+query+lane;t++) begin
@@ -239,6 +267,9 @@ module projection_worker (
 `endif
                 end
 `ifdef ATTENTION_QUERY_VALUE_PAIRS
+`ifdef ATTENTION_QUERY_VALUE_DISPATCH
+                if(use_pair_values) begin
+`endif
                 // Each query keeps its original ascending-t accumulation order.
                 // Only independent queries share V loads and adjacent storage.
                 for (int j=0;j<128;j++) begin
@@ -263,6 +294,9 @@ module projection_worker (
                 for (int lane=0;lane<2 && query+lane<batch_count;lane++)
                     for (int j=0;j<128;j++)
                         wide_result[(head*128+j)*8+query+lane]=query_pair_values[j][lane];
+`ifdef ATTENTION_QUERY_VALUE_DISPATCH
+                end
+`endif
 `endif
             end
         end

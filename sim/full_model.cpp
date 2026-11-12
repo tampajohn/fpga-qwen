@@ -412,6 +412,19 @@ int main(int argc,char** argv) {
 #endif
                 std::cout<<values[0]<<' '<<values[1]<<' '<<values[2]<<' '<<values[3]<<'\n'<<std::flush;
 #endif
+#ifdef ATTENTION_QUERY_VALUE_DISPATCH
+            } else if(command=="query_value_policy") {
+                const auto& policy=query_value::configured_policy();
+                std::array<uint64_t,2> counts{};
+                if(pool) counts=pool->query_value_stats();
+#ifdef PHASE_POOLS_EXPERIMENT
+                const auto extra=prefill_pool->query_value_stats();
+                for(int i=0;i<2;i++)counts[i]+=extra[i];
+#endif
+                std::cout<<"{\"selector\":\""<<policy.selector<<"\",\"min_context\":"<<policy.min_context
+                    <<",\"context_metric\":\"paired_query_common_kv_tokens\",\"requires_second_query\":true,\"paired_head_pairs\":"<<counts[0]
+                    <<",\"fallback_head_pairs\":"<<counts[1]<<"}\n"<<std::flush;
+#endif
 #ifdef FP32_PROJECTION_B1
 #ifdef PHASE_POOLS_EXPERIMENT
             } else if(command=="phase_pools") {
