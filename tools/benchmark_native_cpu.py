@@ -85,6 +85,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--weights', type=Path, required=True)
+    parser.add_argument('--reference-binary', type=Path, help='Compare two original engines instead of llama; same weights/threads')
+    parser.add_argument('--warmups', type=int, default=1)
     parser.add_argument('--mode', choices=('quality', 'discovery', 'confirmation'), required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--baseline-build', type=Path, default=ROOT/'build/native-phase0/kleidi-on-lto-on')
@@ -100,6 +102,8 @@ def main():
         parser.error('Confirmation requires10..100rounds; discovery1..3')
     if not 1 <= args.threads <= 64 or not 1 <= args.prefill_threads <= 64:
         parser.error('Thread counts must be1..64')
+    if not 1 <= args.warmups <= 3:
+        parser.error('Warmups must be1..3 per visit/profile')
     args.output = args.output.resolve()
     logroot = args.output.parent / (args.output.stem+'-logs')
     if args.output.exists() or logroot.exists():
@@ -110,35 +114,52 @@ def main():
     checkpoint = locate_model(args.checkpoint)
     protocol = ChatProtocol(checkpoint)
     binary, weights, model = args.binary.resolve(), args.weights.resolve(), args.model.resolve()
-    build = freeze_build(args.baseline_build.resolve())
+    reference_binary = args.reference_binary.resolve() if args.reference_binary else None
+    if reference_binary == binary:
+        parser.error('Reference and candidate must be distinct immutable binaries')
+    build = None if reference_binary else freeze_build(args.baseline_build.resolve())
     configs = [dict(name='llama-f16-onon-d12-p6', build_dir=str(args.baseline_build.resolve()),
                     decode_threads=12, prefill_threads=6, priority=0, poll=50),
                dict(name=f'native-cpu-f16-d{args.threads}-p{args.prefill_threads}',
                     decode_threads=args.threads, prefill_threads=args.prefill_threads,
                     binary=str(binary), weights=str(weights))]
+    if reference_binary:
+        configs = [dict(name=f'native-reference-{reference_binary.parent.name}', binary=str(reference_binary),
+                        weights=str(weights), decode_threads=args.threads, prefill_threads=args.prefill_threads),
+                   dict(name=f'native-candidate-{binary.parent.name}', binary=str(binary),
+                        weights=str(weights), decode_threads=args.threads, prefill_threads=args.prefill_threads)]
+    native_binaries = [reference_binary, binary] if reference_binary else [binary]
     source_paths = [Path(__file__).resolve()] + [ROOT/'tools'/name for name in (
         'native_cpu_chat.py','benchmark_native_phase0.py','benchmark_matched.py',
         'check_native_phase0_quality.py','conversation_eval.py','chat_protocol.py','benchmark_guard.py','experiment.py')]
-    input_paths = [binary, weights, Path(str(weights)+'.index'), Path(str(weights)+'.manifest.json'), model]
+    input_paths = [*native_binaries, weights, Path(str(weights)+'.index'), Path(str(weights)+'.manifest.json')]
+    if not reference_binary: input_paths.append(model)
     input_paths += [checkpoint/name for name in ('tokenizer.json','tokenizer_config.json','config.json','model.safetensors')]
-    for candidate in (binary.parent/'manifest.json', binary.parent/'build-manifest.json'):
-        if candidate.is_file(): input_paths.append(candidate)
+    for executable in native_binaries:
+        input_paths.append(executable.parent/'manifest.json')
     report = dict(completed=False, mode=args.mode, precision='f16', gpu=False, pytorch=False,
         performance_claim_eligible=False, numerical_quality_review_required=True, paired_sampling_complete=False,
-        timing_claim=False, configurations=configs, rounds=rounds, tokens=32, warmups_per_visit_profile=1,
-        builds={configs[0]['build_dir']:build}, model=dict(path=str(model),sha256=sha(model)),
+        timing_claim=False, configurations=configs, rounds=rounds, tokens=32, warmups_per_visit_profile=args.warmups if args.mode!='quality' else 0,
+        comparison_scope='Original engine optimization comparison; not a llama target claim' if reference_binary else 'Original engine versus tuned llama FP16',
+        builds={} if reference_binary else {configs[0]['build_dir']:build},
+        model=dict(path=str(weights if reference_binary else model),sha256=sha(weights if reference_binary else model)),
         guard_before=guarded, host_before=host_snapshot(), preflight=[], visits=[], results=[], sessions=[],
         limitations=['Llama uses HTTP streaming; original engine uses subprocess commands. End-to-end transport differs.',
             'Native reset and greedy-mode setup are outside the clock; llama request includes cache-disabled request processing.',
             'Original layer weights also have a persistent FP32 widened prefill cache; resident memory is not equivalent.',
             'One process is live per visit; startup and warmup excluded. Background OS work and address placement uncontrolled.',
             'All scores require separate numerical/quality review. Discovery is exploratory, never a performance claim.'])
+    if reference_binary:
+        report['limitations'][:3] = [
+            'Both engines use identical subprocess transport, weights, and requested thread counts; reset/mode setup is outside the clock.',
+            'Persistent prefill and optional auxiliary caches can differ; actual startup metadata records cache bytes when available.',
+            'This direct comparison isolates a candidate configuration against an original-engine reference, not achievement of the tuned llama target.']
     def save():
         pending = args.output.with_suffix('.pending.json')
         pending.write_text(json.dumps(report,indent=2)+'\n'); pending.replace(args.output)
     def factory(config, path):
-        if config is configs[0]: return Phase0NativeEngine('f16',config,build,model,path)
-        return OriginalEngine(protocol,binary,weights,args.threads,args.prefill_threads,path)
+        if not reference_binary and config is configs[0]: return Phase0NativeEngine('f16',config,build,model,path)
+        return OriginalEngine(protocol,Path(config['binary']),weights,args.threads,args.prefill_threads,path)
     def finish(engine, record):
         engine.close()
         record['metadata'] = engine.metadata
@@ -154,13 +175,14 @@ def main():
                 or manifest['binary']['sha256'] != report['inputs'][str(weights)]
                 or manifest['index']['sha256'] != report['inputs'][str(weights)+'.index']):
             raise RuntimeError('Weight pack manifest/hash mismatch')
-        native_manifest_path = binary.parent/'manifest.json'
-        if not native_manifest_path.is_file():
-            raise RuntimeError('Native binary requires its immutable build manifest')
-        native_manifest = json.loads(native_manifest_path.read_text())
-        if native_manifest.get('completed') is not True or native_manifest.get('binary_sha256') != report['inputs'][str(binary)]:
-            raise RuntimeError('Native build manifest/binary mismatch')
-        report['native_build'] = native_manifest
+        report['native_builds'] = {}
+        for executable in native_binaries:
+            native_manifest_path = executable.parent/'manifest.json'
+            native_manifest = json.loads(native_manifest_path.read_text())
+            if native_manifest.get('completed') is not True or native_manifest.get('binary_sha256') != report['inputs'][str(executable)]:
+                raise RuntimeError('Native build manifest/binary mismatch: ' + str(executable))
+            report['native_builds'][str(executable)] = native_manifest
+        report['native_build'] = report['native_builds'][str(binary)]
         report['suite_sha256'] = suite_fingerprint()
         if args.mode == 'quality':
             prompts = {case.name:protocol.prepare(dict(session='native-quality', messages=list(case.messages),
@@ -198,9 +220,10 @@ def main():
                     record.update(command=engine.command,pid=engine.process.pid)
                     for profile,ids in prompts.items():
                         row = dict(warmups=[]);record['profiles'][profile]=row
-                        warm = engine.generate(ids,32,True)
-                        validate_result(warm,ids,32,expected.get(profile))
-                        expected.setdefault(profile,warm['output_token_ids']);row['warmups'].append(warm)
+                        for _ in range(args.warmups):
+                            warm = engine.generate(ids,32,True)
+                            validate_result(warm,ids,32,expected.get(profile))
+                            expected.setdefault(profile,warm['output_token_ids']);row['warmups'].append(warm)
                         if phase!='preflight':
                             scored = engine.generate(ids,32,True)
                             validate_result(scored,ids,32,expected[profile]);row['scored']=scored
@@ -212,7 +235,7 @@ def main():
                 for position,config in enumerate(order):visit(config,'scored',index,position)
             summarize(report)
             report['paired_sampling_complete'] = args.mode=='confirmation'
-        verify_build(build)
+        if build is not None: verify_build(build)
         if report['inputs'] != {str(path):sha(path) for path in input_paths} or report['source_hashes'] != {str(path):sha(path) for path in source_paths} or report['suite_sha256'] != suite_fingerprint():
             raise RuntimeError('Inputs, sources or quality suite changed during comparison')
         report.update(guard_after=guard(args.guard_state_dir),host_after=host_snapshot(),completed=True)
