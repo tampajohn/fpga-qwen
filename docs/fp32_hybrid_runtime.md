@@ -1,6 +1,6 @@
 This optional full-model experiment routes scalar projections through native FP32 SV while retaining the stock FP64 main model, normalization/nonlinearities, attention, KV storage and B8/B4 prefill kernels. FP64 remains the default; the browser offers the validated hybrid as an opt-in backend.
 
-`--fp32-projection-b1 --shortreal-compiler PATH` builds a separate FP32 model archive with the reviewed compiler, strict rounding and ThinLTO. The stock worker/main/runtime retain original O3/ThinLTO/default contraction. Each pool worker owns both models with separate contexts. Operation0 dispatches—including descriptor-group QKV/gate/up and151936-row vocabulary—use the FP32 model; attention and prefill batch operations use the original worker. With `--fp32-verification-b4`, explicit verification operation 4 uses an additional strict FP32 B4 model. The selected optional backend also enables `--batch-attention`: operation 5 computes independent query/head attention jobs in one dispatch during prefill and verification, while scalar attention operation 1 and FP64 arithmetic order remain unchanged. See [the exact gates and paired prefill results](batched_attention.md). Copying a shared scalar-group input occurs once; every individual FP32 projection performs its own SV narrowing. Existing spans, row partitions, counters, error propagation and shutdown remain checked.
+`--fp32-projection-b1 --shortreal-compiler PATH` builds a separate FP32 model archive with the reviewed compiler, strict rounding and ThinLTO. The stock worker/main/runtime retain original O3/ThinLTO/default contraction. Each pool worker owns both models with separate contexts. Operation0 dispatches—including descriptor-group QKV/gate/up and151936-row vocabulary—use the FP32 model; attention and prefill batch operations use the FP64 worker. With `--fp32-verification-b4`, explicit verification operation 4 uses an additional strict FP32 B4 model. The selected optional backend combines batched paired-query attention (operation 5), paired-head scalar QK/value accumulation (operation 6 for workers 1/2/4/8), and fixed FP64 KV arrays. Other worker counts use operation 1. See [combined validation, performance and the fallback compiler disclosure](attention_combined.md). Copying a shared scalar-group input occurs once; every individual FP32 projection performs its own SV narrowing. Existing spans, row partitions, counters, error propagation and shutdown remain checked.
 
 The numerical policy is explicit: prefill `prompt[:-1]` in FP64 chunks of8 (short tails use the existing FP64 smaller-batch route), then process the last prompt token and generated tokens through FP32 scalar projections. The original cold benchmarks reset each request. The opt-in browser backend now supports [validated canonical prefix reuse](canonical_prefix_reuse.md): only complete FP64 B8 prompt blocks are reusable, with an explicit runtime capability check. Partial tails and FP32 decode KV are recomputed. The B4-capable browser backend offers [validated suffix verification](fp32_suffix_verification.md), off by default. `RTLChatEngine(..., block_size=1, prefill_size=8, reuse_prefix=False)` retains the reset-per-request mode; `canonical_prefix_reuse=True` selects the validated narrow cache policy. Pure all-token FP32 is a separate diagnostic route, not the measured hybrid policy.
 
@@ -13,12 +13,15 @@ Runtime capability/startup/reconfiguration rejection checks passed. Scheduler mo
 Reproduce using the normal selected build flags plus:
 
 ```sh
---fp32-projection-b1 --fp32-verification-b4 --batch-attention --shortreal-compiler REVIEWED_COMPILER_ROOT
+--fp32-projection-b1 --fp32-verification-b4 --batch-attention \
+--attention-qk2 --attention-head-pairs --attention-value-pairs --static-kv \
+--shortreal-compiler REVIEWED_COMPILER_ROOT
 ```
 
 The reviewed compiler is pinned by source and binary hashes in the manifest; runtime ABI header hashes must match the installed stock compiler before linking. No generated C++ is edited, and strict flags never apply to the stock FP64 reference/worker/main.
 
 The browser resolves this profile only through the fixed `HYBRID_BINARY` path,
-whose variant tag ends in `-fp32-b1-verify-b4-batch-attention`. The ordinary
+whose variant tag includes `-static-kv` and ends in
+`-fp32-b1-verify-b4-batch-attention-qk2-head-pairs-value-pairs`. The ordinary
 `FAST_BINARY` path and default FP64 backend are unchanged. Older hybrid artifacts
 remain separate for rollback; HTTP requests cannot select arbitrary binaries.

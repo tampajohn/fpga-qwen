@@ -13,7 +13,10 @@ except ImportError:
 
 FAST_BINARY = ROOT / 'build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group/full/Vqwen_behavioral'
 
-HYBRID_BINARY = FAST_BINARY.parents[1].with_name(FAST_BINARY.parents[1].name + '-fp32-b1-verify-b4-batch-attention') / 'full/Vqwen_behavioral'
+HYBRID_BINARY = FAST_BINARY.parents[1].with_name(
+    FAST_BINARY.parents[1].name.replace('-prefill-b8', '-static-kv-prefill-b8')
+    + '-fp32-b1-verify-b4-batch-attention-qk2-head-pairs-value-pairs'
+) / 'full/Vqwen_behavioral'
 
 
 def prepare_layout(model):

@@ -1,10 +1,10 @@
-# Combined attention candidate
+# Combined attention in the optional hybrid backend
 
-This isolated composition starts from main `cdbf60a`: QK2 prefill attention, paired-head scalar QK/value accumulation, and fixed-size FP64 KV arrays. It restores preserved head-pair source from `d9120db` and V2 source from `32bb4c1`; the separate V2 measurement remains preserved from `8f6d723`. Original failed/mixed QK-only head-pair reports are unchanged. No default or live-server configuration changes are part of this source integration.
+This composition starts from main `cdbf60a`: QK2 prefill attention, paired-head scalar QK/value accumulation, and fixed-size FP64 KV arrays. It restores preserved head-pair source from `d9120db` and V2 source from `32bb4c1`; the separate V2 measurement remains preserved from `8f6d723`. Original failed/mixed QK-only head-pair reports are unchanged. The optional browser hybrid now selects this composition; ordinary FP64 remains the default.
 
 Build the selected hybrid B4 profile with `--batch-attention --attention-qk2 --attention-head-pairs --attention-value-pairs --static-kv`. FP32 scalar/B4 projection archives retain their strict compiler flags; stock FP64 worker/main use their existing flags. Operation 5 handles paired-query prefill QK, operation 6 handles paired-head QK/V for workers 1/2/4/8, and other worker counts retain operation 1 fallback. Both KV arrays still store FP64 values with the original dimensions. Cache policy and precision-profile identifiers remain unchanged.
 
-Initial frozen artifact: `f17ae654f0c64ac47b63225a3406edc8bcd114cc86e67d56610090bf5d7c075d`. The initial 8-token prefill plus scalar prediction matched deployed `4d45e071` in every full-vocabulary logit bit. Independent full route/cache/suffix gates are recorded separately; actual capacity remains a promotion gate after a positive combined timing result.
+Frozen artifact: `f17ae654f0c64ac47b63225a3406edc8bcd114cc86e67d56610090bf5d7c075d`. The initial 8-token prefill plus scalar prediction matched the previous deployed `4d45e071` in every full-vocabulary logit bit. All five [independent route/cache/suffix suites](../reports/combined-attention-independent.json) subsequently passed.
 
 ## Compiler findings and fallback disclosure
 
@@ -18,4 +18,18 @@ Use `tools/compare_attention_combined.py` against the deployed barrier-only hybr
 
 Three alternating pairs per context compared frozen combined `f17ae654` directly with deployed `4d45e071`, with fresh 85/452-token prompts and 32 greedy outputs. Every warm/scored output ID and diagnostic full-vocabulary logit bit matched. Long-context prefill speedup ratios were 1.111/1.150/1.142, decode 1.305/1.253/1.251, and total 1.135/1.164/1.157. Their medians were 1.142× prefill, 1.253× decode and 1.157× total. Short total ratios were 0.918/1.000/1.027 (median 1.000×); short prefill median was 0.967× and decode 1.026×. Thus this evidence supports a long-context gain, not a universal speed improvement. All measurements used eight workers; fallback worker-count throughput was not scored.
 
-Independent broad route/cache/suffix checks passed under session 90252; the targeted fallback report supplements them. Actual combined 4096-capacity validation and main deployment checks remain required before promotion. This report makes no new comparison with native inference libraries.
+Independent broad route/cache/suffix checks passed under session 90252; the targeted fallback report supplements them. The separate [actual 4096-token capacity check](../reports/combined-attention-capacity.json) passed scalar decoding at position 4096, batched verification at positions 4093–4096, valid-tail handling and overflow rejection. Both scalar and batched comparisons matched all vocabulary-logit bytes against `4d45e071`; this exercises both new attention paths at the maximum position.
+
+## Fresh CPU-only native comparison
+
+The [matched comparison](../reports/combined-attention-native.json) uses the same frozen combined artifact, identical 85/452-token prompts, 32 greedy outputs, eight workers/threads and two warm repetitions. All engine output sequences matched. Native requests processed the full prompt with zero cached tokens. Startup and first requests are recorded separately; these are warm-process measurements without page-cache eviction.
+
+| Engine | Short decode, tokens/s | Long decode, tokens/s | Short TTFT, seconds | Long TTFT, seconds |
+| --- | ---: | ---: | ---: | ---: |
+| Combined SV hybrid | 60.17 | 49.02 | 0.717 | 4.294 |
+| llama.cpp FP16 weights | 139.38 | 126.56 | 0.194 | 0.626 |
+| llama.cpp FP32 weights | 94.87 | 86.66 | 0.153 | 0.388 |
+
+The combined backend remains behind both native baselines. Native inference uses FP16 KV and mixed arithmetic; the SV hybrid retains FP64 attention/KV and its declared FP32 projection routes. The native build enables Apple CPU BLAS, while Metal/CUDA/Vulkan/OpenCL are disabled and runtime GPU offload is zero. The SV backend uses no host neural kernels. This comparison does not imply identical arithmetic, memory precision, or CPU instruction selection.
+
+The [installed-artifact record](../reports/combined-attention-install.json) verifies that main received the exact tested executable without recompilation. Its [isolated browser check](../reports/combined-attention-browser.json) passed backend switching, 136 reused prefix tokens, suffix on/off text parity, cancellation/restart and no JavaScript errors. The localhost server was restarted with that artifact after the full-context gate passed; the deployment record includes its healthy backend catalog and zero-GPU/no-PyTorch status.

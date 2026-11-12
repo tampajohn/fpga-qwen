@@ -392,13 +392,14 @@ tokens/round into tokens/sec without accounting for those components.
 
 ### Local llama.cpp comparison
 
-The [earlier hybrid FP32 comparison](docs/fp32_hybrid_performance.md)
-measured approximately 55/42 tokens/s for short/long prompts, with bounded quality
-checks passed. It remains behind llama.cpp and is not the live default.
+The [combined hybrid CPU comparison](docs/attention_combined.md)
+measured approximately 60/49 tokens/s for short/long prompts, versus 139/127 for
+llama.cpp FP16 and 95/87 for FP32. It remains behind llama.cpp and is not the live default.
 When its fixed local artifact is built, choose **SystemVerilog · FP32 hybrid** in
 the browser backend selector. This option uses FP64 B8 prefill and FP32 scalar
-decode projections with [batched FP64 attention](docs/batched_attention.md),
-which improved prefill time in all six paired comparisons. Runtime precision is
+decode projections with [validated combined FP64 attention](docs/attention_combined.md),
+which improved long-context decode by 1.25× against the preceding hybrid in a
+direct paired comparison; short-context total time was neutral/mixed. Runtime precision is
 verified before inference. The backend reuses only complete
 FP64 prefill blocks through the [validated cache policy](docs/canonical_prefix_reuse.md).
 Optional suffix drafting uses verified FP32 B4 execution and stays off by default;

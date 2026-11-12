@@ -1,0 +1,27 @@
+{
+  "replies": [
+    "blue",
+    "blue",
+    "blue",
+    "blue",
+    "blue"
+  ],
+  "default_backend": "rtl",
+  "hybrid_precision_verified": true,
+  "hybrid_second_turn_reused_tokens": 136,
+  "canonical_prefix_policy": "fp64_b8_aligned_v1",
+  "suffix_enabled": true,
+  "suffix_default_off": true,
+  "suffix_limit": 3,
+  "serial_disabled": true,
+  "suffix_on_off_text_equal": true,
+  "suffix_acceptance": "23 / 27",
+  "worker_change": true,
+  "switch_back": true,
+  "cancel_restart": true,
+  "console_errors": [],
+  "completed": true,
+  "timing_claim": false,
+  "binary_sha256": "f17ae654f0c64ac47b63225a3406edc8bcd114cc86e67d56610090bf5d7c075d",
+  "binary_path": "build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-static-kv-prefill-b8-scalar-group-fp32-b1-verify-b4-batch-attention-qk2-head-pairs-value-pairs/full/Vqwen_behavioral"
+}
