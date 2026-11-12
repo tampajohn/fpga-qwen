@@ -72,8 +72,10 @@ class StartNotification:
 
     def close(self):
         if self.token is not None:
-            self.library.notify_cancel(self.token)
+            status = self.library.notify_cancel(self.token)
             self.token = None
+            if status:
+                raise RuntimeError(f'Darwin notification cancellation failed: {status}')
 
 
 ORIGINAL_TIMING_RESULT = matched.timing_result
@@ -234,18 +236,33 @@ def main():
             result['recorder_alive_after_request'] = recorder.poll() is None
             report['requests'].append(result)
             save(directory, report)
+        workload_finished = time.perf_counter()
+        request_windows = [row['profiling_windows']['perf_counter_seconds'] for row in report['requests']]
+        workload_span = (request_windows[-1]['request_returned'] - request_windows[0]['request_start']) if request_windows else 0
+        report['workload_window'] = dict(
+            notification_observed_perf_counter=started,
+            first_request_start_perf_counter=request_windows[0]['request_start'] if request_windows else None,
+            last_request_returned_perf_counter=request_windows[-1]['request_returned'] if request_windows else None,
+            submission_loop_finished_perf_counter=workload_finished,
+            request_span_seconds=workload_span,
+            elapsed_before_recorder_wait_seconds=workload_finished - started,
+            recording_sample_coverage_validated=False,
+            interpretation='Observed client request span only. Recorder finalization is excluded; actual sampled recording coverage still requires trace analysis.')
         # Stop submitting work after the requested window. Finalizing a trace
         # may take longer; wait on the actual recorder rather than infer exit.
         try:
             code = recorder.wait(timeout=40)
         except subprocess.TimeoutExpired as error:
             raise TimeoutError('xctrace did not finish/finalize within40seconds after the workload window') from error
+        recorder_finished = time.perf_counter()
         report['recorder'].update(exit_code=code, exited=clock_anchor(),
-                                  observed_seconds_after_start_notification=time.perf_counter() - started)
+                                  lifetime_after_start_notification_seconds=recorder_finished - started,
+                                  finalization_wait_seconds=recorder_finished - workload_finished,
+                                  recording_duration_validated=False)
         if code != 0:
             raise RuntimeError(f'xctrace failed with exit{code}; inspect recorder logs')
-        if not report['requests'] or time.perf_counter() - started < args.duration - 2:
-            raise RuntimeError('Recorder ended without the requested sustained workload window')
+        if not report['requests'] or workload_span < args.duration - 2:
+            raise RuntimeError('Observed client request span is shorter than the requested workload window; finalization time does not count')
         if not trace.exists():
             raise RuntimeError('xctrace exited successfully but produced no trace artifact')
         # The recorder is reaped before parsing/hashing its trace. No arbitrary
