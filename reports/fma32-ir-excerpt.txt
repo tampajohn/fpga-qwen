@@ -1,0 +1,4 @@
+  %97 = tail call float @llvm.fma.f32(float %94, float %91, float %90)
+  %134 = fmul float %132, %133
+  %137 = fadd float %134, %136
+declare float @llvm.fma.f32(float, float, float) #8

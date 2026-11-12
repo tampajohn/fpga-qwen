@@ -1,0 +1,31 @@
+{
+  "compiler_base": "c607db496a5cb5207a14cfa70e1639edb742a4b1",
+  "compiler_commit": "47ce0bd9dd0b263f913389a7380e7ad3784ceb2f",
+  "compiler_binary_sha256": "3a123151340a420d36edd1766585218ad882c343bf8b03c7db8ffdfb89de8c87",
+  "patch_sha256": "de95e2a6bef7049e9ce56aeae06a4787cb980acf9954248941e4f2286359130e",
+  "exact_base_apply_check": true,
+  "build_session": 12321,
+  "regression_session": 80246,
+  "regression_passed": 24,
+  "regression_failed": 0,
+  "runtime_output_count_per_optimization": 274,
+  "strict_flags": [
+    "-O3",
+    "-fno-fast-math",
+    "-ffp-contract=off"
+  ],
+  "explicit_fma_ir": true,
+  "ordinary_fmul_fadd_ir": true,
+  "linked_binary_sha256": "6dccba016109da887843a9a9127aa87f0833c3fc41ef199385e19545ecc51128",
+  "generated_object_sha256": "92471715200077c3f4bd11a2523ecde28381206c33550539689f5a4ed322097f",
+  "generated_module_sha256": "3d8d6cd1b71e3727a75362fc26ba1538b944f851e6ff33ea7e6db0fe9abf77f7",
+  "ir_sha256": "696553a26b595fcad7a90b6b3fb585ade949f70fa686eb6af921fbc26ff22994",
+  "hardware_evidence": "Scalar FP32fmadd plus separate scalar fmul/fadd in final linked runtimefixture; no SIMD or throughput claim.",
+  "independent_review": "Approved by benchmark_quality: source/11 individual negative diagnostics/24 regression results/548 actual outputs and hashes/strict IR+object assembly checked; bounded milestone only.",
+  "production_changes": false,
+  "performance_claim": false,
+  "initial_harness_corrections": [
+    "First runtimefixture had clock declaration unrecognized by testwrapper; corrected multiline port declaration and simulation duration.",
+    "Negative goldens generated then normalized by harness; final24test run passed withoutupdate mode."
+  ]
+}

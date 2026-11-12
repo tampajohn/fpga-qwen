@@ -1,0 +1,702 @@
+diff --git a/src/V3AstNodeExpr.h b/src/V3AstNodeExpr.h
+index 743103a..a858132 100644
+--- a/src/V3AstNodeExpr.h
++++ b/src/V3AstNodeExpr.h
+@@ -5481,6 +5481,30 @@ public:
+     bool sizeMattersThs() const override { return false; }
+     int instrCount() const override { return INSTR_COUNT_BRANCH; }
+ };
++// Experimental $verilator_fma32: binary32 product-plus-add with one final rounding.
++class AstFmaF final : public AstNodeTriop {
++public:
++    AstFmaF(FileLine* fl, AstNodeExpr* lhsp, AstNodeExpr* rhsp, AstNodeExpr* thsp)
++        : ASTGEN_SUPER_FmaF(fl, lhsp, rhsp, thsp) { dtypeSetFloat(); }
++    ASTGEN_MEMBERS_AstFmaF;
++    void numberOperate(V3Number& out, const V3Number&, const V3Number&,
++                       const V3Number&) override {
++        v3error("Unsupported: $verilator_fma32 constant-expression evaluation");
++        out.setDouble(0.0);
++    }
++    string emitVerilog() override { return "%f$verilator_fma32(%l,%r,%t)"; }
++    string emitC() override {
++        return "__builtin_fmaf(static_cast<float>(%li), static_cast<float>(%ri), static_cast<float>(%ti))";
++    }
++    bool cleanOut() const override { return false; }
++    bool cleanLhs() const override { return false; }
++    bool cleanRhs() const override { return false; }
++    bool cleanThs() const override { return false; }
++    bool sizeMattersLhs() const override { return false; }
++    bool sizeMattersRhs() const override { return false; }
++    bool sizeMattersThs() const override { return false; }
++    bool isPredictOptimizable() const override { return false; }
++};
+ class AstPutcN final : public AstNodeTriop {
+     // Verilog string.putc()
+ public:
+diff --git a/src/V3Width.cpp b/src/V3Width.cpp
+index fc2f2ce..c9ff34a 100644
+--- a/src/V3Width.cpp
++++ b/src/V3Width.cpp
+@@ -494,6 +494,23 @@ class WidthVisitor final : public VNVisitor {
+             nodep->dtypeSetFloat();
+         }
+     }
++    void visit(AstFmaF* nodep) override {
++        checkShortRealOptions(nodep);
++        assertAtExpr(nodep);
++        if (m_vup->prelim()) {
++            // No implicit conversion: the extension's operands are explicitly binary32.
++            for (AstNodeExpr* const operandp : {nodep->lhsp(), nodep->rhsp(), nodep->thsp()}) {
++                userIterateAndNext(operandp, WidthVP{SELF, BOTH}.p());
++            }
++            for (AstNodeExpr* const operandp : {nodep->lhsp(), nodep->rhsp(), nodep->thsp()}) {
++                const AstBasicDType* const dtypep = VN_CAST(operandp->dtypep()->skipRefp(), BasicDType);
++                if (!dtypep || !dtypep->isFloat()) {
++                    nodep->v3error("$verilator_fma32 requires three scalar shortreal operands.");
++                }
++            }
++            nodep->dtypeSetFloat();
++        }
++    }
+     void visit(AstAddF* nodep) override { visitFloatBinary(nodep); }
+     void visit(AstSubF* nodep) override { visitFloatBinary(nodep); }
+     void visit(AstMulF* nodep) override { visitFloatBinary(nodep); }
+diff --git a/src/verilog.l b/src/verilog.l
+index 35d66b4..fcc6338 100644
+--- a/src/verilog.l
++++ b/src/verilog.l
+@@ -346,6 +346,7 @@ vnum    {vnum1}|{vnum2}|{vnum3}|{vnum4}|{vnum5}
+   "$urandom"            { FL; return yD_URANDOM; }
+   "$urandom_range"      { FL; return yD_URANDOM_RANGE; }
+   "$value$plusargs"     { FL; return yD_VALUEPLUSARGS; }
++  "$verilator_fma32"    { FL; return yD_VERILATOR_FMA32; }
+   "$width"              { FL; return yaTIMINGSPEC; }
+   "$write"              { FL; return yD_WRITE; }
+   "$writeb"             { FL; return yD_WRITEB; }
+diff --git a/src/verilog.y b/src/verilog.y
+index c063981..8800b95 100644
+--- a/src/verilog.y
++++ b/src/verilog.y
+@@ -764,6 +764,7 @@ BISONPRE_VERSION(3.7,%define api.header.include {"V3ParseBison.h"})
+ %token<fl>              yD_URANDOM      "$urandom"
+ %token<fl>              yD_URANDOM_RANGE "$urandom_range"
+ %token<fl>              yD_VALUEPLUSARGS "$value$plusargs"
++%token<fl>              yD_VERILATOR_FMA32 "$verilator_fma32"
+ %token<fl>              yD_WARNING      "$warning"
+ %token<fl>              yD_WRITE        "$write"
+ %token<fl>              yD_WRITEB       "$writeb"
+@@ -4570,6 +4571,9 @@ system_f_or_t_expr_call<nodeExprp>:  // IEEE: part of system_tf_call (can be tas
+         |       yD_URANDOM_RANGE '(' expr ')'           { $$ = new AstURandomRange{$1, $3, new AstConst{$1, 0}}; }
+         |       yD_URANDOM_RANGE '(' expr ',' expr ')'  { $$ = new AstURandomRange{$1, $3, $5}; }
+         |       yD_VALUEPLUSARGS '(' expr ',' expr ')'  { $$ = new AstValuePlusArgs{$1, $3, $5}; }
++        // Experimental non-IEEE extension: explicit fused binary32 arithmetic.
++        |       yD_VERILATOR_FMA32 '(' expr ',' expr ',' expr ')'
++                        { $$ = new AstFmaF{$1, $3, $5, $7}; }
+         ;
+ 
+ severity_system_task<nodep>: // IEEE: severity_system_task/elaboration_severity_system_task (1800-2009)
+diff --git a/test_regress/t/t_shortreal_fma.py b/test_regress/t/t_shortreal_fma.py
+new file mode 100644
+index 0000000..37d83cb
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma.py
+@@ -0,0 +1,11 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.sim_time = 4000
++test.compile()
++test.execute()
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma.v b/test_regress/t/t_shortreal_fma.v
+new file mode 100644
+index 0000000..b3ffbcd
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma.v
+@@ -0,0 +1,73 @@
++// DESCRIPTION: Verilator: Explicit experimental binary32 FMA extension
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++// verilog_format: off
++`define stop $stop
++`define checkh(gotv,expv) do if ((gotv) !== (expv)) begin $write("%%Error: %s:%0d: got=%0h expected=%0h\n", `__FILE__, `__LINE__, (gotv), (expv)); `stop; end while(0);
++// verilog_format: on
++module t (
++  input clk
++);
++  typedef shortreal sample_t;
++  sample_t operands[3:1];
++  shortreal fused, product, separate;
++  logic [31:0] abits, bbits, cbits, expected, actual;
++  int cyc = 0;
++  int index;
++  logic [31:0] random_bits = 32'h5a17c0de;
++  always @(posedge clk) begin
++    case (cyc)
++      0: begin abits=32'h3f800001; bbits=32'h3f7ffffe; cbits=32'hbf800000; expected=32'ha8800000; end
++      1: begin abits=32'h3f800000; bbits=32'h3f800000; cbits=32'h33800000; expected=32'h3f800000; end
++      2: begin abits=32'h3f800001; bbits=32'h3f800000; cbits=32'h33800000; expected=32'h3f800002; end
++      3: begin abits=32'h00000001; bbits=32'h3f000000; cbits=32'h00000000; expected=32'h00000000; end
++      4: begin abits=32'h00000001; bbits=32'h3f000000; cbits=32'h00000001; expected=32'h00000002; end
++      5: begin abits=32'h80000001; bbits=32'h3f000000; cbits=32'h00000000; expected=32'h80000000; end
++      6: begin abits=32'h3f800000; bbits=32'h3f800000; cbits=32'hbf800000; expected=32'h00000000; end
++      7: begin abits=32'h7f7fffff; bbits=32'h40000000; cbits=32'hff7fffff; expected=32'h7f7fffff; end
++      8: begin abits=32'h7f7fffff; bbits=32'h40000000; cbits=32'h00000000; expected=32'h7f800000; end
++      9: begin abits=32'hff7fffff; bbits=32'h40000000; cbits=32'h00000000; expected=32'hff800000; end
++      10: begin abits=32'h80000000; bbits=32'h3f800000; cbits=32'h80000000; expected=32'h80000000; end
++      11: begin abits=32'h80000000; bbits=32'hbf800000; cbits=32'h80000000; expected=32'h00000000; end
++      12: begin abits=32'h7f800000; bbits=32'hbf800000; cbits=32'h00000000; expected=32'hff800000; end
++      13: begin abits=32'h3f800000; bbits=32'h3f800000; cbits=32'h7f800000; expected=32'h7f800000; end
++      14: begin abits=32'h7f800000; bbits=32'h00000000; cbits=32'h00000000; expected=0; end
++      15: begin abits=32'h7f800000; bbits=32'h3f800000; cbits=32'hff800000; expected=0; end
++      16: begin abits=32'h7fc12345; bbits=32'h3f800000; cbits=32'h00000000; expected=0; end
++      17: begin abits=32'h7f812345; bbits=32'h3f800000; cbits=32'h00000000; expected=0; end
++      default: begin
++        random_bits = (random_bits ^ (random_bits << 13));
++        random_bits = (random_bits ^ (random_bits >> 17));
++        random_bits = (random_bits ^ (random_bits << 5));
++        abits = random_bits & 32'hff7fffff;
++        random_bits = random_bits * 32'd1664525 + 32'd1013904223;
++        bbits = random_bits & 32'hff7fffff;
++        random_bits = random_bits * 32'd1664525 + 32'd1013904223;
++        cbits = random_bits & 32'hff7fffff;
++        expected=0;
++      end
++    endcase
++    index = cyc % 3 + 1;
++    operands[index] = $bitstoshortreal(abits);
++    fused = $verilator_fma32(operands[index], $bitstoshortreal(bbits), $bitstoshortreal(cbits));
++    actual = $shortrealtobits(fused);
++    if (cyc < 14) begin
++      `checkh(actual, expected);
++    end else if (cyc < 18) begin
++      `checkh(actual[30:23], 8'hff);
++      if (actual[22:0] == 0) `stop;
++    end
++    $display("FMA32 %08x %08x %08x %08x", abits, bbits, cbits, actual);
++    if (cyc == 0) begin
++      product = operands[index] * $bitstoshortreal(bbits);
++      separate = product + $bitstoshortreal(cbits);
++      `checkh($shortrealtobits(separate), 32'h00000000);
++      `checkh($bits(fused), 32);
++    end
++    if (cyc == 273) begin
++      $write("*-* All Finished *-*\n");
++      $finish;
++    end
++    cyc = cyc + 1;
++  end
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_arg0_bad.out b/test_regress/t/t_shortreal_fma_arg0_bad.out
+new file mode 100644
+index 0000000..861c446
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_arg0_bad.out
+@@ -0,0 +1,6 @@
++%Error: t/t_shortreal_fma_arg0_bad.v:6:18: $verilator_fma32 requires three scalar shortreal operands.
++                                         : ... note: In instance 't'
++    6 |   initial result=$verilator_fma32(1.0,shortreal'(1.0),shortreal'(1.0));
++      |                  ^~~~~~~~~~~~~~~~
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_arg0_bad.py b/test_regress/t/t_shortreal_fma_arg0_bad.py
+new file mode 100644
+index 0000000..996f61a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_arg0_bad.py
+@@ -0,0 +1,9 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.compile(verilator_flags2=['-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_arg0_bad.v b/test_regress/t/t_shortreal_fma_arg0_bad.v
+new file mode 100644
+index 0000000..37e6d28
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_arg0_bad.v
+@@ -0,0 +1,7 @@
++// DESCRIPTION: Verilator: Explicit experimental binary32 FMA extension
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++module t;
++  shortreal result;
++  initial result=$verilator_fma32(1.0,shortreal'(1.0),shortreal'(1.0));
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_arg1_bad.out b/test_regress/t/t_shortreal_fma_arg1_bad.out
+new file mode 100644
+index 0000000..23ef31a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_arg1_bad.out
+@@ -0,0 +1,6 @@
++%Error: t/t_shortreal_fma_arg1_bad.v:6:18: $verilator_fma32 requires three scalar shortreal operands.
++                                         : ... note: In instance 't'
++    6 |   initial result=$verilator_fma32(shortreal'(1.0),1.0,shortreal'(1.0));
++      |                  ^~~~~~~~~~~~~~~~
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_arg1_bad.py b/test_regress/t/t_shortreal_fma_arg1_bad.py
+new file mode 100644
+index 0000000..996f61a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_arg1_bad.py
+@@ -0,0 +1,9 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.compile(verilator_flags2=['-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_arg1_bad.v b/test_regress/t/t_shortreal_fma_arg1_bad.v
+new file mode 100644
+index 0000000..bed4d40
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_arg1_bad.v
+@@ -0,0 +1,7 @@
++// DESCRIPTION: Verilator: Explicit experimental binary32 FMA extension
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++module t;
++  shortreal result;
++  initial result=$verilator_fma32(shortreal'(1.0),1.0,shortreal'(1.0));
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_arg2_bad.out b/test_regress/t/t_shortreal_fma_arg2_bad.out
+new file mode 100644
+index 0000000..6f8d590
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_arg2_bad.out
+@@ -0,0 +1,6 @@
++%Error: t/t_shortreal_fma_arg2_bad.v:6:18: $verilator_fma32 requires three scalar shortreal operands.
++                                         : ... note: In instance 't'
++    6 |   initial result=$verilator_fma32(shortreal'(1.0),shortreal'(1.0),1.0);
++      |                  ^~~~~~~~~~~~~~~~
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_arg2_bad.py b/test_regress/t/t_shortreal_fma_arg2_bad.py
+new file mode 100644
+index 0000000..996f61a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_arg2_bad.py
+@@ -0,0 +1,9 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.compile(verilator_flags2=['-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_arg2_bad.v b/test_regress/t/t_shortreal_fma_arg2_bad.v
+new file mode 100644
+index 0000000..8372d60
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_arg2_bad.v
+@@ -0,0 +1,7 @@
++// DESCRIPTION: Verilator: Explicit experimental binary32 FMA extension
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++module t;
++  shortreal result;
++  initial result=$verilator_fma32(shortreal'(1.0),shortreal'(1.0),1.0);
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_array_bad.out b/test_regress/t/t_shortreal_fma_array_bad.out
+new file mode 100644
+index 0000000..5336b8a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_array_bad.out
+@@ -0,0 +1,6 @@
++%Error: t/t_shortreal_fma_array_bad.v:6:18: $verilator_fma32 requires three scalar shortreal operands.
++                                          : ... note: In instance 't'
++    6 |   initial result=$verilator_fma32(a,shortreal'(1.0),shortreal'(0.0));
++      |                  ^~~~~~~~~~~~~~~~
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_array_bad.py b/test_regress/t/t_shortreal_fma_array_bad.py
+new file mode 100644
+index 0000000..996f61a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_array_bad.py
+@@ -0,0 +1,9 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.compile(verilator_flags2=['-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_array_bad.v b/test_regress/t/t_shortreal_fma_array_bad.v
+new file mode 100644
+index 0000000..ad492db
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_array_bad.v
+@@ -0,0 +1,7 @@
++// DESCRIPTION: Verilator: Explicit experimental binary32 FMA extension
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++module t;
++  shortreal a[2]; shortreal result;
++  initial result=$verilator_fma32(a,shortreal'(1.0),shortreal'(0.0));
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_const_unsup.out b/test_regress/t/t_shortreal_fma_const_unsup.out
+new file mode 100644
+index 0000000..34352d9
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_const_unsup.out
+@@ -0,0 +1,10 @@
++%Error: t/t_shortreal_fma_const_unsup.v:5:18: Unsupported: shortreal parameter expression in experimental subset
++                                            : ... note: In instance 't'
++    5 |   localparam int B=$shortrealtobits($verilator_fma32(shortreal'(1.0),shortreal'(1.0),shortreal'(0.0)));
++      |                  ^
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: t/t_shortreal_fma_const_unsup.v:5:37: Expecting expression to be constant, but can't convert a FMAF to constant.
++                                            : ... note: In instance 't'
++    5 |   localparam int B=$shortrealtobits($verilator_fma32(shortreal'(1.0),shortreal'(1.0),shortreal'(0.0)));
++      |                                     ^~~~~~~~~~~~~~~~
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_const_unsup.py b/test_regress/t/t_shortreal_fma_const_unsup.py
+new file mode 100644
+index 0000000..996f61a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_const_unsup.py
+@@ -0,0 +1,9 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.compile(verilator_flags2=['-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_const_unsup.v b/test_regress/t/t_shortreal_fma_const_unsup.v
+new file mode 100644
+index 0000000..5d690cb
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_const_unsup.v
+@@ -0,0 +1,6 @@
++// DESCRIPTION: Verilator: Explicit experimental binary32 FMA extension
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++module t;
++  localparam int B=$shortrealtobits($verilator_fma32(shortreal'(1.0),shortreal'(1.0),shortreal'(0.0)));
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_enum_unsup.out b/test_regress/t/t_shortreal_fma_enum_unsup.out
+new file mode 100644
+index 0000000..779199c
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_enum_unsup.out
+@@ -0,0 +1,10 @@
++%Error: t/t_shortreal_fma_enum_unsup.v:5:54: Expecting expression to be constant, but can't convert a FMAF to constant.
++                                           : ... note: In instance 't'
++    5 |   typedef enum logic [31:0] { VALUE=$shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))) } kind_t; kind_t value;
++      |                                                      ^~~~~~~~~~~~~~~~
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: t/t_shortreal_fma_enum_unsup.v:5:37: Enum value isn't a constant
++                                           : ... note: In instance 't'
++    5 |   typedef enum logic [31:0] { VALUE=$shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))) } kind_t; kind_t value;
++      |                                     ^~~~~~~~~~~~~~~~
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_enum_unsup.py b/test_regress/t/t_shortreal_fma_enum_unsup.py
+new file mode 100644
+index 0000000..996f61a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_enum_unsup.py
+@@ -0,0 +1,9 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.compile(verilator_flags2=['-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_enum_unsup.v b/test_regress/t/t_shortreal_fma_enum_unsup.v
+new file mode 100644
+index 0000000..79b0be8
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_enum_unsup.v
+@@ -0,0 +1,6 @@
++// DESCRIPTION: Verilator: Explicit FMA32 unsupported-context regression
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++module t;
++  typedef enum logic [31:0] { VALUE=$shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))) } kind_t; kind_t value;
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_func_unsup.out b/test_regress/t/t_shortreal_fma_func_unsup.out
+new file mode 100644
+index 0000000..bc9767c
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_func_unsup.out
+@@ -0,0 +1,8 @@
++%Error: t/t_shortreal_fma_func_unsup.v:6:24: Expecting expression to be constant, but can't determine constant for FUNCREF 'f'
++                                           : ... note: In instance 't'
++        t/t_shortreal_fma_func_unsup.v:5:38: ... Location of non-constant SHORTREALTOBITS: Isn't predictable
++        t/t_shortreal_fma_func_unsup.v:6:24: ... Called from 'f()' with parameters:
++    6 |   localparam int VALUE=f();
++      |                        ^
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_func_unsup.py b/test_regress/t/t_shortreal_fma_func_unsup.py
+new file mode 100644
+index 0000000..996f61a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_func_unsup.py
+@@ -0,0 +1,9 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.compile(verilator_flags2=['-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_func_unsup.v b/test_regress/t/t_shortreal_fma_func_unsup.v
+new file mode 100644
+index 0000000..9ffd021
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_func_unsup.v
+@@ -0,0 +1,7 @@
++// DESCRIPTION: Verilator: Explicit FMA32 unsupported-context regression
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++module t;
++  function automatic int f(); return $shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))); endfunction
++  localparam int VALUE=f();
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_gen_unsup.out b/test_regress/t/t_shortreal_fma_gen_unsup.out
+new file mode 100644
+index 0000000..963c257
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_gen_unsup.out
+@@ -0,0 +1,10 @@
++%Error: t/t_shortreal_fma_gen_unsup.v:5:24: Expecting expression to be constant, but can't convert a FMAF to constant.
++                                          : ... note: In instance 't'
++    5 |   if ($shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))) == 0) begin : selected
++      |                        ^~~~~~~~~~~~~~~~
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: t/t_shortreal_fma_gen_unsup.v:5:91: Generate If condition must evaluate to constant
++                                          : ... note: In instance 't'
++    5 |   if ($shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))) == 0) begin : selected
++      |                                                                                           ^~
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_gen_unsup.py b/test_regress/t/t_shortreal_fma_gen_unsup.py
+new file mode 100644
+index 0000000..996f61a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_gen_unsup.py
+@@ -0,0 +1,9 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.compile(verilator_flags2=['-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_gen_unsup.v b/test_regress/t/t_shortreal_fma_gen_unsup.v
+new file mode 100644
+index 0000000..0a3264b
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_gen_unsup.v
+@@ -0,0 +1,8 @@
++// DESCRIPTION: Verilator: Explicit FMA32 unsupported-context regression
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++module t;
++  if ($shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))) == 0) begin : selected
++  logic value;
++  end
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_int_bad.out b/test_regress/t/t_shortreal_fma_int_bad.out
+new file mode 100644
+index 0000000..525a5ef
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_int_bad.out
+@@ -0,0 +1,6 @@
++%Error: t/t_shortreal_fma_int_bad.v:5:26: $verilator_fma32 requires three scalar shortreal operands.
++                                        : ... note: In instance 't'
++    5 |   shortreal x; initial x=$verilator_fma32(1,shortreal'(1.0),shortreal'(0.0));
++      |                          ^~~~~~~~~~~~~~~~
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_int_bad.py b/test_regress/t/t_shortreal_fma_int_bad.py
+new file mode 100644
+index 0000000..996f61a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_int_bad.py
+@@ -0,0 +1,9 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.compile(verilator_flags2=['-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_int_bad.v b/test_regress/t/t_shortreal_fma_int_bad.v
+new file mode 100644
+index 0000000..3f0c027
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_int_bad.v
+@@ -0,0 +1,6 @@
++// DESCRIPTION: Verilator: Explicit FMA32 unsupported-context regression
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++module t;
++  shortreal x; initial x=$verilator_fma32(1,shortreal'(1.0),shortreal'(0.0));
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_opt.py b/test_regress/t/t_shortreal_fma_opt.py
+new file mode 100644
+index 0000000..f3a2e16
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_opt.py
+@@ -0,0 +1,12 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.sim_time = 4000
++test.top_filename = 't/t_shortreal_fma.v'
++test.compile(make_flags=['OPT_FAST=-O3', 'OPT_GLOBAL=-O3'])
++test.execute()
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_range_unsup.out b/test_regress/t/t_shortreal_fma_range_unsup.out
+new file mode 100644
+index 0000000..b964d91
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_range_unsup.out
+@@ -0,0 +1,10 @@
++%Error: t/t_shortreal_fma_range_unsup.v:5:27: Expecting expression to be constant, but can't convert a FMAF to constant.
++                                            : ... note: In instance 't'
++    5 |   logic [$shortrealtobits($verilator_fma32(shortreal'(1.0),shortreal'(1.0),shortreal'(0.0))):0] a;
++      |                           ^~~~~~~~~~~~~~~~
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: t/t_shortreal_fma_range_unsup.v:5:10: left side of bit range isn't a two-state constant (IEEE 1800-2023 6.9.1)
++                                            : ... note: In instance 't'
++    5 |   logic [$shortrealtobits($verilator_fma32(shortreal'(1.0),shortreal'(1.0),shortreal'(0.0))):0] a;
++      |          ^~~~~~~~~~~~~~~~
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_range_unsup.py b/test_regress/t/t_shortreal_fma_range_unsup.py
+new file mode 100644
+index 0000000..996f61a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_range_unsup.py
+@@ -0,0 +1,9 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.compile(verilator_flags2=['-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()
+diff --git a/test_regress/t/t_shortreal_fma_range_unsup.v b/test_regress/t/t_shortreal_fma_range_unsup.v
+new file mode 100644
+index 0000000..595a3a1
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_range_unsup.v
+@@ -0,0 +1,6 @@
++// DESCRIPTION: Verilator: Explicit experimental binary32 FMA extension
++// SPDX-FileCopyrightText: 2026 OpenAI
++// SPDX-License-Identifier: CC0-1.0
++module t;
++  logic [$shortrealtobits($verilator_fma32(shortreal'(1.0),shortreal'(1.0),shortreal'(0.0))):0] a;
++endmodule
+diff --git a/test_regress/t/t_shortreal_fma_trace_unsup.out b/test_regress/t/t_shortreal_fma_trace_unsup.out
+new file mode 100644
+index 0000000..0b14857
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_trace_unsup.out
+@@ -0,0 +1,54 @@
++%Error: t/t_shortreal_fma.v:11:11: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   11 |   typedef shortreal sample_t;
++      |           ^~~~~~~~~
++        ... See the manual at https://verilator.org/verilator_doc.html?v=latest for more assistance.
++%Error: t/t_shortreal_fma.v:13:3: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                : ... note: In instance 't'
++   13 |   shortreal fused, product, separate;
++      |   ^~~~~~~~~
++%Error: t/t_shortreal_fma.v:51:23: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   51 |     operands[index] = $bitstoshortreal(abits);
++      |                       ^~~~~~~~~~~~~~~~
++%Error: t/t_shortreal_fma.v:52:13: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   52 |     fused = $verilator_fma32(operands[index], $bitstoshortreal(bbits), $bitstoshortreal(cbits));
++      |             ^~~~~~~~~~~~~~~~
++%Error: t/t_shortreal_fma.v:52:47: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   52 |     fused = $verilator_fma32(operands[index], $bitstoshortreal(bbits), $bitstoshortreal(cbits));
++      |                                               ^~~~~~~~~~~~~~~~
++%Error: t/t_shortreal_fma.v:52:72: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   52 |     fused = $verilator_fma32(operands[index], $bitstoshortreal(bbits), $bitstoshortreal(cbits));
++      |                                                                        ^~~~~~~~~~~~~~~~
++%Error: t/t_shortreal_fma.v:53:14: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   53 |     actual = $shortrealtobits(fused);
++      |              ^~~~~~~~~~~~~~~~
++%Error: t/t_shortreal_fma.v:62:35: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   62 |       product = operands[index] * $bitstoshortreal(bbits);
++      |                                   ^~~~~~~~~~~~~~~~
++%Error: t/t_shortreal_fma.v:62:33: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   62 |       product = operands[index] * $bitstoshortreal(bbits);
++      |                                 ^
++%Error: t/t_shortreal_fma.v:63:28: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   63 |       separate = product + $bitstoshortreal(cbits);
++      |                            ^~~~~~~~~~~~~~~~
++%Error: t/t_shortreal_fma.v:63:26: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   63 |       separate = product + $bitstoshortreal(cbits);
++      |                          ^
++%Error: t/t_shortreal_fma.v:64:147: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                  : ... note: In instance 't'
++   64 |       do if (($shortrealtobits(separate)) !== (32'h00000000)) begin $write("%%Error: %s:%0d: got=%0h expected=%0h\n", "t/t_shortreal_fma.v", 64, ($shortrealtobits(separate)), (32'h00000000)); $stop; end while(0);;
++      |                                                                                                                                                   ^~~~~~~~~~~~~~~~
++%Error: t/t_shortreal_fma.v:64:15: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
++                                 : ... note: In instance 't'
++   64 |       do if (($shortrealtobits(separate)) !== (32'h00000000)) begin $write("%%Error: %s:%0d: got=%0h expected=%0h\n", "t/t_shortreal_fma.v", 64, ($shortrealtobits(separate)), (32'h00000000)); $stop; end while(0);;
++      |               ^~~~~~~~~~~~~~~~
++%Error: Exiting due to
+diff --git a/test_regress/t/t_shortreal_fma_trace_unsup.py b/test_regress/t/t_shortreal_fma_trace_unsup.py
+new file mode 100644
+index 0000000..5ac5a7a
+--- /dev/null
++++ b/test_regress/t/t_shortreal_fma_trace_unsup.py
+@@ -0,0 +1,10 @@
++#!/usr/bin/env python3
++# DESCRIPTION: Verilator: Experimental binary32 FMA regression
++# SPDX-FileCopyrightText: 2026 OpenAI
++# SPDX-License-Identifier: LGPL-3.0-only OR Artistic-2.0
++import vltest_bootstrap
++
++test.scenarios('vlt')
++test.top_filename = 't/t_shortreal_fma.v'
++test.compile(verilator_flags2=['--trace', '-Wno-fatal'], fails=True, expect_filename=test.golden_filename)
++test.passes()

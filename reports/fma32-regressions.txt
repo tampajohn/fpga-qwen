@@ -1,0 +1,1054 @@
+== Many jobs; redirecting STDIN
+==SUMMARY: Left 24  Passed 0  Failed 0  Time 0:00
+======================================================================
+vlt/t_shortreal_fma: ==================================================
+======================================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma -cc -Mdir obj_vlt/t_shortreal_fma --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma/Vt_shortreal_fma__main.cpp -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma/simx.vcd t/t_shortreal_fma.v   > obj_vlt/t_shortreal_fma/vlt_compile.log
+vlt/t_shortreal_fma_arg0_bad: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_arg0_bad -cc -Mdir obj_vlt/t_shortreal_fma_arg0_bad --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_arg0_bad/Vt_shortreal_fma_arg0_bad__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_arg0_bad +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_arg0_bad/simx.vcd t/t_shortreal_fma_arg0_bad.v   > obj_vlt/t_shortreal_fma_arg0_bad/vlt_compile.log
+- V e r i l a t i o n   R e p o r t:  rev v5.054-1-gc607db4 (mod)
+- Verilator: Built from 0.000 MB sources in 0 modules, into 0.000 MB in 0 C++ files needing 0.000 MB
+- Verilator: Walltime 0.001 s (elab=0.000, cvt=0.000, bld=0.000); cpu 0.001 s on 1 threads; allocated 3.875 MB
+	make -j 2 -C obj_vlt/t_shortreal_fma -f /Users/jadams/workspace/sandbox/verilator-fma32/test_regress/Makefile_obj --no-print-directory VM_PREFIX=Vt_shortreal_fma TEST_OBJ_DIR=obj_vlt/t_shortreal_fma CPPFLAGS_DRIVER=-DT_SHORTREAL_FMA  OPT_FAST=-O0 OPT_GLOBAL=-O0 Vt_shortreal_fma   > obj_vlt/t_shortreal_fma/vlt_gcc.log
+driver: Entering directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_shortreal_fma'
+%Error: t/t_shortreal_fma_arg0_bad.v:6:18: $verilator_fma32 requires three scalar shortreal operands.
+                                         : ... note: In instance 't'
+    6 |   initial result=$verilator_fma32(1.0,shortreal'(1.0),shortreal'(1.0));
+      |                  ^~~~~~~~~~~~~~~~
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: Exiting due to 1 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+/usr/bin/c++  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_shortreal_fma.h>"  -DVL_DEBUG=1 -fno-fast-math -ffp-contract=off   -DTEST_OBJ_DIR=obj_vlt/t_shortreal_fma -DVM_PREFIX=Vt_shortreal_fma -DVM_PREFIX_ROOT_INCLUDE="<Vt_shortreal_fma___024root.h>" -DT_SHORTREAL_FMA   -DVL_LOCK_SPINS=10000 -O0  -c -o Vt_shortreal_fma__main.o ../../obj_vlt/t_shortreal_fma/Vt_shortreal_fma__main.cpp
+vlt/t_shortreal_fma_arg0_bad: Self PASSED
+==SUMMARY: Left 23  Passed 1  Failed 0  Running 2  Time 0:01
+======================================================================
+vlt/t_shortreal_fma_arg1_bad: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_arg1_bad -cc -Mdir obj_vlt/t_shortreal_fma_arg1_bad --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_arg1_bad/Vt_shortreal_fma_arg1_bad__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_arg1_bad +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_arg1_bad/simx.vcd t/t_shortreal_fma_arg1_bad.v   > obj_vlt/t_shortreal_fma_arg1_bad/vlt_compile.log
+%Error: t/t_shortreal_fma_arg1_bad.v:6:18: $verilator_fma32 requires three scalar shortreal operands.
+                                         : ... note: In instance 't'
+    6 |   initial result=$verilator_fma32(shortreal'(1.0),1.0,shortreal'(1.0));
+      |                  ^~~~~~~~~~~~~~~~
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: Exiting due to 1 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+vlt/t_shortreal_fma_arg1_bad: Self PASSED
+==SUMMARY: Left 22  Passed 2  Failed 0  Running 2  Time 0:01
+======================================================================
+vlt/t_shortreal_fma_arg2_bad: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_arg2_bad -cc -Mdir obj_vlt/t_shortreal_fma_arg2_bad --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_arg2_bad/Vt_shortreal_fma_arg2_bad__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_arg2_bad +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_arg2_bad/simx.vcd t/t_shortreal_fma_arg2_bad.v   > obj_vlt/t_shortreal_fma_arg2_bad/vlt_compile.log
+%Error: t/t_shortreal_fma_arg2_bad.v:6:18: $verilator_fma32 requires three scalar shortreal operands.
+                                         : ... note: In instance 't'
+    6 |   initial result=$verilator_fma32(shortreal'(1.0),shortreal'(1.0),1.0);
+      |                  ^~~~~~~~~~~~~~~~
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: Exiting due to 1 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+/usr/bin/c++  -Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv,-U,_vlog_startup_routines   Vt_shortreal_fma__main.o verilated.o verilated_threads.o Vt_shortreal_fma__ALL.a       -o Vt_shortreal_fma
+vlt/t_shortreal_fma_arg2_bad: Self PASSED
+==SUMMARY: Left 21  Passed 3  Failed 0  Running 2  Time 0:02
+======================================================================
+vlt/t_shortreal_fma_array_bad: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_array_bad -cc -Mdir obj_vlt/t_shortreal_fma_array_bad --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_array_bad/Vt_shortreal_fma_array_bad__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_array_bad +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_array_bad/simx.vcd t/t_shortreal_fma_array_bad.v   > obj_vlt/t_shortreal_fma_array_bad/vlt_compile.log
+%Error: t/t_shortreal_fma_array_bad.v:6:18: $verilator_fma32 requires three scalar shortreal operands.
+                                          : ... note: In instance 't'
+    6 |   initial result=$verilator_fma32(a,shortreal'(1.0),shortreal'(0.0));
+      |                  ^~~~~~~~~~~~~~~~
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: Exiting due to 1 error(s)
+driver: Leaving directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_shortreal_fma'
+	obj_vlt/t_shortreal_fma/Vt_shortreal_fma    > obj_vlt/t_shortreal_fma/vlt_sim.log
+(Exec failed, matching expected 'True' exit code 1 fail)
+FMA32 3f800001 3f7ffffe bf800000 a8800000
+FMA32 3f800000 3f800000 33800000 3f800000
+FMA32 3f800001 3f800000 33800000 3f800002
+FMA32 00000001 3f000000 00000000 00000000
+FMA32 00000001 3f000000 00000001 00000002
+FMA32 80000001 3f000000 00000000 80000000
+FMA32 3f800000 3f800000 bf800000 00000000
+FMA32 7f7fffff 40000000 ff7fffff 7f7fffff
+FMA32 7f7fffff 40000000 00000000 7f800000
+FMA32 ff7fffff 40000000 00000000 ff800000
+FMA32 80000000 3f800000 80000000 80000000
+FMA32 80000000 bf800000 80000000 00000000
+FMA32 7f800000 bf800000 00000000 ff800000
+FMA32 3f800000 3f800000 7f800000 7f800000
+FMA32 7f800000 00000000 00000000 7fc00000
+FMA32 7f800000 3f800000 ff800000 7fc00000
+FMA32 7fc12345 3f800000 00000000 7fc12345
+FMA32 7f812345 3f800000 00000000 7fc12345
+FMA32 e3066ad8 c76c7057 903251ca 6af84af7
+FMA32 8b64ed6f bd003c02 d00ccb79 d00ccb79
+FMA32 651a36c8 2a1f6b87 650e333a 650e333a
+FMA32 ce4d734e d46ce255 88714fb0 633e1bf0
+FMA32 8164f953 6901ae96 503a94fd 503a94fd
+FMA32 5603804f 8772f162 7c044159 7c044159
+FMA32 714c728e a9535895 b102d0f0 db28c929
+FMA32 980802fe 70564e45 ff3d6ae0 ff3d6ae0
+FMA32 1e4939d0 987fc2ef eb6e1382 eb6e1382
+FMA32 1a56aeed 312d4368 603ecfa7 603ecfa7
+FMA32 80041b02 09191e79 ae2ab584 ae2ab584
+FMA32 fb5378a9 0a4069f4 c43f8cc3 c62aead1
+FMA32 91593c50 164ee36f 0265ba02 0265ba02
+FMA32 0111bad0 99144fef e8273c82 e8273c82
+FMA32 e9581839 931fe444 bb24a2d3 3cf95b1a
+FMA32 c02478ec 5c031f5b 3678ccfe dca87c0c
+FMA32 c30472ed 29183768 616533a7 616533a7
+FMA32 3527bd8f 4e718da2 4b73b099 4b73b312
+FMA32 91714b09 167658d4 3b09ee23 3b09ee23
+FMA32 df7c25e5 c0331e00 4a7b795f 60306c0c
+FMA32 9f41fd57 61387aca b173aba1 c10bcb22
+FMA32 447adde2 5c2643d9 d019db64 6122ee5d
+FMA32 8550f51e 392359e5 0668c200 0668bfeb
+FMA32 cb3167d4 6703b123 431de426 f2b685c5
+FMA32 0c3226aa a37ca601 6a00c76c 6a00c76c
+FMA32 2f42bd5a b80e6cf1 f81b819c f81b819c
+FMA32 8d20f488 69518e47 ff3276fa ff3276fa
+FMA32 9c40a7cc 577ec0bb 076c3ede b43fb787
+FMA32 96406e25 4b344940 0a062b9f a2078482
+FMA32 314020c5 7c7c1b60 b404973f 6e3d34cd
+FMA32 ea0fe5ce e56bb2d5 4974e630 7f800000
+FMA32 636311c9 842df094 c51322e3 c51322e3
+FMA32 982d5284 1400bc13 ef431256 ef431256
+FMA32 3c3b06d2 8127f809 f12b21d4 f12b21d4
+FMA32 372c80dc 5a05268b a6204a6e 51b371d6
+FMA32 425666d8 19643c57 5b0fadca 5b0fadca
+FMA32 7861e8b1 15674a5c bd4a620b 4e4c1a96
+FMA32 d0642b4e f5643a55 5410c7b0 7f800000
+FMA32 d03ad9a3 830df2a6 250869cd 250869cd
+FMA32 2e0a6775 d21bd250 8d74816f c0a87cb0
+FMA32 a6749fe3 cb3a83e6 c66b4a0d c66b4a0d
+FMA32 5a7d06d8 571a5c57 2e0f4dca 72189162
+FMA32 317bac31 d71b37dc 750e718b 750e718b
+FMA32 cc56c6d4 9a438423 e66d9b26 e66d9b26
+FMA32 f42745e2 1b578bd9 294a8364 d00cd712
+FMA32 4d61c957 ca1dd6ca 5d4157a1 5d4134d4
+FMA32 811cc31b 4e449dbe f452aa05 f452aa05
+FMA32 83590b0c 76074afb 7b30c41e 7b30c41e
+FMA32 05558567 9b7cc39a f83e3e31 f83e3e31
+FMA32 c078386d 722a3ee8 024c9527 f3251277
+FMA32 8d6f9733 ab52f2f6 bc794ddd bc794ddd
+FMA32 3d1648fc 5841102b 3860e78e 55e2ad08
+FMA32 b6378d06 6b0780ad 407a6a28 e1c24f41
+FMA32 aa52fa57 6b6353ca 7216b0a1 7216b0a1
+FMA32 345a9ee0 8a3644bf 9d3b8b12 9d3b8b12
+FMA32 776e12be 030b9b05 2d46d0a0 3b01d457
+FMA32 0d07c269 000aa8b4 f5453c83 f5453c83
+FMA32 187bc089 9d4f5054 ab2b7fa3 ab2b7fa3
+FMA32 4f30cc0c a66217fb 227b2d1e b61c24b2
+FMA32 ac4118f2 5b4fa3a9 963098f4 c81c9e9e
+FMA32 20651603 55214386 681cc52d 681cc52d
+FMA32 e71ab351 2525547c 4519a5ab ccc7d00f
+FMA32 54335a9d d87a1b58 931f66d7 ed2f39a6
+FMA32 977297d5 700c8730 1e1ef0cf c8052b24
+FMA32 d069610c 481fa8fb 0a618a1e d9118d53
+FMA32 5f68a66f 0766a102 407dec79 407dec79
+FMA32 4324e280 7c0d73df 3c0fafb2 7f800000
+FMA32 e648eace e94ef3d5 60653330 7f800000
+FMA32 16695e51 9746037c 2d7c88ab 2d7c88ab
+FMA32 215f6d3f a5759992 7d59ebc9 7d59ebc9
+FMA32 543d98b9 fe7a6ac4 62547753 ff800000
+FMA32 6b7248cc 5c29edbb dd0b87de 7f800000
+FMA32 137235e6 042b540d f1646608 f1646608
+FMA32 d90e4bda 632ba971 3732941c fcbed5b3
+FMA32 d315fe44 927ff4d3 97157416 2615f7b8
+FMA32 1b62bb3d 4601c378 9b1fb077 21e5d5f4
+FMA32 df3db15f 8003cf32 7d1064e9 7d1064e9
+FMA32 4022f9cf d2751ce2 6e7576d9 6e7576d9
+FMA32 d568e74e 7509c655 7740e3b0 ff800000
+FMA32 1d6c1b0b 7145b4ee 744df775 744df775
+FMA32 8e457ee4 8a493cf3 6a2addb6 6a2addb6
+FMA32 121ca238 6e7d8037 5f43602a 5f43602a
+FMA32 5b0108a9 2370b9f4 22139cc3 3ef2abb1
+FMA32 70715c86 26240a2d 863665a8 571aa8de
+FMA32 0a6b5589 e257e154 bf60dca3 bf60dca3
+FMA32 2a693db9 5f6fcbc4 8c706453 4a5a7a46
+FMA32 8f32c9ae 705c8535 d061d510 d061d510
+FMA32 b237ae51 8520137c ad6f58ab ad6f58ab
+FMA32 99396116 622da57d 986528b8 bbfb7ce4
+FMA32 9334f621 d969990c 4b7280fb 4b7280fb
+FMA32 66504cad e974c628 fe38f367 ff800000
+FMA32 fa5802ad 465d0428 4d381967 ff800000
+FMA32 8c0f13cd 501ba2c8 3c39e787 3c39e787
+FMA32 0969f3c3 bb7b0646 690428ed 690428ed
+FMA32 7f262a81 136781ec 2600945b 531644af
+FMA32 b576259e 3259d065 f463c680 f463c680
+FMA32 1a439bf9 c3541504 bb779c93 bb779c93
+FMA32 445ecc81 7953bbec 231b865b 7e38461b
+FMA32 294939d3 2e4bf516 c917297d c917297d
+FMA32 ab2b7341 7e68b3ac f1229b1b f1229d8a
+FMA32 fa74e51b ed4a57be 80391c05 7f800000
+FMA32 d40456f9 401f9404 87670f93 d4a4fd12
+FMA32 b43ec7f9 ee1d5104 f217a893 f217a893
+FMA32 e73ca931 b23610dc 7961768b 7961768b
+FMA32 a1379733 5c7af2f6 ac014ddd be33f7e5
+FMA32 326f4f00 e30ff65f 2f2f5032 d6069370
+FMA32 70072e26 51656f4d a7734848 7f800000
+FMA32 013fc1d5 a133a930 8d27aacf 8d27aacf
+FMA32 6730a0b0 8b1d3c4f d6297d62 d6297d62
+FMA32 d92d7de0 b54597bf fd14c212 fd14c212
+FMA32 cf00a799 662f6c24 e771c933 f5b051d5
+FMA32 042f0d58 7f3bb0d7 c66b984a c66392cf
+FMA32 1932dd9b 6c72f63e 98702885 4629c189
+FMA32 31780095 9e4f58f0 9356178f 93593b0a
+FMA32 655c34dc 48294a8b a84e1e6e 6e119f04
+FMA32 1b7e9e4f 91277762 fd130f59 fd130f59
+FMA32 13744dc5 28106460 a1224c3f a1224c3f
+FMA32 fc1ed5cd 34347cc8 fc58f987 fc58f989
+FMA32 8e656e53 a7259f96 5313d1fd 5313d1fd
+FMA32 0c20c80b 79607dee 24402c75 460cfe21
+FMA32 081d0692 e14874c9 f345f794 f345f794
+FMA32 fb5d78af 075ace42 ee2bb8b9 ee2bb8b9
+FMA32 ae265887 00563c3a 84791e51 84791e51
+FMA32 415ed4c8 1e0f7187 0722813a 1ff9b75a
+FMA32 b738bdb8 b35fe5b7 fc3387aa fc3387aa
+FMA32 0416b0a9 c27a41f4 4a3f84c3 4a3f84c3
+FMA32 ee508b90 0f3169af 04240b42 be108696
+FMA32 2c4d3564 7c648173 43585836 69372b51
+FMA32 53093779 8a51fa84 694d4413 694d4413
+FMA32 e827d234 71495803 d5049d86 ff800000
+FMA32 903ba55c 7955010b 5e3d62ee 5e3d62ee
+FMA32 be7ba01e cd7008e5 2d07a500 4c6beeda
+FMA32 ed5ef3b3 eb55a576 7e3b5e5d 7f800000
+FMA32 bb6e6845 ed52bce0 b243cabf 6944416e
+FMA32 b91da1d5 3f380930 ab208acf b8e2a3f3
+FMA32 e55fc1d3 fd20dd16 cc56f17d 7f800000
+FMA32 4d525821 9a73930c 7d1032fb 7d1032fb
+FMA32 122284dc e91b5a8b d078ee6e d078ee6e
+FMA32 7b1c5e34 fd7c7403 06450986 ff800000
+FMA32 4946ddbc df3d1deb d8681a4e e912e8f1
+FMA32 bf174c1e a75fc4e5 251c3100 270e02bc
+FMA32 d4307b1e 596127e5 68203800 ee1b2db2
+FMA32 8b21fd90 9b4033af bf604d42 bf604d42
+FMA32 6f4292e6 c84e0d0d c75dcb08 f81c9c20
+FMA32 a9227e96 ee4524fd 7f63a238 7f63a238
+FMA32 6f3052ea 42466541 8932fdac 7208a5de
+FMA32 1665c34f 04225862 c9767c59 c9767c59
+FMA32 d956bbc7 2b16c67a e115a391 e115a391
+FMA32 e9128522 733d4219 f95244a4 ff800000
+FMA32 99151ce7 4514751a 542b41b1 542b41b1
+FMA32 af32801f c412cef2 e579e1a9 e579e1a9
+FMA32 f0590cef 3572d582 940796f9 e64de340
+FMA32 ad483f75 044fca50 0768196f 0768196f
+FMA32 8c7a92ed 9457d768 d46053a7 d46053a7
+FMA32 1c0f490d e915d708 c6000ec7 c653eca6
+FMA32 3c49284b 6806e12e 3f7eb6b5 64d3f810
+FMA32 cc242601 b702476c 700d9bdb 700d9bdb
+FMA32 ad25d660 1025163f 07552e92 07552e77
+FMA32 e260cdb1 6a16eb5c bd5b8f0b ff800000
+FMA32 5b6ba396 c43a05fd e7790f38 e77911e5
+FMA32 1553e297 de389f0a a32702e1 b418ce7f
+FMA32 2c1b68dc a316ee8b f337726e f337726e
+FMA32 b22d26b3 0d203c76 ad2f095d ad2f095d
+FMA32 cc1564bf fc502b12 386c4f49 7f800000
+FMA32 9123ceab 144b940e dd210c15 dd210c15
+FMA32 68599ac4 6049e753 2975c496 7f800000
+FMA32 ad0ec0c5 ba3a3b60 b16c373f b16c3725
+FMA32 c67253ba 11434fd1 ba1046fc ba1046fc
+FMA32 eb3c6cfb e66f7e1e ad464ee5 7f800000
+FMA32 f74149a8 0600a0e7 8122291a bdc23ca1
+FMA32 4420685a cc721bf1 cf65649c d1260a71
+FMA32 0d2c71c7 bf75047a 0b12c991 8d1bdf4e
+FMA32 0638d8e1 68349ccc cd0031bb cd0031bb
+FMA32 bd51b860 6a6b903f 95056092 e840fa6b
+FMA32 0b70b779 a5137a84 5820c413 5820c413
+FMA32 54720c02 29345b79 255ace84 3e2a86ee
+FMA32 fd4460a1 c721018c a665cf7b 7f800000
+FMA32 ee5eb77e 062878c5 77589360 77589360
+FMA32 d32096fa af283a11 da45ac3c da45ac3c
+FMA32 8701683d d47e8c78 310be577 310be577
+FMA32 f9015705 e9295ca0 a010677f 7f800000
+FMA32 2305f940 c24c1b9f 2654b472 25d3c6bd
+FMA32 ab0f2fff af3afd52 665e7c89 665e7c89
+FMA32 802e0dee 7b107c75 3548e350 bb4fe53f
+FMA32 0d7c0fe1 e70867cc 742380bb 742380bb
+FMA32 8228b681 ea509dec ad7f005b aceb07fd
+FMA32 e37c9ac1 9244b52c c167ae9b c167ae98
+FMA32 b22e44a1 7259958c 573d537b e5141dfa
+FMA32 571bf792 fa40b1c9 1b2f1094 ff800000
+FMA32 ce00650a b83010e1 6a1274cc 6a1274cc
+FMA32 b57737a9 692b1cf4 9b7ca3c3 df253e24
+FMA32 ef1c4c61 23467a4c 0d29713b d2f25b7c
+FMA32 424e173c 0304096b ea570fce ea570fce
+FMA32 6e778179 2167bc84 ac341e13 50600c17
+FMA32 c13b5ca8 c64597e7 de0cb41a de0cb41a
+FMA32 5975dbfd 3846ed38 8b054f37 523f0bf8
+FMA32 6e147ec6 5f52476d d53701e8 7f800000
+FMA32 84497e8d 9e5b8e88 b3276047 b3276047
+FMA32 aa5a5d90 075d13af 9e17ad42 9e17ad42
+FMA32 1c44cb3d ed5c9378 9a1c4077 ca299005
+FMA32 504786be f84e7f05 860464a0 ff800000
+FMA32 481c54a8 74022fe7 ad306c1a 7c9f007c
+FMA32 b65cf423 66584b26 f311e84d f311e84d
+FMA32 1d1dcf21 d8329e0c d125c1fb d125c1fb
+FMA32 4a483bb6 9e2a7f9d b044fc58 b044fe6d
+FMA32 d6329c5f 8c15be32 9c3387e9 22d0edd0
+FMA32 6514e80e 62525015 df126270 7f800000
+FMA32 f859501e 4851f8e5 e020d500 ff800000
+FMA32 aa15a040 2a21969f 772df372 772df372
+FMA32 f13925f3 fc2fb2b6 86558a9d 7f800000
+FMA32 d74012de 90625ca5 ce7465c0 ce7465c0
+FMA32 1b44d066 636c2c8d c2726488 c26f8e3f
+FMA32 42075499 c5743524 c105fe33 c8011ad1
+FMA32 a6378b12 696c2f49 56657014 5665657f
+FMA32 f41608c7 4a7baf7a 760b7891 ff138150
+FMA32 3a33d7bd ea7b35f8 816980f7 e5307a70
+FMA32 9f1031cc a704c2bb a80658de a80658de
+FMA32 00288350 3c1f7e6f 2f3f9902 2f3f9902
+FMA32 5f6956ad 8a364828 f4588d67 f4588d67
+FMA32 5b77ec3d bb1b4078 ea390977 ea390977
+FMA32 b9661b3c fe543d6b b621b3ce 783ec5c2
+FMA32 9b5e47e2 bc6ea5d9 1652d564 185c642b
+FMA32 d330107b b873cb9e 9f5f3e65 4c27abae
+FMA32 7a67efec 4b5a2a5b 1f465bfe 7f800000
+FMA32 4307c5e2 163e0bd9 3e7f0364 3e7f0364
+FMA32 1c6e61cd 360698c8 872c6587 12faaaea
+FMA32 780c8969 bf12c3b4 86709b83 f7a1239b
+FMA32 25169923 1a03ac26 db6bd54d db6bd54d
+FMA32 9906902c ba01cd9b 7a15263e 7a15263e
+FMA32 1403abf7 824218ea 9e117341 9e117341
+FMA32 af586c9d 01080558 011048d7 011048d7
+FMA32 195f3ed2 a24ed009 323419d4 323419d4
+FMA32 9056eb33 310a36f6 295fc1dd 295fc1dd
+FMA32 ed652ccf fa23b3e2 c17d21d9 7f800000
+FMA32 cd005c3a d25cbe51 7461e37c 7461e37c
+FMA32 5946a05b 914c59fe d978b945 d978b945
+FMA32 045fb3cd 2573c2c8 4e738787 4e738787
+FMA32 fe6c6846 885222ed 4b2a2768 4b2ae976
+FMA32 e72339ab aa66030e d532af15 d5306476
+FMA32 9a59a0dd 85292c98 c222c717 c222c717
+FMA32 c24d2497 702cf90a 2b6b94e1 f30a9c26
+FMA32 7704931a 7e50c7b1 56629d5c 7f800000
+FMA32 bc6ae8b8 270e14b7 da45eaaa da45eaaa
+FMA32 8503bd62 f9269d59 aa4766e4 3eab7b8d
+FMA32 95637089 75334054 e35eafa3 e35eafa3
+FMA32 f3704276 d123575d 781e7118 7f800000
+FMA32 71186ac6 290d436d 301dcde8 5aa835e8
+FMA32 ad31a678 12003777 a72a2e6a a72a2e6a
+FMA32 be04fc39 803f7844 ce3726d3 ce3726d3
+FMA32 67472f45 7c1ed7e0 e86329bf 7f800000
+FMA32 374565f5 a601bed0 055c83ef 9dc81705
+FMA32 3104069f f94da372 d121ac29 ead41b31
+FMA32 703b311b 502433be ce714805 7f800000
+FMA32 1942e45d 7f669a18 a2625697 592f8e7b
+FMA32 fe289b2f 806a8ec2 272b7f39 3f0c5c8f
+FMA32 414318ff c033d252 2e5f4d89 c2090ac3
+*-* All Finished *-*
+- t/t_shortreal_fma.v:69: Verilog $finish
+vlt/t_shortreal_fma: Self PASSED
+==SUMMARY: Left 20  Passed 4  Failed 0  Running 2  Time 0:02
+======================================================================
+vlt/t_shortreal_fma_const_unsup: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_const_unsup -cc -Mdir obj_vlt/t_shortreal_fma_const_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_const_unsup/Vt_shortreal_fma_const_unsup__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_const_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_const_unsup/simx.vcd t/t_shortreal_fma_const_unsup.v   > obj_vlt/t_shortreal_fma_const_unsup/vlt_compile.log
+vlt/t_shortreal_fma_array_bad: Self PASSED
+==SUMMARY: Left 19  Passed 5  Failed 0  Running 2  Time 0:02
+======================================================================
+vlt/t_shortreal_fma_enum_unsup: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_enum_unsup -cc -Mdir obj_vlt/t_shortreal_fma_enum_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_enum_unsup/Vt_shortreal_fma_enum_unsup__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_enum_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_enum_unsup/simx.vcd t/t_shortreal_fma_enum_unsup.v   > obj_vlt/t_shortreal_fma_enum_unsup/vlt_compile.log
+%Error: t/t_shortreal_fma_const_unsup.v:5:18: Unsupported: shortreal parameter expression in experimental subset
+                                            : ... note: In instance 't'
+    5 |   localparam int B=$shortrealtobits($verilator_fma32(shortreal'(1.0),shortreal'(1.0),shortreal'(0.0)));
+      |                  ^
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: t/t_shortreal_fma_const_unsup.v:5:37: Expecting expression to be constant, but can't convert a FMAF to constant.
+                                            : ... note: In instance 't'
+    5 |   localparam int B=$shortrealtobits($verilator_fma32(shortreal'(1.0),shortreal'(1.0),shortreal'(0.0)));
+      |                                     ^~~~~~~~~~~~~~~~
+%Error: Exiting due to 2 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+%Error: t/t_shortreal_fma_enum_unsup.v:5:54: Expecting expression to be constant, but can't convert a FMAF to constant.
+                                           : ... note: In instance 't'
+    5 |   typedef enum logic [31:0] { VALUE=$shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))) } kind_t; kind_t value;
+      |                                                      ^~~~~~~~~~~~~~~~
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: t/t_shortreal_fma_enum_unsup.v:5:37: Enum value isn't a constant
+                                           : ... note: In instance 't'
+    5 |   typedef enum logic [31:0] { VALUE=$shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))) } kind_t; kind_t value;
+      |                                     ^~~~~~~~~~~~~~~~
+%Error: Exiting due to 2 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+vlt/t_shortreal_fma_const_unsup: Self PASSED
+==SUMMARY: Left 18  Passed 6  Failed 0  Running 2  Time 0:02
+======================================================================
+vlt/t_shortreal_fma_func_unsup: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_func_unsup -cc -Mdir obj_vlt/t_shortreal_fma_func_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_func_unsup/Vt_shortreal_fma_func_unsup__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_func_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_func_unsup/simx.vcd t/t_shortreal_fma_func_unsup.v   > obj_vlt/t_shortreal_fma_func_unsup/vlt_compile.log
+vlt/t_shortreal_fma_enum_unsup: Self PASSED
+%Error: t/t_shortreal_fma_func_unsup.v:6:24: Expecting expression to be constant, but can't determine constant for FUNCREF 'f'
+                                           : ... note: In instance 't'
+        t/t_shortreal_fma_func_unsup.v:5:38: ... Location of non-constant SHORTREALTOBITS: Isn't predictable
+        t/t_shortreal_fma_func_unsup.v:6:24: ... Called from 'f()' with parameters:
+    6 |   localparam int VALUE=f();
+      |                        ^
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: Exiting due to 1 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+==SUMMARY: Left 17  Passed 7  Failed 0  Running 2  Time 0:02
+======================================================================
+vlt/t_shortreal_fma_gen_unsup: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_gen_unsup -cc -Mdir obj_vlt/t_shortreal_fma_gen_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_gen_unsup/Vt_shortreal_fma_gen_unsup__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_gen_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_gen_unsup/simx.vcd t/t_shortreal_fma_gen_unsup.v   > obj_vlt/t_shortreal_fma_gen_unsup/vlt_compile.log
+%Error: t/t_shortreal_fma_gen_unsup.v:5:24: Expecting expression to be constant, but can't convert a FMAF to constant.
+                                          : ... note: In instance 't'
+    5 |   if ($shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))) == 0) begin : selected
+      |                        ^~~~~~~~~~~~~~~~
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: t/t_shortreal_fma_gen_unsup.v:5:91: Generate If condition must evaluate to constant
+                                          : ... note: In instance 't'
+    5 |   if ($shortrealtobits($verilator_fma32(shortreal'(0.0),shortreal'(1.0),shortreal'(0.0))) == 0) begin : selected
+      |                                                                                           ^~
+%Error: Exiting due to 2 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+vlt/t_shortreal_fma_func_unsup: Self PASSED
+==SUMMARY: Left 16  Passed 8  Failed 0  Running 2  Time 0:03
+======================================================================
+vlt/t_shortreal_fma_int_bad: ==================================================
+vlt/t_shortreal_fma_gen_unsup: Self PASSED
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_int_bad -cc -Mdir obj_vlt/t_shortreal_fma_int_bad --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_int_bad/Vt_shortreal_fma_int_bad__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_int_bad +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_int_bad/simx.vcd t/t_shortreal_fma_int_bad.v   > obj_vlt/t_shortreal_fma_int_bad/vlt_compile.log
+%Error: t/t_shortreal_fma_int_bad.v:5:26: $verilator_fma32 requires three scalar shortreal operands.
+                                        : ... note: In instance 't'
+    5 |   shortreal x; initial x=$verilator_fma32(1,shortreal'(1.0),shortreal'(0.0));
+      |                          ^~~~~~~~~~~~~~~~
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: Exiting due to 1 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+==SUMMARY: Left 15  Passed 9  Failed 0  Running 2  Time 0:03
+======================================================================
+vlt/t_shortreal_fma_opt: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_opt -cc -Mdir obj_vlt/t_shortreal_fma_opt --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_opt/Vt_shortreal_fma_opt__main.cpp -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_opt +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_opt/simx.vcd t/t_shortreal_fma.v   > obj_vlt/t_shortreal_fma_opt/vlt_compile.log
+- V e r i l a t i o n   R e p o r t:  rev v5.054-1-gc607db4 (mod)
+- Verilator: Built from 0.000 MB sources in 0 modules, into 0.000 MB in 0 C++ files needing 0.000 MB
+- Verilator: Walltime 0.001 s (elab=0.000, cvt=0.000, bld=0.000); cpu 0.001 s on 1 threads; allocated 3.828 MB
+	make -j 2 -C obj_vlt/t_shortreal_fma_opt -f /Users/jadams/workspace/sandbox/verilator-fma32/test_regress/Makefile_obj --no-print-directory VM_PREFIX=Vt_shortreal_fma_opt TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_opt CPPFLAGS_DRIVER=-DT_SHORTREAL_FMA_OPT  OPT_FAST=-O0 OPT_GLOBAL=-O0 Vt_shortreal_fma_opt OPT_FAST=-O3 OPT_GLOBAL=-O3   > obj_vlt/t_shortreal_fma_opt/vlt_gcc.log
+driver: Entering directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_shortreal_fma_opt'
+/usr/bin/c++  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_shortreal_fma_opt.h>"  -DVL_DEBUG=1 -fno-fast-math -ffp-contract=off   -DTEST_OBJ_DIR=obj_vlt/t_shortreal_fma_opt -DVM_PREFIX=Vt_shortreal_fma_opt -DVM_PREFIX_ROOT_INCLUDE="<Vt_shortreal_fma_opt___024root.h>" -DT_SHORTREAL_FMA_OPT   -DVL_LOCK_SPINS=10000 -O3  -c -o Vt_shortreal_fma_opt__main.o ../../obj_vlt/t_shortreal_fma_opt/Vt_shortreal_fma_opt__main.cpp
+vlt/t_shortreal_fma_int_bad: Self PASSED
+==SUMMARY: Left 14  Passed 10  Failed 0  Running 2  Time 0:03
+======================================================================
+vlt/t_shortreal_fma_range_unsup: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_range_unsup -cc -Mdir obj_vlt/t_shortreal_fma_range_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_range_unsup/Vt_shortreal_fma_range_unsup__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_range_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_range_unsup/simx.vcd t/t_shortreal_fma_range_unsup.v   > obj_vlt/t_shortreal_fma_range_unsup/vlt_compile.log
+%Error: t/t_shortreal_fma_range_unsup.v:5:27: Expecting expression to be constant, but can't convert a FMAF to constant.
+                                            : ... note: In instance 't'
+    5 |   logic [$shortrealtobits($verilator_fma32(shortreal'(1.0),shortreal'(1.0),shortreal'(0.0))):0] a;
+      |                           ^~~~~~~~~~~~~~~~
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: t/t_shortreal_fma_range_unsup.v:5:10: left side of bit range isn't a two-state constant (IEEE 1800-2023 6.9.1)
+                                            : ... note: In instance 't'
+    5 |   logic [$shortrealtobits($verilator_fma32(shortreal'(1.0),shortreal'(1.0),shortreal'(0.0))):0] a;
+      |          ^~~~~~~~~~~~~~~~
+%Error: Exiting due to 2 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+/usr/bin/c++  -Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv,-U,_vlog_startup_routines   Vt_shortreal_fma_opt__main.o verilated.o verilated_threads.o Vt_shortreal_fma_opt__ALL.a       -o Vt_shortreal_fma_opt
+driver: Leaving directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_shortreal_fma_opt'
+	obj_vlt/t_shortreal_fma_opt/Vt_shortreal_fma_opt    > obj_vlt/t_shortreal_fma_opt/vlt_sim.log
+vlt/t_shortreal_fma_range_unsup: Self PASSED
+FMA32 3f800001 3f7ffffe bf800000 a8800000
+FMA32 3f800000 3f800000 33800000 3f800000
+FMA32 3f800001 3f800000 33800000 3f800002
+FMA32 00000001 3f000000 00000000 00000000
+FMA32 00000001 3f000000 00000001 00000002
+FMA32 80000001 3f000000 00000000 80000000
+FMA32 3f800000 3f800000 bf800000 00000000
+FMA32 7f7fffff 40000000 ff7fffff 7f7fffff
+FMA32 7f7fffff 40000000 00000000 7f800000
+FMA32 ff7fffff 40000000 00000000 ff800000
+FMA32 80000000 3f800000 80000000 80000000
+FMA32 80000000 bf800000 80000000 00000000
+FMA32 7f800000 bf800000 00000000 ff800000
+FMA32 3f800000 3f800000 7f800000 7f800000
+FMA32 7f800000 00000000 00000000 7fc00000
+FMA32 7f800000 3f800000 ff800000 7fc00000
+FMA32 7fc12345 3f800000 00000000 7fc12345
+FMA32 7f812345 3f800000 00000000 7fc12345
+FMA32 e3066ad8 c76c7057 903251ca 6af84af7
+FMA32 8b64ed6f bd003c02 d00ccb79 d00ccb79
+FMA32 651a36c8 2a1f6b87 650e333a 650e333a
+FMA32 ce4d734e d46ce255 88714fb0 633e1bf0
+FMA32 8164f953 6901ae96 503a94fd 503a94fd
+FMA32 5603804f 8772f162 7c044159 7c044159
+FMA32 714c728e a9535895 b102d0f0 db28c929
+FMA32 980802fe 70564e45 ff3d6ae0 ff3d6ae0
+FMA32 1e4939d0 987fc2ef eb6e1382 eb6e1382
+FMA32 1a56aeed 312d4368 603ecfa7 603ecfa7
+FMA32 80041b02 09191e79 ae2ab584 ae2ab584
+FMA32 fb5378a9 0a4069f4 c43f8cc3 c62aead1
+FMA32 91593c50 164ee36f 0265ba02 0265ba02
+FMA32 0111bad0 99144fef e8273c82 e8273c82
+FMA32 e9581839 931fe444 bb24a2d3 3cf95b1a
+FMA32 c02478ec 5c031f5b 3678ccfe dca87c0c
+FMA32 c30472ed 29183768 616533a7 616533a7
+FMA32 3527bd8f 4e718da2 4b73b099 4b73b312
+FMA32 91714b09 167658d4 3b09ee23 3b09ee23
+FMA32 df7c25e5 c0331e00 4a7b795f 60306c0c
+FMA32 9f41fd57 61387aca b173aba1 c10bcb22
+FMA32 447adde2 5c2643d9 d019db64 6122ee5d
+FMA32 8550f51e 392359e5 0668c200 0668bfeb
+FMA32 cb3167d4 6703b123 431de426 f2b685c5
+FMA32 0c3226aa a37ca601 6a00c76c 6a00c76c
+FMA32 2f42bd5a b80e6cf1 f81b819c f81b819c
+FMA32 8d20f488 69518e47 ff3276fa ff3276fa
+FMA32 9c40a7cc 577ec0bb 076c3ede b43fb787
+FMA32 96406e25 4b344940 0a062b9f a2078482
+FMA32 314020c5 7c7c1b60 b404973f 6e3d34cd
+FMA32 ea0fe5ce e56bb2d5 4974e630 7f800000
+FMA32 636311c9 842df094 c51322e3 c51322e3
+FMA32 982d5284 1400bc13 ef431256 ef431256
+FMA32 3c3b06d2 8127f809 f12b21d4 f12b21d4
+FMA32 372c80dc 5a05268b a6204a6e 51b371d6
+FMA32 425666d8 19643c57 5b0fadca 5b0fadca
+FMA32 7861e8b1 15674a5c bd4a620b 4e4c1a96
+FMA32 d0642b4e f5643a55 5410c7b0 7f800000
+FMA32 d03ad9a3 830df2a6 250869cd 250869cd
+FMA32 2e0a6775 d21bd250 8d74816f c0a87cb0
+FMA32 a6749fe3 cb3a83e6 c66b4a0d c66b4a0d
+FMA32 5a7d06d8 571a5c57 2e0f4dca 72189162
+FMA32 317bac31 d71b37dc 750e718b 750e718b
+FMA32 cc56c6d4 9a438423 e66d9b26 e66d9b26
+FMA32 f42745e2 1b578bd9 294a8364 d00cd712
+FMA32 4d61c957 ca1dd6ca 5d4157a1 5d4134d4
+FMA32 811cc31b 4e449dbe f452aa05 f452aa05
+FMA32 83590b0c 76074afb 7b30c41e 7b30c41e
+FMA32 05558567 9b7cc39a f83e3e31 f83e3e31
+FMA32 c078386d 722a3ee8 024c9527 f3251277
+FMA32 8d6f9733 ab52f2f6 bc794ddd bc794ddd
+FMA32 3d1648fc 5841102b 3860e78e 55e2ad08
+FMA32 b6378d06 6b0780ad 407a6a28 e1c24f41
+FMA32 aa52fa57 6b6353ca 7216b0a1 7216b0a1
+FMA32 345a9ee0 8a3644bf 9d3b8b12 9d3b8b12
+FMA32 776e12be 030b9b05 2d46d0a0 3b01d457
+FMA32 0d07c269 000aa8b4 f5453c83 f5453c83
+FMA32 187bc089 9d4f5054 ab2b7fa3 ab2b7fa3
+FMA32 4f30cc0c a66217fb 227b2d1e b61c24b2
+FMA32 ac4118f2 5b4fa3a9 963098f4 c81c9e9e
+FMA32 20651603 55214386 681cc52d 681cc52d
+FMA32 e71ab351 2525547c 4519a5ab ccc7d00f
+FMA32 54335a9d d87a1b58 931f66d7 ed2f39a6
+FMA32 977297d5 700c8730 1e1ef0cf c8052b24
+FMA32 d069610c 481fa8fb 0a618a1e d9118d53
+FMA32 5f68a66f 0766a102 407dec79 407dec79
+FMA32 4324e280 7c0d73df 3c0fafb2 7f800000
+FMA32 e648eace e94ef3d5 60653330 7f800000
+FMA32 16695e51 9746037c 2d7c88ab 2d7c88ab
+FMA32 215f6d3f a5759992 7d59ebc9 7d59ebc9
+FMA32 543d98b9 fe7a6ac4 62547753 ff800000
+FMA32 6b7248cc 5c29edbb dd0b87de 7f800000
+FMA32 137235e6 042b540d f1646608 f1646608
+FMA32 d90e4bda 632ba971 3732941c fcbed5b3
+FMA32 d315fe44 927ff4d3 97157416 2615f7b8
+FMA32 1b62bb3d 4601c378 9b1fb077 21e5d5f4
+FMA32 df3db15f 8003cf32 7d1064e9 7d1064e9
+FMA32 4022f9cf d2751ce2 6e7576d9 6e7576d9
+FMA32 d568e74e 7509c655 7740e3b0 ff800000
+FMA32 1d6c1b0b 7145b4ee 744df775 744df775
+FMA32 8e457ee4 8a493cf3 6a2addb6 6a2addb6
+FMA32 121ca238 6e7d8037 5f43602a 5f43602a
+FMA32 5b0108a9 2370b9f4 22139cc3 3ef2abb1
+FMA32 70715c86 26240a2d 863665a8 571aa8de
+FMA32 0a6b5589 e257e154 bf60dca3 bf60dca3
+FMA32 2a693db9 5f6fcbc4 8c706453 4a5a7a46
+FMA32 8f32c9ae 705c8535 d061d510 d061d510
+FMA32 b237ae51 8520137c ad6f58ab ad6f58ab
+FMA32 99396116 622da57d 986528b8 bbfb7ce4
+FMA32 9334f621 d969990c 4b7280fb 4b7280fb
+FMA32 66504cad e974c628 fe38f367 ff800000
+FMA32 fa5802ad 465d0428 4d381967 ff800000
+FMA32 8c0f13cd 501ba2c8 3c39e787 3c39e787
+FMA32 0969f3c3 bb7b0646 690428ed 690428ed
+FMA32 7f262a81 136781ec 2600945b 531644af
+FMA32 b576259e 3259d065 f463c680 f463c680
+FMA32 1a439bf9 c3541504 bb779c93 bb779c93
+FMA32 445ecc81 7953bbec 231b865b 7e38461b
+FMA32 294939d3 2e4bf516 c917297d c917297d
+FMA32 ab2b7341 7e68b3ac f1229b1b f1229d8a
+FMA32 fa74e51b ed4a57be 80391c05 7f800000
+FMA32 d40456f9 401f9404 87670f93 d4a4fd12
+FMA32 b43ec7f9 ee1d5104 f217a893 f217a893
+FMA32 e73ca931 b23610dc 7961768b 7961768b
+FMA32 a1379733 5c7af2f6 ac014ddd be33f7e5
+FMA32 326f4f00 e30ff65f 2f2f5032 d6069370
+FMA32 70072e26 51656f4d a7734848 7f800000
+FMA32 013fc1d5 a133a930 8d27aacf 8d27aacf
+FMA32 6730a0b0 8b1d3c4f d6297d62 d6297d62
+FMA32 d92d7de0 b54597bf fd14c212 fd14c212
+FMA32 cf00a799 662f6c24 e771c933 f5b051d5
+FMA32 042f0d58 7f3bb0d7 c66b984a c66392cf
+FMA32 1932dd9b 6c72f63e 98702885 4629c189
+FMA32 31780095 9e4f58f0 9356178f 93593b0a
+FMA32 655c34dc 48294a8b a84e1e6e 6e119f04
+FMA32 1b7e9e4f 91277762 fd130f59 fd130f59
+FMA32 13744dc5 28106460 a1224c3f a1224c3f
+FMA32 fc1ed5cd 34347cc8 fc58f987 fc58f989
+FMA32 8e656e53 a7259f96 5313d1fd 5313d1fd
+FMA32 0c20c80b 79607dee 24402c75 460cfe21
+FMA32 081d0692 e14874c9 f345f794 f345f794
+FMA32 fb5d78af 075ace42 ee2bb8b9 ee2bb8b9
+FMA32 ae265887 00563c3a 84791e51 84791e51
+FMA32 415ed4c8 1e0f7187 0722813a 1ff9b75a
+FMA32 b738bdb8 b35fe5b7 fc3387aa fc3387aa
+FMA32 0416b0a9 c27a41f4 4a3f84c3 4a3f84c3
+FMA32 ee508b90 0f3169af 04240b42 be108696
+FMA32 2c4d3564 7c648173 43585836 69372b51
+FMA32 53093779 8a51fa84 694d4413 694d4413
+FMA32 e827d234 71495803 d5049d86 ff800000
+FMA32 903ba55c 7955010b 5e3d62ee 5e3d62ee
+FMA32 be7ba01e cd7008e5 2d07a500 4c6beeda
+FMA32 ed5ef3b3 eb55a576 7e3b5e5d 7f800000
+FMA32 bb6e6845 ed52bce0 b243cabf 6944416e
+FMA32 b91da1d5 3f380930 ab208acf b8e2a3f3
+FMA32 e55fc1d3 fd20dd16 cc56f17d 7f800000
+FMA32 4d525821 9a73930c 7d1032fb 7d1032fb
+FMA32 122284dc e91b5a8b d078ee6e d078ee6e
+FMA32 7b1c5e34 fd7c7403 06450986 ff800000
+FMA32 4946ddbc df3d1deb d8681a4e e912e8f1
+FMA32 bf174c1e a75fc4e5 251c3100 270e02bc
+FMA32 d4307b1e 596127e5 68203800 ee1b2db2
+FMA32 8b21fd90 9b4033af bf604d42 bf604d42
+FMA32 6f4292e6 c84e0d0d c75dcb08 f81c9c20
+FMA32 a9227e96 ee4524fd 7f63a238 7f63a238
+FMA32 6f3052ea 42466541 8932fdac 7208a5de
+FMA32 1665c34f 04225862 c9767c59 c9767c59
+FMA32 d956bbc7 2b16c67a e115a391 e115a391
+FMA32 e9128522 733d4219 f95244a4 ff800000
+FMA32 99151ce7 4514751a 542b41b1 542b41b1
+FMA32 af32801f c412cef2 e579e1a9 e579e1a9
+FMA32 f0590cef 3572d582 940796f9 e64de340
+FMA32 ad483f75 044fca50 0768196f 0768196f
+FMA32 8c7a92ed 9457d768 d46053a7 d46053a7
+FMA32 1c0f490d e915d708 c6000ec7 c653eca6
+FMA32 3c49284b 6806e12e 3f7eb6b5 64d3f810
+FMA32 cc242601 b702476c 700d9bdb 700d9bdb
+FMA32 ad25d660 1025163f 07552e92 07552e77
+FMA32 e260cdb1 6a16eb5c bd5b8f0b ff800000
+FMA32 5b6ba396 c43a05fd e7790f38 e77911e5
+FMA32 1553e297 de389f0a a32702e1 b418ce7f
+FMA32 2c1b68dc a316ee8b f337726e f337726e
+FMA32 b22d26b3 0d203c76 ad2f095d ad2f095d
+FMA32 cc1564bf fc502b12 386c4f49 7f800000
+FMA32 9123ceab 144b940e dd210c15 dd210c15
+FMA32 68599ac4 6049e753 2975c496 7f800000
+FMA32 ad0ec0c5 ba3a3b60 b16c373f b16c3725
+FMA32 c67253ba 11434fd1 ba1046fc ba1046fc
+FMA32 eb3c6cfb e66f7e1e ad464ee5 7f800000
+FMA32 f74149a8 0600a0e7 8122291a bdc23ca1
+FMA32 4420685a cc721bf1 cf65649c d1260a71
+FMA32 0d2c71c7 bf75047a 0b12c991 8d1bdf4e
+FMA32 0638d8e1 68349ccc cd0031bb cd0031bb
+FMA32 bd51b860 6a6b903f 95056092 e840fa6b
+FMA32 0b70b779 a5137a84 5820c413 5820c413
+FMA32 54720c02 29345b79 255ace84 3e2a86ee
+FMA32 fd4460a1 c721018c a665cf7b 7f800000
+FMA32 ee5eb77e 062878c5 77589360 77589360
+FMA32 d32096fa af283a11 da45ac3c da45ac3c
+FMA32 8701683d d47e8c78 310be577 310be577
+FMA32 f9015705 e9295ca0 a010677f 7f800000
+FMA32 2305f940 c24c1b9f 2654b472 25d3c6bd
+FMA32 ab0f2fff af3afd52 665e7c89 665e7c89
+FMA32 802e0dee 7b107c75 3548e350 bb4fe53f
+FMA32 0d7c0fe1 e70867cc 742380bb 742380bb
+FMA32 8228b681 ea509dec ad7f005b aceb07fd
+FMA32 e37c9ac1 9244b52c c167ae9b c167ae98
+FMA32 b22e44a1 7259958c 573d537b e5141dfa
+FMA32 571bf792 fa40b1c9 1b2f1094 ff800000
+FMA32 ce00650a b83010e1 6a1274cc 6a1274cc
+FMA32 b57737a9 692b1cf4 9b7ca3c3 df253e24
+FMA32 ef1c4c61 23467a4c 0d29713b d2f25b7c
+FMA32 424e173c 0304096b ea570fce ea570fce
+FMA32 6e778179 2167bc84 ac341e13 50600c17
+FMA32 c13b5ca8 c64597e7 de0cb41a de0cb41a
+FMA32 5975dbfd 3846ed38 8b054f37 523f0bf8
+FMA32 6e147ec6 5f52476d d53701e8 7f800000
+FMA32 84497e8d 9e5b8e88 b3276047 b3276047
+FMA32 aa5a5d90 075d13af 9e17ad42 9e17ad42
+FMA32 1c44cb3d ed5c9378 9a1c4077 ca299005
+FMA32 504786be f84e7f05 860464a0 ff800000
+FMA32 481c54a8 74022fe7 ad306c1a 7c9f007c
+FMA32 b65cf423 66584b26 f311e84d f311e84d
+FMA32 1d1dcf21 d8329e0c d125c1fb d125c1fb
+FMA32 4a483bb6 9e2a7f9d b044fc58 b044fe6d
+FMA32 d6329c5f 8c15be32 9c3387e9 22d0edd0
+FMA32 6514e80e 62525015 df126270 7f800000
+FMA32 f859501e 4851f8e5 e020d500 ff800000
+FMA32 aa15a040 2a21969f 772df372 772df372
+FMA32 f13925f3 fc2fb2b6 86558a9d 7f800000
+FMA32 d74012de 90625ca5 ce7465c0 ce7465c0
+FMA32 1b44d066 636c2c8d c2726488 c26f8e3f
+FMA32 42075499 c5743524 c105fe33 c8011ad1
+FMA32 a6378b12 696c2f49 56657014 5665657f
+FMA32 f41608c7 4a7baf7a 760b7891 ff138150
+FMA32 3a33d7bd ea7b35f8 816980f7 e5307a70
+FMA32 9f1031cc a704c2bb a80658de a80658de
+FMA32 00288350 3c1f7e6f 2f3f9902 2f3f9902
+FMA32 5f6956ad 8a364828 f4588d67 f4588d67
+FMA32 5b77ec3d bb1b4078 ea390977 ea390977
+FMA32 b9661b3c fe543d6b b621b3ce 783ec5c2
+FMA32 9b5e47e2 bc6ea5d9 1652d564 185c642b
+FMA32 d330107b b873cb9e 9f5f3e65 4c27abae
+FMA32 7a67efec 4b5a2a5b 1f465bfe 7f800000
+FMA32 4307c5e2 163e0bd9 3e7f0364 3e7f0364
+FMA32 1c6e61cd 360698c8 872c6587 12faaaea
+FMA32 780c8969 bf12c3b4 86709b83 f7a1239b
+FMA32 25169923 1a03ac26 db6bd54d db6bd54d
+FMA32 9906902c ba01cd9b 7a15263e 7a15263e
+FMA32 1403abf7 824218ea 9e117341 9e117341
+FMA32 af586c9d 01080558 011048d7 011048d7
+FMA32 195f3ed2 a24ed009 323419d4 323419d4
+FMA32 9056eb33 310a36f6 295fc1dd 295fc1dd
+FMA32 ed652ccf fa23b3e2 c17d21d9 7f800000
+FMA32 cd005c3a d25cbe51 7461e37c 7461e37c
+FMA32 5946a05b 914c59fe d978b945 d978b945
+FMA32 045fb3cd 2573c2c8 4e738787 4e738787
+FMA32 fe6c6846 885222ed 4b2a2768 4b2ae976
+FMA32 e72339ab aa66030e d532af15 d5306476
+FMA32 9a59a0dd 85292c98 c222c717 c222c717
+FMA32 c24d2497 702cf90a 2b6b94e1 f30a9c26
+FMA32 7704931a 7e50c7b1 56629d5c 7f800000
+FMA32 bc6ae8b8 270e14b7 da45eaaa da45eaaa
+FMA32 8503bd62 f9269d59 aa4766e4 3eab7b8d
+FMA32 95637089 75334054 e35eafa3 e35eafa3
+FMA32 f3704276 d123575d 781e7118 7f800000
+FMA32 71186ac6 290d436d 301dcde8 5aa835e8
+FMA32 ad31a678 12003777 a72a2e6a a72a2e6a
+FMA32 be04fc39 803f7844 ce3726d3 ce3726d3
+FMA32 67472f45 7c1ed7e0 e86329bf 7f800000
+FMA32 374565f5 a601bed0 055c83ef 9dc81705
+FMA32 3104069f f94da372 d121ac29 ead41b31
+FMA32 703b311b 502433be ce714805 7f800000
+FMA32 1942e45d 7f669a18 a2625697 592f8e7b
+FMA32 fe289b2f 806a8ec2 272b7f39 3f0c5c8f
+FMA32 414318ff c033d252 2e5f4d89 c2090ac3
+*-* All Finished *-*
+- t/t_shortreal_fma.v:69: Verilog $finish
+vlt/t_shortreal_fma_opt: Self PASSED
+======================================================================
+==SUMMARY: Left 12  Passed 12  Failed 0  Running 2  Time 0:04
+vlt/t_shortreal_fma_trace_unsup: ==================================================
+======================================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_fma_trace_unsup -cc -Mdir obj_vlt/t_shortreal_fma_trace_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_fma_trace_unsup/Vt_shortreal_fma_trace_unsup__main.cpp --trace -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_fma_trace_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_fma_trace_unsup/simx.vcd t/t_shortreal_fma.v   > obj_vlt/t_shortreal_fma_trace_unsup/vlt_compile.log
+vlt/t_shortreal_subset: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_subset -cc -Mdir obj_vlt/t_shortreal_subset --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_subset/Vt_shortreal_subset__main.cpp -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_subset +define+TEST_DUMPFILE=obj_vlt/t_shortreal_subset/simx.vcd t/t_shortreal_subset.v   > obj_vlt/t_shortreal_subset/vlt_compile.log
+%Error: t/t_shortreal_fma.v:11:11: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   11 |   typedef shortreal sample_t;
+      |           ^~~~~~~~~
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: t/t_shortreal_fma.v:13:3: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                : ... note: In instance 't'
+   13 |   shortreal fused, product, separate;
+      |   ^~~~~~~~~
+%Error: t/t_shortreal_fma.v:51:23: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   51 |     operands[index] = $bitstoshortreal(abits);
+      |                       ^~~~~~~~~~~~~~~~
+%Error: t/t_shortreal_fma.v:52:13: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   52 |     fused = $verilator_fma32(operands[index], $bitstoshortreal(bbits), $bitstoshortreal(cbits));
+      |             ^~~~~~~~~~~~~~~~
+%Error: t/t_shortreal_fma.v:52:47: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   52 |     fused = $verilator_fma32(operands[index], $bitstoshortreal(bbits), $bitstoshortreal(cbits));
+      |                                               ^~~~~~~~~~~~~~~~
+%Error: t/t_shortreal_fma.v:52:72: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   52 |     fused = $verilator_fma32(operands[index], $bitstoshortreal(bbits), $bitstoshortreal(cbits));
+      |                                                                        ^~~~~~~~~~~~~~~~
+%Error: t/t_shortreal_fma.v:53:14: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   53 |     actual = $shortrealtobits(fused);
+      |              ^~~~~~~~~~~~~~~~
+%Error: t/t_shortreal_fma.v:62:35: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   62 |       product = operands[index] * $bitstoshortreal(bbits);
+      |                                   ^~~~~~~~~~~~~~~~
+%Error: t/t_shortreal_fma.v:62:33: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   62 |       product = operands[index] * $bitstoshortreal(bbits);
+      |                                 ^
+%Error: t/t_shortreal_fma.v:63:28: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   63 |       separate = product + $bitstoshortreal(cbits);
+      |                            ^~~~~~~~~~~~~~~~
+%Error: t/t_shortreal_fma.v:63:26: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   63 |       separate = product + $bitstoshortreal(cbits);
+      |                          ^
+%Error: t/t_shortreal_fma.v:64:147: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                  : ... note: In instance 't'
+   64 |       do if (($shortrealtobits(separate)) !== (32'h00000000)) begin $write("%%Error: %s:%0d: got=%0h expected=%0h\n", "t/t_shortreal_fma.v", 64, ($shortrealtobits(separate)), (32'h00000000)); $stop; end while(0);;
+      |                                                                                                                                                   ^~~~~~~~~~~~~~~~
+%Error: t/t_shortreal_fma.v:64:15: Unsupported: shortreal trace/save/VPI/SystemC in experimental subset
+                                 : ... note: In instance 't'
+   64 |       do if (($shortrealtobits(separate)) !== (32'h00000000)) begin $write("%%Error: %s:%0d: got=%0h expected=%0h\n", "t/t_shortreal_fma.v", 64, ($shortrealtobits(separate)), (32'h00000000)); $stop; end while(0);;
+      |               ^~~~~~~~~~~~~~~~
+%Error: Exiting due to 13 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+- V e r i l a t i o n   R e p o r t:  rev v5.054-1-gc607db4 (mod)
+- Verilator: Built from 0.033 MB sources in 3 modules, into 0.042 MB in 5 C++ files needing 0.000 MB
+- Verilator: Walltime 0.020 s (elab=0.001, cvt=0.005, bld=0.000); cpu 0.018 s on 1 threads; allocated 13.422 MB
+	make -j 2 -C obj_vlt/t_shortreal_subset -f /Users/jadams/workspace/sandbox/verilator-fma32/test_regress/Makefile_obj --no-print-directory VM_PREFIX=Vt_shortreal_subset TEST_OBJ_DIR=obj_vlt/t_shortreal_subset CPPFLAGS_DRIVER=-DT_SHORTREAL_SUBSET  OPT_FAST=-O0 OPT_GLOBAL=-O0 Vt_shortreal_subset   > obj_vlt/t_shortreal_subset/vlt_gcc.log
+driver: Entering directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_shortreal_subset'
+/usr/bin/c++  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_shortreal_subset.h>"  -DVL_DEBUG=1 -fno-fast-math -ffp-contract=off   -DTEST_OBJ_DIR=obj_vlt/t_shortreal_subset -DVM_PREFIX=Vt_shortreal_subset -DVM_PREFIX_ROOT_INCLUDE="<Vt_shortreal_subset___024root.h>" -DT_SHORTREAL_SUBSET   -DVL_LOCK_SPINS=10000 -O0  -c -o Vt_shortreal_subset__main.o ../../obj_vlt/t_shortreal_subset/Vt_shortreal_subset__main.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_shortreal_subset.h>"  -DVL_DEBUG=1 -fno-fast-math -ffp-contract=off   -DTEST_OBJ_DIR=obj_vlt/t_shortreal_subset -DVM_PREFIX=Vt_shortreal_subset -DVM_PREFIX_ROOT_INCLUDE="<Vt_shortreal_subset___024root.h>" -DT_SHORTREAL_SUBSET   -DVL_LOCK_SPINS=10000 -c -o verilated.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated.cpp
+vlt/t_shortreal_fma_trace_unsup: Self PASSED
+==SUMMARY: Left 11  Passed 13  Failed 0  Running 2  Time 0:04
+======================================================================
+vlt/t_shortreal_subset_opt: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_subset_opt -cc -Mdir obj_vlt/t_shortreal_subset_opt --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_subset_opt/Vt_shortreal_subset_opt__main.cpp -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_subset_opt +define+TEST_DUMPFILE=obj_vlt/t_shortreal_subset_opt/simx.vcd t/t_shortreal_subset.v   > obj_vlt/t_shortreal_subset_opt/vlt_compile.log
+- V e r i l a t i o n   R e p o r t:  rev v5.054-1-gc607db4 (mod)
+- Verilator: Built from 0.033 MB sources in 3 modules, into 0.043 MB in 5 C++ files needing 0.000 MB
+- Verilator: Walltime 0.019 s (elab=0.001, cvt=0.005, bld=0.000); cpu 0.018 s on 1 threads; allocated 13.453 MB
+	make -j 2 -C obj_vlt/t_shortreal_subset_opt -f /Users/jadams/workspace/sandbox/verilator-fma32/test_regress/Makefile_obj --no-print-directory VM_PREFIX=Vt_shortreal_subset_opt TEST_OBJ_DIR=obj_vlt/t_shortreal_subset_opt CPPFLAGS_DRIVER=-DT_SHORTREAL_SUBSET_OPT  OPT_FAST=-O0 OPT_GLOBAL=-O0 Vt_shortreal_subset_opt OPT_FAST=-O3 OPT_GLOBAL=-O3   > obj_vlt/t_shortreal_subset_opt/vlt_gcc.log
+driver: Entering directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_shortreal_subset_opt'
+/usr/bin/c++  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_shortreal_subset_opt.h>"  -DVL_DEBUG=1 -fno-fast-math -ffp-contract=off   -DTEST_OBJ_DIR=obj_vlt/t_shortreal_subset_opt -DVM_PREFIX=Vt_shortreal_subset_opt -DVM_PREFIX_ROOT_INCLUDE="<Vt_shortreal_subset_opt___024root.h>" -DT_SHORTREAL_SUBSET_OPT   -DVL_LOCK_SPINS=10000 -O3  -c -o Vt_shortreal_subset_opt__main.o ../../obj_vlt/t_shortreal_subset_opt/Vt_shortreal_subset_opt__main.cpp
+/usr/bin/c++ -O3  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_shortreal_subset_opt.h>"  -DVL_DEBUG=1 -fno-fast-math -ffp-contract=off   -DTEST_OBJ_DIR=obj_vlt/t_shortreal_subset_opt -DVM_PREFIX=Vt_shortreal_subset_opt -DVM_PREFIX_ROOT_INCLUDE="<Vt_shortreal_subset_opt___024root.h>" -DT_SHORTREAL_SUBSET_OPT   -DVL_LOCK_SPINS=10000 -c -o verilated.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_shortreal_subset.h>"  -DVL_DEBUG=1 -fno-fast-math -ffp-contract=off   -DTEST_OBJ_DIR=obj_vlt/t_shortreal_subset -DVM_PREFIX=Vt_shortreal_subset -DVM_PREFIX_ROOT_INCLUDE="<Vt_shortreal_subset___024root.h>" -DT_SHORTREAL_SUBSET   -DVL_LOCK_SPINS=10000 -c -o verilated_threads.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated_threads.cpp
+/usr/bin/c++ -O3  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_shortreal_subset_opt.h>"  -DVL_DEBUG=1 -fno-fast-math -ffp-contract=off   -DTEST_OBJ_DIR=obj_vlt/t_shortreal_subset_opt -DVM_PREFIX=Vt_shortreal_subset_opt -DVM_PREFIX_ROOT_INCLUDE="<Vt_shortreal_subset_opt___024root.h>" -DT_SHORTREAL_SUBSET_OPT   -DVL_LOCK_SPINS=10000 -c -o verilated_threads.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated_threads.cpp
+/opt/homebrew/Frameworks/Python.framework/Versions/3.15/bin/python3.15 /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator_includer -DVL_INCLUDE_OPT=include Vt_shortreal_subset.cpp Vt_shortreal_subset___024root__0.cpp Vt_shortreal_subset___024root__Slow.cpp Vt_shortreal_subset___024root__0__Slow.cpp Vt_shortreal_subset__Syms__Slow.cpp > Vt_shortreal_subset__ALL.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_shortreal_subset.h>"  -DVL_DEBUG=1 -fno-fast-math -ffp-contract=off   -DTEST_OBJ_DIR=obj_vlt/t_shortreal_subset -DVM_PREFIX=Vt_shortreal_subset -DVM_PREFIX_ROOT_INCLUDE="<Vt_shortreal_subset___024root.h>" -DT_SHORTREAL_SUBSET   -DVL_LOCK_SPINS=10000 -c -o Vt_shortreal_subset__ALL.o Vt_shortreal_subset__ALL.cpp
+/opt/homebrew/Frameworks/Python.framework/Versions/3.15/bin/python3.15 /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator_includer -DVL_INCLUDE_OPT=include Vt_shortreal_subset_opt.cpp Vt_shortreal_subset_opt___024root__0.cpp Vt_shortreal_subset_opt___024root__Slow.cpp Vt_shortreal_subset_opt___024root__0__Slow.cpp Vt_shortreal_subset_opt__Syms__Slow.cpp > Vt_shortreal_subset_opt__ALL.cpp
+/usr/bin/c++ -O3  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_shortreal_subset_opt.h>"  -DVL_DEBUG=1 -fno-fast-math -ffp-contract=off   -DTEST_OBJ_DIR=obj_vlt/t_shortreal_subset_opt -DVM_PREFIX=Vt_shortreal_subset_opt -DVM_PREFIX_ROOT_INCLUDE="<Vt_shortreal_subset_opt___024root.h>" -DT_SHORTREAL_SUBSET_OPT   -DVL_LOCK_SPINS=10000 -c -o Vt_shortreal_subset_opt__ALL.o Vt_shortreal_subset_opt__ALL.cpp
+/usr/bin/c++  -Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv,-U,_vlog_startup_routines   Vt_shortreal_subset__main.o verilated.o verilated_threads.o Vt_shortreal_subset__ALL.a       -o Vt_shortreal_subset
+rm Vt_shortreal_subset__ALL.verilator_deplist.tmp
+driver: Leaving directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_shortreal_subset'
+	obj_vlt/t_shortreal_subset/Vt_shortreal_subset    > obj_vlt/t_shortreal_subset/vlt_sim.log
+*-* All Finished *-*
+- t/t_shortreal_subset.v:78: Verilog $finish
+vlt/t_shortreal_subset: Self PASSED
+==SUMMARY: Left 10  Passed 14  Failed 0  Running 2  Time 0:06
+======================================================================
+vlt/t_shortreal_subset_unsup: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_subset_unsup -cc -Mdir obj_vlt/t_shortreal_subset_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_subset_unsup/Vt_shortreal_subset_unsup__main.cpp -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_subset_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_subset_unsup/simx.vcd t/t_shortreal_subset_unsup.v   > obj_vlt/t_shortreal_subset_unsup/vlt_compile.log
+%Error: t/t_shortreal_subset_unsup.v:12:12: Unsupported: shortreal bitcast requires an integral input of at most 32 bits
+                                          : ... note: In instance 't'
+   12 |     a[0] = $bitstoshortreal(widebits);
+      |            ^~~~~~~~~~~~~~~~
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: t/t_shortreal_subset_unsup.v:13:23: Unsupported: integral to shortreal conversion wider than 32 bits in experimental subset
+                                          : ... note: In instance 't'
+   13 |     a[0] = shortreal'(integer64);
+      |                       ^~~~~~~~~
+%Error: t/t_shortreal_subset_unsup.v:14:12: Unsupported: shortreal unary operator in experimental subset
+                                          : ... note: In instance 't'
+   14 |     a[1] = -a[0];
+      |            ^
+%Error: t/t_shortreal_subset_unsup.v:15:16: Unsupported: shortreal conditional expression in experimental subset
+                                          : ... note: In instance 't'
+   15 |     a[1] = clk ? a[0] : a[1];
+      |                ^
+%Error: t/t_shortreal_subset_unsup.v:16:17: Unsupported: shortreal arithmetic operator in experimental subset
+                                          : ... note: In instance 't'
+   16 |     a[1] = a[0] / a[1];
+      |                 ^
+%Error: t/t_shortreal_subset_unsup.v:17:17: Unsupported: shortreal exponentiation in experimental subset
+                                          : ... note: In instance 't'
+   17 |     a[1] = a[0] ** a[1];
+      |                 ^~
+%Error: t/t_shortreal_subset_unsup.v:18:14: Unsupported: shortreal comparison in experimental subset
+                                          : ... note: In instance 't'
+   18 |     if (a[0] == 16777217) a[1] = a[0];
+      |              ^~
+%Error: t/t_shortreal_subset_unsup.v:19:23: Unsupported: shortreal integral coercion in experimental subset
+                                          : ... note: In instance 't'
+   19 |     stream_bits = {>>{a}};
+      |                       ^
+%Warning-REALCVT: t/t_shortreal_subset_unsup.v:19:23: Implicit conversion of real to integer; expected integral input to STREAMR
+                                                    : ... note: In instance 't'
+   19 |     stream_bits = {>>{a}};
+      |                       ^
+                  ... For warning description see https://verilator.org/warn/REALCVT?v=0.000
+                  ... Use "/* verilator lint_off REALCVT */" and lint_on around source to disable this message.
+%Warning-WIDTHEXPAND: t/t_shortreal_subset_unsup.v:19:17: Operator ASSIGN expects 64 bits on the Assign RHS, but Assign RHS's STREAMR generates 32 bits.
+                                                        : ... note: In instance 't'
+   19 |     stream_bits = {>>{a}};
+      |                 ^
+                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=0.000
+                      ... Use "/* verilator lint_off WIDTHEXPAND */" and lint_on around source to disable this message.
+%Error: t/t_shortreal_subset_unsup.v:20:5: Unsupported: shortreal formatting in experimental subset
+                                         : ... note: In instance 't'
+   20 |     $display("%f", a[0]);
+      |     ^~~~~~~~
+%Error: Exiting due to 9 error(s), 2 warning(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+vlt/t_shortreal_subset_unsup: Self PASSED
+==SUMMARY: Left 9  Passed 15  Failed 0  Running 2  Time 0:06
+======================================================================
+vlt/t_shortreal_stream_unsup: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_stream_unsup -cc -Mdir obj_vlt/t_shortreal_stream_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_stream_unsup/Vt_shortreal_stream_unsup__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_stream_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_stream_unsup/simx.vcd t/t_shortreal_stream_unsup.v   > obj_vlt/t_shortreal_stream_unsup/vlt_compile.log
+/usr/bin/c++  -Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv,-U,_vlog_startup_routines   Vt_shortreal_subset_opt__main.o verilated.o verilated_threads.o Vt_shortreal_subset_opt__ALL.a       -o Vt_shortreal_subset_opt
+rm Vt_shortreal_subset_opt__ALL.verilator_deplist.tmp
+driver: Leaving directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_shortreal_subset_opt'
+	obj_vlt/t_shortreal_subset_opt/Vt_shortreal_subset_opt    > obj_vlt/t_shortreal_subset_opt/vlt_sim.log
+%Error: t/t_shortreal_stream_unsup.v:9:36: Unsupported: shortreal integral coercion in experimental subset
+                                         : ... note: In instance 't'
+    9 |   always @(posedge clk) bits = {>>{a}};
+      |                                    ^
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Warning-REALCVT: t/t_shortreal_stream_unsup.v:9:36: Implicit conversion of real to integer; expected integral input to STREAMR
+                                                   : ... note: In instance 't'
+    9 |   always @(posedge clk) bits = {>>{a}};
+      |                                    ^
+                  ... For warning description see https://verilator.org/warn/REALCVT?v=0.000
+                  ... Use "/* verilator lint_off REALCVT */" and lint_on around source to disable this message.
+%Warning-WIDTHEXPAND: t/t_shortreal_stream_unsup.v:9:30: Operator ASSIGN expects 64 bits on the Assign RHS, but Assign RHS's STREAMR generates 32 bits.
+                                                       : ... note: In instance 't'
+    9 |   always @(posedge clk) bits = {>>{a}};
+      |                              ^
+                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=0.000
+                      ... Use "/* verilator lint_off WIDTHEXPAND */" and lint_on around source to disable this message.
+%Error: Exiting due to 1 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+*-* All Finished *-*
+- t/t_shortreal_subset.v:78: Verilog $finish
+vlt/t_shortreal_subset_opt: Self PASSED
+==SUMMARY: Left 8  Passed 16  Failed 0  Running 2  Time 0:06
+======================================================================
+vlt/t_shortreal_and_unsup: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_and_unsup -cc -Mdir obj_vlt/t_shortreal_and_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_and_unsup/Vt_shortreal_and_unsup__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_and_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_and_unsup/simx.vcd t/t_shortreal_and_unsup.v   > obj_vlt/t_shortreal_and_unsup/vlt_compile.log
+vlt/t_shortreal_stream_unsup: Self PASSED
+%Error: t/t_shortreal_and_unsup.v:8:29: Unsupported: shortreal integral coercion in experimental subset
+                                      : ... note: In instance 't'
+    8 |   always @(posedge clk) b = a & b;
+      |                             ^
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Warning-REALCVT: t/t_shortreal_and_unsup.v:8:29: Implicit conversion of real to integer; expected integral input to AND
+                                                : ... note: In instance 't'
+    8 |   always @(posedge clk) b = a & b;
+      |                             ^
+                  ... For warning description see https://verilator.org/warn/REALCVT?v=0.000
+                  ... Use "/* verilator lint_off REALCVT */" and lint_on around source to disable this message.
+%Error: t/t_shortreal_and_unsup.v:8:33: Unsupported: shortreal integral coercion in experimental subset
+                                      : ... note: In instance 't'
+    8 |   always @(posedge clk) b = a & b;
+      |                                 ^
+%Warning-REALCVT: t/t_shortreal_and_unsup.v:8:33: Implicit conversion of real to integer; expected integral input to AND
+                                                : ... note: In instance 't'
+    8 |   always @(posedge clk) b = a & b;
+      |                                 ^
+%Error: Exiting due to 2 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+==SUMMARY: Left 7  Passed 17  Failed 0  Running 2  Time 0:07
+======================================================================
+vlt/t_shortreal_mod_unsup: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_mod_unsup -cc -Mdir obj_vlt/t_shortreal_mod_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_mod_unsup/Vt_shortreal_mod_unsup__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_mod_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_mod_unsup/simx.vcd t/t_shortreal_mod_unsup.v   > obj_vlt/t_shortreal_mod_unsup/vlt_compile.log
+%Error: t/t_shortreal_mod_unsup.v:8:29: Unsupported: shortreal integral coercion in experimental subset
+                                      : ... note: In instance 't'
+    8 |   always @(posedge clk) b = a % b;
+      |                             ^
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Warning-REALCVT: t/t_shortreal_mod_unsup.v:8:29: Implicit conversion of real to integer; expected integral input to MODDIV
+                                                : ... note: In instance 't'
+    8 |   always @(posedge clk) b = a % b;
+      |                             ^
+                  ... For warning description see https://verilator.org/warn/REALCVT?v=0.000
+                  ... Use "/* verilator lint_off REALCVT */" and lint_on around source to disable this message.
+%Error: t/t_shortreal_mod_unsup.v:8:33: Unsupported: shortreal integral coercion in experimental subset
+                                      : ... note: In instance 't'
+    8 |   always @(posedge clk) b = a % b;
+      |                                 ^
+%Warning-REALCVT: t/t_shortreal_mod_unsup.v:8:33: Implicit conversion of real to integer; expected integral input to MODDIV
+                                                : ... note: In instance 't'
+    8 |   always @(posedge clk) b = a % b;
+      |                                 ^
+%Error: Exiting due to 2 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+vlt/t_shortreal_and_unsup: Self PASSED
+==SUMMARY: Left 6  Passed 18  Failed 0  Running 2  Time 0:07
+======================================================================
+vlt/t_shortreal_const_unsup: ==================================================
+vlt/t_shortreal_mod_unsup: Self PASSED
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_shortreal_const_unsup -cc -Mdir obj_vlt/t_shortreal_const_unsup --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_shortreal_const_unsup/Vt_shortreal_const_unsup__main.cpp -Wno-fatal -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_shortreal_const_unsup +define+TEST_DUMPFILE=obj_vlt/t_shortreal_const_unsup/simx.vcd t/t_shortreal_const_unsup.v   > obj_vlt/t_shortreal_const_unsup/vlt_compile.log
+%Error: t/t_shortreal_const_unsup.v:5:25: Unsupported: shortreal parameter expression in experimental subset
+                                        : ... note: In instance 't'
+    5 |   localparam bit [31:0] x = $shortrealtobits($bitstoshortreal(32'h3f800000));
+      |                         ^
+        ... See the manual at https://verilator.org/verilator_doc.html?v=0.000 for more assistance.
+%Error: Exiting due to 1 error(s)
+(Exec failed, matching expected 'True' exit code 1 fail)
+==SUMMARY: Left 5  Passed 19  Failed 0  Running 2  Time 0:07
+======================================================================
+vlt/t_math_real: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_math_real -cc -Mdir obj_vlt/t_math_real --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_math_real/Vt_math_real__main.cpp -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_math_real +define+TEST_DUMPFILE=obj_vlt/t_math_real/simx.vcd t/t_math_real.v   > obj_vlt/t_math_real/vlt_compile.log
+vlt/t_shortreal_const_unsup: Self PASSED
+==SUMMARY: Left 4  Passed 20  Failed 0  Running 2  Time 0:07
+======================================================================
+vlt/t_math_real_round: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_math_real_round -cc -Mdir obj_vlt/t_math_real_round --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_math_real_round/Vt_math_real_round__main.cpp -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_math_real_round +define+TEST_DUMPFILE=obj_vlt/t_math_real_round/simx.vcd t/t_math_real_round.v   > obj_vlt/t_math_real_round/vlt_compile.log
+- V e r i l a t i o n   R e p o r t:  rev v5.054-1-gc607db4 (mod)
+- Verilator: Built from 0.043 MB sources in 4 modules, into 0.054 MB in 5 C++ files needing 0.000 MB
+- Verilator: Walltime 0.018 s (elab=0.002, cvt=0.006, bld=0.000); cpu 0.018 s on 1 threads; allocated 14.625 MB
+	make -j 2 -C obj_vlt/t_math_real -f /Users/jadams/workspace/sandbox/verilator-fma32/test_regress/Makefile_obj --no-print-directory VM_PREFIX=Vt_math_real TEST_OBJ_DIR=obj_vlt/t_math_real CPPFLAGS_DRIVER=-DT_MATH_REAL  OPT_FAST=-O0 OPT_GLOBAL=-O0 Vt_math_real   > obj_vlt/t_math_real/vlt_gcc.log
+driver: Entering directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_math_real'
+/usr/bin/c++  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_real.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_real -DVM_PREFIX=Vt_math_real -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_real___024root.h>" -DT_MATH_REAL   -DVL_LOCK_SPINS=10000 -O0  -c -o Vt_math_real__main.o ../../obj_vlt/t_math_real/Vt_math_real__main.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_real.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_real -DVM_PREFIX=Vt_math_real -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_real___024root.h>" -DT_MATH_REAL   -DVL_LOCK_SPINS=10000 -c -o verilated.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated.cpp
+- V e r i l a t i o n   R e p o r t:  rev v5.054-1-gc607db4 (mod)
+- Verilator: Built from 0.035 MB sources in 3 modules, into 0.039 MB in 5 C++ files needing 0.000 MB
+- Verilator: Walltime 0.013 s (elab=0.001, cvt=0.003, bld=0.000); cpu 0.013 s on 1 threads; allocated 13.125 MB
+	make -j 2 -C obj_vlt/t_math_real_round -f /Users/jadams/workspace/sandbox/verilator-fma32/test_regress/Makefile_obj --no-print-directory VM_PREFIX=Vt_math_real_round TEST_OBJ_DIR=obj_vlt/t_math_real_round CPPFLAGS_DRIVER=-DT_MATH_REAL_ROUND  OPT_FAST=-O0 OPT_GLOBAL=-O0 Vt_math_real_round   > obj_vlt/t_math_real_round/vlt_gcc.log
+driver: Entering directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_math_real_round'
+/usr/bin/c++  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_real_round.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_real_round -DVM_PREFIX=Vt_math_real_round -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_real_round___024root.h>" -DT_MATH_REAL_ROUND   -DVL_LOCK_SPINS=10000 -O0  -c -o Vt_math_real_round__main.o ../../obj_vlt/t_math_real_round/Vt_math_real_round__main.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_real_round.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_real_round -DVM_PREFIX=Vt_math_real_round -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_real_round___024root.h>" -DT_MATH_REAL_ROUND   -DVL_LOCK_SPINS=10000 -c -o verilated.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_real.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_real -DVM_PREFIX=Vt_math_real -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_real___024root.h>" -DT_MATH_REAL   -DVL_LOCK_SPINS=10000 -c -o verilated_threads.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated_threads.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_real_round.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_real_round -DVM_PREFIX=Vt_math_real_round -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_real_round___024root.h>" -DT_MATH_REAL_ROUND   -DVL_LOCK_SPINS=10000 -c -o verilated_threads.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated_threads.cpp
+/opt/homebrew/Frameworks/Python.framework/Versions/3.15/bin/python3.15 /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator_includer -DVL_INCLUDE_OPT=include Vt_math_real.cpp Vt_math_real___024root__0.cpp Vt_math_real___024root__Slow.cpp Vt_math_real___024root__0__Slow.cpp Vt_math_real__Syms__Slow.cpp > Vt_math_real__ALL.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_real.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_real -DVM_PREFIX=Vt_math_real -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_real___024root.h>" -DT_MATH_REAL   -DVL_LOCK_SPINS=10000 -c -o Vt_math_real__ALL.o Vt_math_real__ALL.cpp
+/opt/homebrew/Frameworks/Python.framework/Versions/3.15/bin/python3.15 /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator_includer -DVL_INCLUDE_OPT=include Vt_math_real_round.cpp Vt_math_real_round___024root__0.cpp Vt_math_real_round___024root__Slow.cpp Vt_math_real_round___024root__0__Slow.cpp Vt_math_real_round__Syms__Slow.cpp > Vt_math_real_round__ALL.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_real_round.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_real_round -DVM_PREFIX=Vt_math_real_round -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_real_round___024root.h>" -DT_MATH_REAL_ROUND   -DVL_LOCK_SPINS=10000 -c -o Vt_math_real_round__ALL.o Vt_math_real_round__ALL.cpp
+/usr/bin/c++  -Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv,-U,_vlog_startup_routines   Vt_math_real__main.o verilated.o verilated_threads.o Vt_math_real__ALL.a       -o Vt_math_real
+/usr/bin/c++  -Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv,-U,_vlog_startup_routines   Vt_math_real_round__main.o verilated.o verilated_threads.o Vt_math_real_round__ALL.a       -o Vt_math_real_round
+rm Vt_math_real__ALL.verilator_deplist.tmp
+driver: Leaving directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_math_real'
+	obj_vlt/t_math_real/Vt_math_real    > obj_vlt/t_math_real/vlt_sim.log
+134826985114673693079697889309176855021348273420672992955072560868299506854125722349531357991805652015840085409903545018244092326610812466869635572979605593283325920068649113957226664700934570589589812214063754326628613011756847161105434832905620427872512883013439723679960434453859787228626517247218168102912.000
+*-* All Finished *-*
+- t/t_math_real.v:341: Verilog $finish
+vlt/t_math_real: Self PASSED
+rm Vt_math_real_round__ALL.verilator_deplist.tmp
+driver: Leaving directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_math_real_round'
+	obj_vlt/t_math_real_round/Vt_math_real_round    > obj_vlt/t_math_real_round/vlt_sim.log
+==SUMMARY: Left 3  Passed 21  Failed 0  Running 2  Time 0:10
+======================================================================
+vlt/t_cast: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_cast -cc -Mdir obj_vlt/t_cast --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_cast/Vt_cast__main.cpp -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_cast +define+TEST_DUMPFILE=obj_vlt/t_cast/simx.vcd t/t_cast.v   > obj_vlt/t_cast/vlt_compile.log
+*-* All Finished *-*
+- t/t_math_real_round.v:99: Verilog $finish
+vlt/t_math_real_round: Self PASSED
+==SUMMARY: Left 2  Passed 22  Failed 0  Running 2  Time 0:10
+======================================================================
+vlt/t_math_signed: ==================================================
+	perl /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator --prefix Vt_math_signed -cc -Mdir obj_vlt/t_math_signed --fdedup --debug-check --comp-limit-members 10 --x-assign unique --exe ../obj_vlt/t_math_signed/Vt_math_signed__main.cpp -f input.vc +define+TEST_OBJ_DIR=obj_vlt/t_math_signed +define+TEST_DUMPFILE=obj_vlt/t_math_signed/simx.vcd t/t_math_signed.v   > obj_vlt/t_math_signed/vlt_compile.log
+- V e r i l a t i o n   R e p o r t:  rev v5.054-1-gc607db4 (mod)
+- Verilator: Built from 0.035 MB sources in 4 modules, into 0.025 MB in 5 C++ files needing 0.000 MB
+- Verilator: Walltime 0.015 s (elab=0.001, cvt=0.003, bld=0.000); cpu 0.015 s on 1 threads; allocated 13.109 MB
+	make -j 2 -C obj_vlt/t_cast -f /Users/jadams/workspace/sandbox/verilator-fma32/test_regress/Makefile_obj --no-print-directory VM_PREFIX=Vt_cast TEST_OBJ_DIR=obj_vlt/t_cast CPPFLAGS_DRIVER=-DT_CAST  OPT_FAST=-O0 OPT_GLOBAL=-O0 Vt_cast   > obj_vlt/t_cast/vlt_gcc.log
+driver: Entering directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_cast'
+- V e r i l a t i o n   R e p o r t:  rev v5.054-1-gc607db4 (mod)
+- Verilator: Built from 0.036 MB sources in 4 modules, into 0.118 MB in 6 C++ files needing 0.000 MB
+- Verilator: Walltime 0.027 s (elab=0.002, cvt=0.011, bld=0.000); cpu 0.027 s on 1 threads; allocated 15.656 MB
+	make -j 2 -C obj_vlt/t_math_signed -f /Users/jadams/workspace/sandbox/verilator-fma32/test_regress/Makefile_obj --no-print-directory VM_PREFIX=Vt_math_signed TEST_OBJ_DIR=obj_vlt/t_math_signed CPPFLAGS_DRIVER=-DT_MATH_SIGNED  OPT_FAST=-O0 OPT_GLOBAL=-O0 Vt_math_signed   > obj_vlt/t_math_signed/vlt_gcc.log
+driver: Entering directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_math_signed'
+/usr/bin/c++  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_cast.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_cast -DVM_PREFIX=Vt_cast -DVM_PREFIX_ROOT_INCLUDE="<Vt_cast___024root.h>" -DT_CAST   -DVL_LOCK_SPINS=10000 -O0  -c -o Vt_cast__main.o ../../obj_vlt/t_cast/Vt_cast__main.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_cast.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_cast -DVM_PREFIX=Vt_cast -DVM_PREFIX_ROOT_INCLUDE="<Vt_cast___024root.h>" -DT_CAST   -DVL_LOCK_SPINS=10000 -c -o verilated.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated.cpp
+/usr/bin/c++  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_signed.h>" -DVM_PREFIX_INCLUDE_DPI="<Vt_math_signed__Dpi.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_signed -DVM_PREFIX=Vt_math_signed -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_signed___024root.h>" -DT_MATH_SIGNED   -DVL_LOCK_SPINS=10000 -O0  -c -o Vt_math_signed__main.o ../../obj_vlt/t_math_signed/Vt_math_signed__main.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_signed.h>" -DVM_PREFIX_INCLUDE_DPI="<Vt_math_signed__Dpi.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_signed -DVM_PREFIX=Vt_math_signed -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_signed___024root.h>" -DT_MATH_SIGNED   -DVL_LOCK_SPINS=10000 -c -o verilated.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_cast.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_cast -DVM_PREFIX=Vt_cast -DVM_PREFIX_ROOT_INCLUDE="<Vt_cast___024root.h>" -DT_CAST   -DVL_LOCK_SPINS=10000 -c -o verilated_threads.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated_threads.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_signed.h>" -DVM_PREFIX_INCLUDE_DPI="<Vt_math_signed__Dpi.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_signed -DVM_PREFIX=Vt_math_signed -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_signed___024root.h>" -DT_MATH_SIGNED   -DVL_LOCK_SPINS=10000 -c -o verilated_dpi.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated_dpi.cpp
+/opt/homebrew/Frameworks/Python.framework/Versions/3.15/bin/python3.15 /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator_includer -DVL_INCLUDE_OPT=include Vt_cast.cpp Vt_cast___024root__0.cpp Vt_cast___024root__Slow.cpp Vt_cast___024root__0__Slow.cpp Vt_cast__Syms__Slow.cpp > Vt_cast__ALL.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_signed.h>" -DVM_PREFIX_INCLUDE_DPI="<Vt_math_signed__Dpi.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_signed -DVM_PREFIX=Vt_math_signed -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_signed___024root.h>" -DT_MATH_SIGNED   -DVL_LOCK_SPINS=10000 -c -o verilated_threads.o /Users/jadams/workspace/sandbox/verilator-fma32/include/verilated_threads.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_cast.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_cast -DVM_PREFIX=Vt_cast -DVM_PREFIX_ROOT_INCLUDE="<Vt_cast___024root.h>" -DT_CAST   -DVL_LOCK_SPINS=10000 -c -o Vt_cast__ALL.o Vt_cast__ALL.cpp
+/opt/homebrew/Frameworks/Python.framework/Versions/3.15/bin/python3.15 /Users/jadams/workspace/sandbox/verilator-fma32/bin/verilator_includer -DVL_INCLUDE_OPT=include Vt_math_signed.cpp Vt_math_signed___024root__0.cpp Vt_math_signed__Dpi.cpp Vt_math_signed___024root__Slow.cpp Vt_math_signed___024root__0__Slow.cpp Vt_math_signed__Syms__Slow.cpp > Vt_math_signed__ALL.cpp
+/usr/bin/c++ -O0  -I.  -MMD -I/Users/jadams/workspace/sandbox/verilator-fma32/include -I/Users/jadams/workspace/sandbox/verilator-fma32/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -DVM_VPI=0   -DVM_PREFIX_INCLUDE="<Vt_math_signed.h>" -DVM_PREFIX_INCLUDE_DPI="<Vt_math_signed__Dpi.h>"  -DVL_DEBUG=1   -DTEST_OBJ_DIR=obj_vlt/t_math_signed -DVM_PREFIX=Vt_math_signed -DVM_PREFIX_ROOT_INCLUDE="<Vt_math_signed___024root.h>" -DT_MATH_SIGNED   -DVL_LOCK_SPINS=10000 -c -o Vt_math_signed__ALL.o Vt_math_signed__ALL.cpp
+/usr/bin/c++  -Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv,-U,_vlog_startup_routines   Vt_math_signed__main.o verilated.o verilated_dpi.o verilated_threads.o Vt_math_signed__ALL.a       -o Vt_math_signed
+rm Vt_math_signed__ALL.verilator_deplist.tmp
+driver: Leaving directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_math_signed'
+	obj_vlt/t_math_signed/Vt_math_signed    > obj_vlt/t_math_signed/vlt_sim.log
+/usr/bin/c++  -Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv,-U,_vlog_startup_routines   Vt_cast__main.o verilated.o verilated_threads.o Vt_cast__ALL.a       -o Vt_cast
+rm Vt_cast__ALL.verilator_deplist.tmp
+driver: Leaving directory '/Users/jadams/workspace/sandbox/verilator-fma32/test_regress/obj_vlt/t_cast'
+	obj_vlt/t_cast/Vt_cast    > obj_vlt/t_cast/vlt_sim.log
+*-* All Finished *-*
+- t/t_math_signed.v:156: Verilog $finish
+vlt/t_math_signed: Self PASSED
+==SUMMARY: Left 1  Passed 23  Failed 0  Running 1  Time 0:14
+*-* All Finished *-*
+- t/t_cast.v:155: Verilog $finish
+vlt/t_cast: Self PASSED
+==SUMMARY: Passed 24  Failed 0  Time 0:14
+
+======================================================================
+==TESTS DONE, PASSED: Passed 24  Failed 0  Time 0:14

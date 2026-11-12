@@ -62,3 +62,31 @@ def projection_fixture(checkpoint,base,rows,width,batch):
             for lane in range(lanes):total=add(total,partial[lane][t])
             outputs.append(as_float(total))
     return outputs
+
+
+def fused_multiply_add(a,b,c):
+    """Test-only binary32 FMA, RN-even; NaNs canonicalized, not payload oracle.
+
+    Unlike multiply/add above, handles infinities, signed zero and final overflow.
+    Finite multiply and add are exact rationals until one final binary32 rounding.
+    """
+    if any(type(bits) is not int or not 0<=bits<=0xffffffff for bits in (a,b,c)):
+        raise ValueError('FMA operands must be uint32 encodings')
+    def nan(bits):return bits&0x7fffffff>0x7f800000
+    def inf(bits):return bits&0x7fffffff==0x7f800000
+    def zero(bits):return bits&0x7fffffff==0
+    if any(nan(bits) for bits in (a,b,c)):return 0x7fc00000
+    product_sign=(a^b)&0x80000000
+    if (inf(a) and zero(b)) or (inf(b) and zero(a)):return 0x7fc00000
+    if inf(a) or inf(b):
+        if inf(c) and (c&0x80000000)!=product_sign:return 0x7fc00000
+        return product_sign|0x7f800000
+    if inf(c):return c
+    product=exact_value(a)*exact_value(b)
+    result=product+exact_value(c)
+    if result==0:
+        # Exact nonzero cancellation is +0 in RN-even. Only two negative zero
+        # addends produce -0; the product's zero sign is XOR of its inputs.
+        return 0x80000000 if product==0 and zero(c) and product_sign and c>>31 else 0
+    try:return round_binary32(result)
+    except OverflowError:return (0x80000000 if result<0 else 0)|0x7f800000
