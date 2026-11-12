@@ -12,7 +12,12 @@ from tools.rtl_model import RTLModel
 
 
 class NumpyQwen:
-    def __init__(self, model):
+    def __init__(self, model, weight_precision='bf16', kv_precision='f32'):
+        # Defaults preserve the existing BF16-checkpoint / FP32-KV oracle.
+        # f32 weights are the same exact BF16 values widened from this checkpoint.
+        if weight_precision not in ('bf16', 'f16', 'f32') or kv_precision not in ('f16', 'f32'):
+            raise ValueError('Unsupported oracle weight/KV precision')
+        self.weight_precision, self.kv_precision = weight_precision, kv_precision
         header, start, _ = read_header(model / 'model.safetensors')
         self.weights = {}
         with (model / 'model.safetensors').open('rb') as f:
@@ -21,13 +26,18 @@ class NumpyQwen:
                     continue
                 f.seek(start + spec['data_offsets'][0])
                 data = np.frombuffer(f.read(spec['data_offsets'][1]-spec['data_offsets'][0]), dtype='<u2')
-                self.weights[name] = (data.astype(np.uint32)<<16).view(np.float32).reshape(spec['shape'])
+                value = (data.astype(np.uint32)<<16).view(np.float32).reshape(spec['shape'])
+                # Native MOSTLY_F16 GGUF retains one-dimensional norm weights
+                # as FP32. Round only matrix tensors, then widen for FP32 math.
+                if weight_precision == 'f16' and len(spec['shape']) == 2:
+                    value = value.astype(np.float16).astype(np.float32)
+                self.weights[name] = value
         self.cache = []
 
     def reset(self):
         self.cache = []
 
-    def token(self, token):
+    def token(self, token, logits=True):
         w = self.weights
         position = len(self.cache)
         payload = []
@@ -46,6 +56,11 @@ class NumpyQwen:
             q = rope(norm((weight('self_attn.q_proj') @ h).reshape(16, 128), weight('self_attn.q_norm')))
             k = rope(norm((weight('self_attn.k_proj') @ h).reshape(8, 128), weight('self_attn.k_norm')))
             v = (weight('self_attn.v_proj') @ h).reshape(8, 128)
+            if self.kv_precision == 'f16':
+                # Current-position values must be rounded before attention too,
+                # not merely when they become previous-token cache entries.
+                k = k.astype(np.float16).astype(np.float32)
+                v = v.astype(np.float16).astype(np.float32)
             payload.append((k, v))
             keys = np.stack([entry[layer][0] for entry in self.cache] + [k])
             vals = np.stack([entry[layer][1] for entry in self.cache] + [v])
@@ -60,7 +75,9 @@ class NumpyQwen:
             activated = gate * (.5 + .5*np.tanh(gate*.5)) * up
             x += weight('mlp.down_proj') @ activated
         self.cache.append(payload)
-        return w['model.embed_tokens.weight'] @ norm(x, w['model.norm.weight'])
+        if logits:
+            return w['model.embed_tokens.weight'] @ norm(x, w['model.norm.weight'])
+        return None
 
 
 class FullModelTests(unittest.TestCase):
