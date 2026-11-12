@@ -2,6 +2,7 @@
 // Sparse evaluation callbacks alter graph scheduling: never a scoreboard driver.
 #include "llama.h"
 #include "ggml-backend.h"
+#include "ggml-cpu.h"
 #include "nlohmann/json.hpp"
 #include <algorithm>
 #include <chrono>
@@ -22,6 +23,53 @@ namespace fs = std::filesystem;
 static double seconds(Clock::time_point a, Clock::time_point b) {
     return std::chrono::duration<double>(b-a).count();
 }
+
+class PersistentPools {
+    using Owner=std::unique_ptr<ggml_threadpool,decltype(&ggml_threadpool_free)>;
+    Owner decode_{nullptr,ggml_threadpool_free},prefill_{nullptr,ggml_threadpool_free};
+    bool separate_;
+public:
+    PersistentPools(int decode_threads,int prefill_threads):separate_(decode_threads!=prefill_threads) {
+        auto decode_params=ggml_threadpool_params_default(decode_threads);
+        auto prefill_params=ggml_threadpool_params_default(prefill_threads);
+        // Public API defaults match server common CPU settings: poll50, normal
+        // priority, inherited/default affinity, and no strict CPU placement.
+        decode_params.poll=prefill_params.poll=50;
+        decode_params.prio=prefill_params.prio=GGML_SCHED_PRIO_NORMAL;
+        decode_params.strict_cpu=prefill_params.strict_cpu=false;
+        prefill_params.paused=false;
+        if(separate_) {
+            prefill_.reset(ggml_threadpool_new(&prefill_params));
+            if(!prefill_) throw std::runtime_error("Persistent prefill pool creation failed");
+        }
+        // In the two-pool case the first prompt uses the prefill pool. The CPU
+        // backend pauses the previous pool and resumes the selected one later.
+        decode_params.paused=separate_;
+        decode_.reset(ggml_threadpool_new(&decode_params));
+        if(!decode_) throw std::runtime_error("Persistent decode pool creation failed");
+    }
+    ggml_threadpool_t decode() const {return decode_.get();}
+    ggml_threadpool_t prefill() const {return prefill_.get();}
+    Json settings() const {
+        return Json{{"attached",true},{"persistent",true},{"pool_constructions",separate_?2:1},
+            {"decode_threads",ggml_threadpool_get_n_threads(decode_.get())},
+            {"prefill_threads",ggml_threadpool_get_n_threads(separate_?prefill_.get():decode_.get())},
+            {"shared_when_thread_counts_equal",!separate_},{"poll",50},{"priority","normal"},
+            {"strict_cpu",false},{"cpu_affinity","inherited/default, not pinned"},
+            {"initial_decode_paused",separate_},{"initial_prefill_paused",false},
+            {"lifetime","Created once before context inference; retained across all warmups and requests"}};
+    }
+};
+struct PoolAttachment {
+    llama_context* context;
+    PoolAttachment(llama_context* ctx,const PersistentPools& pools):context(ctx) {
+        llama_attach_threadpool(context,pools.decode(),pools.prefill());
+    }
+    ~PoolAttachment() {
+        llama_synchronize(context);
+        llama_detach_threadpool(context);
+    }
+};
 
 struct HeadSpan { int step; double begin, end; };
 struct CallbackState {
@@ -90,7 +138,7 @@ static Json dump_logits(llama_context* context,const fs::path& directory,int run
 }
 
 int main(int argc,char** argv) {
-    Json report{{"completed",false},{"diagnostic_only",true},{"gpu",false},{"pytorch",false}};
+    Json report{{"completed",false},{"diagnostic_only",true},{"client_version",2},{"gpu",false},{"pytorch",false}};
     fs::path output;
     bool output_owned=false;
     try {
@@ -169,8 +217,12 @@ int main(int argc,char** argv) {
             flash=="off"?LLAMA_FLASH_ATTN_TYPE_DISABLED:LLAMA_FLASH_ATTN_TYPE_AUTO;
         params.cb_eval=callback=="on"?boundary_callback:nullptr;
         params.cb_eval_user_data=&state;
+        // Declaration order guarantees: detach, destroy context, then free pools.
+        // The context's CPU backend can retain its last-selected pool pointer.
+        PersistentPools pools(threads,batch_threads);
         std::unique_ptr<llama_context,decltype(&llama_free)> ctx(llama_init_from_model(model.get(),params),llama_free);
         if(!ctx) throw std::runtime_error("Context creation failed");
+        PoolAttachment attachment(ctx.get(),pools);
         auto sampler_params=llama_sampler_chain_default_params();sampler_params.no_perf=false;
         std::unique_ptr<llama_sampler,decltype(&llama_sampler_free)> sampler(llama_sampler_chain_init(sampler_params),llama_sampler_free);
         if(!sampler) throw std::runtime_error("Sampler creation failed");
@@ -182,6 +234,7 @@ int main(int argc,char** argv) {
             {"threads",llama_n_threads(ctx.get())},{"batch_threads",llama_n_threads_batch(ctx.get())},
             {"context",llama_n_ctx(ctx.get())},{"batch_size",batch_size},{"kv_type","f16"},{"flash_attn_requested",flash},
             {"callback",callback},{"registered_devices",devices},{"n_gpu_layers",0},{"offload_kqv",false},{"op_offload",false}};
+        report["configuration"]["threadpools"]=pools.settings();
         report["prompt_ids"]=prompt;report["continuation_ids"]=continuation;
         report["mode"]=teacher_forced?"teacher_forced":"greedy";
         report["requested_steps"]=tokens;report["warmups"]=warmups;report["runs"]=Json::array();
@@ -201,6 +254,12 @@ int main(int argc,char** argv) {
             std::vector<llama_token> ids,consumed;ids.reserve(tokens);consumed.reserve(tokens-1);
             std::vector<int> eog_steps;
             double decode_seconds=0;
+            // Correlate monotonic relative windows with external profiler wall
+            // timestamps. Bracket the system-clock read; do not assume the two
+            // clocks share an epoch or silently discard correlation uncertainty.
+            const auto anchor_before=Clock::now();
+            const auto anchor_wall=std::chrono::system_clock::now();
+            const auto anchor_after=Clock::now();
             state.origin=Clock::now();
             if(llama_decode(ctx.get(),llama_batch_get_one(prompt.data(),int(prompt.size())))!=0)
                 throw std::runtime_error("Prompt decode failed");
@@ -233,6 +292,14 @@ int main(int argc,char** argv) {
             row["decode_step_tokens_per_second"]=decode_seconds>0?double(consumed.size())/decode_seconds:0;
             row["inference_step_seconds"]=seconds(state.origin,first)+decode_seconds;
             row["request_wall_including_dumps_seconds"]=seconds(state.origin,completed);
+            row["clock_correlation"]={{"unix_time_ns",std::chrono::duration_cast<std::chrono::nanoseconds>(anchor_wall.time_since_epoch()).count()},
+                {"steady_before_seconds",seconds(state.origin,anchor_before)},
+                {"steady_after_seconds",seconds(state.origin,anchor_after)},
+                {"meaning","System-clock timestamp sampled between the two monotonic offsets relative to this request origin"}};
+            row["phase_windows"]={{"prefill_begin_seconds",0.0},{"prefill_end_seconds",seconds(state.origin,prefilled)},
+                {"decode_wall_begin_seconds",seconds(state.origin,first)},
+                {"decode_wall_end_seconds",seconds(state.origin,completed)},
+                {"decode_wall_includes_optional_dumps_and_bookkeeping",true}};
             row["head_windows"]=Json::array();double head_prefill=0,head_decode=0;
             for(size_t i=0;i<state.count;i++) {
                 const auto& span=state.storage[i];const double elapsed=span.end-span.begin;

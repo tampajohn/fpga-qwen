@@ -68,6 +68,7 @@ def build_client(args):
         raise RuntimeError('C++ compiler not found')
     inputs = [SOURCE, Path(__file__).resolve(), source_tree / 'include/llama.h',
               source_tree / 'ggml/include/ggml.h', source_tree / 'ggml/include/ggml-backend.h',
+              source_tree / 'ggml/include/ggml-cpu.h',
               source_tree / 'vendor/nlohmann/json.hpp']
     hashes = {str(p): sha(p) for p in inputs}
     directory.mkdir(parents=True)
@@ -75,7 +76,7 @@ def build_client(args):
     command = [compiler, '-std=c++17', '-O3', '-DNDEBUG', '-Wall', '-Wextra',
                '-I' + str(source_tree / 'include'), '-I' + str(source_tree / 'ggml/include'),
                '-I' + str(source_tree / 'vendor'), str(SOURCE), '-L' + str(build / 'bin'),
-               '-Wl,-rpath,' + str(build / 'bin'), '-lllama', '-lggml', '-lggml-base', '-o', str(binary)]
+               '-Wl,-rpath,' + str(build / 'bin'), '-lllama', '-lggml', '-lggml-cpu', '-lggml-base', '-o', str(binary)]
     with (directory / 'build.log').open('w') as log:
         subprocess.run(command, check=True, stdout=log, stderr=subprocess.STDOUT)
     if hashes != {str(p): sha(p) for p in inputs} or libraries != native_libraries(build) or cache != cpu_build(build):
