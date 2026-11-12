@@ -135,16 +135,19 @@ class SVEngine:
 
 
 class NativeEngine:
-    def __init__(self, precision, threads, directory):
+    def __init__(self, precision, threads, directory, batch_threads=None):
         assert_cpu_build()
         self.precision, self.threads, self.directory = precision, threads, directory
+        self.batch_threads = threads if batch_threads is None else batch_threads
+        if type(self.batch_threads) is not int or not 1 <= self.batch_threads <= 32:
+            raise ValueError("Invalid native prefill thread count")
         self.model = ROOT/f'build/bench/qwen3-0.6b-{precision}.gguf'
         if not self.model.is_file():
             raise FileNotFoundError(self.model)
         self.process = None
         self.log = None
         self.metadata = dict(weight_storage=precision, arithmetic='llama.cpp native kernels; mixed precision',
-                             kv='FP16', cpu_threads=threads, cpu_thread_note='Same numeric worker count as SV')
+                             kv='FP16', cpu_threads=threads, prefill_threads=self.batch_threads, cpu_thread_note='Requested native thread counts; no affinity guarantee')
 
     def start(self):
         with socket.socket() as sock:
@@ -153,7 +156,7 @@ class NativeEngine:
         self.log = (self.directory/f'llama-{self.precision}.log').open('w')
         self.command = [str(ROOT/'build/llama-cpu/bin/llama-server'), '-m', str(self.model),
                        '--host', '127.0.0.1', '--port', str(self.port), '-t', str(self.threads),
-                       '-tb', str(self.threads), '-c', '4096', '-np', '1', '-ngl', '0',
+                       '-tb', str(self.batch_threads), '-c', '4096', '-np', '1', '-ngl', '0',
                        '--no-kv-offload', '--no-op-offload', '--no-webui', '--no-warmup',
                        '-ctk', 'f16', '-ctv', 'f16']
         start = time.perf_counter()
