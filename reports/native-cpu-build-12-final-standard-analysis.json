@@ -1,0 +1,1365 @@
+{
+  "completed": true,
+  "source_report": "$REPO/build/native-cpu/build-12-final-scoreboard/standard-confirmation.json",
+  "source_report_sha256": "070ffde9be52c76fe8348704b9d3869fe0b92c37322f0825c9c5f5775c3f53ef",
+  "analyzer_sha256": "6e27a7964cb7475aca76f214bee152dc472bd6d8dcc4b2b75becf014a4ac89d6",
+  "python_version": "3.12.13 (main, Apr 14 2026, 14:33:40) [Clang 22.1.3 ]",
+  "precision": "f16",
+  "baseline": "llama-f16-onon-d12-p6",
+  "context_suite": "standard",
+  "configurations": [
+    {
+      "name": "llama-f16-onon-d12-p6",
+      "build_dir": "$REPO/build/native-phase0/kleidi-on-lto-on",
+      "decode_threads": 12,
+      "prefill_threads": 6,
+      "priority": 0,
+      "poll": 50
+    },
+    {
+      "name": "native-cpu-f16-d12-p6",
+      "decode_threads": 12,
+      "prefill_threads": 6,
+      "binary": "$REPO/build/native-cpu/build-12/qwen_cpu",
+      "weights": "$REPO/build/native-cpu/weights.bin"
+    }
+  ],
+  "rounds": 10,
+  "tokens": 32,
+  "model": {
+    "path": "$REPO/build/bench/qwen3-0.6b-f16.gguf",
+    "sha256": "b91afb05689ed9ad8096f1e1274c416cff25f4db9fead4733806f7a669cadb1e"
+  },
+  "source_builds": {
+    "$REPO/build/native-phase0/kleidi-on-lto-on": {
+      "directory": "$REPO/build/native-phase0/kleidi-on-lto-on",
+      "server": "$REPO/build/native-phase0/kleidi-on-lto-on/bin/llama-server",
+      "cache_sha256": "6dc36d8fd67fa902b4aae2d7da05d6012153d164a873893c4dbe9ad60f4318b5",
+      "artifacts": {
+        "bin/libggml-base.0.29.0.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+        "bin/libllama.0.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+        "bin/libmtmd.0.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+        "bin/libggml.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+        "bin/libggml.0.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+        "bin/libmtmd.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+        "bin/libllama-server-impl.dylib": "fee8cf534d504a305849086b7d078b7eba381417bf6eb42921f2affd36987632",
+        "bin/libggml-base.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+        "bin/libggml-blas.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6",
+        "bin/libllama-bench-impl.dylib": "5fbdbf965c84a890ea38327e9e4528704a07d23f9078943cea8030b266539b50",
+        "bin/libllama-common.0.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+        "bin/libllama.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+        "bin/libggml-cpu.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+        "bin/libllama.0.9.0.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+        "bin/libmtmd.0.9.0.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+        "bin/libllama-common.0.9.0.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+        "bin/llama-bench": "d398209e1d1e9d5098c6404c474dc7993b164513e20301428260b9850c189aeb",
+        "bin/libggml.0.29.0.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+        "bin/llama-server": "a4f18ec1dc0808e769289df92c48af90c42bc0d5b7a02d6eb6ee966ebc71b4d3",
+        "bin/libggml-cpu.0.29.0.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+        "bin/libllama-common.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+        "bin/libggml-base.0.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+        "bin/libggml-blas.0.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6",
+        "bin/libggml-cpu.0.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+        "bin/libggml-blas.0.29.0.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6"
+      },
+      "source_directory": "$REPO/build/llama.cpp",
+      "source_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb",
+      "source_clean": true,
+      "manifest": {
+        "completed": true,
+        "source_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb",
+        "commands": [
+          [
+            "cmake",
+            "-S",
+            "$REPO/build/llama.cpp",
+            "-B",
+            "$REPO/build/native-phase0/kleidi-on-lto-on",
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+            "-DGGML_NATIVE=ON",
+            "-DGGML_BLAS=ON",
+            "-DGGML_BLAS_VENDOR=Apple",
+            "-DGGML_OPENMP=OFF",
+            "-DGGML_CPU_KLEIDIAI=ON",
+            "-DGGML_LTO=ON",
+            "-DLLAMA_BUILD_TESTS=OFF",
+            "-DLLAMA_BUILD_EXAMPLES=OFF",
+            "-DLLAMA_BUILD_SERVER=ON",
+            "-DLLAMA_BUILD_TOOLS=ON",
+            "-DLLAMA_BUILD_APP=OFF",
+            "-DLLAMA_BUILD_UI=OFF",
+            "-DLLAMA_OPENSSL=OFF",
+            "-DGGML_METAL=OFF",
+            "-DGGML_CUDA=OFF",
+            "-DGGML_VULKAN=OFF",
+            "-DGGML_OPENCL=OFF",
+            "-DGGML_HIP=OFF",
+            "-DGGML_MUSA=OFF",
+            "-DGGML_SYCL=OFF"
+          ],
+          [
+            "cmake",
+            "--build",
+            "$REPO/build/native-phase0/kleidi-on-lto-on",
+            "--parallel",
+            "6",
+            "--target",
+            "llama-server",
+            "llama-bench"
+          ]
+        ],
+        "script_sha256": "8ad46ab585698e7785ebb77d60823f24c34253bfdc5c1b40a19c8066a29567b6",
+        "started_utc": "2026-11-12T04:35:31Z",
+        "note": "CPU-only baseline candidate, not a tuned performance claim. OpenMP explicitly off to match previously unavailable runtime; Accelerate enabled.",
+        "cache_sha256": "6dc36d8fd67fa902b4aae2d7da05d6012153d164a873893c4dbe9ad60f4318b5",
+        "build_options": [
+          "GGML_ACCELERATE:BOOL=ON",
+          "GGML_ALL_WARNINGS_3RD_PARTY:BOOL=OFF",
+          "GGML_AMX_BF16:BOOL=OFF",
+          "GGML_AMX_INT8:BOOL=OFF",
+          "GGML_AMX_TILE:BOOL=OFF",
+          "GGML_AVX:BOOL=OFF",
+          "GGML_AVX2:BOOL=OFF",
+          "GGML_AVX512:BOOL=OFF",
+          "GGML_AVX512_BF16:BOOL=OFF",
+          "GGML_AVX512_VBMI:BOOL=OFF",
+          "GGML_AVX512_VNNI:BOOL=OFF",
+          "GGML_AVX_VNNI:BOOL=OFF",
+          "GGML_BACKEND_DL:BOOL=OFF",
+          "GGML_BLAS:BOOL=ON",
+          "GGML_BMI2:BOOL=OFF",
+          "GGML_BUILD_EXAMPLES:BOOL=OFF",
+          "GGML_BUILD_TESTS:BOOL=OFF",
+          "GGML_CCACHE:BOOL=ON",
+          "GGML_CPU:BOOL=ON",
+          "GGML_CPU_ALL_VARIANTS:BOOL=OFF",
+          "GGML_CPU_HBM:BOOL=OFF",
+          "GGML_CPU_KLEIDIAI:BOOL=ON",
+          "GGML_CPU_REPACK:BOOL=ON",
+          "GGML_CUDA:BOOL=OFF",
+          "GGML_CUDA_FA:BOOL=ON",
+          "GGML_CUDA_FA_ALL_QUANTS:BOOL=OFF",
+          "GGML_CUDA_FORCE_CUBLAS:BOOL=OFF",
+          "GGML_CUDA_FORCE_MMQ:BOOL=OFF",
+          "GGML_CUDA_GRAPHS:BOOL=ON",
+          "GGML_CUDA_NCCL:BOOL=ON",
+          "GGML_CUDA_NO_PEER_COPY:BOOL=OFF",
+          "GGML_CUDA_NO_VMM:BOOL=OFF",
+          "GGML_ET:BOOL=OFF",
+          "GGML_ET_SYSEMU:BOOL=OFF",
+          "GGML_F16C:BOOL=OFF",
+          "GGML_FMA:BOOL=OFF",
+          "GGML_GPROF:BOOL=OFF",
+          "GGML_HEXAGON:BOOL=OFF",
+          "GGML_HIP:BOOL=OFF",
+          "GGML_HIP_EXPORT_METRICS:BOOL=OFF",
+          "GGML_HIP_GRAPHS:BOOL=ON",
+          "GGML_HIP_MMQ_MFMA:BOOL=ON",
+          "GGML_HIP_NO_VMM:BOOL=ON",
+          "GGML_HIP_RCCL:BOOL=OFF",
+          "GGML_LASX:BOOL=ON",
+          "GGML_LLAMAFILE:BOOL=ON",
+          "GGML_LSX:BOOL=ON",
+          "GGML_LTO:BOOL=ON",
+          "GGML_METAL:BOOL=OFF",
+          "GGML_METAL_EMBED_LIBRARY:BOOL=OFF",
+          "GGML_METAL_NDEBUG:BOOL=OFF",
+          "GGML_METAL_SHADER_DEBUG:BOOL=OFF",
+          "GGML_MUSA:BOOL=OFF",
+          "GGML_MUSA_GRAPHS:BOOL=OFF",
+          "GGML_MUSA_MUDNN_COPY:BOOL=OFF",
+          "GGML_NATIVE:BOOL=ON",
+          "GGML_OPENCL:BOOL=OFF",
+          "GGML_OPENCL_EMBED_KERNELS:BOOL=ON",
+          "GGML_OPENCL_PROFILING:BOOL=OFF",
+          "GGML_OPENCL_USE_ADRENO_KERNELS:BOOL=ON",
+          "GGML_OPENMP:BOOL=OFF",
+          "GGML_OPENMP_FETCH:BOOL=OFF",
+          "GGML_OPENVINO:BOOL=OFF",
+          "GGML_RPC:BOOL=OFF",
+          "GGML_RVV:BOOL=ON",
+          "GGML_RV_ZFH:BOOL=ON",
+          "GGML_RV_ZICBOP:BOOL=ON",
+          "GGML_RV_ZIHINTPAUSE:BOOL=ON",
+          "GGML_RV_ZVFBFWMA:BOOL=OFF",
+          "GGML_RV_ZVFH:BOOL=ON",
+          "GGML_SANITIZE_ADDRESS:BOOL=OFF",
+          "GGML_SANITIZE_THREAD:BOOL=OFF",
+          "GGML_SANITIZE_UNDEFINED:BOOL=OFF",
+          "GGML_SCHED_NO_REALLOC:BOOL=OFF",
+          "GGML_SSE42:BOOL=OFF",
+          "GGML_STATIC:BOOL=OFF",
+          "GGML_SYCL:BOOL=OFF",
+          "GGML_SYCL_DNN:BOOL=ON",
+          "GGML_SYCL_F16:BOOL=OFF",
+          "GGML_SYCL_GRAPH:BOOL=ON",
+          "GGML_SYCL_HOST_MEM_FALLBACK:BOOL=ON",
+          "GGML_SYCL_SUPPORT_LEVEL_ZERO_API:BOOL=ON",
+          "GGML_SYCL_SUPPORT_XMX:BOOL=ON",
+          "GGML_VIRTGPU:BOOL=OFF",
+          "GGML_VIRTGPU_BACKEND:BOOL=OFF",
+          "GGML_VULKAN:BOOL=OFF",
+          "GGML_VULKAN_CHECK_RESULTS:BOOL=OFF",
+          "GGML_VULKAN_DEBUG:BOOL=OFF",
+          "GGML_VULKAN_MEMORY_DEBUG:BOOL=OFF",
+          "GGML_VULKAN_RUN_TESTS:BOOL=OFF",
+          "GGML_VULKAN_SHADER_DEBUG_INFO:BOOL=OFF",
+          "GGML_VULKAN_VALIDATE:BOOL=OFF",
+          "GGML_VXE:BOOL=ON",
+          "GGML_WEBGPU:BOOL=OFF",
+          "GGML_WEBGPU_CPU_PROFILE:BOOL=OFF",
+          "GGML_WEBGPU_DEBUG:BOOL=OFF",
+          "GGML_WEBGPU_GPU_PROFILE:BOOL=OFF",
+          "GGML_WEBGPU_JSPI:BOOL=ON",
+          "GGML_XTHEADVECTOR:BOOL=OFF",
+          "GGML_ZDNN:BOOL=OFF",
+          "GGML_ZENDNN:BOOL=OFF"
+        ],
+        "artifacts": {
+          "bin/libggml-base.0.29.0.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+          "bin/libllama.0.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+          "bin/libmtmd.0.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+          "bin/libggml.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+          "bin/libggml.0.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+          "bin/libmtmd.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+          "bin/libllama-server-impl.dylib": "fee8cf534d504a305849086b7d078b7eba381417bf6eb42921f2affd36987632",
+          "bin/libggml-base.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+          "bin/libggml-blas.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6",
+          "bin/libllama-bench-impl.dylib": "5fbdbf965c84a890ea38327e9e4528704a07d23f9078943cea8030b266539b50",
+          "bin/libllama-common.0.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+          "bin/libllama.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+          "bin/libggml-cpu.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+          "bin/libllama.0.9.0.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+          "bin/libmtmd.0.9.0.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+          "bin/libllama-common.0.9.0.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+          "bin/llama-bench": "d398209e1d1e9d5098c6404c474dc7993b164513e20301428260b9850c189aeb",
+          "bin/libggml.0.29.0.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+          "bin/llama-server": "a4f18ec1dc0808e769289df92c48af90c42bc0d5b7a02d6eb6ee966ebc71b4d3",
+          "bin/libggml-cpu.0.29.0.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+          "bin/libllama-common.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+          "bin/libggml-base.0.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+          "bin/libggml-blas.0.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6",
+          "bin/libggml-cpu.0.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+          "bin/libggml-blas.0.29.0.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6"
+        }
+      },
+      "manifest_sha256": "9aca1eff748dfcfd6f6a844b0913ecc40ecc0d0fe22aa0995cceb6eec8e76910",
+      "provenance_note": "Completed build manifest verified",
+      "build_options": {
+        "CMAKE_BUILD_TYPE": {
+          "type": "STRING",
+          "value": "Release"
+        },
+        "CMAKE_CXX_COMPILER": {
+          "type": "FILEPATH",
+          "value": "/usr/bin/c++"
+        },
+        "GGML_ACCELERATE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_ALL_WARNINGS_3RD_PARTY": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AMX_BF16": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AMX_INT8": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AMX_TILE": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX2": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX512": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX512_BF16": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX512_VBMI": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX512_VNNI": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX_VNNI": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_BACKEND_DIR": {
+          "type": "PATH",
+          "value": ""
+        },
+        "GGML_BACKEND_DL": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_BIN_INSTALL_DIR": {
+          "type": "PATH",
+          "value": "bin"
+        },
+        "GGML_BLAS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_BLAS_VENDOR": {
+          "type": "STRING",
+          "value": "Apple"
+        },
+        "GGML_BMI2": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_BUILD_EXAMPLES": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_BUILD_TESTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CCACHE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CCACHE_FOUND": {
+          "type": "FILEPATH",
+          "value": "/opt/homebrew/bin/ccache"
+        },
+        "GGML_CPU": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CPU_ALL_VARIANTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CPU_ARM_ARCH": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_CPU_HBM": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CPU_KLEIDIAI": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CPU_POWERPC_CPUTYPE": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_CPU_REPACK": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CUDA": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CUDA_CCCL_VERSION": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_CUDA_COMPRESSION_MODE": {
+          "type": "STRING",
+          "value": "size"
+        },
+        "GGML_CUDA_FA": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CUDA_FA_ALL_QUANTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CUDA_FA_QUANTS": {
+          "type": "STRING",
+          "value": "q4_0-q4_0;q8_0-q8_0;f16-f16;bf16-bf16;f8_e4m3-f8_e4m3"
+        },
+        "GGML_CUDA_FORCE_CUBLAS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CUDA_FORCE_MMQ": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CUDA_GRAPHS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CUDA_NCCL": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CUDA_NO_PEER_COPY": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CUDA_NO_VMM": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_ET": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_ET_SYSEMU": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_F16C": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_FMA": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_GPROF": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_HEXAGON": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_HIP": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_HIP_EXPORT_METRICS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_HIP_GRAPHS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_HIP_MMQ_MFMA": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_HIP_NO_VMM": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_HIP_RCCL": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_INCLUDE_INSTALL_DIR": {
+          "type": "PATH",
+          "value": "include"
+        },
+        "GGML_LASX": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_LIB_INSTALL_DIR": {
+          "type": "PATH",
+          "value": "lib"
+        },
+        "GGML_LLAMAFILE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_LSX": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_LTO": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_METAL": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_METAL_EMBED_LIBRARY": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_METAL_MACOSX_VERSION_MIN": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_METAL_NDEBUG": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_METAL_SHADER_DEBUG": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_METAL_STD": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_METAL_TARGET_OS": {
+          "type": "STRING",
+          "value": "macos"
+        },
+        "GGML_MUSA": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_MUSA_GRAPHS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_MUSA_MUDNN_COPY": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_NATIVE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_OPENCL": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_OPENCL_EMBED_KERNELS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_OPENCL_PROFILING": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_OPENCL_TARGET_VERSION": {
+          "type": "STRING",
+          "value": "300"
+        },
+        "GGML_OPENCL_USE_ADRENO_KERNELS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_OPENMP": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_OPENMP_FETCH": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_OPENVINO": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_RPC": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_RVV": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_RV_ZFH": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_RV_ZICBOP": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_RV_ZIHINTPAUSE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_RV_ZVFBFWMA": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_RV_ZVFH": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SANITIZE_ADDRESS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SANITIZE_THREAD": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SANITIZE_UNDEFINED": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SCCACHE_FOUND": {
+          "type": "FILEPATH",
+          "value": "GGML_SCCACHE_FOUND-NOTFOUND"
+        },
+        "GGML_SCHED_MAX_COPIES": {
+          "type": "STRING",
+          "value": "4"
+        },
+        "GGML_SCHED_NO_REALLOC": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SSE42": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_STATIC": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SYCL": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SYCL_DEVICE_ARCH": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_SYCL_DNN": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SYCL_F16": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SYCL_GRAPH": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SYCL_HOST_MEM_FALLBACK": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SYCL_SUPPORT_LEVEL_ZERO_API": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SYCL_SUPPORT_XMX": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SYCL_TARGET": {
+          "type": "STRING",
+          "value": "INTEL"
+        },
+        "GGML_VIRTGPU": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VIRTGPU_BACKEND": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_CHECK_RESULTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_DEBUG": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_MEMORY_DEBUG": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_RUN_TESTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_SHADERS_GEN_TOOLCHAIN": {
+          "type": "FILEPATH",
+          "value": ""
+        },
+        "GGML_VULKAN_SHADER_DEBUG_INFO": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_VALIDATE": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VXE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_WEBGPU": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_WEBGPU_CPU_PROFILE": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_WEBGPU_DEBUG": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_WEBGPU_GPU_PROFILE": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_WEBGPU_JSPI": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_XTHEADVECTOR": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_ZDNN": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_ZENDNN": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "CMAKE_CXX_COMPILER-ADVANCED": {
+          "type": "INTERNAL",
+          "value": "1"
+        },
+        "GGML_AVAILABLE_BACKENDS": {
+          "type": "INTERNAL",
+          "value": "ggml-cpu;ggml-blas"
+        },
+        "GGML_COMPILER_SUPPORTS_FP16_FORMAT_I3E": {
+          "type": "INTERNAL",
+          "value": ""
+        },
+        "GGML_CUDA_COMPRESSION_MODE-STRINGS": {
+          "type": "INTERNAL",
+          "value": "none;speed;balance;size"
+        },
+        "GGML_MACHINE_SUPPORTS_dotprod": {
+          "type": "INTERNAL",
+          "value": "1"
+        },
+        "GGML_MACHINE_SUPPORTS_dotprod_COMPILED": {
+          "type": "INTERNAL",
+          "value": "TRUE"
+        },
+        "GGML_MACHINE_SUPPORTS_dotprod_EXITCODE": {
+          "type": "INTERNAL",
+          "value": "0"
+        },
+        "GGML_MACHINE_SUPPORTS_i8mm": {
+          "type": "INTERNAL",
+          "value": "1"
+        },
+        "GGML_MACHINE_SUPPORTS_i8mm_COMPILED": {
+          "type": "INTERNAL",
+          "value": "TRUE"
+        },
+        "GGML_MACHINE_SUPPORTS_i8mm_EXITCODE": {
+          "type": "INTERNAL",
+          "value": "0"
+        },
+        "GGML_MACHINE_SUPPORTS_nosve": {
+          "type": "INTERNAL",
+          "value": "1"
+        },
+        "GGML_MACHINE_SUPPORTS_sme": {
+          "type": "INTERNAL",
+          "value": "1"
+        },
+        "GGML_MACHINE_SUPPORTS_sme_COMPILED": {
+          "type": "INTERNAL",
+          "value": "TRUE"
+        },
+        "GGML_MACHINE_SUPPORTS_sme_EXITCODE": {
+          "type": "INTERNAL",
+          "value": "0"
+        },
+        "GGML_MACHINE_SUPPORTS_sve": {
+          "type": "INTERNAL",
+          "value": ""
+        },
+        "GGML_MACHINE_SUPPORTS_sve_COMPILED": {
+          "type": "INTERNAL",
+          "value": "TRUE"
+        },
+        "GGML_MACHINE_SUPPORTS_sve_EXITCODE": {
+          "type": "INTERNAL",
+          "value": "FAILED_TO_RUN"
+        },
+        "GGML_OPENMP_ENABLED": {
+          "type": "INTERNAL",
+          "value": "OFF"
+        }
+      },
+      "linked_libraries": "$REPO/build/native-phase0/kleidi-on-lto-on/bin/llama-server:\n\t@rpath/libllama-server-impl.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t@rpath/libllama-common.0.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t@rpath/libmtmd.0.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t@rpath/libllama.0.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t@rpath/libggml.0.dylib (compatibility version 0.0.0, current version 0.29.0)\n\t@rpath/libggml-cpu.0.dylib (compatibility version 0.0.0, current version 0.29.0)\n\t@rpath/libggml-blas.0.dylib (compatibility version 0.0.0, current version 0.29.0)\n\t@rpath/libggml-base.0.dylib (compatibility version 0.0.0, current version 0.29.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+    }
+  },
+  "bootstrap": {
+    "method": "Paired-round percentile bootstrap of the median ratio",
+    "confidence_level": 0.95,
+    "resamples": 10000,
+    "seed": 20261112,
+    "resampling_unit": "One complete measured round, preserving baseline/candidate pairing",
+    "common_resample_indices_across_contexts_metrics_and_configurations": true
+  },
+  "quality_evidence": {
+    "path": "$REPO/build/native-cpu/build-12-quality.json",
+    "sha256": "b3217548e58ce07c193c812da26bccd65f3d6bf6f532463b5c8e23c99ab28497",
+    "reported_completed": true,
+    "reported_passed": true,
+    "scope_match_verified": false,
+    "reported_selected_steps": null,
+    "reported_summary": null,
+    "reported_oracle_precision": {
+      "weight_precision": null,
+      "kv_precision": null
+    },
+    "limitation": "Only the supplied report's status was checked. Its build, precision, prompt, position and conversation coverage must be matched manually to the performance comparison; no baseline quality scope is inferred."
+  },
+  "quality_pass_inferred": false,
+  "performance_claim_eligible": false,
+  "manual_quality_and_uncertainty_review_required": true,
+  "configuration_order_by_round": [
+    [
+      "llama-f16-onon-d12-p6",
+      "native-cpu-f16-d12-p6"
+    ],
+    [
+      "native-cpu-f16-d12-p6",
+      "llama-f16-onon-d12-p6"
+    ],
+    [
+      "llama-f16-onon-d12-p6",
+      "native-cpu-f16-d12-p6"
+    ],
+    [
+      "native-cpu-f16-d12-p6",
+      "llama-f16-onon-d12-p6"
+    ],
+    [
+      "llama-f16-onon-d12-p6",
+      "native-cpu-f16-d12-p6"
+    ],
+    [
+      "native-cpu-f16-d12-p6",
+      "llama-f16-onon-d12-p6"
+    ],
+    [
+      "llama-f16-onon-d12-p6",
+      "native-cpu-f16-d12-p6"
+    ],
+    [
+      "native-cpu-f16-d12-p6",
+      "llama-f16-onon-d12-p6"
+    ],
+    [
+      "llama-f16-onon-d12-p6",
+      "native-cpu-f16-d12-p6"
+    ],
+    [
+      "native-cpu-f16-d12-p6",
+      "llama-f16-onon-d12-p6"
+    ]
+  ],
+  "comparisons": [
+    {
+      "candidate": "native-cpu-f16-d12-p6",
+      "profile": "short",
+      "prompt_tokens": 85,
+      "raw_pairs": [
+        {
+          "round": 0,
+          "baseline_before_candidate": true,
+          "baseline": {
+            "steady_decode_tokens_per_second": 141.33545308227679,
+            "first_token_seconds": 0.18614599999273196,
+            "request_seconds": 0.4055866659618914
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 152.75783349191863,
+            "first_token_seconds": 0.09235354198608547,
+            "request_seconds": 0.29529079201165587
+          },
+          "ratios": {
+            "decode_speedup": 1.0808175171943053,
+            "ttft_speedup": 2.015580517970581,
+            "request_speedup": 1.373516130316322
+          }
+        },
+        {
+          "round": 1,
+          "baseline_before_candidate": false,
+          "baseline": {
+            "steady_decode_tokens_per_second": 79.83238639747,
+            "first_token_seconds": 0.16353020805399865,
+            "request_seconds": 0.5518877500435337
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 94.89867345049036,
+            "first_token_seconds": 0.11394245899282396,
+            "request_seconds": 0.4406078339670785
+          },
+          "ratios": {
+            "decode_speedup": 1.188723997025571,
+            "ttft_speedup": 1.4351999202009298,
+            "request_speedup": 1.2525600034718627
+          }
+        },
+        {
+          "round": 2,
+          "baseline_before_candidate": true,
+          "baseline": {
+            "steady_decode_tokens_per_second": 166.41421185316045,
+            "first_token_seconds": 0.11993133299984038,
+            "request_seconds": 0.3063074159435928
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 154.13791897672314,
+            "first_token_seconds": 0.09425679099513218,
+            "request_seconds": 0.29537645797245204
+          },
+          "ratios": {
+            "decode_speedup": 0.9262305019521434,
+            "ttft_speedup": 1.2723893072705408,
+            "request_speedup": 1.0370068692886831
+          }
+        },
+        {
+          "round": 3,
+          "baseline_before_candidate": false,
+          "baseline": {
+            "steady_decode_tokens_per_second": 160.04815241929126,
+            "first_token_seconds": 0.12749916699249297,
+            "request_seconds": 0.3212309999507852
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 153.57526918025349,
+            "first_token_seconds": 0.09292300004744902,
+            "request_seconds": 0.29477937502088025
+          },
+          "ratios": {
+            "decode_speedup": 0.9595566512877935,
+            "ttft_speedup": 1.3720948196613154,
+            "request_speedup": 1.0897336352926024
+          }
+        },
+        {
+          "round": 4,
+          "baseline_before_candidate": true,
+          "baseline": {
+            "steady_decode_tokens_per_second": 150.76110064335995,
+            "first_token_seconds": 0.12355254200519994,
+            "request_seconds": 0.32922958402195945
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 148.86868823769103,
+            "first_token_seconds": 0.09380970901111141,
+            "request_seconds": 0.3020477920072153
+          },
+          "ratios": {
+            "decode_speedup": 0.9874476081854456,
+            "ttft_speedup": 1.3170549542005892,
+            "request_speedup": 1.089991692487177
+          }
+        },
+        {
+          "round": 5,
+          "baseline_before_candidate": false,
+          "baseline": {
+            "steady_decode_tokens_per_second": 154.18644137860164,
+            "first_token_seconds": 0.13170608296059072,
+            "request_seconds": 0.33282841701293364
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 154.78465582058084,
+            "first_token_seconds": 0.09313291701255366,
+            "request_seconds": 0.29341199999907985
+          },
+          "ratios": {
+            "decode_speedup": 1.0038798122366044,
+            "ttft_speedup": 1.414173282501585,
+            "request_speedup": 1.1343381218695126
+          }
+        },
+        {
+          "round": 6,
+          "baseline_before_candidate": true,
+          "baseline": {
+            "steady_decode_tokens_per_second": 157.04956271404632,
+            "first_token_seconds": 0.13018908398225904,
+            "request_seconds": 0.3277208750369027
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 122.75532240554772,
+            "first_token_seconds": 0.10560095799155533,
+            "request_seconds": 0.35813704098109156
+          },
+          "ratios": {
+            "decode_speedup": 0.7816342833698869,
+            "ttft_speedup": 1.2328399898859814,
+            "request_speedup": 0.9150711530400043
+          }
+        },
+        {
+          "round": 7,
+          "baseline_before_candidate": false,
+          "baseline": {
+            "steady_decode_tokens_per_second": 162.56833465110546,
+            "first_token_seconds": 0.12932929099770263,
+            "request_seconds": 0.32018491602502763
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 154.8455090986862,
+            "first_token_seconds": 0.0932096250471659,
+            "request_seconds": 0.29341062501771376
+          },
+          "ratios": {
+            "decode_speedup": 0.9524948965676893,
+            "ttft_speedup": 1.3875100445073079,
+            "request_speedup": 1.091251947695137
+          }
+        },
+        {
+          "round": 8,
+          "baseline_before_candidate": true,
+          "baseline": {
+            "steady_decode_tokens_per_second": 147.70256987178212,
+            "first_token_seconds": 0.13403066695900634,
+            "request_seconds": 0.34402216697344556
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 150.1732136362141,
+            "first_token_seconds": 0.0989541249582544,
+            "request_seconds": 0.30538412497844547
+          },
+          "ratios": {
+            "decode_speedup": 1.0167271548936263,
+            "ttft_speedup": 1.3544727621567025,
+            "request_speedup": 1.1265227588294815
+          }
+        },
+        {
+          "round": 9,
+          "baseline_before_candidate": false,
+          "baseline": {
+            "steady_decode_tokens_per_second": 161.4835651037851,
+            "first_token_seconds": 0.19698949996381998,
+            "request_seconds": 0.3890483749564737
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 152.21668667009362,
+            "first_token_seconds": 0.09290270897326991,
+            "request_seconds": 0.2965613749693148
+          },
+          "ratios": {
+            "decode_speedup": 0.9426141079574526,
+            "ttft_speedup": 2.120384885875589,
+            "request_speedup": 1.3118646182319884
+          }
+        }
+      ],
+      "order_counts": {
+        "baseline_first": 5,
+        "candidate_first": 5
+      },
+      "metrics": {
+        "decode_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9735021297366195,
+          "percentile_95_ci": [
+            0.9393626992599163,
+            1.0423486647154547
+          ],
+          "minimum_observed_ratio": 0.7816342833698869,
+          "maximum_observed_ratio": 1.188723997025571
+        },
+        "ttft_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 1.3798024320843116,
+          "percentile_95_ci": [
+            1.3134310347136218,
+            1.7148769002360829
+          ],
+          "minimum_observed_ratio": 1.2328399898859814,
+          "maximum_observed_ratio": 2.120384885875589
+        },
+        "request_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 1.1088873532623094,
+          "percentile_95_ci": [
+            1.06349928088793,
+            1.2525600034718627
+          ],
+          "minimum_observed_ratio": 0.9150711530400043,
+          "maximum_observed_ratio": 1.373516130316322
+        }
+      }
+    },
+    {
+      "candidate": "native-cpu-f16-d12-p6",
+      "profile": "long",
+      "prompt_tokens": 452,
+      "raw_pairs": [
+        {
+          "round": 0,
+          "baseline_before_candidate": true,
+          "baseline": {
+            "steady_decode_tokens_per_second": 148.74338825787,
+            "first_token_seconds": 0.6022239589947276,
+            "request_seconds": 0.810702541959472
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 103.33102250607764,
+            "first_token_seconds": 0.43860362499253824,
+            "request_seconds": 0.7386179169989191
+          },
+          "ratios": {
+            "decode_speedup": 0.6946932143762726,
+            "ttft_speedup": 1.373048293900838,
+            "request_speedup": 1.0975939295562178
+          }
+        },
+        {
+          "round": 1,
+          "baseline_before_candidate": false,
+          "baseline": {
+            "steady_decode_tokens_per_second": 130.78168423175492,
+            "first_token_seconds": 0.550782291975338,
+            "request_seconds": 0.787911458988674
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 127.94611406970274,
+            "first_token_seconds": 0.46615254203788936,
+            "request_seconds": 0.7084430000395514
+          },
+          "ratios": {
+            "decode_speedup": 0.9783182929726816,
+            "ttft_speedup": 1.181549476417035,
+            "request_speedup": 1.1121733984875084
+          }
+        },
+        {
+          "round": 2,
+          "baseline_before_candidate": true,
+          "baseline": {
+            "steady_decode_tokens_per_second": 148.27732267641306,
+            "first_token_seconds": 0.4581987090059556,
+            "request_seconds": 0.6673154170275666
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 138.77963844902175,
+            "first_token_seconds": 0.44943829195108265,
+            "request_seconds": 0.672815041965805
+          },
+          "ratios": {
+            "decode_speedup": 0.9359464815255789,
+            "ttft_speedup": 1.0194919240566767,
+            "request_speedup": 0.9918259482990008
+          }
+        },
+        {
+          "round": 3,
+          "baseline_before_candidate": false,
+          "baseline": {
+            "steady_decode_tokens_per_second": 148.39094552123984,
+            "first_token_seconds": 0.4527978330152109,
+            "request_seconds": 0.6617851250339299
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 142.7910937240889,
+            "first_token_seconds": 0.4266442909720354,
+            "request_seconds": 0.6437455409904942
+          },
+          "ratios": {
+            "decode_speedup": 0.962262847119945,
+            "ttft_speedup": 1.0613005789520569,
+            "request_speedup": 1.028022848928288
+          }
+        },
+        {
+          "round": 4,
+          "baseline_before_candidate": true,
+          "baseline": {
+            "steady_decode_tokens_per_second": 148.2595053947849,
+            "first_token_seconds": 0.5114409170346335,
+            "request_seconds": 0.7206322920392267
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 139.30953813735218,
+            "first_token_seconds": 0.4330694999662228,
+            "request_seconds": 0.6555967499734834
+          },
+          "ratios": {
+            "decode_speedup": 0.9396330964844326,
+            "ttft_speedup": 1.1809672975689196,
+            "request_speedup": 1.099200525427214
+          }
+        },
+        {
+          "round": 5,
+          "baseline_before_candidate": false,
+          "baseline": {
+            "steady_decode_tokens_per_second": 145.08843516365016,
+            "first_token_seconds": 0.45847320900065824,
+            "request_seconds": 0.6722619999782182
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 129.8306509043499,
+            "first_token_seconds": 0.5815479999873787,
+            "request_seconds": 0.8203220840077847
+          },
+          "ratios": {
+            "decode_speedup": 0.8948380396956486,
+            "ttft_speedup": 0.7883669258781879,
+            "request_speedup": 0.8195098158199025
+          }
+        },
+        {
+          "round": 6,
+          "baseline_before_candidate": true,
+          "baseline": {
+            "steady_decode_tokens_per_second": 121.97543129197523,
+            "first_token_seconds": 0.45797200000379235,
+            "request_seconds": 0.7122303330106661
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 133.49249603659646,
+            "first_token_seconds": 0.47933625004952773,
+            "request_seconds": 0.7115599160315469
+          },
+          "ratios": {
+            "decode_speedup": 1.0944211848454348,
+            "ttft_speedup": 0.9554295131162562,
+            "request_speedup": 1.0009421792374957
+          }
+        },
+        {
+          "round": 7,
+          "baseline_before_candidate": false,
+          "baseline": {
+            "steady_decode_tokens_per_second": 146.5962768285341,
+            "first_token_seconds": 0.5030904579907656,
+            "request_seconds": 0.7146613330114633
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 141.56573647518672,
+            "first_token_seconds": 0.45471420901594684,
+            "request_seconds": 0.6736945420270786
+          },
+          "ratios": {
+            "decode_speedup": 0.965684392112964,
+            "ttft_speedup": 1.106388250060429,
+            "request_speedup": 1.060809147809213
+          }
+        },
+        {
+          "round": 8,
+          "baseline_before_candidate": true,
+          "baseline": {
+            "steady_decode_tokens_per_second": 148.8583529602755,
+            "first_token_seconds": 0.47471670899540186,
+            "request_seconds": 0.6830985840060748
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 140.56993908024927,
+            "first_token_seconds": 0.43398454098496586,
+            "request_seconds": 0.6545167909935117
+          },
+          "ratios": {
+            "decode_speedup": 0.9443201290676776,
+            "ttft_speedup": 1.0938562648291361,
+            "request_speedup": 1.0436685405261765
+          }
+        },
+        {
+          "round": 9,
+          "baseline_before_candidate": false,
+          "baseline": {
+            "steady_decode_tokens_per_second": 140.6087263989833,
+            "first_token_seconds": 0.46574629202950746,
+            "request_seconds": 0.6863443750189617
+          },
+          "candidate": {
+            "steady_decode_tokens_per_second": 137.54764042280723,
+            "first_token_seconds": 0.43727129203034565,
+            "request_seconds": 0.6626485420274548
+          },
+          "ratios": {
+            "decode_speedup": 0.9782297581766718,
+            "ttft_speedup": 1.0651197563575376,
+            "request_speedup": 1.0357592773372843
+          }
+        }
+      ],
+      "order_counts": {
+        "baseline_first": 5,
+        "candidate_first": 5
+      },
+      "metrics": {
+        "decode_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9532914880938113,
+          "percentile_95_ci": [
+            0.9172355680900406,
+            0.9782297581766718
+          ],
+          "minimum_observed_ratio": 0.6946932143762726,
+          "maximum_observed_ratio": 1.0944211848454348
+        },
+        "ttft_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 1.0794880105933369,
+          "percentile_95_ci": [
+            1.010274634736897,
+            1.1809672975689196
+          ],
+          "minimum_observed_ratio": 0.7883669258781879,
+          "maximum_observed_ratio": 1.373048293900838
+        },
+        "request_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 1.0397139089317304,
+          "percentile_95_ci": [
+            1.0009421792374957,
+            1.0975939295562178
+          ],
+          "minimum_observed_ratio": 0.8195098158199025,
+          "maximum_observed_ratio": 1.1121733984875084
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Ratios above1favor the candidate. Intervals summarize paired observations; they do not automatically establish a performance win.",
+    "Percentile bootstrap assumes measured rounds are sufficiently exchangeable. It does not remove thermal drift, background activity, affinity differences or systematic benchmark bias.",
+    "Intervals are unadjusted for multiple configurations, metrics or contexts. Choosing the best observed result can introduce selection bias.",
+    "A passed quality report, when supplied, is evidence only within its own stated scope. This analyzer does not promote it into a general baseline-quality claim.",
+    "Single-stream decode, TTFT and request latency remain separate metrics; no composite winner or cross-precision speedup is inferred."
+  ],
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-12-final-scoreboard/standard-analysis.json",
+    "raw_source_sha256": "94161dea15bc82eec531f07bd02a23f0f7a5f74fdb0e76649696e1d9cef510df",
+    "sanitization": "Home/repository paths and process IDs/names removed; host CPU percentages preserved from ps column index2. All scored visits, warmups, token IDs, timings, ratios and intervals retained. Raw artifact hashes preserved."
+  }
+}

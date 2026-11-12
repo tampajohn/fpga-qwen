@@ -1,0 +1,49 @@
+{
+  "completed": true,
+  "binary": "$REPO/build/native-cpu/build-12/qwen_cpu",
+  "binary_sha256": "bada457a466db58a0ac8908c4d9fa59846d4f5c6a4773d812498a1ee38569059",
+  "prerequisites": {
+    "numerical": {
+      "path": "$REPO/build/native-cpu/build-12-exact-gate.json",
+      "sha256": "c35319256d5ce42bb9b7b454482146c07243d958534387a4f2e5c92f45e6391a"
+    },
+    "quality": {
+      "path": "$REPO/build/native-cpu/build-12-quality.json",
+      "sha256": "b3217548e58ce07c193c812da26bccd65f3d6bf6f532463b5c8e23c99ab28497"
+    },
+    "prefix": {
+      "path": "$REPO/build/native-cpu/build-12-prefix-check/report.json",
+      "sha256": "e8bfd7277af8230507b4767c5ea4c4d5046f27c69dd67e7c5f5e64387148a218"
+    }
+  },
+  "frozen_inputs": {
+    "$REPO/build/native-cpu/build-12/qwen_cpu": "bada457a466db58a0ac8908c4d9fa59846d4f5c6a4773d812498a1ee38569059",
+    "$REPO/build/native-cpu/build-12/manifest.json": "325ec8a546c49b38ab98f1a74911637ff69fe7b0768ae621119780306fc916ec",
+    "$REPO/build/native-cpu/build-12-exact-gate.json": "c35319256d5ce42bb9b7b454482146c07243d958534387a4f2e5c92f45e6391a",
+    "$REPO/build/native-cpu/build-12-quality.json": "b3217548e58ce07c193c812da26bccd65f3d6bf6f532463b5c8e23c99ab28497",
+    "$REPO/build/native-cpu/build-12-prefix-check/report.json": "e8bfd7277af8230507b4767c5ea4c4d5046f27c69dd67e7c5f5e64387148a218"
+  },
+  "baseline": "llama-f16-onon-d12-p6",
+  "candidate": "native-cpu-f16-d12-p6",
+  "threads": 12,
+  "prefill_threads": 6,
+  "rounds": 10,
+  "warmups_per_visit_profile": 1,
+  "suites": [
+    {
+      "name": "standard",
+      "tokens": 32
+    },
+    {
+      "name": "extended",
+      "tokens": 128
+    }
+  ],
+  "policy": "Run both suites serially; retain every round, failure and interval. No selection by timing results.",
+  "scope_note": "Caller must review numerical/context coverage and any transitive oracle chain; pass flags and binary binding alone do not prove coverage.",
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-12-final-scoreboard/selection.json",
+    "raw_source_sha256": "6b65f1d735a8dba0be5cdf18b710ae86cdc085747c91c0b8314cc2488686ad3c",
+    "sanitization": "Home/repository paths and process IDs/names removed; host CPU percentages preserved from ps column index2. All scored visits, warmups, token IDs, timings, ratios and intervals retained. Raw artifact hashes preserved."
+  }
+}
