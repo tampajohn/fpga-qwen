@@ -41,4 +41,3 @@ mixed kernels, while this SV profile retains FP64 attention and KV. GPU build
 backends and runtime offload were disabled. These fresh results supersede older
 8/8-thread comparisons for this specific 12/8 configuration; do not combine
 absolute timings from separate sessions into a speedup claim.
-
