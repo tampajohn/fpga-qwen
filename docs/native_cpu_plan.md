@@ -135,3 +135,33 @@ Evidence: [confirmation](../reports/native-phase0-f16-confirmation.json),
 and [conversation gate](../reports/native-phase0-f16-confirmation-quality.json).
 Phase 0 profiling and separate FP32/Q4 measurements remain in progress.
 The four-hour Phase 1 implementation clock has not started.
+
+## Q4 discovery boundary
+
+The initial eight-configuration Q4_K_M discovery stopped at the exact output-ID
+preflight gate, before any scored visits. All four KleidiAI-OFF configurations
+(LTO OFF/ON, six/twelve decode threads, six prefill threads) matched on both
+85/452-token prompts. The first KleidiAI-ON/LTO-OFF 6/6 configuration failed on
+the **85-token short prompt**, not the long prompt. Its failed output IDs were
+not persisted, so the first divergent token is unknown. The
+[sanitized failure report](../reports/native-phase0-q4-discovery-failed.json)
+preserves this negative result; startup/warmup timings are not scored evidence.
+No speed or model-quality conclusion follows from this failed discovery.
+
+The pinned local llama.cpp source provides a plausible arithmetic explanation,
+not proof of the offending operation: `ggml/src/ggml-cpu/kleidiai/kleidiai.cpp`
+accepts Q4_K and Q6_K matrix multiplications, and its Q6_K repacking path
+dequantizes weights then requantizes each row to symmetric int8 using
+`max_abs / 127`. The generic CPU Q6_K path instead uses
+`ggml_vec_dot_q6_K_q8_K` (`ggml/src/ggml-cpu/ggml-cpu.c`). Identical GGUF storage
+therefore does not guarantee identical effective arithmetic across these
+backends. Separate fixed-prefix logit diagnostics would be needed to attribute
+the divergence; changed greedy tokens alone do not establish worse answers.
+
+The next constrained Q4 confirmation keeps the exact-ID gate unchanged and
+compares the four KleidiAI-OFF configurations above over ten paired rounds,
+with FP16 KV, normal priority, polling 50, and uncached identical prompts.
+KleidiAI-ON is excluded from this comparison. The scope is a matched
+KleidiAI-OFF Q4 baseline, not the globally fastest Q4 backend, nor equivalence
+between Q4 and FP16 model quality. Confirmation and conversation-quality results
+must be reported separately from this failed discovery.
