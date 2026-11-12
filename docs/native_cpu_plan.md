@@ -974,3 +974,30 @@ acceptance work. **Performance, browser and suffix validation remain required
 before any promotion.** No speed claim or deployment follows, and the currently
 live build12's near-4K failure is not repaired by this separate candidate's
 results. The FP64 norm accumulation remains explicitly disclosed.
+
+
+### Norm candidate versus build12: standard implementation-cost comparison
+
+The [completed ten-pair comparison](../reports/native-cpu-norm-f64-vs12-standard-confirmation.json)
+uses the same original-engine subprocess transport, FP16 weights/KV, 12 decode /
+6 prefill threads, uncached 85/452-token prompts and 32 fixed outputs. It compares
+the isolated FP64 norm candidate with frozen build12; this measures the
+candidate's implementation cost, **not achievement of the tuned llama target**.
+The [paired analysis](../reports/native-cpu-norm-f64-vs12-standard-analysis.json)
+retains every round and outlier. Ratios above 1 favor the norm candidate.
+
+| Prompt tokens | Decode ratio (95% interval) | TTFT speedup (95% interval) | Request speedup (95% interval) |
+|---|---:|---:|---:|
+| 85 | 1.011× (0.950–1.333) | 0.997× (0.969–1.005) | 1.001× (0.964–1.239) |
+| 452 | 1.009× (0.962–1.064) | 1.011× (0.949–1.053) | 1.008× (0.962–1.060) |
+
+Every interval includes 1: neither improvement nor regression is established
+for these metrics, and these intervals are not an equivalence proof. Short
+paired decode ratios range 0.608–1.669 and long ratios 0.775–1.454; those outlying
+rounds remain included. Background scheduling and process placement are not
+isolated causes. Do not multiply these ratios by earlier build12/llama results
+to invent a candidate/llama comparison.
+
+Extended implementation-cost timing, browser and suffix acceptance remain
+separate pending steps. This standard run alone does not promote the candidate,
+repair the live build12 artifact, or complete the follow-on goal.
