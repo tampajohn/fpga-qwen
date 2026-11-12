@@ -386,3 +386,19 @@ build-08 [tiny](../reports/native-cpu-build-08-tiny-gate.json),
 [confirmation](../reports/native-cpu-build-08-confirmation.json),
 [paired uncertainty](../reports/native-cpu-build-08-confirmation-analysis.json),
 and [boundary 513/514 gate](../reports/native-cpu-boundary-513-oracle-gate.json).
+
+## Prefill boundary coverage completed
+
+The 511- and 512-token synthetic fixtures also passed unchanged NumPy tolerances
+for both tuned llama and build-08, at contexts 511/512 and 512/513 respectively.
+Together with the 513/514 result this covers the two sides of the 512-token
+prefill split, including a carried chunk and subsequent decode. Each engine
+used identical prescribed continuations; all tested greedy predictions matched.
+The baseline diagnostic physical batch remains 1024, with no timing claim or
+change to the scored workload. This finite structural coverage does not prove
+all context lengths or real-user quality.
+
+See [511 gate](../reports/native-cpu-boundary-511-oracle-gate.json),
+[512 gate](../reports/native-cpu-boundary-512-oracle-gate.json),
+[513 gate](../reports/native-cpu-boundary-513-oracle-gate.json), and
+[fixture metadata, messages, IDs and raw hashes](../reports/native-cpu-boundary-fixtures.json).

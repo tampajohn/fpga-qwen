@@ -27,7 +27,8 @@ scheduling, grouped/four-row projection dispatch, larger prefill chunks, and
 CPU vector-library nonlinear functions. It passed the unchanged numerical gates
 at contexts 1–4, 85–92, and 452–455, and matched tuned llama.cpp on the nine-case
 exact-trajectory suite (both still 4/9). Additional synthetic boundary predictions
-at contexts 513/514 passed for both engines against NumPy; this is chunk-carry
+for 511/512/513-token prompts (two predictions each) passed for both engines
+against NumPy; this is chunk-carry
 coverage, not an answer-quality benchmark.
 
 Ten alternating paired rounds used 85/452-token uncached prompts and 32 identical
@@ -48,7 +49,10 @@ context improved, while longer-context TTFT remained behind.
 See [confirmation](reports/native-cpu-build-08-confirmation.json),
 [paired uncertainty](reports/native-cpu-build-08-confirmation-analysis.json),
 [conversation quality](reports/native-cpu-build-08-quality.json), and
-[513-token boundary gate](reports/native-cpu-boundary-513-oracle-gate.json).
+[511](reports/native-cpu-boundary-511-oracle-gate.json),
+[512](reports/native-cpu-boundary-512-oracle-gate.json), and
+[513-token boundary gates](reports/native-cpu-boundary-513-oracle-gate.json), plus
+[reproducible fixtures](reports/native-cpu-boundary-fixtures.json).
 Earlier build-02 and build-03 evidence remains in the
 [current plan](docs/native_cpu_plan.md); comparisons across historical runs do
 not establish isolated optimization gains. Native subprocess transport differs
@@ -58,7 +62,7 @@ weights, and background scheduling remains uncontrolled.
 An isolated actual-browser check was completed for build-06; it is not a
 build-08 browser validation. The live backend is unchanged and no candidate has
 been promoted. Candidate-09's lossless BF16 auxiliary-cache source has no result
-reported here. The 511/512-token boundary work is still pending publication.
+reported here. All three boundary gates and their exact fixture IDs are now archived.
 
 The primary target remains the tuned **FP16** baseline. FP32 and constrained
 KleidiAI-OFF Q4 measurements are separate precision classes, not interchangeable
