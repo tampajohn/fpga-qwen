@@ -17,7 +17,10 @@ from benchmark_native_phase0 import guard, host_snapshot, sha
 from experiment import ROOT
 from native_cpu_chat import NativeCPUChat
 
-SHAPES = {0: (2, 16, 85, 452), 3584: (2, 16, 64, 384)}
+SUITES = {
+    'original': {0: (2, 16, 85, 452), 3584: (2, 16, 64, 384)},
+    'dispatch-validation': {0: (32, 63, 64, 128, 256, 512), 3584: (2, 16, 64, 384)},
+}
 
 
 def require(ok, message):
@@ -53,6 +56,8 @@ def main():
     parser.add_argument('--weights', type=Path, required=True)
     parser.add_argument('--prompt', type=Path, default=ROOT/'build/native-cpu/extended-tutorial-fixtures/context3968.json')
     parser.add_argument('--directory', type=Path, required=True)
+    parser.add_argument('--suite', choices=tuple(SUITES), default='original',
+                        help='Predeclared shape suite; original preserves the initial eight-shape diagnostic')
     parser.add_argument('--rounds', type=int, default=10)
     parser.add_argument('--warmups', type=int, default=2)
     parser.add_argument('--threads', type=int, default=12)
@@ -62,6 +67,7 @@ def main():
     require(10 <= args.rounds <= 100 and args.rounds % 2 == 0, 'Use10..100 even paired rounds')
     require(2 <= args.warmups <= 10, 'Use2..10 symmetric warmups')
     require(1 <= args.threads <= 64 and 1 <= args.prefill_threads <= 64, 'Use1..64 workers')
+    shapes = SUITES[args.suite]
     guarded = guard(args.guard_state_dir)
     directory = args.directory.resolve();directory.mkdir(parents=True, exist_ok=False)
     output = directory/'report.json'
@@ -70,6 +76,7 @@ def main():
     weights = args.weights.resolve()
     report = dict(completed=False, paired_sampling_complete=False, performance_claim_eligible=False,
         gpu=False, pytorch=False, diagnostic_only=True, rounds=args.rounds, warmups=args.warmups,
+        suite=args.suite, declared_shapes={str(prefix): list(tails) for prefix, tails in shapes.items()},
         threads=args.threads, prefill_threads=args.prefill_threads, preflight=[], priming=[], shapes=[],
         guard_before=guarded, host_before=host_snapshot(),
         timing_scope='Only prefill tail command: CLI internal seconds and pipe round-trip wall seconds. Prefix priming, rewind, startup, dump IPC and validation are excluded.',
@@ -98,7 +105,7 @@ def main():
         report['inputs'] = {str(path): sha(path) for path in paths}
         sources = [Path(__file__).resolve()]+[ROOT/'tools'/name for name in (
             'native_cpu_chat.py', 'suffix.py', 'benchmark_native_phase0.py', 'benchmark_guard.py',
-            'analyze_native_phase0.py', 'experiment.py')]
+            'analyze_native_phase0.py', 'experiment.py', 'benchmark_matched.py', 'chat_protocol.py')]
         report['source_hashes'] = {str(path): sha(path) for path in sources}
         pack = json.loads(Path(str(weights)+'.manifest.json').read_text())
         require(pack.get('completed') is True and pack.get('format') == 'QWCPU01'
@@ -141,7 +148,7 @@ def main():
             return dict(token=response['token'], position=response['position'], cli_seconds=seconds, wall_seconds=elapsed)
         expected = {}
         # Entire shape corpus must pass before any warmup/scored timing phase.
-        for prefix, batches in SHAPES.items():
+        for prefix, batches in shapes.items():
             prime(prefix, 'preflight')
             for batch in batches:
                 guard(args.guard_state_dir)
@@ -164,7 +171,7 @@ def main():
                 row['passed'] = True;expected[name] = reference['token'];save(output, report)
         report['all_shapes_exact_before_timing'] = True
         save(output, report)
-        for prefix, batches in SHAPES.items():
+        for prefix, batches in shapes.items():
             prime(prefix, 'timing')
             for batch in batches:
                 name = f'P{prefix}-B{batch}'
