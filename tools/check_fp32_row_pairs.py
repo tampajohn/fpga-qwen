@@ -42,6 +42,10 @@ def inspect_artifact(path, batch, kind):
     if manifest['binary_sha256'] != digest:
         raise RuntimeError(f'Manifest/executable mismatch: {path}')
     command = command_text(manifest['command'])
+    tokens = command.split()
+    for define in (f'+define+KERNEL_BATCH={batch}', f'+define+KERNEL_ROWS={151936 if batch == 1 else 3072}'):
+        if define not in tokens:
+            raise RuntimeError(f'Missing required compiled probe dimension: {define}')
     if '-fno-fast-math' not in command or '-ffp-contract=off' not in command:
         raise RuntimeError('Separate-round strict FP32 archive flags required')
     if '+define+FP32_EXPLICIT_FMA' in command:
@@ -95,6 +99,9 @@ def main():
                  for batch in (1, 4) for kind in ('legacy', 'candidate')}
     source_key = 'rtl/fp32_projection_kernel.sv'
     candidate_sources = [artifacts[batch, 'candidate']['manifest']['source_hashes'][source_key] for batch in (1, 4)]
+    compilers = [artifacts[batch, 'candidate']['manifest'].get('compiler_binary_sha256') for batch in (1, 4)]
+    if not compilers[0] or compilers[0] != compilers[1]:
+        raise RuntimeError('B1 and unchanged B4 candidates must use the same compiler binary')
     if candidate_sources[0] != candidate_sources[1]:
         raise RuntimeError('B1 and unchanged B4 candidates must use the same edited SV source')
     model, layout = prepare_layout(None)
