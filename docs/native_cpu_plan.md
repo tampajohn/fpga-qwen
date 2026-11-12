@@ -704,9 +704,10 @@ Candidate 15 now connects shared-weight two-position verification to an opt-in
 greedy suffix adapter. All 36 API cases, 32 full-logit arrays versus build-12,
 35 conversation/budget fixtures, and CLI EOS/rollback checks passed. The first
 ten-pair counting/prose comparison established no request-speed gain, so the
-default remains off. Browser capability controls are implemented and tested
-on an isolated server; real suffix-plus-prefix/cancellation checks remain
-before promotion. See [scoped evidence](native_suffix_b2.md).
+default remains off. Isolated browser suffix-on/off requests matched exactly;
+seven cached-prefix cases and verification cancellation/restart also passed.
+Correctness does not establish a performance reason to promote candidate 15.
+See [scoped evidence](native_suffix_b2.md).
 
 ### Direct build-12 versus build-10 uncached control
 
