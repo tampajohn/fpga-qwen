@@ -1595,5 +1595,83 @@
     "raw_source_sha256": "c01b97d7eefd7c80ce1565abe55c61348ad9f5849e46134bea6de064a13593a8",
     "sanitization": "Home/repository paths and process IDs/names removed; host CPU percentages preserved from ps column index2. All scored visits, warmups, token IDs, timings, ratios and intervals retained. Raw artifact hashes preserved."
   },
-  "archive_scope_note": "Completed timing evidence, separate from standard suite; no pooled speedup. Independent longer-context NumPy controls are still pending at publication. Exact128 output identity is not a full-logit quality certificate; manual numerical/quality review remains required."
+  "archive_scope_note": "Completed timing observations only; separate from the standard suite, with no pooling. Subsequent independent numerical controls pass the two sampled positions at1024 and2048 but FAIL at3968 and3969. The near4K timing result is not a numerically qualified performance claim. Exact greedy output identity does not override the fixed full-logit contract; the numerical gap and overall goal remain unresolved.",
+  "numerical_qualification": {
+    "status": "partial_sampled_pass_with_near4k_failure",
+    "maximum_absolute_limit": 0.01,
+    "rms_limit": 0.002,
+    "relative_tolerance": 0,
+    "limits_relaxed": false,
+    "near4k_performance_claim_eligible": false,
+    "overall_numerical_goal_complete": false,
+    "controls": [
+      {
+        "initial_context": 1024,
+        "report": "reports/native-cpu-build-12-context1024-oracle-control.json",
+        "report_sha256": "4c61dd7bec862598445dde1cf672a598f0b6d7a3b9aeafa761a707bf24865ab9",
+        "passed": true,
+        "positions": [
+          {
+            "context_tokens": 1024,
+            "max_absolute_error": 0.007140636444091797,
+            "rms_error": 0.001595302581844488,
+            "greedy_equal": true,
+            "passed": true
+          },
+          {
+            "context_tokens": 1025,
+            "max_absolute_error": 0.006333351135253906,
+            "rms_error": 0.0012137602012898027,
+            "greedy_equal": true,
+            "passed": true
+          }
+        ]
+      },
+      {
+        "initial_context": 2048,
+        "report": "reports/native-cpu-build-12-context2048-oracle-control.json",
+        "report_sha256": "576acb62e2587475e75b56337925b21869c01d8b0256216655adc06f9b0da083",
+        "passed": true,
+        "positions": [
+          {
+            "context_tokens": 2048,
+            "max_absolute_error": 0.008435249328613281,
+            "rms_error": 0.0016476941685800567,
+            "greedy_equal": true,
+            "passed": true
+          },
+          {
+            "context_tokens": 2049,
+            "max_absolute_error": 0.005063056945800781,
+            "rms_error": 0.0009599382313712613,
+            "greedy_equal": true,
+            "passed": true
+          }
+        ]
+      },
+      {
+        "initial_context": 3968,
+        "report": "reports/native-cpu-build-12-context3968-oracle-control.json",
+        "report_sha256": "55f730c2414c39833e3e2462caf54f1fa6ae8ca039c01803de60c9ed35b90e8c",
+        "passed": false,
+        "positions": [
+          {
+            "context_tokens": 3968,
+            "max_absolute_error": 0.014894485473632812,
+            "rms_error": 0.0016618449178828626,
+            "greedy_equal": true,
+            "passed": false
+          },
+          {
+            "context_tokens": 3969,
+            "max_absolute_error": 0.010632514953613281,
+            "rms_error": 0.0020441391592560883,
+            "greedy_equal": true,
+            "passed": false
+          }
+        ]
+      }
+    ],
+    "coverage": "Each oracle control samples two prediction positions only, not the entire128-token timing trajectory. Greedy identity at failed positions does not establish full-logit conformance."
+  }
 }
