@@ -1,0 +1,4581 @@
+{
+  "completed": true,
+  "artifact": {
+    "path": "/Users/jadams/workspace/sandbox/fpga-qwen-prefill-value-pairs/build/variants/fma-prefill-fe363c76cb38176d/full/Vqwen_behavioral",
+    "sha256": "a3459b7dbf1d08e47923005283449cd5b8bd090f304fea94cc6a97b056a2be18",
+    "options": {
+      "storage": "scalar",
+      "lto": true,
+      "unchecked": true,
+      "opt": "O3",
+      "fp_contract": "on",
+      "fast_math": false,
+      "unroll": false,
+      "masked_activation": true,
+      "unsigned_indices": true,
+      "cpu": "generic",
+      "fast_attention": true,
+      "parallel_attention": true,
+      "attention_qk2": true,
+      "attention_query_value_pairs": true,
+      "attention_query_value_dispatch": true,
+      "attention_value_pairs": true,
+      "attention_head_pairs": true,
+      "batch_attention": true,
+      "attention_dot_lanes8": false,
+      "batched_prefill": true,
+      "block_unroll": true,
+      "compact_projection": true,
+      "prefill_b8": true,
+      "group_projections": true,
+      "static_kv": true,
+      "pool": "cv",
+      "scalar_group": true,
+      "fp32_projection_b1": true,
+      "fp32_verification_b4": true,
+      "phase_pools_experiment": true,
+      "fp32_kv": false,
+      "fp32_fma_canonical_prefix": true,
+      "fp32_prefill_fma": true,
+      "fp32_prefill_b8": true,
+      "shortreal_compiler": "/Users/jadams/workspace/sandbox/verilator-fma32",
+      "tag": "",
+      "print_path": false
+    }
+  },
+  "selectors": [
+    "OFF",
+    "ON",
+    "MIN_CONTEXT:256"
+  ],
+  "guard": {
+    "name": "Measure OFF ON and context threshold",
+    "pid": 58272,
+    "started_at": "2026-11-12T04:26:37.545026+00:00"
+  },
+  "source_sha256": "8e5f78d0fd8a9fbd6d9ff01eadf1e439e9b1fff964163bd640cd76c6fdcc0d00",
+  "tokens": 32,
+  "profiles": [
+    {
+      "context_tokens": 85,
+      "prefill_batch": 8,
+      "prompt_ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "warmup": [
+        {
+          "prefill_seconds": 0.5335117079666816,
+          "ttft_seconds": 0.5553751249681227,
+          "decode_seconds": 0.4646429580170661,
+          "total_seconds": 1.0200180829851888,
+          "decode_tokens_per_second": 66.71789481604795,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "final_position": 116,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              1540,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 18816
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 18816
+          }
+        },
+        {
+          "prefill_seconds": 0.5053180419490673,
+          "ttft_seconds": 0.5259991670027375,
+          "decode_seconds": 0.4643317079753615,
+          "total_seconds": 0.990330874978099,
+          "decode_tokens_per_second": 66.76261704196374,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "final_position": 116,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              1540,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 18816,
+            "fallback_head_pairs": 0
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 18816,
+            "fallback_head_pairs": 0
+          }
+        },
+        {
+          "prefill_seconds": 0.5813127500005066,
+          "ttft_seconds": 0.6047627500374801,
+          "decode_seconds": 0.48729741596616805,
+          "total_seconds": 1.0920601660036482,
+          "decode_tokens_per_second": 63.61617973806834,
+          "output_token_ids": [
+            10642,
+            33394,
+            19257,
+            311,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            279,
+            13940,
+            323,
+            1887,
+            4938,
+            13,
+            356,
+            11829,
+            374,
+            264,
+            14762,
+            429,
+            10533,
+            13814,
+            1483,
+            821,
+            304,
+            264,
+            13340
+          ],
+          "final_position": 116,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              1540,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 18816
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 18816
+          }
+        }
+      ],
+      "warm_logits_sha256": "24952655261ad0bafe05c7fced5be325ddf4a6a9b15d73a6f91e9aa2c5f4321d",
+      "pairs": [
+        {
+          "index": 0,
+          "order": [
+            0,
+            1,
+            2
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 0.5089525829534978,
+              "ttft_seconds": 0.5232070419588126,
+              "decode_seconds": 0.4572629160247743,
+              "total_seconds": 0.9804699579835869,
+              "decode_tokens_per_second": 67.79469516027937,
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "final_position": 116,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              }
+            },
+            "ON": {
+              "prefill_seconds": 0.509339667041786,
+              "ttft_seconds": 0.5249539579963312,
+              "decode_seconds": 0.4739828750025481,
+              "total_seconds": 0.9989368329988793,
+              "decode_tokens_per_second": 65.40320681381863,
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "final_position": 116,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 18816,
+                "fallback_head_pairs": 0
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 18816,
+                "fallback_head_pairs": 0
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.5378233750234358,
+              "ttft_seconds": 0.5564654999761842,
+              "decode_seconds": 0.5064878750126809,
+              "total_seconds": 1.062953374988865,
+              "decode_tokens_per_second": 61.20580872587296,
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "final_position": 116,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 0.9992400276017448,
+              "ttft_seconds": 0.9966722490403039,
+              "decode_seconds": 0.9647245504857451,
+              "total_seconds": 0.9815134707168085
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.9463191943476239,
+              "ttft_seconds": 0.9402326684784681,
+              "decode_seconds": 0.9028111798595887,
+              "total_seconds": 0.9224016603680832
+            }
+          },
+          "all_full_logits_exact": true
+        },
+        {
+          "index": 1,
+          "order": [
+            1,
+            2,
+            0
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 0.5563240830088034,
+              "ttft_seconds": 0.5719420830137096,
+              "decode_seconds": 0.4755198329803534,
+              "total_seconds": 1.047461915994063,
+              "decode_tokens_per_second": 65.19181293807529,
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "final_position": 116,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              }
+            },
+            "ON": {
+              "prefill_seconds": 0.5109063329873607,
+              "ttft_seconds": 0.5265227500349283,
+              "decode_seconds": 0.47712266695452854,
+              "total_seconds": 1.0036454169894569,
+              "decode_tokens_per_second": 64.97280918945401,
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "final_position": 116,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 18816,
+                "fallback_head_pairs": 0
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 18816,
+                "fallback_head_pairs": 0
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.5205045000184327,
+              "ttft_seconds": 0.537682041991502,
+              "decode_seconds": 0.5451613329933025,
+              "total_seconds": 1.0828433749848045,
+              "decode_tokens_per_second": 56.86390087460742,
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "final_position": 116,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 1.0888964318682,
+              "ttft_seconds": 1.0862628119597268,
+              "decode_seconds": 0.996640624968824,
+              "total_seconds": 1.043657349760076
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 1.0688170476702934,
+              "ttft_seconds": 1.0637180310045562,
+              "decode_seconds": 0.8722552466614416,
+              "total_seconds": 0.9673254139905154
+            }
+          },
+          "all_full_logits_exact": true
+        },
+        {
+          "index": 2,
+          "order": [
+            2,
+            0,
+            1
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 0.5257831659982912,
+              "ttft_seconds": 0.5436131659662351,
+              "decode_seconds": 0.46216441702563316,
+              "total_seconds": 1.0057775829918683,
+              "decode_tokens_per_second": 67.07569613322403,
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "final_position": 116,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              }
+            },
+            "ON": {
+              "prefill_seconds": 0.5237041670479812,
+              "ttft_seconds": 0.5396458330214955,
+              "decode_seconds": 0.4652512500179,
+              "total_seconds": 1.0048970830393955,
+              "decode_tokens_per_second": 66.63066461144878,
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "final_position": 116,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 18816,
+                "fallback_head_pairs": 0
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 18816,
+                "fallback_head_pairs": 0
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.5213222919846885,
+              "ttft_seconds": 0.5388058749958873,
+              "decode_seconds": 0.5047630000044592,
+              "total_seconds": 1.0435688750003465,
+              "decode_tokens_per_second": 61.414961080202275,
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "final_position": 116,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1540,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 18816
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 1.0039697964635816,
+              "ttft_seconds": 1.0073517346043912,
+              "decode_seconds": 0.9933652343929262,
+              "total_seconds": 1.0008762090838295
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 1.0085568449348676,
+              "ttft_seconds": 1.008922120551088,
+              "decode_seconds": 0.9156067640091494,
+              "total_seconds": 0.9637864898869606
+            }
+          },
+          "all_full_logits_exact": true
+        }
+      ],
+      "median_speedup_over_off": {
+        "ON": {
+          "prefill_seconds": 1.0039697964635816,
+          "ttft_seconds": 1.0073517346043912,
+          "decode_seconds": 0.9933652343929262,
+          "total_seconds": 1.0008762090838295
+        },
+        "MIN_CONTEXT:256": {
+          "prefill_seconds": 1.0085568449348676,
+          "ttft_seconds": 1.008922120551088,
+          "decode_seconds": 0.9028111798595887,
+          "total_seconds": 0.9637864898869606
+        }
+      }
+    },
+    {
+      "context_tokens": 128,
+      "prefill_batch": 8,
+      "prompt_ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "warmup": [
+        {
+          "prefill_seconds": 0.7963097500032745,
+          "ttft_seconds": 0.8123229999910109,
+          "decode_seconds": 0.4959233329864219,
+          "total_seconds": 1.3082463329774328,
+          "decode_tokens_per_second": 62.5096621554783,
+          "output_token_ids": [
+            10642,
+            33394,
+            10953,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            374,
+            22409,
+            1948,
+            264,
+            1887,
+            4938,
+            323,
+            264,
+            17654,
+            13,
+            356,
+            14242,
+            14060,
+            5926,
+            24758,
+            1995,
+            311,
+            4628,
+            705,
+            821,
+            56370,
+            13,
+            13850,
+            33394
+          ],
+          "final_position": 159,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              2240,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 28672
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 28672
+          }
+        },
+        {
+          "prefill_seconds": 0.777352915960364,
+          "ttft_seconds": 0.794166374951601,
+          "decode_seconds": 0.4819216250325553,
+          "total_seconds": 1.2760879999841563,
+          "decode_tokens_per_second": 64.32581231005322,
+          "output_token_ids": [
+            10642,
+            33394,
+            10953,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            374,
+            22409,
+            1948,
+            264,
+            1887,
+            4938,
+            323,
+            264,
+            17654,
+            13,
+            356,
+            14242,
+            14060,
+            5926,
+            24758,
+            1995,
+            311,
+            4628,
+            705,
+            821,
+            56370,
+            13,
+            13850,
+            33394
+          ],
+          "final_position": 159,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              2240,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 28224,
+            "fallback_head_pairs": 448
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 28224,
+            "fallback_head_pairs": 448
+          }
+        },
+        {
+          "prefill_seconds": 0.8030423339805566,
+          "ttft_seconds": 0.8187144169933163,
+          "decode_seconds": 0.48888558300677687,
+          "total_seconds": 1.3076000000000931,
+          "decode_tokens_per_second": 63.40951968626631,
+          "output_token_ids": [
+            10642,
+            33394,
+            10953,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            374,
+            22409,
+            1948,
+            264,
+            1887,
+            4938,
+            323,
+            264,
+            17654,
+            13,
+            356,
+            14242,
+            14060,
+            5926,
+            24758,
+            1995,
+            311,
+            4628,
+            705,
+            821,
+            56370,
+            13,
+            13850,
+            33394
+          ],
+          "final_position": 159,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              2240,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 28672
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 28672
+          }
+        }
+      ],
+      "warm_logits_sha256": "6f37bb29a3ef791fc67501fb2e8ace4b34c7a003bc92b8eb1228930cc54d160c",
+      "pairs": [
+        {
+          "index": 0,
+          "order": [
+            0,
+            1,
+            2
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 0.8140352079644799,
+              "ttft_seconds": 0.8295929169980809,
+              "decode_seconds": 0.46108450001338497,
+              "total_seconds": 1.2906774170114659,
+              "decode_tokens_per_second": 67.23279572204247,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                4628,
+                705,
+                821,
+                56370,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 159,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2240,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              }
+            },
+            "ON": {
+              "prefill_seconds": 0.8220460410229862,
+              "ttft_seconds": 0.8381507500307634,
+              "decode_seconds": 0.4879441660013981,
+              "total_seconds": 1.3260949160321616,
+              "decode_tokens_per_second": 63.53185909371273,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                4628,
+                705,
+                821,
+                56370,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 159,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2240,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 28224,
+                "fallback_head_pairs": 448
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 28224,
+                "fallback_head_pairs": 448
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.8098558750352822,
+              "ttft_seconds": 0.8260245830169879,
+              "decode_seconds": 0.5556669579818845,
+              "total_seconds": 1.3816915409988724,
+              "decode_tokens_per_second": 55.78881298356892,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                4628,
+                705,
+                821,
+                56370,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 159,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2240,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 0.9902550068259713,
+              "ttft_seconds": 0.9897896255150181,
+              "decode_seconds": 0.9449534027466245,
+              "total_seconds": 0.9732918823588668
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 1.0051605885170811,
+              "ttft_seconds": 1.0043198883598112,
+              "decode_seconds": 0.8297857077699714,
+              "total_seconds": 0.9341284785447777
+            }
+          },
+          "all_full_logits_exact": true
+        },
+        {
+          "index": 1,
+          "order": [
+            1,
+            2,
+            0
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 0.8048217080067843,
+              "ttft_seconds": 0.8235486669582315,
+              "decode_seconds": 0.5689126250217669,
+              "total_seconds": 1.3924612919799984,
+              "decode_tokens_per_second": 54.489913980752185,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                4628,
+                705,
+                821,
+                56370,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 159,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2240,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              }
+            },
+            "ON": {
+              "prefill_seconds": 0.8304764589993283,
+              "ttft_seconds": 0.8511334590148181,
+              "decode_seconds": 0.542608082992956,
+              "total_seconds": 1.3937415420077741,
+              "decode_tokens_per_second": 57.131474763530996,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                4628,
+                705,
+                821,
+                56370,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 159,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2240,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 28224,
+                "fallback_head_pairs": 448
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 28224,
+                "fallback_head_pairs": 448
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.812516207981389,
+              "ttft_seconds": 0.8298991660121828,
+              "decode_seconds": 0.5138456670101732,
+              "total_seconds": 1.343744833022356,
+              "decode_tokens_per_second": 60.329398475566514,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                4628,
+                705,
+                821,
+                56370,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 159,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2240,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 0.9691083946877238,
+              "ttft_seconds": 0.9675905208937318,
+              "decode_seconds": 1.0484779767446855,
+              "total_seconds": 0.9990814293832905
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.9905300350946588,
+              "ttft_seconds": 0.9923478666878692,
+              "decode_seconds": 1.1071663371844749,
+              "total_seconds": 1.0362542483963038
+            }
+          },
+          "all_full_logits_exact": true
+        },
+        {
+          "index": 2,
+          "order": [
+            2,
+            0,
+            1
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 0.8266532500274479,
+              "ttft_seconds": 0.8440391659969464,
+              "decode_seconds": 0.5395396249950863,
+              "total_seconds": 1.3835787909920327,
+              "decode_tokens_per_second": 57.45639164182301,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                4628,
+                705,
+                821,
+                56370,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 159,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2240,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              }
+            },
+            "ON": {
+              "prefill_seconds": 0.8174475000123493,
+              "ttft_seconds": 0.8337746660108678,
+              "decode_seconds": 0.6819268339895643,
+              "total_seconds": 1.5157015000004321,
+              "decode_tokens_per_second": 45.459422411399636,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                4628,
+                705,
+                821,
+                56370,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 159,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2240,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 28224,
+                "fallback_head_pairs": 448
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 28224,
+                "fallback_head_pairs": 448
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.8784639170044102,
+              "ttft_seconds": 0.8968086669920012,
+              "decode_seconds": 0.5063363750232384,
+              "total_seconds": 1.4031450420152396,
+              "decode_tokens_per_second": 61.224122005015445,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                4628,
+                705,
+                821,
+                56370,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 159,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2240,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 28672
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 1.0112615795081146,
+              "ttft_seconds": 1.0123108801508545,
+              "decode_seconds": 0.7911987006561221,
+              "total_seconds": 0.9128306536555109
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.9410212918549481,
+              "ttft_seconds": 0.941158573799192,
+              "decode_seconds": 1.0655754782980467,
+              "total_seconds": 0.9860554323057684
+            }
+          },
+          "all_full_logits_exact": true
+        }
+      ],
+      "median_speedup_over_off": {
+        "ON": {
+          "prefill_seconds": 0.9902550068259713,
+          "ttft_seconds": 0.9897896255150181,
+          "decode_seconds": 0.9449534027466245,
+          "total_seconds": 0.9732918823588668
+        },
+        "MIN_CONTEXT:256": {
+          "prefill_seconds": 0.9905300350946588,
+          "ttft_seconds": 0.9923478666878692,
+          "decode_seconds": 1.0655754782980467,
+          "total_seconds": 0.9860554323057684
+        }
+      }
+    },
+    {
+      "context_tokens": 256,
+      "prefill_batch": 8,
+      "prompt_ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "warmup": [
+        {
+          "prefill_seconds": 2.2018221670296043,
+          "ttft_seconds": 2.223129250050988,
+          "decode_seconds": 0.6230167920002714,
+          "total_seconds": 2.8461460420512594,
+          "decode_tokens_per_second": 49.75788838768008,
+          "output_token_ids": [
+            10642,
+            33394,
+            10953,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            264,
+            1887,
+            4938,
+            323,
+            264,
+            17654,
+            13,
+            356,
+            14242,
+            14060,
+            5926,
+            24758,
+            1995,
+            311,
+            7269,
+            8692,
+            4628,
+            13,
+            13850,
+            33394
+          ],
+          "final_position": 287,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              4480,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 57344
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 57344
+          }
+        },
+        {
+          "prefill_seconds": 1.7321181669831276,
+          "ttft_seconds": 1.750820457993541,
+          "decode_seconds": 0.5934932499658316,
+          "total_seconds": 2.3443137079593726,
+          "decode_tokens_per_second": 52.23311301650814,
+          "output_token_ids": [
+            10642,
+            33394,
+            10953,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            264,
+            1887,
+            4938,
+            323,
+            264,
+            17654,
+            13,
+            356,
+            14242,
+            14060,
+            5926,
+            24758,
+            1995,
+            311,
+            7269,
+            8692,
+            4628,
+            13,
+            13850,
+            33394
+          ],
+          "final_position": 287,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              4480,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 56896,
+            "fallback_head_pairs": 448
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 56896,
+            "fallback_head_pairs": 448
+          }
+        },
+        {
+          "prefill_seconds": 1.735442916979082,
+          "ttft_seconds": 1.7537966249510646,
+          "decode_seconds": 0.56145075004315,
+          "total_seconds": 2.3152473749942146,
+          "decode_tokens_per_second": 55.214103815192175,
+          "output_token_ids": [
+            10642,
+            33394,
+            10953,
+            279,
+            4628,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            264,
+            1887,
+            4938,
+            323,
+            264,
+            17654,
+            13,
+            356,
+            14242,
+            14060,
+            5926,
+            24758,
+            1995,
+            311,
+            7269,
+            8692,
+            4628,
+            13,
+            13850,
+            33394
+          ],
+          "final_position": 287,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              4480,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 57344
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 57344
+          }
+        }
+      ],
+      "warm_logits_sha256": "9a56e7de8677df612ebe17f7bbf48319f66162ea2706a9dcf79823cdf2cb28ed",
+      "pairs": [
+        {
+          "index": 0,
+          "order": [
+            0,
+            1,
+            2
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 1.720146083040163,
+              "ttft_seconds": 1.7381159579963423,
+              "decode_seconds": 0.5485081670340151,
+              "total_seconds": 2.2866241250303574,
+              "decode_tokens_per_second": 56.516934228396956,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                8692,
+                4628,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 287,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4480,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              }
+            },
+            "ON": {
+              "prefill_seconds": 1.6474200829979964,
+              "ttft_seconds": 1.6650907910079695,
+              "decode_seconds": 0.5849894999992102,
+              "total_seconds": 2.2500802910071798,
+              "decode_tokens_per_second": 52.99240413723982,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                8692,
+                4628,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 287,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4480,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 56896,
+                "fallback_head_pairs": 448
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 56896,
+                "fallback_head_pairs": 448
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 1.7639650409691967,
+              "ttft_seconds": 1.780829957977403,
+              "decode_seconds": 0.5247041669790633,
+              "total_seconds": 2.3055341249564663,
+              "decode_tokens_per_second": 59.08091063671114,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                8692,
+                4628,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 287,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4480,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 1.0441453887765038,
+              "ttft_seconds": 1.043856567691523,
+              "decode_seconds": 0.937637627743328,
+              "total_seconds": 1.016241124447528
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.9751588285984637,
+              "ttft_seconds": 0.9760145544555116,
+              "decode_seconds": 1.0453665161304153,
+              "total_seconds": 0.9917979960819422
+            }
+          },
+          "all_full_logits_exact": true
+        },
+        {
+          "index": 1,
+          "order": [
+            1,
+            2,
+            0
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 1.808939874987118,
+              "ttft_seconds": 1.8261873750016093,
+              "decode_seconds": 0.5791630420135334,
+              "total_seconds": 2.4053504170151427,
+              "decode_tokens_per_second": 53.52551483987063,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                8692,
+                4628,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 287,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4480,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              }
+            },
+            "ON": {
+              "prefill_seconds": 1.6755385000142269,
+              "ttft_seconds": 1.6940725410240702,
+              "decode_seconds": 0.5431449169991538,
+              "total_seconds": 2.237217458023224,
+              "decode_tokens_per_second": 57.075007110944384,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                8692,
+                4628,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 287,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4480,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 56896,
+                "fallback_head_pairs": 448
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 56896,
+                "fallback_head_pairs": 448
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 1.753037000016775,
+              "ttft_seconds": 1.7705565000069328,
+              "decode_seconds": 0.5875908329617232,
+              "total_seconds": 2.358147332968656,
+              "decode_tokens_per_second": 52.75780060037015,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                8692,
+                4628,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 287,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4480,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 1.0796170156470641,
+              "ttft_seconds": 1.077986527010039,
+              "decode_seconds": 1.0663140239135032,
+              "total_seconds": 1.0751527118604192
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 1.0318891586257495,
+              "ttft_seconds": 1.0314199942190259,
+              "decode_seconds": 0.9856570414727032,
+              "total_seconds": 1.0200170207291768
+            }
+          },
+          "all_full_logits_exact": true
+        },
+        {
+          "index": 2,
+          "order": [
+            2,
+            0,
+            1
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 1.7738725419621915,
+              "ttft_seconds": 1.7924909999710508,
+              "decode_seconds": 0.62193224998191,
+              "total_seconds": 2.4144232499529608,
+              "decode_tokens_per_second": 49.84465751840605,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                8692,
+                4628,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 287,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4480,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              }
+            },
+            "ON": {
+              "prefill_seconds": 1.8019008749979548,
+              "ttft_seconds": 1.8203234170214273,
+              "decode_seconds": 0.6884485419723205,
+              "total_seconds": 2.508771958993748,
+              "decode_tokens_per_second": 45.02878299544191,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                8692,
+                4628,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 287,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4480,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 56896,
+                "fallback_head_pairs": 448
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 56896,
+                "fallback_head_pairs": 448
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 1.7430701249977574,
+              "ttft_seconds": 1.7607773339841515,
+              "decode_seconds": 0.5557631250121631,
+              "total_seconds": 2.3165404589963146,
+              "decode_tokens_per_second": 55.77915951030676,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                8692,
+                4628,
+                13,
+                13850,
+                33394
+              ],
+              "final_position": 287,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  4480,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 57344
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 0.9844451304593572,
+              "ttft_seconds": 0.9847101801854978,
+              "decode_seconds": 0.9033823329774953,
+              "total_seconds": 0.962392473057364
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 1.0176713584397379,
+              "ttft_seconds": 1.0180111734600423,
+              "decode_seconds": 1.1190599411724174,
+              "total_seconds": 1.042253866353388
+            }
+          },
+          "all_full_logits_exact": true
+        }
+      ],
+      "median_speedup_over_off": {
+        "ON": {
+          "prefill_seconds": 1.0441453887765038,
+          "ttft_seconds": 1.043856567691523,
+          "decode_seconds": 0.937637627743328,
+          "total_seconds": 1.016241124447528
+        },
+        "MIN_CONTEXT:256": {
+          "prefill_seconds": 1.0176713584397379,
+          "ttft_seconds": 1.0180111734600423,
+          "decode_seconds": 1.0453665161304153,
+          "total_seconds": 1.0200170207291768
+        }
+      }
+    },
+    {
+      "context_tokens": 452,
+      "prefill_batch": 8,
+      "prompt_ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        13,
+        220,
+        10642,
+        33394,
+        10953,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "warmup": [
+        {
+          "prefill_seconds": 3.7204795419820584,
+          "ttft_seconds": 3.74263729195809,
+          "decode_seconds": 0.7047021250473335,
+          "total_seconds": 4.4473394170054235,
+          "decode_tokens_per_second": 43.99021784973018,
+          "output_token_ids": [
+            10642,
+            33394,
+            10953,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            264,
+            1887,
+            4938,
+            323,
+            264,
+            17654,
+            13,
+            356,
+            14242,
+            14060,
+            5926,
+            24758,
+            1995,
+            311,
+            7269,
+            821,
+            2615,
+            4628,
+            13,
+            13850
+          ],
+          "final_position": 483,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              7980,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 101248
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 0,
+            "fallback_head_pairs": 101248
+          }
+        },
+        {
+          "prefill_seconds": 3.364909833006095,
+          "ttft_seconds": 3.386411416984629,
+          "decode_seconds": 0.6803010830190033,
+          "total_seconds": 4.066712500003632,
+          "decode_tokens_per_second": 45.56805916349549,
+          "output_token_ids": [
+            10642,
+            33394,
+            10953,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            264,
+            1887,
+            4938,
+            323,
+            264,
+            17654,
+            13,
+            356,
+            14242,
+            14060,
+            5926,
+            24758,
+            1995,
+            311,
+            7269,
+            821,
+            2615,
+            4628,
+            13,
+            13850
+          ],
+          "final_position": 483,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              7980,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 100800,
+            "fallback_head_pairs": 448
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 100800,
+            "fallback_head_pairs": 448
+          }
+        },
+        {
+          "prefill_seconds": 3.4186881670029834,
+          "ttft_seconds": 3.438763000012841,
+          "decode_seconds": 0.6532252499600872,
+          "total_seconds": 4.091988249972928,
+          "decode_tokens_per_second": 47.45683055254544,
+          "output_token_ids": [
+            10642,
+            33394,
+            10953,
+            279,
+            4379,
+            518,
+            892,
+            821,
+            646,
+            387,
+            22409,
+            1948,
+            264,
+            1887,
+            4938,
+            323,
+            264,
+            17654,
+            13,
+            356,
+            14242,
+            14060,
+            5926,
+            24758,
+            1995,
+            311,
+            7269,
+            821,
+            2615,
+            4628,
+            13,
+            13850
+          ],
+          "final_position": 483,
+          "phase_dispatch_delta": [
+            [
+              4512,
+              0,
+              0
+            ],
+            [
+              0,
+              7980,
+              0
+            ]
+          ],
+          "query_value_route_delta": {
+            "paired_head_pairs": 43456,
+            "fallback_head_pairs": 57792
+          },
+          "query_value_route_expected": {
+            "paired_head_pairs": 43456,
+            "fallback_head_pairs": 57792
+          }
+        }
+      ],
+      "warm_logits_sha256": "52f8d763c17553ca857e7120b758c7b9aa578620e311650ffb17398e0e8eb24c",
+      "pairs": [
+        {
+          "index": 0,
+          "order": [
+            0,
+            1,
+            2
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 3.3913185829878785,
+              "ttft_seconds": 3.411816000007093,
+              "decode_seconds": 0.6256493330001831,
+              "total_seconds": 4.037465333007276,
+              "decode_tokens_per_second": 49.54852241485715,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                821,
+                2615,
+                4628,
+                13,
+                13850
+              ],
+              "final_position": 483,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  7980,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 101248
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 101248
+              }
+            },
+            "ON": {
+              "prefill_seconds": 3.166819875012152,
+              "ttft_seconds": 3.1868832919863053,
+              "decode_seconds": 0.6187244160100818,
+              "total_seconds": 3.805607707996387,
+              "decode_tokens_per_second": 50.10308175634509,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                821,
+                2615,
+                4628,
+                13,
+                13850
+              ],
+              "final_position": 483,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  7980,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 100800,
+                "fallback_head_pairs": 448
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 100800,
+                "fallback_head_pairs": 448
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 3.494575334014371,
+              "ttft_seconds": 3.5168890000204556,
+              "decode_seconds": 0.698696542007383,
+              "total_seconds": 4.2155855420278385,
+              "decode_tokens_per_second": 44.36833179528235,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                821,
+                2615,
+                4628,
+                13,
+                13850
+              ],
+              "final_position": 483,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  7980,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 43456,
+                "fallback_head_pairs": 57792
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 43456,
+                "fallback_head_pairs": 57792
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 1.0708908990205404,
+              "ttft_seconds": 1.070580779844182,
+              "decode_seconds": 1.0111922478100306,
+              "total_seconds": 1.0609252563062943
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.9704522749813274,
+              "ttft_seconds": 0.9701233106837459,
+              "decode_seconds": 0.8954521675499748,
+              "total_seconds": 0.9577472198714106
+            }
+          },
+          "all_full_logits_exact": true
+        },
+        {
+          "index": 1,
+          "order": [
+            1,
+            2,
+            0
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 3.4254221660085022,
+              "ttft_seconds": 3.443911125010345,
+              "decode_seconds": 0.6162478750338778,
+              "total_seconds": 4.060159000044223,
+              "decode_tokens_per_second": 50.3044330956854,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                821,
+                2615,
+                4628,
+                13,
+                13850
+              ],
+              "final_position": 483,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  7980,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 101248
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 101248
+              }
+            },
+            "ON": {
+              "prefill_seconds": 3.33799716696376,
+              "ttft_seconds": 3.357501707971096,
+              "decode_seconds": 0.6930841670255177,
+              "total_seconds": 4.050585874996614,
+              "decode_tokens_per_second": 44.72761242410354,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                821,
+                2615,
+                4628,
+                13,
+                13850
+              ],
+              "final_position": 483,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  7980,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 100800,
+                "fallback_head_pairs": 448
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 100800,
+                "fallback_head_pairs": 448
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 3.557710583030712,
+              "ttft_seconds": 3.57932083302876,
+              "decode_seconds": 0.6415879169944674,
+              "total_seconds": 4.220908750023227,
+              "decode_tokens_per_second": 48.31761817650834,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                821,
+                2615,
+                4628,
+                13,
+                13850
+              ],
+              "final_position": 483,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  7980,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 43456,
+                "fallback_head_pairs": 57792
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 43456,
+                "fallback_head_pairs": 57792
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 1.0261908547766276,
+              "ttft_seconds": 1.0257362242985917,
+              "decode_seconds": 0.889138584248151,
+              "total_seconds": 1.002363392690105
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 0.9628164197354364,
+              "ttft_seconds": 0.9621688822167324,
+              "decode_seconds": 0.9605041783216623,
+              "total_seconds": 0.9619158433647447
+            }
+          },
+          "all_full_logits_exact": true
+        },
+        {
+          "index": 2,
+          "order": [
+            2,
+            0,
+            1
+          ],
+          "results": {
+            "OFF": {
+              "prefill_seconds": 3.4627635419601575,
+              "ttft_seconds": 3.484262082958594,
+              "decode_seconds": 0.638614084047731,
+              "total_seconds": 4.122876167006325,
+              "decode_tokens_per_second": 48.54261873385651,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                821,
+                2615,
+                4628,
+                13,
+                13850
+              ],
+              "final_position": 483,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  7980,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 101248
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 0,
+                "fallback_head_pairs": 101248
+              }
+            },
+            "ON": {
+              "prefill_seconds": 3.175385250011459,
+              "ttft_seconds": 3.195457666006405,
+              "decode_seconds": 0.646829167031683,
+              "total_seconds": 3.842286833038088,
+              "decode_tokens_per_second": 47.92610101715088,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                821,
+                2615,
+                4628,
+                13,
+                13850
+              ],
+              "final_position": 483,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  7980,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 100800,
+                "fallback_head_pairs": 448
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 100800,
+                "fallback_head_pairs": 448
+              }
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 3.2847025830415078,
+              "ttft_seconds": 3.3063320000073873,
+              "decode_seconds": 0.6033120829961263,
+              "total_seconds": 3.9096440830035135,
+              "decode_tokens_per_second": 51.383025259580364,
+              "output_token_ids": [
+                10642,
+                33394,
+                10953,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                264,
+                1887,
+                4938,
+                323,
+                264,
+                17654,
+                13,
+                356,
+                14242,
+                14060,
+                5926,
+                24758,
+                1995,
+                311,
+                7269,
+                821,
+                2615,
+                4628,
+                13,
+                13850
+              ],
+              "final_position": 483,
+              "phase_dispatch_delta": [
+                [
+                  4512,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  7980,
+                  0
+                ]
+              ],
+              "query_value_route_delta": {
+                "paired_head_pairs": 43456,
+                "fallback_head_pairs": 57792
+              },
+              "query_value_route_expected": {
+                "paired_head_pairs": 43456,
+                "fallback_head_pairs": 57792
+              }
+            }
+          },
+          "speedup_over_off": {
+            "ON": {
+              "prefill_seconds": 1.0905018664893218,
+              "ttft_seconds": 1.0903796723782384,
+              "decode_seconds": 0.9872994549369948,
+              "total_seconds": 1.073026649534745
+            },
+            "MIN_CONTEXT:256": {
+              "prefill_seconds": 1.054209157272855,
+              "ttft_seconds": 1.0538149474858571,
+              "decode_seconds": 1.0585136648951077,
+              "total_seconds": 1.0545400244819727
+            }
+          },
+          "all_full_logits_exact": true
+        }
+      ],
+      "median_speedup_over_off": {
+        "ON": {
+          "prefill_seconds": 1.0708908990205404,
+          "ttft_seconds": 1.070580779844182,
+          "decode_seconds": 0.9872994549369948,
+          "total_seconds": 1.0609252563062943
+        },
+        "MIN_CONTEXT:256": {
+          "prefill_seconds": 0.9704522749813274,
+          "ttft_seconds": 0.9701233106837459,
+          "decode_seconds": 0.9605041783216623,
+          "total_seconds": 0.9619158433647447
+        }
+      }
+    }
+  ],
+  "gpu": false,
+  "pytorch": false,
+  "prefill_workers": 12,
+  "decode_workers": 8,
+  "limitations": "Three resident processes from one executable; sequential requests, warm OS caches, no placement/eviction guarantees. Browser guard excludes chat; external OS processes and background services are not controlled. Token-level user-message padding gives exact contexts. No suffix or canonical reuse during timing. Numerical parity only, not broad quality evidence.",
+  "startup": [
+    {
+      "precision": {
+        "precision_profile": "fp32_b1_fp32_fma_prefill",
+        "scalar_projection": "fp32",
+        "prefill_projection": "fp32",
+        "verification_projection": "fp32",
+        "vocabulary_projection": "fp32",
+        "scalar_accumulation": "separate",
+        "prefill_accumulation": "fused",
+        "verification_accumulation": "separate",
+        "vocabulary_accumulation": "separate",
+        "attention_kv": "fp64",
+        "max_verification_block": 4,
+        "prefix_reuse_supported": false,
+        "canonical_prefix_policy": "fp32_fma_b8_aligned_v1"
+      },
+      "query_value": {
+        "selector": "OFF",
+        "min_context": -1,
+        "context_metric": "paired_query_common_kv_tokens",
+        "requires_second_query": true,
+        "paired_head_pairs": 0,
+        "fallback_head_pairs": 0
+      },
+      "phase": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "precision": {
+        "precision_profile": "fp32_b1_fp32_fma_prefill",
+        "scalar_projection": "fp32",
+        "prefill_projection": "fp32",
+        "verification_projection": "fp32",
+        "vocabulary_projection": "fp32",
+        "scalar_accumulation": "separate",
+        "prefill_accumulation": "fused",
+        "verification_accumulation": "separate",
+        "vocabulary_accumulation": "separate",
+        "attention_kv": "fp64",
+        "max_verification_block": 4,
+        "prefix_reuse_supported": false,
+        "canonical_prefix_policy": "fp32_fma_b8_aligned_v1"
+      },
+      "query_value": {
+        "selector": "ON",
+        "min_context": 0,
+        "context_metric": "paired_query_common_kv_tokens",
+        "requires_second_query": true,
+        "paired_head_pairs": 0,
+        "fallback_head_pairs": 0
+      },
+      "phase": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "precision": {
+        "precision_profile": "fp32_b1_fp32_fma_prefill",
+        "scalar_projection": "fp32",
+        "prefill_projection": "fp32",
+        "verification_projection": "fp32",
+        "vocabulary_projection": "fp32",
+        "scalar_accumulation": "separate",
+        "prefill_accumulation": "fused",
+        "verification_accumulation": "separate",
+        "vocabulary_accumulation": "separate",
+        "attention_kv": "fp64",
+        "max_verification_block": 4,
+        "prefix_reuse_supported": false,
+        "canonical_prefix_policy": "fp32_fma_b8_aligned_v1"
+      },
+      "query_value": {
+        "selector": "MIN_CONTEXT:256",
+        "min_context": 256,
+        "context_metric": "paired_query_common_kv_tokens",
+        "requires_second_query": true,
+        "paired_head_pairs": 0,
+        "fallback_head_pairs": 0
+      },
+      "phase": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    }
+  ],
+  "final_policy": [
+    {
+      "selector": "OFF",
+      "min_context": -1,
+      "context_metric": "paired_query_common_kv_tokens",
+      "requires_second_query": true,
+      "paired_head_pairs": 0,
+      "fallback_head_pairs": 824320
+    },
+    {
+      "selector": "ON",
+      "min_context": 0,
+      "context_metric": "paired_query_common_kv_tokens",
+      "requires_second_query": true,
+      "paired_head_pairs": 818944,
+      "fallback_head_pairs": 5376
+    },
+    {
+      "selector": "MIN_CONTEXT:256",
+      "min_context": 256,
+      "context_metric": "paired_query_common_kv_tokens",
+      "requires_second_query": true,
+      "paired_head_pairs": 173824,
+      "fallback_head_pairs": 650496
+    }
+  ],
+  "guard_after": {
+    "name": "Measure OFF ON and context threshold",
+    "pid": 58272,
+    "started_at": "2026-11-12T04:26:37.545026+00:00"
+  },
+  "contention_observation": {
+    "browser_exclusion": "Serving-checkout benchmark guard; wrapped job exit0, session71579.",
+    "external_processes": "Not controlled. Before/after process snapshots retained; background VM/Docker/macOS activity observed.",
+    "snapshots": [
+      "build/query-value-dispatch-timing-ps-before.txt",
+      "build/query-value-dispatch-timing-ps-after.txt"
+    ],
+    "snapshots_published": false
+  }
+}

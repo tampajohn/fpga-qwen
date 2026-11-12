@@ -79,5 +79,27 @@ and `query-value-dispatch-reference-gates` reports. The [three-policy gate](../r
 exact full-vocabulary comparisons and 771 actual route-count checks across
 OFF/ON/MIN_CONTEXT:256. It includes threshold neighborhoods, odd tails,
 verification, scalar continuation, full B8 prefill to position 4096, overflow
-rejection and restart. Canonical/suffix lifecycle and performance checks remain
-pending. No crossover or speed improvement is established for this binary.
+rejection and restart. Canonical/suffix lifecycle checks remain pending. No crossover threshold is
+established for this binary.
+
+The [first same-executable sweep](../reports/query-value-dispatch-timing.json)
+completed three rotated triples at each of 85/128/256/452 tokens, B8 prefill and
+32 greedy outputs. All full-logit bits and actual route counts matched. Median
+total speed ratios relative to OFF were:
+
+| Prompt tokens | Always ON | Threshold 256 |
+| --- | ---: | ---: |
+| 85 | 1.001 | 0.964 |
+| 128 | 0.973 | 0.986 |
+| 256 | 1.016 | 1.020 |
+| 452 | 1.061 | 0.962 |
+
+This does not support enabling threshold 256. At 85 tokens, OFF and threshold
+256 execute the same routes, yet threshold mode's median decode ratio is 0.903.
+The three modes used separate resident processes; background OS/VM activity
+was not controlled. Same-executable compilation removes a binary-layout
+difference but does not eliminate process allocation, scheduling or timing
+variation. These measurements cannot establish that the observed decode
+differences come from value sharing. The next comparison will switch policy
+inside one resident process, keeping allocation and worker pools fixed. No UI
+promotion is made.
