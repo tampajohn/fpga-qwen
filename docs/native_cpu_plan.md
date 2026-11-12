@@ -551,3 +551,39 @@ The extended matched runner uses complete tokenized messages of exactly 1024,
 natural EOS, identical-output preflight, fresh prompts, CPU-only settings and
 alternating pairs. Cached-versus-fresh measurements use a separate runner so
 cache savings cannot be presented as a dense-engine win against uncached llama.
+
+## Build-11 prefix-reuse correctness candidate
+
+Build-11 adds validated rewind and consumed-token sampler-history restoration.
+The browser adapter reuses only complete 512-token canonical prefill blocks from
+the same session. Reuse is bounded by the actual common consumed prefix and
+retains at least one prompt token for recomputation. Decoded KV and partial tails
+are not eligible. Cancellation, errors, restart, and a new session invalidate
+reuse metadata; unsupported older binaries continue with fresh prefill.
+
+The candidate passed 44 full-logit array comparisons with exact predicted and
+consumed trajectories on the supplied repeated captures. The unchanged nine-case
+suite also passed exact tokens/stops/text/grading against tuned llama; both
+engines still scored 4/9. This demonstrates implementation compatibility on the
+tested fixtures, not improved answer quality.
+
+The real prefix checker passed all 28 synthetic cases across boundary lengths,
+identical/edited prompts, and session changes, with greedy and seed-42 sampled
+chat. Cached/fresh predictions and checked full logits matched exactly.
+Cancellation/reap/restart and direct CLI rewind checks passed separately. These
+results support the restricted canonical-prefix policy; they are neither a
+browser end-to-end result for build-11 nor a measured prefix speedup.
+Build-11 remains a candidate, with no performance or live-promotion claim here.
+
+The initial extended counting prompt failed fixed-128-token preflight because
+it naturally ended after 51 returned tokens. There were zero scored visits.
+This failed report is retained; forcing past EOS or silently shortening it would
+change the protocol. A revised tutorial prompt is a separate extended workload
+and must pass its own identity/EOS preflight before scoring. Its ongoing results
+are not published in this update.
+
+Evidence: [build manifest](../reports/native-cpu-build-11-build.json),
+[44-array exact gate](../reports/native-cpu-build-11-exact-gate.json),
+[nine-case quality](../reports/native-cpu-build-11-quality.json),
+[28-case prefix and lifecycle checks](../reports/native-cpu-build-11-prefix-check.json),
+and [failed counting preflight](../reports/native-cpu-build-11-extended-counting-preflight-failed.json).
