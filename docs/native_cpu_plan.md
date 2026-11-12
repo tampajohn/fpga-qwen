@@ -220,3 +220,51 @@ That variation prevents treating callback overhead as a known constant. The
 measurement suggests prioritizing the whole projection pipeline and persistent
 worker execution over vocabulary-only approximations; it does not certify a
 speedup ceiling. Evidence: [paired diagnostic](../reports/native-phase0-f16-head-diagnostic.json).
+
+## Secondary FP32 and constrained Q4 confirmation
+
+Separate ten-round confirmations completed for FP32 and Q4_K_M, with identical
+uncached prompt IDs and 32 greedy output IDs within each precision. These are
+secondary baselines, not evidence that quantization preserves FP16 quality.
+Normal priority, polling 50, FP16 KV, and six prefill threads apply throughout.
+
+The FP32 primary decode target is KleidiAI OFF / LTO OFF, six decode threads:
+median decode was 87.41/81.88 tokens/s at 85/452 prompt tokens. Eight and twelve
+decode threads did not establish a decode advantage; their paired intervals
+include 1. KleidiAI ON / LTO ON at six decode threads is a separate latency
+option: median first-token time was 0.0536/0.2902 seconds versus
+0.1795/0.4765 seconds for the decode target. Its paired TTFT speedups were
+3.413x (95% interval 3.096–3.844) and 1.601x (1.486–1.747), while long-context
+decode slowed to 75.76 tokens/s, a paired ratio of 0.923x (0.894–0.994).
+There is no universal FP32 winner across decode and request latency.
+
+The constrained Q4 target is KleidiAI OFF / LTO ON, twelve decode threads:
+median decode was 269.57/230.78 tokens/s, with first-token times 0.0909/0.4941
+seconds. Relative to the OFF/OFF six-thread control, paired decode speedups
+were 1.186x (1.075–1.221) and 1.208x (1.164–1.273). The OFF/OFF twelve-thread
+configuration had the highest observed short-context median, 278.10 tokens/s,
+but its paired improvement interval against the control included 1. These
+results do not establish that it beats the selected twelve-thread LTO build;
+we retain one target rather than infer a context threshold from those medians.
+KleidiAI-ON remains excluded following the identity failure documented above.
+This is not a globally best-Q4 claim.
+
+Both precision-specific conversation checks completed and passed: all four
+configurations in each group matched exact IDs, stopping behavior, text, and
+grades on all nine cases, with no new regressions. Every configuration scored
+4/9 correct. Matching these baseline errors is not a quality improvement, and
+these checks establish neither cross-precision identity nor a Q4 full-logit
+oracle pass. Background scheduling variation and the limited workload remain
+material limits; paired bootstrap intervals are not simultaneous intervals
+corrected for selecting among configurations.
+
+Evidence: [FP32 thread discovery](../reports/native-phase0-f32-thread-discovery.json),
+[FP32 confirmation](../reports/native-phase0-f32-confirmation.json),
+[FP32 uncertainty](../reports/native-phase0-f32-confirmation-analysis.json),
+[FP32 quality](../reports/native-phase0-f32-confirmation-quality.json),
+[Q4 confirmation](../reports/native-phase0-q4-off-confirmation.json),
+[Q4 uncertainty](../reports/native-phase0-q4-off-confirmation-analysis.json), and
+[Q4 quality](../reports/native-phase0-q4-off-confirmation-quality.json).
+Archives preserve raw-report SHA256 provenance and anonymized host CPU
+percentages. Analysis reports retain their conservative automatic claim flags;
+the interpretation above is scoped to the separately reviewed quality results.
