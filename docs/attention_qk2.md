@@ -10,6 +10,8 @@ Independent linked assembly review identified the actual common-prefix j-loop at
 
 Reproduce gates with `python tools/check_attention_qk2.py --candidate <QK2-binary> --reference <ordinary-batched-attention-binary>`. Paired performance must compare those same profiles with `tools/compare_attention_qk2.py`, preserving warm worker pools and requiring exact output IDs/full-logit bits. No speed claim follows merely from observing SIMD instructions.
 
+The subsequent [independent validation](../reports/qk2-independent.json) passed all five suites: every batch/worker partition, causal tails and rollback, canonical prefix reuse, exclusion of scalar-decode states from reuse, and seeded suffix replay. IDs and all finite vocabulary-logit bytes matched at corresponding positions. This report does not claim a capacity test or timing result.
+
 ## Paired end-to-end timing
 
 Three alternating warmed pairs per workload, 8 workers and 32 outputs, compared `07e22976` against `c5b414d2`. Both use batched FP64 attention, FP64 B8 prefill projections and FP32 scalar projections. No prefix cache or suffix drafting was used. Full output IDs and full-vocabulary logit bits matched throughout. [Raw report](../reports/attention-qk2-paired.json).
