@@ -249,9 +249,9 @@
   "deployed": true,
   "capacity_report": "reports/fma-canonical-capacity.json",
   "deployment": {
-    "verified_at_utc": "2026-11-12T03:49:54.335125+00:00",
+    "verified_at_utc": "2026-11-12T04:15:59.476105+00:00",
     "url": "http://127.0.0.1:8765",
-    "server_session": 85484,
+    "server_session": 68876,
     "browser_default_backend": "rtl-fp32-fused-phase",
     "catalog": {
       "id": "rtl-fp32-fused-phase",
@@ -271,6 +271,7 @@
       "prefill_block_size": 8
     },
     "browser_report": "reports/fma-phase-ui-browser.json",
-    "benchmark_status_poll_seconds": 1
+    "benchmark_status_poll_seconds": 1,
+    "benchmark_history_browser_report": "reports/benchmark-history-browser.json"
   }
 }

@@ -34,15 +34,16 @@ class BenchmarkGate:
 
     def status(self):
         handle = self.acquire()
-        if handle is not None:
-            handle.close()
-            return {'running': False}
         try:
             metadata = json.loads((self.directory / 'run.json').read_text())
             if not isinstance(metadata, dict):
                 metadata = {}
         except (OSError, ValueError):
             metadata = {}
+        if handle is not None:
+            handle.close()
+            last_run = {key: metadata.get(key) for key in ('name', 'started_at', 'finished_at', 'exit_code')}
+            return dict(running=False, last_run=last_run if metadata.get('started_at') else None)
         return dict(running=True, name=str(metadata.get('name', 'CPU benchmark')),
                     started_at=metadata.get('started_at'))
 
@@ -50,6 +51,13 @@ class BenchmarkGate:
         temporary = self.directory / f'run.{os.getpid()}.tmp'
         temporary.write_text(json.dumps(dict(name=name, pid=os.getpid(),
                                              started_at=datetime.now(timezone.utc).isoformat())) + '\n')
+        temporary.replace(self.directory / 'run.json')
+
+    def finish(self, exit_code):
+        metadata = json.loads((self.directory / 'run.json').read_text())
+        metadata.update(finished_at=datetime.now(timezone.utc).isoformat(), exit_code=exit_code)
+        temporary = self.directory / f'run.{os.getpid()}.tmp'
+        temporary.write_text(json.dumps(metadata) + '\n')
         temporary.replace(self.directory / 'run.json')
 
 
@@ -67,11 +75,16 @@ def main():
     if handle is None:
         parser.exit(2, 'Chat or another benchmark is running; wait for it to finish.\n')
     process = None
+    exit_code = 1
+    described = False
     try:
         gate.describe(args.name)
+        described = True
         process = subprocess.Popen(command, pass_fds=(handle.fileno(),), start_new_session=True)
-        return process.wait()
+        exit_code = process.wait()
+        return exit_code
     except KeyboardInterrupt:
+        exit_code = 130
         return 130
     finally:
         if process is not None and process.poll() is None:
@@ -81,7 +94,11 @@ def main():
             except subprocess.TimeoutExpired:
                 os.killpg(process.pid, signal.SIGKILL)
                 process.wait()
-        handle.close()
+        try:
+            if described:
+                gate.finish(exit_code)
+        finally:
+            handle.close()
 
 
 if __name__ == '__main__':

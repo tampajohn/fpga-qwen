@@ -442,7 +442,8 @@ Run scored jobs through the serving checkout's benchmark guard:
 
 The browser polls `/api/status` every second and shows the run name while the
 guard is held. Drafts are preserved, but new chat requests receive HTTP 409 until
-the run finishes. The guard also refuses to start during an existing reply.
+the run finishes. The last run name and finish time remain visible afterward.
+The guard also refuses to start during an existing reply.
 Its lock is released by the OS when the wrapper and inherited child exit, so a
 stale status file cannot leave chat disabled. Use the guard from the checkout
 serving the browser, even when `COMMAND` benchmarks a different worktree.

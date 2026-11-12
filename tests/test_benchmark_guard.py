@@ -41,6 +41,18 @@ class FakeEngine:
 
 
 class BenchmarkGuardTests(unittest.TestCase):
+    def test_completed_run_remains_visible_without_blocking(self):
+        with tempfile.TemporaryDirectory() as directory:
+            result = subprocess.run([sys.executable, str(ROOT / 'tools/benchmark_guard.py'),
+                '--state-dir', directory, '--name', 'Finished fixture', '--',
+                sys.executable, '-c', 'raise SystemExit(7)'], capture_output=True)
+            self.assertEqual(result.returncode, 7)
+            status = BenchmarkGate(directory).status()
+            self.assertFalse(status['running'])
+            self.assertEqual(status['last_run']['name'], 'Finished fixture')
+            self.assertEqual(status['last_run']['exit_code'], 7)
+            self.assertTrue(status['last_run']['finished_at'])
+
     def test_chat_blocks_benchmark_and_stale_metadata_is_idle(self):
         with tempfile.TemporaryDirectory() as directory:
             gate = BenchmarkGate(directory)

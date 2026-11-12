@@ -110,6 +110,11 @@ async function checkStatus() {
     $('benchmark-banner').hidden = !benchmarkRunning;
     $('benchmark-banner').textContent = benchmarkRunning
       ? `Benchmark running: ${status.benchmark.name || 'CPU benchmark'}. Sending is paused; your draft is kept.` : '';
+    const lastRun = status.benchmark?.last_run;
+    $('benchmark-last').hidden = benchmarkRunning || !lastRun;
+    $('benchmark-last').textContent = lastRun
+      ? `Last benchmark: ${lastRun.name || 'CPU benchmark'} · ${lastRun.finished_at
+        ? `ended ${new Date(lastRun.finished_at).toLocaleTimeString()}` : 'no longer running'}` : '';
     if (!backends.length && status.backends) {
       const releases = ['rtl-fp32-fused-phase', 'rtl-fp32-phase', 'rtl-fp32', 'rtl'];
       const rank = b => releases.includes(b.id) ? releases.indexOf(b.id) : releases.length;

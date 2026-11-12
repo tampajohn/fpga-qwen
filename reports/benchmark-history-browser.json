@@ -1,0 +1,19 @@
+{
+  "completed": true,
+  "http_blocked_status": 409,
+  "draft_preserved": true,
+  "default_backend": "rtl-fp32-fused-phase",
+  "finished_label": "Last benchmark: Browser history verification \u00b7 ended 11:15:42 PM",
+  "status": {
+    "running": false,
+    "last_run": {
+      "name": "Browser history verification",
+      "started_at": "2026-11-12T04:15:37.906669+00:00",
+      "finished_at": "2026-11-12T04:15:42.927158+00:00",
+      "exit_code": 0
+    }
+  },
+  "javascript_errors": [],
+  "method": "Headless installed Google Chrome with Playwright, live localhost8765, serving-checkout wrapper launched from separate worktree; five-second idle child, no inference benchmark.",
+  "unit_tests": "tests.test_benchmark_guard: four passed"
+}
