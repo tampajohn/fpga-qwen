@@ -1,0 +1,186 @@
+diff --git a/rtl/projection_worker.sv b/rtl/projection_worker.sv
+index bc316ee..2cc3729 100644
+--- a/rtl/projection_worker.sv
++++ b/rtl/projection_worker.sv
+@@ -54,6 +54,51 @@ module projection_worker (
+     import "DPI-C" function real attention_key_value(input int index);
+     import "DPI-C" function real attention_value_value(input int index);
+     real attention_scores[4096];
++`ifdef ATTENTION_HEAD_PAIRS
++`ifdef ATTENTION_DOT_LANES8
++    initial $fatal(1,"Paired-head attention requires the original serial QK reduction");
++`endif
++    // Persistent scratch; no per-dispatch clearing of the context-sized array.
++    real head_pair_queries[128][2], head_pair_scores[4096][2];
++    task automatic attend_head_pairs;
++        real sums[2], maximum[2], key, denom, scale;
++        int index;
++        for (int pair=first_row;pair<end_row;pair++) begin
++            for (int j=0;j<128;j++) begin
++                head_pair_queries[j][0]=`ACTIVATION_AT(pair*256+j);
++                head_pair_queries[j][1]=`ACTIVATION_AT(pair*256+128+j);
++            end
++            maximum[0]=-1.0e300;maximum[1]=-1.0e300;
++            for (int t=0;t<=attention_position;t++) begin
++                sums[0]=0.0;sums[1]=0.0;
++                index=(attention_layer*4096+t)*1024+pair*128;
++                for (int j=0;j<128;j++) begin
++                    key=attention_key_value(index+j);
++                    sums[0]+=head_pair_queries[j][0]*key;
++                    sums[1]+=head_pair_queries[j][1]*key;
++                end
++                head_pair_scores[t][0]=sums[0]/$sqrt(128.0);
++                head_pair_scores[t][1]=sums[1]/$sqrt(128.0);
++                if(head_pair_scores[t][0]>maximum[0])maximum[0]=head_pair_scores[t][0];
++                if(head_pair_scores[t][1]>maximum[1])maximum[1]=head_pair_scores[t][1];
++            end
++            for (int lane=0;lane<2;lane++) begin
++                denom=0.0;
++                for (int t=0;t<=attention_position;t++) begin
++                    head_pair_scores[t][lane]=$exp(head_pair_scores[t][lane]-maximum[lane]);
++                    denom+=head_pair_scores[t][lane];
++                end
++                for (int j=0;j<128;j++)result[pair*256+lane*128+j]=0.0;
++                for (int t=0;t<=attention_position;t++) begin
++                    scale=head_pair_scores[t][lane]/denom;
++                    index=(attention_layer*4096+t)*1024+pair*128;
++                    for (int j=0;j<128;j++)
++                        result[pair*256+lane*128+j]+=scale*attention_value_value(index+j);
++                end
++            end
++        end
++    endtask
++`endif
+     task automatic attend_heads;
+         real sum, maximum, denom, scale;
+         int index, kvhead;
+@@ -298,6 +343,10 @@ module projection_worker (
+ `ifdef BATCH_ATTENTION
+             if (operation==5) attend_block_heads();
+             else
++`endif
++`ifdef ATTENTION_HEAD_PAIRS
++            if (operation==6) attend_head_pairs();
++            else
+ `endif
+             if (operation==1) attend_heads();
+             else begin
+diff --git a/sim/full_model.cpp b/sim/full_model.cpp
+index b3dd7f0..9a4d931 100644
+--- a/sim/full_model.cpp
++++ b/sim/full_model.cpp
+@@ -83,6 +83,12 @@ extern "C" void dispatch_attention(int layer,int position,const svOpenArrayHandl
+     const auto* q=static_cast<const double*>(svGetArrayPtr(query));
+     auto* a=static_cast<double*>(svGetArrayPtr(output));
+     if(!pool || !q || !a || !attention_root) throw std::runtime_error("Invalid attention dispatch");
++#ifdef ATTENTION_HEAD_PAIRS
++    if(svSize(query,1)!=2048 || svSize(output,1)!=2048)
++        throw std::runtime_error("Invalid paired-head attention storage");
++    if(pool->head_pair_eligible())pool->run(0,8,2048,q,a,6,layer,position);
++    else
++#endif
+     pool->run(0,16,2048,q,a,1,layer,position);
+ }
+ #ifdef BATCH_ATTENTION
+diff --git a/sim/projection_pool.h b/sim/projection_pool.h
+index ac29ce2..171d67e 100644
+--- a/sim/projection_pool.h
++++ b/sim/projection_pool.h
+@@ -1,3 +1,6 @@
++#if defined(ATTENTION_HEAD_PAIRS) && !defined(PARALLEL_ATTENTION)
++#error "Paired-head attention requires parallel attention"
++#endif
+ #if defined(BATCH_ATTENTION) && (!defined(PARALLEL_ATTENTION) || !defined(PREFILL_B8))
+ #error "Batched attention requires parallel attention and B8 ports"
+ #endif
+@@ -130,6 +133,9 @@ class ProjectionPool {
+                 model->operation=operation;
+                 model->attention_layer=attention_layer;model->attention_position=attention_position;
+                 int copy_scale=operation==1?128:1;
++#ifdef ATTENTION_HEAD_PAIRS
++                if(operation==6)copy_scale=256;
++#endif
+ #ifdef BATCH_ATTENTION
+                 if(operation==5)copy_scale=128*8;
+ #endif
+@@ -308,6 +314,12 @@ public:
+         for(auto& thread:threads) if(thread.joinable()) thread.join();
+     }
+     ~ProjectionPool() {shutdown();}
++#ifdef ATTENTION_HEAD_PAIRS
++    bool head_pair_eligible() const {
++        const auto count=threads.size();
++        return count==1 || count==2 || count==4 || count==8;
++    }
++#endif
+     void run(int64_t matrix_base,int matrix_rows,int matrix_width,const double* x,double* y
+ #ifdef PARALLEL_ATTENTION
+              ,int requested_operation=0,int layer=0,int position=0
+@@ -323,6 +335,13 @@ public:
+                position<0 || position>4096-requested_batch_count || matrix_rows!=16 || matrix_width!=2048)
+                 throw std::runtime_error("Invalid block attention job");
+         } else
++#endif
++#ifdef ATTENTION_HEAD_PAIRS
++        if(requested_operation==6) {
++            if(!head_pair_eligible() || layer<0 || layer>=28 || position<0 || position>=4096 ||
++               matrix_rows!=8 || matrix_width!=2048)
++                throw std::runtime_error("Invalid paired-head attention job");
++        } else
+ #endif
+         if(requested_operation==1) {
+             if(layer<0 || layer>=28 || position<0 || position>=4096 || matrix_rows!=16 || matrix_width!=2048)
+@@ -352,6 +371,9 @@ public:
+             throw std::runtime_error("Invalid projection shape");
+ #ifdef PARALLEL_ATTENTION
+         if(requested_operation!=1
++#ifdef ATTENTION_HEAD_PAIRS
++           && requested_operation!=6
++#endif
+ #ifdef BATCH_ATTENTION
+            && requested_operation!=5
+ #endif
+diff --git a/tools/build_projection_variant.py b/tools/build_projection_variant.py
+index 766e4cc..d65f5a9 100644
+--- a/tools/build_projection_variant.py
++++ b/tools/build_projection_variant.py
+@@ -24,6 +24,7 @@ def main():
+     parser.add_argument('--cpu', choices=['generic', 'native'], default='generic')
+     parser.add_argument('--fast-attention', action='store_true')
+     parser.add_argument('--parallel-attention', action='store_true')
++    parser.add_argument('--attention-head-pairs', action='store_true', help='Experimental exact paired-head QK for eligible scalar attention worker counts')
+     parser.add_argument('--batch-attention', action='store_true', help='Experimental exact per-query batched attention dispatch')
+     parser.add_argument('--attention-dot-lanes8', action='store_true')
+     parser.add_argument('--batched-prefill', action='store_true')
+@@ -51,6 +52,7 @@ def main():
+     if args.scalar_group and not args.group_projections:parser.error('--scalar-group requires --group-projections')
+     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
+         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
++    if args.attention_head_pairs and (not args.parallel_attention or args.attention_dot_lanes8):parser.error('--attention-head-pairs requires parallel attention and excludes attention-dot-lanes8')
+     if args.batch_attention and not (args.parallel_attention and args.prefill_b8):parser.error('--batch-attention requires parallel attention and B8 prefill')
+     if args.attention_dot_lanes8 and not args.parallel_attention:
+         parser.error('--attention-dot-lanes8 requires --parallel-attention')
+@@ -86,6 +88,7 @@ def main():
+     if args.fp32_verification_b4: tag += '-verify-b4'
+     if args.fp32_prefill_b8: tag += '-fp32-prefill-b8'
+     if args.batch_attention: tag += '-batch-attention'
++    if args.attention_head_pairs: tag += '-head-pairs'
+     if args.tag: tag += '-'+args.tag
+     directory = ROOT / 'build/variants' / tag
+     projection, full = directory / 'projection', directory / 'full'
+@@ -108,6 +111,7 @@ def main():
+     if args.fp_contract != 'on': flags += ' -ffp-contract='+args.fp_contract
+     if args.unroll: flags += ' -funroll-loops'
+     if args.pool == 'hybrid': flags += ' -DPROJECTION_HYBRID_WAIT'
++    if args.attention_head_pairs: flags += ' -DATTENTION_HEAD_PAIRS'
+     if args.batch_attention: flags += ' -DBATCH_ATTENTION'
+     if args.parallel_attention: flags += ' -DPARALLEL_ATTENTION'
+     if args.batched_prefill: flags += ' -DBATCH_PREFILL'
+@@ -115,6 +119,7 @@ def main():
+     if args.static_kv: flags += ' -DSTATIC_KV'
+     if args.prefill_b8: flags += ' -DPREFILL_B8 -DWIDE_BATCH=8 -DWIDE_FOUR_LANES'
+     defines = {'scalar': [], 'row': ['+define+BULK_ROW_WEIGHTS']}[args.storage]
++    if args.attention_head_pairs: defines += ['+define+ATTENTION_HEAD_PAIRS']
+     if args.attention_dot_lanes8: defines += ['+define+ATTENTION_DOT_LANES8']
+     if args.unchecked: defines += ['+define+UNCHECKED_WEIGHTS']
+     if args.masked_activation: defines += ['+define+MASK_ACTIVATION_INDEX']
