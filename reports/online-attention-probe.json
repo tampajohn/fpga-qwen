@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "outputs": 1152,
+  "scenarios": [
+    "normal",
+    "large_scores",
+    "small_scores"
+  ],
+  "lengths": [
+    1,
+    15,
+    16,
+    17,
+    64,
+    65
+  ],
+  "tile": 16,
+  "queries": 4,
+  "head_dimension": 16,
+  "oracle_precision_digits": 80,
+  "fixture_absolute_error_budget": 1e-12,
+  "max_absolute_errors": {
+    "three_pass": 2.8791210472119377e-16,
+    "tiled_online": 3.450959391138283e-16
+  },
+  "binary_sha256": "3533cae270b6d080ddc6d7211e5c0afa524afc68500ff82538891c12d5d76ba1",
+  "source_sha256": "92e43c7a5246858992a8f715c79935e45db8aa1fc3dff255b2d5553f40e3720c",
+  "compiler_version": "Verilator 5.054 2026-11-01 rev vUNKNOWN-built20261101",
+  "causal_scope": "Each query sees max(1, length-4+q+1) keys; length1 repeats a one-key prefix across all queries. No zero-visible query cases.",
+  "build_command": [
+    "verilator",
+    "--binary",
+    "--top-module",
+    "online_attention_probe",
+    "--Mdir",
+    "/Users/jadams/workspace/sandbox/fpga-qwen-online-attention/build/online-attention-probe/obj",
+    "-j",
+    "2",
+    "-Wno-fatal",
+    "/Users/jadams/workspace/sandbox/fpga-qwen-online-attention/rtl/online_attention_probe.sv"
+  ],
+  "timing_claim": false,
+  "model_quality_claim": false,
+  "algorithm_source": "https://arxiv.org/abs/2205.14135"
+}
