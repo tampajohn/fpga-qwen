@@ -8,16 +8,14 @@ import threading
 from urllib.parse import urlsplit
 
 try:
-    from .rtl_chat import RTLChatEngine
     from .chat_backends import BackendRouter
-    from .rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY, FMA_PHASE_BINARY
-    from .phase_chat import PhasePoolChatEngine, FusedPhasePoolChatEngine
+    from .chat_protocol import ChatProtocol
+    from .experiment import locate_model
     from .benchmark_guard import BenchmarkGate
 except ImportError:
-    from rtl_chat import RTLChatEngine
     from chat_backends import BackendRouter
-    from rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY, FMA_PHASE_BINARY
-    from phase_chat import PhasePoolChatEngine, FusedPhasePoolChatEngine
+    from chat_protocol import ChatProtocol
+    from experiment import locate_model
     from benchmark_guard import BenchmarkGate
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -178,6 +176,8 @@ def make_server(engine, port=8765, benchmark_directory=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--model')
+    parser.add_argument('--native-only', action='store_true',
+                        help='Load tokenization and native CPU backends without importing or constructing simulators')
     parser.add_argument('--simulator', choices=['fast', 'reference'], default='fast')
     parser.add_argument('--block-size', type=int, choices=[1, 4], default=None,
                         help='Default: 4 for the fast profile, 1 for reference or a custom binary')
@@ -189,26 +189,44 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         raise ValueError('Invalid port')
-    binary = args.sv_binary or (FAST_BINARY if args.simulator == 'fast' else ROOT / 'build/full/Vqwen_behavioral')
-    if not binary.is_file():
-        raise RuntimeError('Build the simulator first: make chat (fast) or make chat-reference')
-    block_size = args.block_size if args.block_size is not None else (4 if args.simulator == 'fast' and args.sv_binary is None else 1)
-    prefill_size = args.prefill_size if args.prefill_size is not None else (
-        8 if args.simulator == 'fast' and args.sv_binary is None and block_size == 4 else block_size)
+    if args.native_only and args.sv_binary is not None:
+        parser.error('--native-only cannot be combined with --sv-binary')
+    model = locate_model(args.model)
+    protocol = ChatProtocol(model)
+    simulation = hybrid = phase = fused_phase = None
     print('Preparing local browser chat backends; no PyTorch or GPU inference...', flush=True)
-    hybrid = (RTLChatEngine(args.model,workers=max(1,args.workers),binary=HYBRID_BINARY,
-              lanes=8,block_size=4,prefill_size=8,reuse_prefix=False,
-              precision_profile='fp32_b1_fp64_prefill',canonical_prefix_reuse=True) if HYBRID_BINARY.is_file() else None)
-    fused_phase = FusedPhasePoolChatEngine(args.model) if FMA_PHASE_BINARY.is_file() else None
-    phase = PhasePoolChatEngine(args.model) if PHASE_BINARY.is_file() else None
-    engine = BackendRouter(RTLChatEngine(args.model, workers=args.workers, binary=binary,
-                                         lanes=8 if args.simulator == 'fast' else 1, block_size=block_size,
-                                         prefill_size=prefill_size),hybrid=hybrid,phase=phase,fused_phase=fused_phase)
+    if not args.native_only:
+        # Native-only launch must not import RTL code or prepare simulator offsets.
+        try:
+            from .rtl_chat import RTLChatEngine
+            from .rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY, FMA_PHASE_BINARY
+            from .phase_chat import PhasePoolChatEngine, FusedPhasePoolChatEngine
+        except ImportError:
+            from rtl_chat import RTLChatEngine
+            from rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY, FMA_PHASE_BINARY
+            from phase_chat import PhasePoolChatEngine, FusedPhasePoolChatEngine
+        binary = args.sv_binary or (FAST_BINARY if args.simulator == 'fast' else ROOT / 'build/full/Vqwen_behavioral')
+        if args.sv_binary is not None and not binary.is_file():
+            parser.error('Explicit --sv-binary does not exist')
+        block_size = args.block_size if args.block_size is not None else (4 if args.simulator == 'fast' and args.sv_binary is None else 1)
+        prefill_size = args.prefill_size if args.prefill_size is not None else (
+            8 if args.simulator == 'fast' and args.sv_binary is None and block_size == 4 else block_size)
+        if binary.is_file():
+            simulation = RTLChatEngine(model, workers=args.workers, binary=binary,
+                lanes=8 if args.simulator == 'fast' else 1, block_size=block_size, prefill_size=prefill_size)
+        if HYBRID_BINARY.is_file():
+            hybrid = RTLChatEngine(model,workers=max(1,args.workers),binary=HYBRID_BINARY,
+                lanes=8,block_size=4,prefill_size=8,reuse_prefix=False,
+                precision_profile='fp32_b1_fp64_prefill',canonical_prefix_reuse=True)
+        if FMA_PHASE_BINARY.is_file(): fused_phase = FusedPhasePoolChatEngine(model)
+        if PHASE_BINARY.is_file(): phase = PhasePoolChatEngine(model)
+    engine = BackendRouter(simulation, hybrid=hybrid, phase=phase, fused_phase=fused_phase, protocol=protocol)
     server = make_server(engine, args.port)
     print(f'Local chat ready: http://127.0.0.1:{server.server_port}', flush=True)
     default = next(entry for entry in engine.catalog() if entry['id'] == engine.default_backend())
     print(f"Default: {default['label']}", flush=True)
-    print('Legacy SystemVerilog choices are behavioral simulation, not cycle-accurate FPGA timing.', flush=True)
+    if engine.simulations:
+        print('Legacy SystemVerilog choices are behavioral simulation, not cycle-accurate FPGA timing.', flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

@@ -17,10 +17,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class BackendRouter:
-    def __init__(self, simulation, hybrid=None, phase=None, fused_phase=None):
+    def __init__(self, simulation=None, hybrid=None, phase=None, fused_phase=None, *, protocol=None):
         self.simulation = simulation
-        self.native_cpu = NativeCPUChat(simulation)
-        self.simulations = {"rtl": simulation}
+        self.protocol = protocol if protocol is not None else simulation
+        if self.protocol is None:
+            raise ValueError('A tokenizer ChatProtocol or existing simulation is required')
+        self.native_cpu = NativeCPUChat(self.protocol)
+        self.simulations = {"rtl": simulation} if simulation is not None else {}
         if hybrid is not None:
             self.simulations["rtl-fp32"] = hybrid
         if phase is not None:
@@ -38,9 +41,12 @@ class BackendRouter:
 
     def default_backend(self):
         available = {entry['id'] for entry in self.catalog() if entry['available']}
-        return next(key for key in ('native-cpu-f16', 'rtl-fp32-fused-phase',
+        selected = next((key for key in ('native-cpu-f16', 'rtl-fp32-fused-phase',
                     'rtl-fp32-phase', 'rtl-fp32', 'rtl', 'llama-f16', 'llama-q4', 'llama-f32')
-                    if key in available)
+                    if key in available), None)
+        if selected is None:
+            raise RuntimeError('No available CPU backend. Build/export native assets explicitly, or install a comparison backend.')
+        return selected
 
     def catalog(self):
         simulations = [dict(id=key,
@@ -57,6 +63,9 @@ class BackendRouter:
             canonical_prefix_policy=engine.status().get("canonical_prefix_policy"),
             suffix_supported=engine.sim.block_size == 4,max_draft=engine.sim.block_size-1,
             prefill_block_size=engine.sim.prefill_size) for key,engine in self.simulations.items()]
+        if 'rtl' not in self.simulations:
+            simulations.append(dict(id='rtl', label='SystemVerilog · fast', available=False,
+                                    simulation=True, min_workers=0, suffix_supported=False))
         if 'rtl-fp32' not in self.simulations:
             simulations.append(dict(id='rtl-fp32',label='SystemVerilog · FP32 hybrid',
                                     available=False,simulation=True,min_workers=1,suffix_supported=False))
@@ -78,12 +87,14 @@ class BackendRouter:
             for key, label in [('llama-q4', 'llama.cpp · Q4_K_M'), ('llama-f16', 'llama.cpp · FP16'), ('llama-f32', 'llama.cpp · FP32')]]
 
     def status(self):
-        status = self.simulations.get(self.active,self.simulation).status()
-        if self.active == 'native-cpu-f16':
+        if self.active in self.simulations:
+            status = self.simulations[self.active].status()
+        elif self.active == 'native-cpu-f16':
             status = self.native_cpu.status()
             status['build_id'] = self.native_cpu.binary.resolve().parent.name
-        elif self.active not in self.simulations:
-            status.update(precision={'llama-q4': 'Q4_K_M', 'llama-f16': 'FP16', 'llama-f32': 'FP32'}[self.active],
+        else:
+            status = dict(model='Qwen3-0.6B', device='cpu', gpu_inference=False,
+                          pytorch_loaded=False, context_limit=4096, precision={'llama-q4': 'Q4_K_M', 'llama-f16': 'FP16', 'llama-f32': 'FP32'}[self.active],
                           cpu_threads=6, rtl=None, inference='llama.cpp CPU', cached_tokens=None,
                           precision_profile=None,precision_verified=False,prefix_reuse_enabled=True,
                           suffix_supported=False, max_verified_draft=0, prefill_block_size=None,
@@ -91,13 +102,15 @@ class BackendRouter:
         return dict(status, backends=self.catalog(), active_backend=self.active, default_backend=self.default_backend())
 
     def prepare(self, payload):
+        if not isinstance(payload, dict):
+            raise ValueError('Expected a JSON object')
         backend = payload.get('backend', self.default_backend())
         entry = next((b for b in self.catalog() if b['id'] == backend), None)
         if not entry or not entry['available']:
             raise ValueError('Unknown or unavailable backend')
-        simulation = self.simulations.get(backend,self.simulation)
-        request = (ChatProtocol.prepare(simulation, payload) if backend == 'native-cpu-f16' else
-                   simulation.prepare(dict(payload, max_draft=payload.get('max_draft', 0))))
+        simulation = self.simulations.get(backend)
+        request = (simulation.prepare(dict(payload, max_draft=payload.get('max_draft', 0)))
+                   if simulation is not None else ChatProtocol.prepare(self.protocol, payload))
         if request.max_draft and not entry['suffix_supported']:
             raise ValueError('Suffix drafting is unavailable for the selected backend')
         if backend in self.simulations:
