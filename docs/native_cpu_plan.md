@@ -668,3 +668,29 @@ At the user's explicit request, the local stable executable now points to build 
 The completed [standard ten-pair confirmation](../reports/native-cpu-build-12-standard-confirmation.json) and [paired analysis](../reports/native-cpu-build-12-standard-confirmation-analysis.json) are preserved, including their unfavorable result. For uncached 85/452-token prompts, median paired native/llama decode ratios were 0.687 and 0.772, with 95% bootstrap intervals 0.487–0.914 and 0.658–0.923. This run does not establish a fresh-request performance improvement. The user reported heavy concurrent machine activity; its contribution is unresolved. The browser guard excludes chat contention but does not isolate the machine, so neither background activity nor a code change has been established as the cause. These observations must not be replaced by build-10's earlier competitive 30-pair result, which remains historical evidence for that older binary.
 
 The separate ten-pair cache confirmation above supports TTFT improvement only for its primed edited-tail workloads; its decode intervals all include 1. Deployment makes the new functionality available for testing and does not turn that scoped cache benefit into a general inference-speed claim.
+
+
+## Remaining acceptance work after build-12 exposure
+
+Build-12 is exposed at the user's request and passed the live browser/cache
+checks. Heavy runs are idle while the user tests it. The user reported other
+substantial machine activity during the slower standard comparison; that run
+is retained, and its cause remains unresolved. A direct immutable build-10 vs
+build-12 comparison is still required before attributing the difference to code.
+
+The head-only SDOT prototype has independent source review, including its
+exact-rescore threshold, tie handling, full FPCR guard, and explicit FP32-range
+enclosure. It has not yet been compiled or timed. Its driver validates all eight
+saved short-context snapshots before timing predeclared steps 0/3/7. Offline
+snapshot bounds alone do not establish runtime pruning safety or speed.
+
+Experimental BLAS-attention build-14 remains preserved locally, but its source
+change was reverted from the default engine pending unchanged NumPy and quality
+gates. No performance claim is made for that experiment.
+
+Suffix work is an unused two-position verification API with a separate exact
+sequential-step checker. Shared weight loads must preserve each position's B1
+FMA order and separate vector nonlinear calls. Pending speculative KV must not
+become committed history or canonical prefix-cache state. There is no browser
+suffix capability or default enablement yet. Numerical, rollback/EOS, browser,
+and paired latency/acceptance gates remain required.
