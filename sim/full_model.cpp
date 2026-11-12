@@ -429,7 +429,7 @@ int main(int argc,char** argv) {
                         catch(const std::runtime_error&) {valid=false;}
                     }
                     if(!valid) {
-                        std::cout<<R"({"error":"Invalid query-value policy; expected OFF, ON or MIN_CONTEXT:N (1..4096)"})"<<'\n'<<std::flush;
+                        std::cout<<R"json({"error":"Invalid query-value policy; expected OFF, ON or MIN_CONTEXT:N (1..4096)"})json"<<'\n'<<std::flush;
                         continue;
                     }
                 }
