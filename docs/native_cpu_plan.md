@@ -1031,3 +1031,27 @@ near-4K numerical failure is still recorded. It is not a new candidate-versus-
 llama target result, and it does not imply release acceptance. Rebuilt candidate18
 still needs its own artifact-bound validation and browser/suffix checks before
 promotion. No new browser release follows from this archive.
+
+
+### Rebuilt candidate18: artifact-bound numerical and B2 verification evidence
+
+The [immutable build18 manifest](../reports/native-cpu-build-18-manifest.json)
+binds the rebuilt candidate that advertises FP64 norm accumulation. Its
+[56-array exact comparison](../reports/native-cpu-build-18-exact-gate.json)
+passed against the isolated norm diagnostic: 28 evaluated positions captured
+twice. This links the candidate artifact to the diagnostic's unchanged-limit
+independent oracle passes on those trajectories; it is transitive numerical
+evidence, not a new independent replay or universal precision proof.
+
+The [full 36-case B2 API matrix](../reports/native-cpu-build-18-verify-api.json)
+also passed with 1/12/64 workers, including prefix boundaries, both commit lengths,
+separate hidden/logit rows, rollback and state/capacity checks. Shared-weight
+verification therefore retains the tested sequential behavior after the norm
+change. API checks alone do not establish browser suffix integration or speed.
+
+Candidate18 remains **unpromoted**. Its own prefix, nine-case and expanded
+conversation suites, suffix integration and browser acceptance are still
+separate pending checks. Ready/status/catalog plumbing advertises the norm
+accumulator only when reported by the running executable; older binaries remain
+supported without inferring arithmetic from build names. No live-release or
+performance claim follows from these new artifact-bound gates.
