@@ -24,6 +24,7 @@ def main():
     parser.add_argument('--cpu', choices=['generic', 'native'], default='generic')
     parser.add_argument('--fast-attention', action='store_true')
     parser.add_argument('--parallel-attention', action='store_true')
+    parser.add_argument('--attention-qk2', action='store_true', help='Experimental paired-query FP64 QK with original reduction order')
     parser.add_argument('--batch-attention', action='store_true', help='Experimental exact per-query batched attention dispatch')
     parser.add_argument('--attention-dot-lanes8', action='store_true')
     parser.add_argument('--batched-prefill', action='store_true')
@@ -51,6 +52,7 @@ def main():
     if args.scalar_group and not args.group_projections:parser.error('--scalar-group requires --group-projections')
     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
+    if args.attention_qk2 and (not args.batch_attention or args.attention_dot_lanes8):parser.error('--attention-qk2 requires --batch-attention and excludes --attention-dot-lanes8')
     if args.batch_attention and not (args.parallel_attention and args.prefill_b8):parser.error('--batch-attention requires parallel attention and B8 prefill')
     if args.attention_dot_lanes8 and not args.parallel_attention:
         parser.error('--attention-dot-lanes8 requires --parallel-attention')
@@ -86,6 +88,7 @@ def main():
     if args.fp32_verification_b4: tag += '-verify-b4'
     if args.fp32_prefill_b8: tag += '-fp32-prefill-b8'
     if args.batch_attention: tag += '-batch-attention'
+    if args.attention_qk2: tag += '-qk2'
     if args.tag: tag += '-'+args.tag
     directory = ROOT / 'build/variants' / tag
     projection, full = directory / 'projection', directory / 'full'
@@ -115,6 +118,7 @@ def main():
     if args.static_kv: flags += ' -DSTATIC_KV'
     if args.prefill_b8: flags += ' -DPREFILL_B8 -DWIDE_BATCH=8 -DWIDE_FOUR_LANES'
     defines = {'scalar': [], 'row': ['+define+BULK_ROW_WEIGHTS']}[args.storage]
+    if args.attention_qk2: defines += ['+define+ATTENTION_QK2']
     if args.attention_dot_lanes8: defines += ['+define+ATTENTION_DOT_LANES8']
     if args.unchecked: defines += ['+define+UNCHECKED_WEIGHTS']
     if args.masked_activation: defines += ['+define+MASK_ACTIVATION_INDEX']

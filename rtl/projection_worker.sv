@@ -101,6 +101,57 @@ module projection_worker (
         end
     endtask
 `ifdef BATCH_ATTENTION
+`ifdef ATTENTION_QK2
+    real pair_scores[4096][2];
+    // Independent queries share each key load. Each query keeps ascending-j
+    // accumulation and ascending-t softmax/value order; no horizontal reduction.
+    task automatic attend_block_heads_qk2;
+        real sums[2], maximum[2], denom, scale, key;
+        int index, kvhead;
+        for (int head=first_row;head<end_row;head++) begin
+            kvhead=head/2;
+            for (int query=0;query<batch_count;query+=2) begin
+                maximum[0]=-1.0e300;maximum[1]=-1.0e300;
+                for (int t=0;t<=attention_position+query;t++) begin
+                    sums[0]=0.0;sums[1]=0.0;
+                    index=(attention_layer*4096+t)*1024+kvhead*128;
+                    for (int j=0;j<128;j++) begin
+                        key=attention_key_value(index+j);
+                        sums[0]+=wide_activation[((head*128+j)*8+query)&32767]*key;
+                        sums[1]+=wide_activation[((head*128+j)*8+query+1)&32767]*key;
+                    end
+                    pair_scores[t][0]=sums[0]/$sqrt(128.0);
+                    pair_scores[t][1]=sums[1]/$sqrt(128.0);
+                    if (pair_scores[t][0]>maximum[0]) maximum[0]=pair_scores[t][0];
+                    if (pair_scores[t][1]>maximum[1]) maximum[1]=pair_scores[t][1];
+                end
+                // The second query alone can see its own newly published KV.
+                if (query+1<batch_count) begin
+                    sums[1]=0.0;
+                    index=(attention_layer*4096+attention_position+query+1)*1024+kvhead*128;
+                    for (int j=0;j<128;j++)
+                        sums[1]+=wide_activation[((head*128+j)*8+query+1)&32767]*attention_key_value(index+j);
+                    pair_scores[attention_position+query+1][1]=sums[1]/$sqrt(128.0);
+                    if (pair_scores[attention_position+query+1][1]>maximum[1]) maximum[1]=pair_scores[attention_position+query+1][1];
+                end
+                for (int lane=0;lane<2 && query+lane<batch_count;lane++) begin
+                    denom=0.0;
+                    for (int t=0;t<=attention_position+query+lane;t++) begin
+                        pair_scores[t][lane]=$exp(pair_scores[t][lane]-maximum[lane]);
+                        denom+=pair_scores[t][lane];
+                    end
+                    for (int j=0;j<128;j++) result[head*128+j]=0.0;
+                    for (int t=0;t<=attention_position+query+lane;t++) begin
+                        scale=pair_scores[t][lane]/denom;
+                        index=(attention_layer*4096+t)*1024+kvhead*128;
+                        for (int j=0;j<128;j++) result[head*128+j]+=scale*attention_value_value(index+j);
+                    end
+                    for (int j=0;j<128;j++) wide_result[(head*128+j)*8+query+lane]=result[head*128+j];
+                end
+            end
+        end
+    endtask
+`endif
     task automatic attend_block_heads;
         real sum, maximum, denom, scale;
         int index, kvhead;
@@ -296,7 +347,13 @@ module projection_worker (
             else
 `endif
 `ifdef BATCH_ATTENTION
-            if (operation==5) attend_block_heads();
+            if (operation==5) begin
+`ifdef ATTENTION_QK2
+                attend_block_heads_qk2();
+`else
+                attend_block_heads();
+`endif
+            end
             else
 `endif
             if (operation==1) attend_heads();
