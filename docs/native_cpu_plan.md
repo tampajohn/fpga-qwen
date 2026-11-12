@@ -673,27 +673,29 @@ The separate ten-pair cache confirmation above supports TTFT improvement only fo
 ## Remaining acceptance work after build-12 exposure
 
 Build-12 is exposed at the user's request and passed the live browser/cache
-checks. Heavy runs are idle while the user tests it. The user reported other
-substantial machine activity during the slower standard comparison; that run
-is retained, and its cause remains unresolved. A direct immutable build-10 vs
-build-12 comparison is still required before attributing the difference to code.
+checks. Guarded runs resumed after the user finished testing. The direct
+immutable build-10 versus build-12 comparison below establishes neither a gain
+nor a regression; the earlier slower llama comparison remains preserved and
+unexplained. No experimental candidate has replaced live build-12.
 
-The head-only SDOT prototype has independent source review, including its
-exact-rescore threshold, tie handling, full FPCR guard, and explicit FP32-range
-enclosure. It has not yet been compiled or timed. Its driver validates all eight
-saved short-context snapshots before timing predeclared steps 0/3/7. Offline
-snapshot bounds alone do not establish runtime pruning safety or speed.
+The head-only SDOT prototype passed all eight saved-state checks, including
+exact dense logits, routed selection and bound coverage. It was slower in all
+six ten-pair comparisons at predeclared steps 0/3/7. Keep the dense head;
+[the component evidence](native_head_probe.md) describes the measured limits
+and a possible bounded profiling followup.
 
 Experimental BLAS-attention build-14 remains preserved locally, but its source
-change was reverted from the default engine pending unchanged NumPy and quality
-gates. No performance claim is made for that experiment.
+change was reverted from the default engine. Initial unchanged NumPy gates
+passed at tiny/85/452-token fixtures; boundary and extended-context gates,
+quality and cache checks remain necessary. No performance claim is made.
 
-Suffix work is an unused two-position verification API with a separate exact
-sequential-step checker. Shared weight loads must preserve each position's B1
-FMA order and separate vector nonlinear calls. Pending speculative KV must not
-become committed history or canonical prefix-cache state. There is no browser
-suffix capability or default enablement yet. Numerical, rollback/EOS, browser,
-and paired latency/acceptance gates remain required.
+Candidate 15 now connects shared-weight two-position verification to an opt-in
+greedy suffix adapter. All 36 API cases, 32 full-logit arrays versus build-12,
+35 conversation/budget fixtures, and CLI EOS/rollback checks passed. The first
+ten-pair counting/prose comparison established no request-speed gain, so the
+default remains off. Browser capability controls are implemented and tested
+on an isolated server; real suffix-plus-prefix/cancellation checks remain
+before promotion. See [scoped evidence](native_suffix_b2.md).
 
 ### Direct build-12 versus build-10 uncached control
 

@@ -20,6 +20,15 @@ blocks and shares K/V conversion between paired query heads during batched
 prefill. Partial tails are recomputed; decoded KV is never reused as a canonical
 prefill block. Suffix drafting remains unavailable.
 
+Newer experiments remain separate from that live release. Candidate 15 adds
+opt-in greedy two-token verification and has passed exact-logit, conversation,
+EOS and rollback checks. Its first paired suffix benchmark established no
+request-speed gain, so drafting stays off by default; see the
+[suffix evidence and remaining checks](docs/native_suffix_b2.md).
+The [standalone vocabulary-routing prototype](docs/native_head_probe.md)
+also passed its scoped correctness checks but was slower than the dense head.
+Neither experiment establishes a new speed win over llama.cpp.
+
 Its [56-array comparison](reports/native-cpu-build-12-exact-gate.json) matches
 prior canonical full logits exactly. The [nine-case quality suite](reports/native-cpu-build-12-quality.json)
 retains exact tuned-llama token trajectories and stopping behavior, with both
