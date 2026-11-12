@@ -6,7 +6,8 @@ shortlist and at least10 alternating/rotated paired rounds. One native server
 is live at a time; process startup and workload warmup are outside scored time.
 
 --config-file accepts a JSON list of objects with name, build_dir,
-decode_threads and prefill_threads. Without a file, --build-dir plus
+decode_threads and prefill_threads, optionally priority(0/1, default0) and
+poll(0..100, default50), both applied to decode and prefill. Without a file, --build-dir plus
 --decode-threads/--prefill-threads forms a discovery cross product; --configs
 'DECODE:PREFILL,...' supplies an explicit shortlist within one build.
 """
@@ -141,6 +142,10 @@ class Phase0NativeEngine(NativeEngine):
         self.precision = precision
         self.threads = config['decode_threads']
         self.batch_threads = config['prefill_threads']
+        self.priority = config.get('priority', 0)
+        self.poll = config.get('poll', 50)
+        if type(self.priority) is not int or self.priority not in (0, 1) or type(self.poll) is not int or not 0 <= self.poll <= 100:
+            raise ValueError('Native priority must be0/1 and polling level0..100')
         self.directory = Path(directory)
         self.directory.mkdir(parents=True, exist_ok=True)
         self.model = model
@@ -148,6 +153,9 @@ class Phase0NativeEngine(NativeEngine):
         self.process = self.log = None
         self.metadata = dict(weight_storage=precision, arithmetic='llama.cpp native mixed-precision kernels',
                              kv='FP16', cpu_threads=self.threads, prefill_threads=self.batch_threads,
+                             requested_priority=self.priority, requested_poll=self.poll,
+                             scheduling_note='Same requested priority/poll for decode and prefill; no hard pinning or independent OS scheduling verification.',
+                             priority_failure_lines=[],
                              cpu_thread_note='Requested native thread counts, without affinity guarantees; CPU BLAS may use its own threads.')
 
     def start(self):
@@ -157,7 +165,9 @@ class Phase0NativeEngine(NativeEngine):
         self.log_path = self.directory / 'server.log'
         self.log = self.log_path.open('w')
         self.command = [str(self.server), '-m', str(self.model), '--host', '127.0.0.1', '--port', str(self.port),
-                        '-t', str(self.threads), '-tb', str(self.batch_threads), '-c', '4096', '-np', '1',
+                        '-t', str(self.threads), '-tb', str(self.batch_threads),
+                        '--prio', str(self.priority), '--prio-batch', str(self.priority),
+                        '--poll', str(self.poll), '--poll-batch', str(self.poll), '-c', '4096', '-np', '1',
                         '-ngl', '0', '--no-kv-offload', '--no-op-offload', '--no-webui', '--no-warmup',
                         '-ctk', 'f16', '-ctv', 'f16']
         if self.command[self.command.index('-ngl') + 1] != '0' or any(
@@ -180,6 +190,7 @@ class Phase0NativeEngine(NativeEngine):
                 response = connection.getresponse()
                 response.read()
                 if response.status == 200:
+                    self.check_requested_priority()
                     return time.perf_counter() - started
             except OSError:
                 pass
@@ -187,6 +198,24 @@ class Phase0NativeEngine(NativeEngine):
                 connection.close()
             time.sleep(.05)
         raise TimeoutError('Native server startup exceeded90seconds')
+
+    def check_requested_priority(self):
+        if self.priority != 1:
+            return
+        lines = self.log_path.read_text(errors='replace').splitlines()
+        failures = [line for line in lines if re.search(r'failed to set (?:process|thread) priority', line, re.IGNORECASE)]
+        self.metadata['priority_failure_lines'] = failures
+        self.metadata['priority_runtime_check'] = ('application failure logged' if failures else
+            'No application failure logged; actual OS scheduling/placement is not independently verified')
+        if failures:
+            raise RuntimeError('Requested priority1 was not fully applied: ' + ' | '.join(failures))
+
+    def generate(self, *args, **kwargs):
+        result = super().generate(*args, **kwargs)
+        # Worker failures can be logged after health readiness. Check after all
+        # preflight/warm/scored requests, outside the inherited timing interval.
+        self.check_requested_priority()
+        return result
 
 
 def parse_configs(args, parser):
@@ -219,10 +248,13 @@ def parse_configs(args, parser):
                         decode_threads=decode, prefill_threads=prefill) for decode, prefill in pairs]
     normalized = []
     for index, config in enumerate(configs):
-        if not isinstance(config, dict) or set(config) - {'name', 'build_dir', 'decode_threads', 'prefill_threads'}:
+        if not isinstance(config, dict) or set(config) - {'name', 'build_dir', 'decode_threads', 'prefill_threads', 'priority', 'poll'}:
             parser.error('Unknown configuration fields')
         if any(type(config.get(k)) is not int or not 1 <= config[k] <= 32 for k in ('decode_threads', 'prefill_threads')):
             parser.error('Decode/prefill thread counts must be integers1..32')
+        priority, poll = config.get('priority', 0), config.get('poll', 50)
+        if type(priority) is not int or priority not in (0, 1) or type(poll) is not int or not 0 <= poll <= 100:
+            parser.error('Optional priority must be0/1 and poll must be0..100')
         build_dir = config.get('build_dir') or args.build_dir
         if not build_dir:
             parser.error('Each configuration requires build_dir')
@@ -230,12 +262,13 @@ def parse_configs(args, parser):
         if not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9_.-]{1,80}', name):
             parser.error('Configuration names must be1..80 letters/digits/underscore/dash/dot')
         normalized.append(dict(name=name, build_dir=str(Path(build_dir).expanduser().resolve()),
-                               decode_threads=config['decode_threads'], prefill_threads=config['prefill_threads']))
+                               decode_threads=config['decode_threads'], prefill_threads=config['prefill_threads'],
+                               priority=priority, poll=poll))
     if len({c['name'] for c in normalized}) != len(normalized):
         parser.error('Configuration names must be unique')
-    signatures = {(c['build_dir'], c['decode_threads'], c['prefill_threads']) for c in normalized}
+    signatures = {(c['build_dir'], c['decode_threads'], c['prefill_threads'], c['priority'], c['poll']) for c in normalized}
     if len(signatures) != len(normalized):
-        parser.error('Duplicate build/thread configurations are not independent comparisons')
+        parser.error('Duplicate build/thread/priority/poll configurations are not independent comparisons')
     if args.mode == 'confirmation' and (not (args.config_file or args.configs) or len(normalized) < 2):
         parser.error('Confirmation requires an explicit shortlist with at least2configurations')
     return normalized
@@ -392,6 +425,7 @@ def main():
         finally:
             if hasattr(engine, 'command'):
                 record['command'] = engine.command
+            record['metadata'] = engine.metadata
             engine.close()
             if hasattr(engine, 'log_path') and engine.log_path.is_file():
                 record['runtime_log'] = dict(path=str(engine.log_path), sha256=sha(engine.log_path))
