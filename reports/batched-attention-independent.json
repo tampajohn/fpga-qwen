@@ -1,0 +1,42 @@
+{
+  "completed": true,
+  "passed": true,
+  "binaries": [
+    {
+      "path": "/Users/jadams/workspace/sandbox/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4/full/Vqwen_behavioral",
+      "sha256": "97572eb39dde3ebbab0d01c79c824a8842c677e3333b35a687005f145e87606b"
+    },
+    {
+      "path": "/Users/jadams/workspace/sandbox/fpga-qwen-batched-attention/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-batch-attention/full/Vqwen_behavioral",
+      "sha256": "07e22976b2c72325e9ff2a62ca7e12e733762a1b8ac957d8987fb1cd511bbed7"
+    }
+  ],
+  "artifacts_unchanged": true,
+  "suites": [
+    "tests.test_batched_attention_real.BatchedAttentionParity",
+    "tests.test_canonical_prefix_real.RealCanonicalPrefixTests",
+    "tests.test_suffix_real.RealFP32SuffixTests"
+  ],
+  "tests_run": 4,
+  "failures": 0,
+  "errors": 0,
+  "skipped": [],
+  "log": "test_causal_tails_contexts_and_rollback (tests.test_batched_attention_real.BatchedAttentionParity.test_causal_tails_contexts_and_rollback) ... ok\ntest_fresh_cached_exact_logits_outputs_and_lifecycle (tests.test_canonical_prefix_real.RealCanonicalPrefixTests.test_fresh_cached_exact_logits_outputs_and_lifecycle) ... ok\ntest_matching_fp32_decode_tokens_are_recomputed (tests.test_canonical_prefix_real.RealCanonicalPrefixTests.test_matching_fp32_decode_tokens_are_recomputed) ... ok\ntest_seeded_greedy_cache_rejection_and_cancel_replay (tests.test_suffix_real.RealFP32SuffixTests.test_seeded_greedy_cache_rejection_and_cancel_replay) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 85.256s\n\nOK\n",
+  "exactness": "Full finite151936 binary64 logit bytes and IDs at matched logical positions; no tolerance",
+  "coverage": [
+    "prefill1..8 tails andoverwrite",
+    "85/127/128/129/255/256/452 contexts andcontinuations",
+    "workers1/3/17 sampledB4",
+    "futuretoken exclusion aftertruncate",
+    "prefillcancel/restart",
+    "existing33canonicalcomparisons andmatchingdecode exclusion",
+    "existing14suffixcomparisons+cancelrecovery"
+  ],
+  "timing_claim": false,
+  "source_hashes": {
+    "tools/validate_batched_attention.py": "e7f4eedfd648f066ad3316e05e959db23db4ca62bcd5210b00ef767cc78611f4",
+    "tests/test_batched_attention_real.py": "a894810bb92327ab932f7b41e25561f605e595c3b37896e1ec8a58403739af3e",
+    "tests/test_canonical_prefix_real.py": "eb4fdd9ddd7d4ce50d075d5c569b7e2eb54bf1dcaf4aa44061b2840e031e32da",
+    "tests/test_suffix_real.py": "b156e7971e5a2c22b5a5f0ab56319d4ce339698a31a3a781769e5dffb0d7223e"
+  }
+}

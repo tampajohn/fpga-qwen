@@ -12,14 +12,15 @@ from tools.chat_protocol import ChatRequest, common_prefix
 from tools.evaluate_projection_quality import read_dump_logits
 
 BINARY=os.environ.get('SV_CANONICAL_BINARY')
+BLOCK_SIZE=int(os.environ.get('SV_CANONICAL_BLOCK_SIZE','1'))
 
 @unittest.skipUnless(BINARY and Path(BINARY).is_file(),'Set SV_CANONICAL_BINARY to policy-capable experimental hybrid')
 class RealCanonicalPrefixTests(unittest.TestCase):
     def test_matching_fp32_decode_tokens_are_recomputed(self):
-        settings=dict(binary=BINARY,workers=8,lanes=8,block_size=1,prefill_size=8,
+        settings=dict(binary=BINARY,workers=8,lanes=8,block_size=BLOCK_SIZE,prefill_size=8,
                       reuse_prefix=False,precision_profile='fp32_b1_fp64_prefill')
         cached=RTLChatEngine(**settings,canonical_prefix_reuse=True)
-        fresh=RTLChatEngine(**settings)
+        fresh=RTLChatEngine(**settings,canonical_prefix_reuse=BLOCK_SIZE==4)
         self.addCleanup(cached.close);self.addCleanup(fresh.close)
         ids=[9707,11,1917,0]*8+[358]
         list(cached.stream(ChatRequest('s',ids,4,0,decoding='chat',seed=42),threading.Event()))
@@ -46,10 +47,10 @@ class RealCanonicalPrefixTests(unittest.TestCase):
         path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(report,indent=2)+'\n')
 
     def test_fresh_cached_exact_logits_outputs_and_lifecycle(self):
-        settings=dict(binary=BINARY,workers=8,lanes=8,block_size=1,prefill_size=8,
+        settings=dict(binary=BINARY,workers=8,lanes=8,block_size=BLOCK_SIZE,prefill_size=8,
                       reuse_prefix=False,precision_profile='fp32_b1_fp64_prefill')
         cached=RTLChatEngine(**settings,canonical_prefix_reuse=True)
-        fresh=RTLChatEngine(**settings)
+        fresh=RTLChatEngine(**settings,canonical_prefix_reuse=BLOCK_SIZE==4)
         self.addCleanup(cached.close);self.addCleanup(fresh.close)
         report=dict(completed=False,binary_sha256=hashlib.sha256(Path(BINARY).read_bytes()).hexdigest(),
                     policy='fp64_b8_aligned_v1',timing_claim=False,cases=[])
@@ -63,7 +64,10 @@ class RealCanonicalPrefixTests(unittest.TestCase):
                 if cached.cache_session!=session or not cached.sim.process or cached.sim.process.poll() is not None:expected=0
                 results=[];arrays=[]
                 for i,engine in enumerate((cached,fresh)):
-                    request=ChatRequest(session,ids,max_new,0,workers=workers,decoding=decoding,seed=42)
+                    # B4 profile requires canonical capability; unique sessions
+                    # make this reference fresh without bypassing the public API.
+                    request_session=(f'{session}-fresh-{len(report["cases"])}' if i==1 else session)
+                    request=ChatRequest(request_session,ids,max_new,0,workers=workers,decoding=decoding,seed=42)
                     result=list(engine.stream(request,threading.Event()))[-1]
                     self.assertEqual(result['type'],'done');self.assertIn(result['finish_reason'],('length','eos'))
                     results.append(result);arrays.append(read_dump_logits(engine.sim,Path(directory)/f'{i}.bin'))
