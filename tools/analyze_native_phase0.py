@@ -18,6 +18,13 @@ METRICS = {'decode_speedup': 'steady_decode_tokens_per_second',
            'ttft_speedup': 'first_token_seconds', 'request_speedup': 'request_seconds'}
 
 
+def profiles_for(report):
+    suite = report.get('context_suite', 'standard')
+    require(suite in ('standard', 'extended'), 'Unknown context suite')
+    return ({f'context{n}': n for n in (1024, 2048, 3968)}
+            if suite == 'extended' else PROFILES)
+
+
 def sha(path):
     with Path(path).open('rb') as stream:
         return hashlib.file_digest(stream, 'sha256').hexdigest()
@@ -29,6 +36,7 @@ def require(condition, message):
 
 
 def validate(report, baseline):
+    profiles = profiles_for(report)
     require(report.get('completed') is True and report.get('mode') == 'confirmation'
             and report.get('paired_sampling_complete') is True
             and report.get('calibration_only') is not True,
@@ -42,10 +50,10 @@ def validate(report, baseline):
     names = [config['name'] for config in configs]
     require(len(names) >= 2 and len(set(names)) == len(names) and baseline in names,
             'Supply an existing explicit baseline among at least2unique configurations')
-    require(set(report['prompts']) == set(PROFILES), 'Confirmation must cover both85/452-token contexts')
+    require(set(report['prompts']) == set(profiles), 'Confirmation must cover every declared context')
     count = report['tokens']
     require(type(count) is int and count >= 2, 'Invalid fixed output count')
-    for profile, length in PROFILES.items():
+    for profile, length in profiles.items():
         prompt = report['prompts'][profile]
         require(prompt['count'] == length and len(prompt['ids']) == length, 'Prompt length differs from protocol')
         require(len(report['expected_output_ids'][profile]) == count, 'Wrong expected output-ID count')
@@ -57,8 +65,8 @@ def validate(report, baseline):
                 and name in names and type(order) is int and 0 <= order < len(names),
                 'Malformed scored visit')
         require((index, name) not in visits and (index, order) not in orders, 'Duplicate paired visit or order position')
-        require(set(visit['profiles']) == set(PROFILES), 'Visit is missing a context')
-        for profile, length in PROFILES.items():
+        require(set(visit['profiles']) == set(profiles), 'Visit is missing a context')
+        for profile, length in profiles.items():
             row = visit['profiles'][profile]['scored']
             require(row.get('output_token_count') == count and row.get('finish_reason') == 'length'
                     and row.get('eos_observed') is False
@@ -127,6 +135,7 @@ def main():
     input_digest = sha(args.report)
     source = json.loads(args.report.read_text())
     names, visits, orders = validate(source, args.baseline)
+    profiles = profiles_for(source)
     quality = quality_evidence(args.quality_gate)
     rng = random.Random(args.seed)
     rounds = source['rounds']
@@ -134,6 +143,7 @@ def main():
     result = dict(completed=False, source_report=str(args.report.resolve()), source_report_sha256=input_digest,
                   analyzer_sha256=sha(__file__), python_version=sys.version,
                   precision=source['precision'], baseline=args.baseline,
+                  context_suite=source.get('context_suite', 'standard'),
                   configurations=source['configurations'], rounds=rounds, tokens=source['tokens'],
                   model=source.get('model'), source_builds=source.get('builds'),
                   bootstrap=dict(method='Paired-round percentile bootstrap of the median ratio',
@@ -152,7 +162,7 @@ def main():
     for candidate in names:
         if candidate == args.baseline:
             continue
-        for profile in PROFILES:
+        for profile in profiles:
             pairs = []
             for index in range(rounds):
                 reference_visit = visits[index, args.baseline]
@@ -166,7 +176,7 @@ def main():
                                   baseline={metric: reference[metric] for metric in METRICS.values()},
                                   candidate={metric: measured[metric] for metric in METRICS.values()}, ratios=ratios))
             result['comparisons'].append(dict(candidate=candidate, profile=profile,
-                prompt_tokens=PROFILES[profile], raw_pairs=pairs,
+                prompt_tokens=profiles[profile], raw_pairs=pairs,
                 order_counts=dict(baseline_first=sum(pair['baseline_before_candidate'] for pair in pairs),
                                   candidate_first=sum(not pair['baseline_before_candidate'] for pair in pairs)),
                 metrics={metric: interval([pair['ratios'][metric] for pair in pairs], indices) for metric in METRICS}))

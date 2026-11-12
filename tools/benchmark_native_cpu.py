@@ -18,6 +18,30 @@ from experiment import ROOT, locate_model
 from native_cpu_chat import NativeCPUChat, EOS
 
 
+def extended_prompts(protocol, count):
+    """Tokenize complete messages; never inject padding into prepared token IDs."""
+    result = {}
+    for length in (1024, 2048, 3968):
+        padding = 0
+        for attempt in range(10):
+            messages = [dict(role='user', content='Background notes:' + ' x' * padding +
+                '\nIgnore the background notes. Write every integer from 1 to 200 in order, '
+                'one integer per line. Do not skip numbers or abbreviate the list.')]
+            ids = protocol.prepare(dict(session='extended-context', messages=messages,
+                max_new_tokens=1, decoding='greedy')).ids
+            if len(ids) == length:
+                if len(ids) + count > 4096:
+                    raise RuntimeError('Extended workload exceeds context capacity')
+                result[f'context{length}'] = dict(ids=ids, count=length, messages=messages)
+                break
+            padding += length - len(ids)
+            if padding < 0:
+                raise RuntimeError('Extended prompt template exceeds target length')
+        else:
+            raise RuntimeError('Unable to tokenize exact extended prompt length')
+    return result
+
+
 class OriginalEngine:
     def __init__(self, protocol, binary, weights, threads, prefill_threads, logdir):
         self.client = NativeCPUChat(protocol, binary, weights, threads, prefill_threads)
@@ -95,8 +119,14 @@ def main():
     parser.add_argument('--threads', type=int, default=12)
     parser.add_argument('--prefill-threads', type=int, default=6)
     parser.add_argument('--rounds', type=int)
+    parser.add_argument('--context-suite', choices=('standard', 'extended'), default='standard')
+    parser.add_argument('--tokens', type=int, default=32)
     parser.add_argument('--guard-state-dir', type=Path, default=ROOT/'build/benchmark-status')
     args = parser.parse_args()
+    if not 2 <= args.tokens <= 128:
+        parser.error('Use 2..128 output tokens; extended prompts reserve 128 positions')
+    if args.mode == 'quality' and (args.context_suite != 'standard' or args.tokens != 32):
+        parser.error('Quality mode uses its own unchanged case limits')
     rounds = args.rounds if args.rounds is not None else 10 if args.mode == 'confirmation' else 2
     if (args.mode == 'confirmation' and not 10 <= rounds <= 100) or (args.mode == 'discovery' and not 1 <= rounds <= 3):
         parser.error('Confirmation requires10..100rounds; discovery1..3')
@@ -139,7 +169,8 @@ def main():
         input_paths.append(executable.parent/'manifest.json')
     report = dict(completed=False, mode=args.mode, precision='f16', gpu=False, pytorch=False,
         performance_claim_eligible=False, numerical_quality_review_required=True, paired_sampling_complete=False,
-        timing_claim=False, configurations=configs, rounds=rounds, tokens=32, warmups_per_visit_profile=args.warmups if args.mode!='quality' else 0,
+        timing_claim=False, configurations=configs, rounds=rounds, tokens=args.tokens,
+        context_suite=args.context_suite, warmups_per_visit_profile=args.warmups if args.mode!='quality' else 0,
         comparison_scope='Original engine optimization comparison; not a llama target claim' if reference_binary else 'Original engine versus tuned llama FP16',
         builds={} if reference_binary else {configs[0]['build_dir']:build},
         model=dict(path=str(weights if reference_binary else model),sha256=sha(weights if reference_binary else model)),
@@ -204,10 +235,14 @@ def main():
                 finally: finish(engine,record)
             summarize_quality(report)
         else:
-            prompts = {name:make_prompt(protocol,name) for name in ('short','long')}
-            if [len(prompts[p]) for p in ('short','long')] != [85,452]:
-                raise RuntimeError('Historical prompt lengths changed')
-            report['prompts'] = {name:dict(ids=ids,count=len(ids)) for name,ids in prompts.items()}
+            if args.context_suite == 'extended':
+                report['prompts'] = extended_prompts(protocol, args.tokens)
+                prompts = {name: row['ids'] for name, row in report['prompts'].items()}
+            else:
+                prompts = {name:make_prompt(protocol,name) for name in ('short','long')}
+                if [len(prompts[p]) for p in ('short','long')] != [85,452]:
+                    raise RuntimeError('Historical prompt lengths changed')
+                report['prompts'] = {name:dict(ids=ids,count=len(ids)) for name,ids in prompts.items()}
             expected = {}
             def visit(config,phase,round_index=None,order_index=None):
                 guard(args.guard_state_dir)
@@ -221,12 +256,12 @@ def main():
                     for profile,ids in prompts.items():
                         row = dict(warmups=[]);record['profiles'][profile]=row
                         for _ in range(args.warmups):
-                            warm = engine.generate(ids,32,True)
-                            validate_result(warm,ids,32,expected.get(profile))
+                            warm = engine.generate(ids,args.tokens,True)
+                            validate_result(warm,ids,args.tokens,expected.get(profile))
                             expected.setdefault(profile,warm['output_token_ids']);row['warmups'].append(warm)
                         if phase!='preflight':
-                            scored = engine.generate(ids,32,True)
-                            validate_result(scored,ids,32,expected[profile]);row['scored']=scored
+                            scored = engine.generate(ids,args.tokens,True)
+                            validate_result(scored,ids,args.tokens,expected[profile]);row['scored']=scored
                 finally: finish(engine,record)
             for config in configs: visit(config,'preflight')
             report.update(preflight_same_precision_ids_passed=True, expected_output_ids=expected)
