@@ -37,3 +37,23 @@ explicit correctness proposals are not a production drafter or timing workload.
 The adapter is responsible for output-budget/capacity dispatch gates and for
 keeping suffix drafting disabled in chat until a separately verified sampler
 implementation exists.
+
+## Numerical API validation
+
+The full direct-API matrix passed **36 prefix/commit cases**: prefixes
+0, 1, 511, 512, 513 and 3966, committing one or two inputs, with 1, 12 and
+64 decode workers (six prefill workers). Both verification rows matched two
+ordinary sequential steps bit-for-bit across all 151,936 logits and all 1024
+normalized hidden elements. Different subsequent input tokens checked that
+commit-one rollback did not expose rejected speculative KV. Public base-state
+snapshots remained unchanged while verification was pending.
+
+The same gate checked capacity rejection, preservation of pending state after
+validation errors, and abort through reset/truncate. Execution-failure reset
+behavior was source reviewed; allocation/hardware failures were not injected.
+These were predetermined synthetic token prefixes and fixed verification IDs,
+not conversation fixtures. The result establishes exact API behavior on this
+matrix, not suffix acceptance rates, browser correctness or speed. CLI/adapter
+integration, EOS behavior and measured benefit require separate gates.
+
+Evidence: [sanitized full B2 API gate](../reports/native-cpu-b2-api-gate.json).
