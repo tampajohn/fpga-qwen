@@ -344,3 +344,45 @@ and server409, cancellation followed by a fresh request, and native/llama/native
 backend switching. No browser JavaScript errors occurred. The live localhost:8765
 server and stable native binary path were unchanged. See
 [browser evidence](../reports/native-cpu-build-06-browser.json).
+
+## Build-08 competitive point estimates, no established decode win
+
+Build-07 (vector tanh) and build-08 (vector exp) each passed the unchanged
+full-logit limits at all 16 tiny/short/long positions and the exact nine-case
+conversation gate. Both native and reference remain 4/9 correct. Vector-library
+arithmetic is checked numerically; these changes do not claim bit identity.
+Build-07 discovery remains exploratory.
+
+Build-08 ten-pair confirmation observed native median decode 148.35/136.93
+tokens/s against tuned llama's 141.35/130.55 at 85/452 prompt tokens. Median
+paired ratios were **1.014x [0.812, 1.114]** and **1.055x [0.949, 1.196]**
+(95% paired-bootstrap intervals). Both include 1: no established decode win.
+These are within-round paired ratios, not ratios of separate medians. Native
+TTFT medians were 0.100/0.603 seconds versus 0.160/0.559: short-context latency
+improved, but long-context latency remains behind. Retain transport, widened
+prefill-cache memory, and uncontrolled OS scheduling caveats from prior runs.
+
+The synthetic 513-token ChatProtocol fixture crosses the native 512-token
+prefill chunk boundary. Both tuned llama and build-08 passed the unchanged
+0.01 maximum absolute / 0.002 RMS limits at positions 513 and 514, with all
+greedy predictions matching NumPy. Baseline diagnostic capture used a physical
+batch size of 1024 to fit the prompt; it is not a timing-protocol change.
+The fixture is structural coverage, not evidence of real-user answer quality.
+511/512-token boundary results are not published in this update.
+
+Build-06's separate actual-browser smoke does not validate build-08 in-browser.
+No live backend has been promoted. Candidate-09 lossless BF16 auxiliary-cache
+source is pending evaluation, with no result claimed here.
+
+Evidence: build-07 [tiny](../reports/native-cpu-build-07-tiny-gate.json),
+[short](../reports/native-cpu-build-07-short-gate.json),
+[long](../reports/native-cpu-build-07-long-gate.json),
+[quality](../reports/native-cpu-build-07-quality.json),
+[discovery](../reports/native-cpu-build-07-discovery.json);
+build-08 [tiny](../reports/native-cpu-build-08-tiny-gate.json),
+[short](../reports/native-cpu-build-08-short-gate.json),
+[long](../reports/native-cpu-build-08-long-gate.json),
+[quality](../reports/native-cpu-build-08-quality.json),
+[confirmation](../reports/native-cpu-build-08-confirmation.json),
+[paired uncertainty](../reports/native-cpu-build-08-confirmation-analysis.json),
+and [boundary 513/514 gate](../reports/native-cpu-boundary-513-oracle-gate.json).

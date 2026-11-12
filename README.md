@@ -22,34 +22,43 @@ It also matched tuned llama.cpp's exact token trajectories, EOS behavior, text,
 and grades on the existing nine-case conversation suite. Both scored **4/9**:
 matching baseline mistakes is not a model-quality improvement.
 
-**Build-03** replaces per-kernel worker wake/completion overhead and reuses scratch
-buffers. All 32 captured full-logit arrays were bit-identical to build-02, and
-it passed the same nine-case exact-trajectory gate (both engines still 4/9).
-Ten alternating paired rounds now provide the current speed evidence, using
-85/452-token uncached prompts and 32 identical greedy output tokens:
+**Build-08 is the current evaluated candidate.** It combines improved worker
+scheduling, grouped/four-row projection dispatch, larger prefill chunks, and
+CPU vector-library nonlinear functions. It passed the unchanged numerical gates
+at contexts 1–4, 85–92, and 452–455, and matched tuned llama.cpp on the nine-case
+exact-trajectory suite (both still 4/9). Additional synthetic boundary predictions
+at contexts 513/514 passed for both engines against NumPy; this is chunk-carry
+coverage, not an answer-quality benchmark.
+
+Ten alternating paired rounds used 85/452-token uncached prompts and 32 identical
+greedy output tokens:
 
 | Engine, 12 decode / 6 prefill threads | 85-token prompt decode | 452-token prompt decode |
 | --- | ---: | ---: |
-| Tuned llama.cpp FP16, KleidiAI + LTO | 135.27 tokens/s | 131.69 tokens/s |
-| Original CPU engine, build-03 | 125.74 tokens/s | 101.93 tokens/s |
+| Tuned llama.cpp FP16, KleidiAI + LTO | 141.35 tokens/s | 130.55 tokens/s |
+| Original CPU engine, build-08 | 148.35 tokens/s | 136.93 tokens/s |
 
-The median **paired** native/llama speed ratios were **0.838x** (95% paired
-bootstrap interval 0.793–0.957) and **0.754x** (0.645–0.834), respectively.
-These summarize within-round ratios, not ratios of the table's medians. The
-original engine remains slower and has not met the 90% decode target.
-See [confirmation](reports/native-cpu-build-03-confirmation.json),
-[paired uncertainty](reports/native-cpu-build-03-confirmation-analysis.json),
-[exact logits](reports/native-cpu-build-03-exact-gate-v2.json), and
-[conversation quality](reports/native-cpu-build-03-quality.json).
+Median **paired** native/llama decode ratios were **1.014x** (95% paired-bootstrap
+interval 0.812–1.114) and **1.055x** (0.949–1.196). Both intervals cross 1:
+point estimates are competitive, but **no decode win is established**. Paired
+ratios are not quotients of the table's independent medians. Native first-token
+medians were 0.100/0.603 seconds versus llama's 0.160/0.559 seconds: shorter
+context improved, while longer-context TTFT remained behind.
 
-Earlier build-02 measurements were only two exploratory rounds: 59.93/52.29
-native versus 141.95/134.20 llama tokens/s. Build-03's improvement over that
-historical run is not an interleaved build-02/build-03 performance comparison.
-The native subprocess transport differs from llama.cpp's HTTP streaming, and
-native prefill retains a widened FP32 layer-weight cache. Background scheduling
-also affects results. Build-04 has passed its 32-array exact check, but further
-quality/timing work remains under evaluation; build-05 SIMD source has no result
-reported here. No live backend has been promoted.
+See [confirmation](reports/native-cpu-build-08-confirmation.json),
+[paired uncertainty](reports/native-cpu-build-08-confirmation-analysis.json),
+[conversation quality](reports/native-cpu-build-08-quality.json), and
+[513-token boundary gate](reports/native-cpu-boundary-513-oracle-gate.json).
+Earlier build-02 and build-03 evidence remains in the
+[current plan](docs/native_cpu_plan.md); comparisons across historical runs do
+not establish isolated optimization gains. Native subprocess transport differs
+from llama.cpp's HTTP streaming, native prefill retains widened FP32 layer
+weights, and background scheduling remains uncontrolled.
+
+An isolated actual-browser check was completed for build-06; it is not a
+build-08 browser validation. The live backend is unchanged and no candidate has
+been promoted. Candidate-09's lossless BF16 auxiliary-cache source has no result
+reported here. The 511/512-token boundary work is still pending publication.
 
 The primary target remains the tuned **FP16** baseline. FP32 and constrained
 KleidiAI-OFF Q4 measurements are separate precision classes, not interchangeable

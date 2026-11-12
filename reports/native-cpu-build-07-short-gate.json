@@ -1,0 +1,781 @@
+{
+  "completed": true,
+  "calibration_only": false,
+  "passed": true,
+  "timing_claim": false,
+  "gpu": false,
+  "pytorch": false,
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Gate native CPU short full logits",
+      "started_at": "2026-11-12T05:54:13.541648+00:00"
+    }
+  },
+  "declared_tolerances": {
+    "atol": 0.01,
+    "rtol": 0.0,
+    "rms_atol": 0.002,
+    "greedy_identity_required": true
+  },
+  "inputs": {
+    "$REPO/build/native-cpu/build-07-short-logits/report.json": "906864c9fa14b2afd5c79c791af3c0feae14e8550c843b152e02d8d9c181a4ce",
+    "$REPO/build/native-cpu/build-07-short-logits/run0-step0.f32": "97a5456b8355df5cc49d10af9768071c9a3627bddfa0303523bc072b706b6713",
+    "$REPO/build/native-cpu/build-07-short-logits/run0-step1.f32": "823598d17d946ec2f093bd0f001a32c57b7b87941c981304007805bd08301dc2",
+    "$REPO/build/native-cpu/build-07-short-logits/run0-step2.f32": "648f1198877dc767b07f4af6d13259dcc6f30cbb14cdc11ae1eb89aed8aaf625",
+    "$REPO/build/native-cpu/build-07-short-logits/run0-step3.f32": "cf6abbbb2a554066c6f990493be4736c21bea2d3dbe019e6c646252767f70938",
+    "$REPO/build/native-cpu/build-07-short-logits/run0-step4.f32": "62087959cacf674fc6b64c3b2750f0591cb836ec234264945996bdd8f3ae6fdd",
+    "$REPO/build/native-cpu/build-07-short-logits/run0-step5.f32": "cb7b2ea9cd2631dc6af996c557c9911fd1ad94d7565bc96bb8759247f9533871",
+    "$REPO/build/native-cpu/build-07-short-logits/run0-step6.f32": "d2c91d80601d56d91a0511eb920245556b4d3687297fa6eddef79334be596aeb",
+    "$REPO/build/native-cpu/build-07-short-logits/run0-step7.f32": "d6ea7e31da016ca1504aaa9da8723a53f5b661b00055b28825ae6d0ba6189ca5",
+    "$REPO/build/native-cpu/build-07/qwen_cpu": "56b62381c7085f5061443371d4a1daa885f1bfdf4d99a2527155bcb403d2a468",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$REPO/build/native-phase0/prompt-short.json": "58e00bf8b3d31e4acefb5eb3fa2caa3874f426b931bbb3131e3565821b17a848",
+    "$REPO/build/native-cpu/continuation-short.json": "abc3f175fd91c9e38ac5676d1b521204500433ed74f9bb8336b34f29f80d206c",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/model.safetensors": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+  },
+  "source_hashes": {
+    "$REPO/tools/check_native_logits.py": "4b3b0e1330617f11d229452809ba54b82bc150f6f4b8787f16fb02633c053406",
+    "$REPO/tests/test_full_model.py": "5d56aa9784ec89a98f34cfdfd14aa7a0be9d356dd804754a8ec52c1b6e5fc439",
+    "$REPO/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713"
+  },
+  "oracle": {
+    "checkpoint": "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca",
+    "weight_precision": "f16",
+    "kv_precision": "f16",
+    "arithmetic": "NumPy FP32 network math; existing FP64 RoPE angle generation then FP32 sine/cosine.",
+    "kv_representation": "FP16-rounded values widened to FP32 before attention and cached as FP32",
+    "matrix_weight_rounding_only": true,
+    "norm_weights": "Original BF16 checkpoint values widened to FP32 without FP16 rounding",
+    "numpy_version": "2.5.4",
+    "library_threads": {
+      "VECLIB_MAXIMUM_THREADS": "4",
+      "OPENBLAS_NUM_THREADS": "4"
+    }
+  },
+  "captures": [
+    {
+      "path": "$REPO/build/native-cpu/build-07-short-logits/report.json",
+      "wrapped_provenance": false,
+      "configuration": {
+        "architecture": "qwen3",
+        "layers": 28,
+        "hidden": 1024,
+        "query_heads": 16,
+        "kv_heads": 8,
+        "vocabulary": 151936,
+        "weight_format": "QWCPU01",
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_type": "f16",
+        "gpu": false,
+        "pytorch": false,
+        "decode_threads": 12,
+        "prefill_threads": 6
+      },
+      "run_index": 0,
+      "warmup": false,
+      "native_mode": "teacher_forced",
+      "prompt": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "consumed": [
+        10642,
+        33394,
+        19257,
+        311,
+        279,
+        4628,
+        518
+      ],
+      "predictions": [
+        10642,
+        33394,
+        19257,
+        311,
+        279,
+        4628,
+        518,
+        892
+      ],
+      "eog_prediction_steps": [],
+      "client_manifest": null,
+      "precision_matched": true
+    }
+  ],
+  "selected_steps": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "comparisons": [
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.0074558258056640625,
+      "rms_error": 0.001879359940997219,
+      "max_error_token_id": 37687,
+      "native_at_max_error": -4.86273193359375,
+      "oracle_at_max_error": -4.870187759399414,
+      "native_predicted_id": 10642,
+      "native_argmax_id": 10642,
+      "oracle_argmax_id": 10642,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 10642,
+          "logit": 27.506406784057617
+        },
+        {
+          "id": 334,
+          "logit": 21.374696731567383
+        },
+        {
+          "id": 12,
+          "logit": 21.348468780517578
+        },
+        {
+          "id": 18816,
+          "logit": 19.69921112060547
+        },
+        {
+          "id": 16,
+          "logit": 19.428516387939453
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 10642,
+          "logit": 27.509201049804688
+        },
+        {
+          "id": 334,
+          "logit": 21.377561569213867
+        },
+        {
+          "id": 12,
+          "logit": 21.348766326904297
+        },
+        {
+          "id": 18816,
+          "logit": 19.70138931274414
+        },
+        {
+          "id": 16,
+          "logit": 19.42438507080078
+        }
+      ],
+      "native_top1_margin": 6.131710052490234,
+      "oracle_top1_margin": 6.13163948059082,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 0,
+      "context_tokens": 85,
+      "oracle_logits_sha256": "c248d463d7e862fa096073e018d9c7d053942dfbd69f17bda3a9183e60dfc985",
+      "native_logits_sha256": "97a5456b8355df5cc49d10af9768071c9a3627bddfa0303523bc072b706b6713"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.004727840423583984,
+      "rms_error": 0.0009706119253118231,
+      "max_error_token_id": 87297,
+      "native_at_max_error": -4.43708610534668,
+      "oracle_at_max_error": -4.441813945770264,
+      "native_predicted_id": 33394,
+      "native_argmax_id": 33394,
+      "oracle_argmax_id": 33394,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 33394,
+          "logit": 30.14874267578125
+        },
+        {
+          "id": 16936,
+          "logit": 21.73592758178711
+        },
+        {
+          "id": 3070,
+          "logit": 20.029647827148438
+        },
+        {
+          "id": 4938,
+          "logit": 19.05058479309082
+        },
+        {
+          "id": 7055,
+          "logit": 18.635601043701172
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 33394,
+          "logit": 30.148435592651367
+        },
+        {
+          "id": 16936,
+          "logit": 21.733531951904297
+        },
+        {
+          "id": 3070,
+          "logit": 20.032390594482422
+        },
+        {
+          "id": 4938,
+          "logit": 19.051433563232422
+        },
+        {
+          "id": 7055,
+          "logit": 18.633834838867188
+        }
+      ],
+      "native_top1_margin": 8.41281509399414,
+      "oracle_top1_margin": 8.41490364074707,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 1,
+      "context_tokens": 86,
+      "oracle_logits_sha256": "592b1793aba67eaaaa33e25db4f2a601333e008abf7a8c3d60a2e27ab437cab1",
+      "native_logits_sha256": "823598d17d946ec2f093bd0f001a32c57b7b87941c981304007805bd08301dc2"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.005494117736816406,
+      "rms_error": 0.001301265640056041,
+      "max_error_token_id": 64367,
+      "native_at_max_error": -6.30859375,
+      "oracle_at_max_error": -6.314087867736816,
+      "native_predicted_id": 19257,
+      "native_argmax_id": 19257,
+      "oracle_argmax_id": 19257,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 19257,
+          "logit": 25.423931121826172
+        },
+        {
+          "id": 374,
+          "logit": 23.09369659423828
+        },
+        {
+          "id": 35616,
+          "logit": 18.071453094482422
+        },
+        {
+          "id": 6147,
+          "logit": 17.87677001953125
+        },
+        {
+          "id": 26569,
+          "logit": 17.759984970092773
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 19257,
+          "logit": 25.424583435058594
+        },
+        {
+          "id": 374,
+          "logit": 23.09569549560547
+        },
+        {
+          "id": 35616,
+          "logit": 18.070653915405273
+        },
+        {
+          "id": 6147,
+          "logit": 17.877107620239258
+        },
+        {
+          "id": 26569,
+          "logit": 17.758291244506836
+        }
+      ],
+      "native_top1_margin": 2.3302345275878906,
+      "oracle_top1_margin": 2.328887939453125,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 2,
+      "context_tokens": 87,
+      "oracle_logits_sha256": "90ae785031bc45bc31cd666344f6794bd925c908355f431e3f4cbd9b3474fb90",
+      "native_logits_sha256": "648f1198877dc767b07f4af6d13259dcc6f30cbb14cdc11ae1eb89aed8aaf625"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.004169940948486328,
+      "rms_error": 0.0009509665523263737,
+      "max_error_token_id": 109086,
+      "native_at_max_error": -5.396440029144287,
+      "oracle_at_max_error": -5.400609970092773,
+      "native_predicted_id": 311,
+      "native_argmax_id": 311,
+      "oracle_argmax_id": 311,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 311,
+          "logit": 28.677906036376953
+        },
+        {
+          "id": 279,
+          "logit": 13.615676879882812
+        },
+        {
+          "id": 3070,
+          "logit": 13.491511344909668
+        },
+        {
+          "id": 2346,
+          "logit": 13.18803596496582
+        },
+        {
+          "id": 5961,
+          "logit": 12.835498809814453
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 311,
+          "logit": 28.678924560546875
+        },
+        {
+          "id": 279,
+          "logit": 13.616162300109863
+        },
+        {
+          "id": 3070,
+          "logit": 13.491499900817871
+        },
+        {
+          "id": 2346,
+          "logit": 13.188787460327148
+        },
+        {
+          "id": 5961,
+          "logit": 12.831890106201172
+        }
+      ],
+      "native_top1_margin": 15.06222915649414,
+      "oracle_top1_margin": 15.062762260437012,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 3,
+      "context_tokens": 88,
+      "oracle_logits_sha256": "87ac4bedb16aa025cfa59cc9f0fcf0cae083f5249cdefc6816b8e12f577c81f4",
+      "native_logits_sha256": "cf6abbbb2a554066c6f990493be4736c21bea2d3dbe019e6c646252767f70938"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.00521087646484375,
+      "rms_error": 0.0009756294963438032,
+      "max_error_token_id": 90581,
+      "native_at_max_error": -8.114812850952148,
+      "oracle_at_max_error": -8.120023727416992,
+      "native_predicted_id": 279,
+      "native_argmax_id": 279,
+      "oracle_argmax_id": 279,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 279,
+          "logit": 27.57463836669922
+        },
+        {
+          "id": 1246,
+          "logit": 25.014110565185547
+        },
+        {
+          "id": 264,
+          "logit": 16.28719711303711
+        },
+        {
+          "id": 3070,
+          "logit": 15.166727066040039
+        },
+        {
+          "id": 821,
+          "logit": 14.946001052856445
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 279,
+          "logit": 27.575027465820312
+        },
+        {
+          "id": 1246,
+          "logit": 25.01306915283203
+        },
+        {
+          "id": 264,
+          "logit": 16.28706932067871
+        },
+        {
+          "id": 3070,
+          "logit": 15.166439056396484
+        },
+        {
+          "id": 821,
+          "logit": 14.94610595703125
+        }
+      ],
+      "native_top1_margin": 2.560527801513672,
+      "oracle_top1_margin": 2.5619583129882812,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 4,
+      "context_tokens": 89,
+      "oracle_logits_sha256": "3011b5124b2b40a43771304616d1e6ab6bfde1d77c4cb7cc06039d3cc84ba922",
+      "native_logits_sha256": "62087959cacf674fc6b64c3b2750f0591cb836ec234264945996bdd8f3ae6fdd"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.0049304962158203125,
+      "rms_error": 0.0009145220200703734,
+      "max_error_token_id": 36421,
+      "native_at_max_error": -12.207725524902344,
+      "oracle_at_max_error": -12.202795028686523,
+      "native_predicted_id": 4628,
+      "native_argmax_id": 4628,
+      "oracle_argmax_id": 4628,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 4628,
+          "logit": 22.81351661682129
+        },
+        {
+          "id": 4379,
+          "logit": 22.63656997680664
+        },
+        {
+          "id": 3311,
+          "logit": 21.001049041748047
+        },
+        {
+          "id": 7192,
+          "logit": 20.988800048828125
+        },
+        {
+          "id": 5726,
+          "logit": 19.17528533935547
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 4628,
+          "logit": 22.81277847290039
+        },
+        {
+          "id": 4379,
+          "logit": 22.636859893798828
+        },
+        {
+          "id": 3311,
+          "logit": 21.001867294311523
+        },
+        {
+          "id": 7192,
+          "logit": 20.989097595214844
+        },
+        {
+          "id": 5726,
+          "logit": 19.17633056640625
+        }
+      ],
+      "native_top1_margin": 0.17694664001464844,
+      "oracle_top1_margin": 0.1759185791015625,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 5,
+      "context_tokens": 90,
+      "oracle_logits_sha256": "cd12cd98e0282cf2705ce6c4d7b1b732154a32298c469dbae563c51cea85a957",
+      "native_logits_sha256": "cb7b2ea9cd2631dc6af996c557c9911fd1ad94d7565bc96bb8759247f9533871"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.0031614303588867188,
+      "rms_error": 0.0006773541244878881,
+      "max_error_token_id": 89466,
+      "native_at_max_error": -14.387635231018066,
+      "oracle_at_max_error": -14.390796661376953,
+      "native_predicted_id": 518,
+      "native_argmax_id": 518,
+      "oracle_argmax_id": 518,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 518,
+          "logit": 25.88214111328125
+        },
+        {
+          "id": 315,
+          "logit": 20.442279815673828
+        },
+        {
+          "id": 323,
+          "logit": 20.268871307373047
+        },
+        {
+          "id": 448,
+          "logit": 19.37100601196289
+        },
+        {
+          "id": 476,
+          "logit": 15.728839874267578
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 518,
+          "logit": 25.882110595703125
+        },
+        {
+          "id": 315,
+          "logit": 20.44190216064453
+        },
+        {
+          "id": 323,
+          "logit": 20.268638610839844
+        },
+        {
+          "id": 448,
+          "logit": 19.370304107666016
+        },
+        {
+          "id": 476,
+          "logit": 15.728134155273438
+        }
+      ],
+      "native_top1_margin": 5.439861297607422,
+      "oracle_top1_margin": 5.440208435058594,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 6,
+      "context_tokens": 91,
+      "oracle_logits_sha256": "373e398edeaa39c9d1edd2d204941152a12c42dc49b06d42c6d8de8e47b76e7f",
+      "native_logits_sha256": "d2c91d80601d56d91a0511eb920245556b4d3687297fa6eddef79334be596aeb"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.00330352783203125,
+      "rms_error": 0.0007103507986228802,
+      "max_error_token_id": 109670,
+      "native_at_max_error": -10.115175247192383,
+      "oracle_at_max_error": -10.118478775024414,
+      "native_predicted_id": 892,
+      "native_argmax_id": 892,
+      "oracle_argmax_id": 892,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 892,
+          "logit": 32.19683837890625
+        },
+        {
+          "id": 8206,
+          "logit": 19.972570419311523
+        },
+        {
+          "id": 15920,
+          "logit": 18.623817443847656
+        },
+        {
+          "id": 133669,
+          "logit": 16.072248458862305
+        },
+        {
+          "id": 23085,
+          "logit": 15.59941577911377
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 892,
+          "logit": 32.19803237915039
+        },
+        {
+          "id": 8206,
+          "logit": 19.973716735839844
+        },
+        {
+          "id": 15920,
+          "logit": 18.62545394897461
+        },
+        {
+          "id": 133669,
+          "logit": 16.073867797851562
+        },
+        {
+          "id": 23085,
+          "logit": 15.601211547851562
+        }
+      ],
+      "native_top1_margin": 12.224267959594727,
+      "oracle_top1_margin": 12.224315643310547,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 7,
+      "context_tokens": 92,
+      "oracle_logits_sha256": "d87b1262b3a08e3a756900a9e9bd0731c17bc3974f71a781c107aa467e116a44",
+      "native_logits_sha256": "d6ea7e31da016ca1504aaa9da8723a53f5b661b00055b28825ae6d0ba6189ca5"
+    }
+  ],
+  "limitations": [
+    "Oracle replays native consumed IDs, including supplied teacher forcing after an EOS prediction; this is not an autonomous conversation-quality test.",
+    "Native mixed-precision kernels and reduction orders differ from independent NumPy FP32 math. Calibration reports errors and never declares a tolerance pass.",
+    "A gate applies only supplied limits at selected positions; tolerances must be justified before a separate validation run, not fitted retrospectively to these measurements.",
+    "One-dimensional norm tensors stay FP32; f16 rounds only two-dimensional checkpoint matrices. No quantized-weight oracle is provided."
+  ],
+  "summary": {
+    "compared_positions": 8,
+    "max_absolute_error": 0.0074558258056640625,
+    "max_position_rms_error": 0.001879359940997219,
+    "greedy_mismatches": 0
+  },
+  "guard_after": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Gate native CPU short full logits",
+      "started_at": "2026-11-12T05:54:13.541648+00:00"
+    }
+  },
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-07-short-gate.json",
+    "raw_source_sha256": "e14bcfd7f2962783ed4d1aaf7110f0c3ececb712b4fddcfd7c2c9e87f24b0d2a",
+    "sanitization": "Repository/home prefixes replaced; PID/PPID and host process names omitted. CPU percentage retains original ps field index2; memory and elapsed retained. Embedded hashes identify original local artifacts."
+  }
+}

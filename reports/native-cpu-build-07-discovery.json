@@ -1,0 +1,3403 @@
+{
+  "completed": true,
+  "mode": "discovery",
+  "precision": "f16",
+  "gpu": false,
+  "pytorch": false,
+  "performance_claim_eligible": false,
+  "numerical_quality_review_required": true,
+  "paired_sampling_complete": false,
+  "timing_claim": false,
+  "configurations": [
+    {
+      "name": "llama-f16-onon-d12-p6",
+      "build_dir": "$REPO/build/native-phase0/kleidi-on-lto-on",
+      "decode_threads": 12,
+      "prefill_threads": 6,
+      "priority": 0,
+      "poll": 50
+    },
+    {
+      "name": "native-cpu-f16-d12-p6",
+      "decode_threads": 12,
+      "prefill_threads": 6,
+      "binary": "$REPO/build/native-cpu/build-07/qwen_cpu",
+      "weights": "$REPO/build/native-cpu/weights.bin"
+    }
+  ],
+  "rounds": 2,
+  "tokens": 32,
+  "warmups_per_visit_profile": 1,
+  "builds": {
+    "$REPO/build/native-phase0/kleidi-on-lto-on": {
+      "directory": "$REPO/build/native-phase0/kleidi-on-lto-on",
+      "server": "$REPO/build/native-phase0/kleidi-on-lto-on/bin/llama-server",
+      "cache_sha256": "6dc36d8fd67fa902b4aae2d7da05d6012153d164a873893c4dbe9ad60f4318b5",
+      "artifacts": {
+        "bin/libggml-base.0.29.0.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+        "bin/libllama.0.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+        "bin/libmtmd.0.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+        "bin/libggml.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+        "bin/libggml.0.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+        "bin/libmtmd.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+        "bin/libllama-server-impl.dylib": "fee8cf534d504a305849086b7d078b7eba381417bf6eb42921f2affd36987632",
+        "bin/libggml-base.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+        "bin/libggml-blas.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6",
+        "bin/libllama-bench-impl.dylib": "5fbdbf965c84a890ea38327e9e4528704a07d23f9078943cea8030b266539b50",
+        "bin/libllama-common.0.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+        "bin/libllama.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+        "bin/libggml-cpu.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+        "bin/libllama.0.9.0.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+        "bin/libmtmd.0.9.0.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+        "bin/libllama-common.0.9.0.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+        "bin/llama-bench": "d398209e1d1e9d5098c6404c474dc7993b164513e20301428260b9850c189aeb",
+        "bin/libggml.0.29.0.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+        "bin/llama-server": "a4f18ec1dc0808e769289df92c48af90c42bc0d5b7a02d6eb6ee966ebc71b4d3",
+        "bin/libggml-cpu.0.29.0.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+        "bin/libllama-common.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+        "bin/libggml-base.0.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+        "bin/libggml-blas.0.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6",
+        "bin/libggml-cpu.0.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+        "bin/libggml-blas.0.29.0.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6"
+      },
+      "source_directory": "$REPO/build/llama.cpp",
+      "source_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb",
+      "source_clean": true,
+      "manifest": {
+        "completed": true,
+        "source_commit": "cb44fdb1892eebca072e0949875a60c11245a8bb",
+        "commands": [
+          [
+            "cmake",
+            "-S",
+            "$REPO/build/llama.cpp",
+            "-B",
+            "$REPO/build/native-phase0/kleidi-on-lto-on",
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+            "-DGGML_NATIVE=ON",
+            "-DGGML_BLAS=ON",
+            "-DGGML_BLAS_VENDOR=Apple",
+            "-DGGML_OPENMP=OFF",
+            "-DGGML_CPU_KLEIDIAI=ON",
+            "-DGGML_LTO=ON",
+            "-DLLAMA_BUILD_TESTS=OFF",
+            "-DLLAMA_BUILD_EXAMPLES=OFF",
+            "-DLLAMA_BUILD_SERVER=ON",
+            "-DLLAMA_BUILD_TOOLS=ON",
+            "-DLLAMA_BUILD_APP=OFF",
+            "-DLLAMA_BUILD_UI=OFF",
+            "-DLLAMA_OPENSSL=OFF",
+            "-DGGML_METAL=OFF",
+            "-DGGML_CUDA=OFF",
+            "-DGGML_VULKAN=OFF",
+            "-DGGML_OPENCL=OFF",
+            "-DGGML_HIP=OFF",
+            "-DGGML_MUSA=OFF",
+            "-DGGML_SYCL=OFF"
+          ],
+          [
+            "cmake",
+            "--build",
+            "$REPO/build/native-phase0/kleidi-on-lto-on",
+            "--parallel",
+            "6",
+            "--target",
+            "llama-server",
+            "llama-bench"
+          ]
+        ],
+        "script_sha256": "8ad46ab585698e7785ebb77d60823f24c34253bfdc5c1b40a19c8066a29567b6",
+        "started_utc": "2026-11-12T04:35:31Z",
+        "note": "CPU-only baseline candidate, not a tuned performance claim. OpenMP explicitly off to match previously unavailable runtime; Accelerate enabled.",
+        "cache_sha256": "6dc36d8fd67fa902b4aae2d7da05d6012153d164a873893c4dbe9ad60f4318b5",
+        "build_options": [
+          "GGML_ACCELERATE:BOOL=ON",
+          "GGML_ALL_WARNINGS_3RD_PARTY:BOOL=OFF",
+          "GGML_AMX_BF16:BOOL=OFF",
+          "GGML_AMX_INT8:BOOL=OFF",
+          "GGML_AMX_TILE:BOOL=OFF",
+          "GGML_AVX:BOOL=OFF",
+          "GGML_AVX2:BOOL=OFF",
+          "GGML_AVX512:BOOL=OFF",
+          "GGML_AVX512_BF16:BOOL=OFF",
+          "GGML_AVX512_VBMI:BOOL=OFF",
+          "GGML_AVX512_VNNI:BOOL=OFF",
+          "GGML_AVX_VNNI:BOOL=OFF",
+          "GGML_BACKEND_DL:BOOL=OFF",
+          "GGML_BLAS:BOOL=ON",
+          "GGML_BMI2:BOOL=OFF",
+          "GGML_BUILD_EXAMPLES:BOOL=OFF",
+          "GGML_BUILD_TESTS:BOOL=OFF",
+          "GGML_CCACHE:BOOL=ON",
+          "GGML_CPU:BOOL=ON",
+          "GGML_CPU_ALL_VARIANTS:BOOL=OFF",
+          "GGML_CPU_HBM:BOOL=OFF",
+          "GGML_CPU_KLEIDIAI:BOOL=ON",
+          "GGML_CPU_REPACK:BOOL=ON",
+          "GGML_CUDA:BOOL=OFF",
+          "GGML_CUDA_FA:BOOL=ON",
+          "GGML_CUDA_FA_ALL_QUANTS:BOOL=OFF",
+          "GGML_CUDA_FORCE_CUBLAS:BOOL=OFF",
+          "GGML_CUDA_FORCE_MMQ:BOOL=OFF",
+          "GGML_CUDA_GRAPHS:BOOL=ON",
+          "GGML_CUDA_NCCL:BOOL=ON",
+          "GGML_CUDA_NO_PEER_COPY:BOOL=OFF",
+          "GGML_CUDA_NO_VMM:BOOL=OFF",
+          "GGML_ET:BOOL=OFF",
+          "GGML_ET_SYSEMU:BOOL=OFF",
+          "GGML_F16C:BOOL=OFF",
+          "GGML_FMA:BOOL=OFF",
+          "GGML_GPROF:BOOL=OFF",
+          "GGML_HEXAGON:BOOL=OFF",
+          "GGML_HIP:BOOL=OFF",
+          "GGML_HIP_EXPORT_METRICS:BOOL=OFF",
+          "GGML_HIP_GRAPHS:BOOL=ON",
+          "GGML_HIP_MMQ_MFMA:BOOL=ON",
+          "GGML_HIP_NO_VMM:BOOL=ON",
+          "GGML_HIP_RCCL:BOOL=OFF",
+          "GGML_LASX:BOOL=ON",
+          "GGML_LLAMAFILE:BOOL=ON",
+          "GGML_LSX:BOOL=ON",
+          "GGML_LTO:BOOL=ON",
+          "GGML_METAL:BOOL=OFF",
+          "GGML_METAL_EMBED_LIBRARY:BOOL=OFF",
+          "GGML_METAL_NDEBUG:BOOL=OFF",
+          "GGML_METAL_SHADER_DEBUG:BOOL=OFF",
+          "GGML_MUSA:BOOL=OFF",
+          "GGML_MUSA_GRAPHS:BOOL=OFF",
+          "GGML_MUSA_MUDNN_COPY:BOOL=OFF",
+          "GGML_NATIVE:BOOL=ON",
+          "GGML_OPENCL:BOOL=OFF",
+          "GGML_OPENCL_EMBED_KERNELS:BOOL=ON",
+          "GGML_OPENCL_PROFILING:BOOL=OFF",
+          "GGML_OPENCL_USE_ADRENO_KERNELS:BOOL=ON",
+          "GGML_OPENMP:BOOL=OFF",
+          "GGML_OPENMP_FETCH:BOOL=OFF",
+          "GGML_OPENVINO:BOOL=OFF",
+          "GGML_RPC:BOOL=OFF",
+          "GGML_RVV:BOOL=ON",
+          "GGML_RV_ZFH:BOOL=ON",
+          "GGML_RV_ZICBOP:BOOL=ON",
+          "GGML_RV_ZIHINTPAUSE:BOOL=ON",
+          "GGML_RV_ZVFBFWMA:BOOL=OFF",
+          "GGML_RV_ZVFH:BOOL=ON",
+          "GGML_SANITIZE_ADDRESS:BOOL=OFF",
+          "GGML_SANITIZE_THREAD:BOOL=OFF",
+          "GGML_SANITIZE_UNDEFINED:BOOL=OFF",
+          "GGML_SCHED_NO_REALLOC:BOOL=OFF",
+          "GGML_SSE42:BOOL=OFF",
+          "GGML_STATIC:BOOL=OFF",
+          "GGML_SYCL:BOOL=OFF",
+          "GGML_SYCL_DNN:BOOL=ON",
+          "GGML_SYCL_F16:BOOL=OFF",
+          "GGML_SYCL_GRAPH:BOOL=ON",
+          "GGML_SYCL_HOST_MEM_FALLBACK:BOOL=ON",
+          "GGML_SYCL_SUPPORT_LEVEL_ZERO_API:BOOL=ON",
+          "GGML_SYCL_SUPPORT_XMX:BOOL=ON",
+          "GGML_VIRTGPU:BOOL=OFF",
+          "GGML_VIRTGPU_BACKEND:BOOL=OFF",
+          "GGML_VULKAN:BOOL=OFF",
+          "GGML_VULKAN_CHECK_RESULTS:BOOL=OFF",
+          "GGML_VULKAN_DEBUG:BOOL=OFF",
+          "GGML_VULKAN_MEMORY_DEBUG:BOOL=OFF",
+          "GGML_VULKAN_RUN_TESTS:BOOL=OFF",
+          "GGML_VULKAN_SHADER_DEBUG_INFO:BOOL=OFF",
+          "GGML_VULKAN_VALIDATE:BOOL=OFF",
+          "GGML_VXE:BOOL=ON",
+          "GGML_WEBGPU:BOOL=OFF",
+          "GGML_WEBGPU_CPU_PROFILE:BOOL=OFF",
+          "GGML_WEBGPU_DEBUG:BOOL=OFF",
+          "GGML_WEBGPU_GPU_PROFILE:BOOL=OFF",
+          "GGML_WEBGPU_JSPI:BOOL=ON",
+          "GGML_XTHEADVECTOR:BOOL=OFF",
+          "GGML_ZDNN:BOOL=OFF",
+          "GGML_ZENDNN:BOOL=OFF"
+        ],
+        "artifacts": {
+          "bin/libggml-base.0.29.0.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+          "bin/libllama.0.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+          "bin/libmtmd.0.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+          "bin/libggml.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+          "bin/libggml.0.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+          "bin/libmtmd.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+          "bin/libllama-server-impl.dylib": "fee8cf534d504a305849086b7d078b7eba381417bf6eb42921f2affd36987632",
+          "bin/libggml-base.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+          "bin/libggml-blas.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6",
+          "bin/libllama-bench-impl.dylib": "5fbdbf965c84a890ea38327e9e4528704a07d23f9078943cea8030b266539b50",
+          "bin/libllama-common.0.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+          "bin/libllama.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+          "bin/libggml-cpu.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+          "bin/libllama.0.9.0.dylib": "900e55c95bae3090f6706d7af2382e3d74217c3307a34b4423f6376d67502aa4",
+          "bin/libmtmd.0.9.0.dylib": "c711228d1735cf347d578fff2e33327361e63ebdcdff39b0ef83113cecd0dda1",
+          "bin/libllama-common.0.9.0.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+          "bin/llama-bench": "d398209e1d1e9d5098c6404c474dc7993b164513e20301428260b9850c189aeb",
+          "bin/libggml.0.29.0.dylib": "0fe55b66fad00a4a1dbaa1eb65faa8de512f538640364a010378e93337d99038",
+          "bin/llama-server": "a4f18ec1dc0808e769289df92c48af90c42bc0d5b7a02d6eb6ee966ebc71b4d3",
+          "bin/libggml-cpu.0.29.0.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+          "bin/libllama-common.dylib": "645078ff17b44f4839dd4e4186f4e9297e723518170ac7ecf5b24e48407eff0d",
+          "bin/libggml-base.0.dylib": "0db28265c35ade67bd19d98b07d637530dcc2eac88eb5bac324ae3309653e77e",
+          "bin/libggml-blas.0.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6",
+          "bin/libggml-cpu.0.dylib": "31de1b1d601efd424f3f0d03360ffc72767fbb8ca322fb6ab8b1ddf8b1820201",
+          "bin/libggml-blas.0.29.0.dylib": "32e92200b9325a2a717767f5294ab9f5977df033b4fb69ad62d39ade7dea93e6"
+        }
+      },
+      "manifest_sha256": "9aca1eff748dfcfd6f6a844b0913ecc40ecc0d0fe22aa0995cceb6eec8e76910",
+      "provenance_note": "Completed build manifest verified",
+      "build_options": {
+        "CMAKE_BUILD_TYPE": {
+          "type": "STRING",
+          "value": "Release"
+        },
+        "CMAKE_CXX_COMPILER": {
+          "type": "FILEPATH",
+          "value": "/usr/bin/c++"
+        },
+        "GGML_ACCELERATE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_ALL_WARNINGS_3RD_PARTY": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AMX_BF16": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AMX_INT8": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AMX_TILE": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX2": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX512": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX512_BF16": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX512_VBMI": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX512_VNNI": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_AVX_VNNI": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_BACKEND_DIR": {
+          "type": "PATH",
+          "value": ""
+        },
+        "GGML_BACKEND_DL": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_BIN_INSTALL_DIR": {
+          "type": "PATH",
+          "value": "bin"
+        },
+        "GGML_BLAS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_BLAS_VENDOR": {
+          "type": "STRING",
+          "value": "Apple"
+        },
+        "GGML_BMI2": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_BUILD_EXAMPLES": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_BUILD_TESTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CCACHE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CCACHE_FOUND": {
+          "type": "FILEPATH",
+          "value": "/opt/homebrew/bin/ccache"
+        },
+        "GGML_CPU": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CPU_ALL_VARIANTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CPU_ARM_ARCH": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_CPU_HBM": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CPU_KLEIDIAI": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CPU_POWERPC_CPUTYPE": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_CPU_REPACK": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CUDA": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CUDA_CCCL_VERSION": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_CUDA_COMPRESSION_MODE": {
+          "type": "STRING",
+          "value": "size"
+        },
+        "GGML_CUDA_FA": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CUDA_FA_ALL_QUANTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CUDA_FA_QUANTS": {
+          "type": "STRING",
+          "value": "q4_0-q4_0;q8_0-q8_0;f16-f16;bf16-bf16;f8_e4m3-f8_e4m3"
+        },
+        "GGML_CUDA_FORCE_CUBLAS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CUDA_FORCE_MMQ": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CUDA_GRAPHS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CUDA_NCCL": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_CUDA_NO_PEER_COPY": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_CUDA_NO_VMM": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_ET": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_ET_SYSEMU": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_F16C": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_FMA": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_GPROF": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_HEXAGON": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_HIP": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_HIP_EXPORT_METRICS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_HIP_GRAPHS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_HIP_MMQ_MFMA": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_HIP_NO_VMM": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_HIP_RCCL": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_INCLUDE_INSTALL_DIR": {
+          "type": "PATH",
+          "value": "include"
+        },
+        "GGML_LASX": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_LIB_INSTALL_DIR": {
+          "type": "PATH",
+          "value": "lib"
+        },
+        "GGML_LLAMAFILE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_LSX": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_LTO": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_METAL": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_METAL_EMBED_LIBRARY": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_METAL_MACOSX_VERSION_MIN": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_METAL_NDEBUG": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_METAL_SHADER_DEBUG": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_METAL_STD": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_METAL_TARGET_OS": {
+          "type": "STRING",
+          "value": "macos"
+        },
+        "GGML_MUSA": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_MUSA_GRAPHS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_MUSA_MUDNN_COPY": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_NATIVE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_OPENCL": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_OPENCL_EMBED_KERNELS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_OPENCL_PROFILING": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_OPENCL_TARGET_VERSION": {
+          "type": "STRING",
+          "value": "300"
+        },
+        "GGML_OPENCL_USE_ADRENO_KERNELS": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_OPENMP": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_OPENMP_FETCH": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_OPENVINO": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_RPC": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_RVV": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_RV_ZFH": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_RV_ZICBOP": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_RV_ZIHINTPAUSE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_RV_ZVFBFWMA": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_RV_ZVFH": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SANITIZE_ADDRESS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SANITIZE_THREAD": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SANITIZE_UNDEFINED": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SCCACHE_FOUND": {
+          "type": "FILEPATH",
+          "value": "GGML_SCCACHE_FOUND-NOTFOUND"
+        },
+        "GGML_SCHED_MAX_COPIES": {
+          "type": "STRING",
+          "value": "4"
+        },
+        "GGML_SCHED_NO_REALLOC": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SSE42": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_STATIC": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SYCL": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SYCL_DEVICE_ARCH": {
+          "type": "STRING",
+          "value": ""
+        },
+        "GGML_SYCL_DNN": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SYCL_F16": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_SYCL_GRAPH": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SYCL_HOST_MEM_FALLBACK": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SYCL_SUPPORT_LEVEL_ZERO_API": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SYCL_SUPPORT_XMX": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_SYCL_TARGET": {
+          "type": "STRING",
+          "value": "INTEL"
+        },
+        "GGML_VIRTGPU": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VIRTGPU_BACKEND": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_CHECK_RESULTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_DEBUG": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_MEMORY_DEBUG": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_RUN_TESTS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_SHADERS_GEN_TOOLCHAIN": {
+          "type": "FILEPATH",
+          "value": ""
+        },
+        "GGML_VULKAN_SHADER_DEBUG_INFO": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VULKAN_VALIDATE": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_VXE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_WEBGPU": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_WEBGPU_CPU_PROFILE": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_WEBGPU_DEBUG": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_WEBGPU_GPU_PROFILE": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_WEBGPU_JSPI": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "GGML_XTHEADVECTOR": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_ZDNN": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "GGML_ZENDNN": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "CMAKE_CXX_COMPILER-ADVANCED": {
+          "type": "INTERNAL",
+          "value": "1"
+        },
+        "GGML_AVAILABLE_BACKENDS": {
+          "type": "INTERNAL",
+          "value": "ggml-cpu;ggml-blas"
+        },
+        "GGML_COMPILER_SUPPORTS_FP16_FORMAT_I3E": {
+          "type": "INTERNAL",
+          "value": ""
+        },
+        "GGML_CUDA_COMPRESSION_MODE-STRINGS": {
+          "type": "INTERNAL",
+          "value": "none;speed;balance;size"
+        },
+        "GGML_MACHINE_SUPPORTS_dotprod": {
+          "type": "INTERNAL",
+          "value": "1"
+        },
+        "GGML_MACHINE_SUPPORTS_dotprod_COMPILED": {
+          "type": "INTERNAL",
+          "value": "TRUE"
+        },
+        "GGML_MACHINE_SUPPORTS_dotprod_EXITCODE": {
+          "type": "INTERNAL",
+          "value": "0"
+        },
+        "GGML_MACHINE_SUPPORTS_i8mm": {
+          "type": "INTERNAL",
+          "value": "1"
+        },
+        "GGML_MACHINE_SUPPORTS_i8mm_COMPILED": {
+          "type": "INTERNAL",
+          "value": "TRUE"
+        },
+        "GGML_MACHINE_SUPPORTS_i8mm_EXITCODE": {
+          "type": "INTERNAL",
+          "value": "0"
+        },
+        "GGML_MACHINE_SUPPORTS_nosve": {
+          "type": "INTERNAL",
+          "value": "1"
+        },
+        "GGML_MACHINE_SUPPORTS_sme": {
+          "type": "INTERNAL",
+          "value": "1"
+        },
+        "GGML_MACHINE_SUPPORTS_sme_COMPILED": {
+          "type": "INTERNAL",
+          "value": "TRUE"
+        },
+        "GGML_MACHINE_SUPPORTS_sme_EXITCODE": {
+          "type": "INTERNAL",
+          "value": "0"
+        },
+        "GGML_MACHINE_SUPPORTS_sve": {
+          "type": "INTERNAL",
+          "value": ""
+        },
+        "GGML_MACHINE_SUPPORTS_sve_COMPILED": {
+          "type": "INTERNAL",
+          "value": "TRUE"
+        },
+        "GGML_MACHINE_SUPPORTS_sve_EXITCODE": {
+          "type": "INTERNAL",
+          "value": "FAILED_TO_RUN"
+        },
+        "GGML_OPENMP_ENABLED": {
+          "type": "INTERNAL",
+          "value": "OFF"
+        }
+      },
+      "linked_libraries": "$REPO/build/native-phase0/kleidi-on-lto-on/bin/llama-server:\n\t@rpath/libllama-server-impl.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t@rpath/libllama-common.0.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t@rpath/libmtmd.0.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t@rpath/libllama.0.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t@rpath/libggml.0.dylib (compatibility version 0.0.0, current version 0.29.0)\n\t@rpath/libggml-cpu.0.dylib (compatibility version 0.0.0, current version 0.29.0)\n\t@rpath/libggml-blas.0.dylib (compatibility version 0.0.0, current version 0.29.0)\n\t@rpath/libggml-base.0.dylib (compatibility version 0.0.0, current version 0.29.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+    }
+  },
+  "model": {
+    "path": "$REPO/build/bench/qwen3-0.6b-f16.gguf",
+    "sha256": "b91afb05689ed9ad8096f1e1274c416cff25f4db9fead4733806f7a669cadb1e"
+  },
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Explore vector activation native CPU speed",
+      "started_at": "2026-11-12T05:55:40.432308+00:00"
+    }
+  },
+  "host_before": {
+    "timestamp_utc": "2026-11-12T05:55:41Z",
+    "load_average": [
+      6.35888671875,
+      6.244140625,
+      6.2734375
+    ],
+    "busiest_processes_anonymized": [
+      {
+        "cpu_percent": 88.1,
+        "memory_percent": 0.1,
+        "elapsed": "00:01"
+      },
+      {
+        "cpu_percent": 86.0,
+        "memory_percent": 10.3,
+        "elapsed": "06-09:24:20"
+      },
+      {
+        "cpu_percent": 31.8,
+        "memory_percent": 0.3,
+        "elapsed": "05-14:33:52"
+      },
+      {
+        "cpu_percent": 19.0,
+        "memory_percent": 0.3,
+        "elapsed": "09-16:11:41"
+      },
+      {
+        "cpu_percent": 10.0,
+        "memory_percent": 0.4,
+        "elapsed": "05-10:46:38"
+      },
+      {
+        "cpu_percent": 7.9,
+        "memory_percent": 0.4,
+        "elapsed": "08-08:18:50"
+      },
+      {
+        "cpu_percent": 6.8,
+        "memory_percent": 0.2,
+        "elapsed": "01-04:05:01"
+      },
+      {
+        "cpu_percent": 6.0,
+        "memory_percent": 0.3,
+        "elapsed": "05-14:33:27"
+      },
+      {
+        "cpu_percent": 5.4,
+        "memory_percent": 0.1,
+        "elapsed": "09-16:11:34"
+      },
+      {
+        "cpu_percent": 5.3,
+        "memory_percent": 0.0,
+        "elapsed": "09-16:11:13"
+      },
+      {
+        "cpu_percent": 5.0,
+        "memory_percent": 0.1,
+        "elapsed": "12:40:29"
+      },
+      {
+        "cpu_percent": 4.8,
+        "memory_percent": 0.0,
+        "elapsed": "09-16:11:32"
+      },
+      {
+        "cpu_percent": 3.9,
+        "memory_percent": 0.0,
+        "elapsed": "09-16:10:47"
+      },
+      {
+        "cpu_percent": 3.4,
+        "memory_percent": 0.0,
+        "elapsed": "09-16:11:42"
+      },
+      {
+        "cpu_percent": 2.4,
+        "memory_percent": 0.1,
+        "elapsed": "09-16:10:59"
+      },
+      {
+        "cpu_percent": 2.4,
+        "memory_percent": 0.5,
+        "elapsed": "07:00:48"
+      },
+      {
+        "cpu_percent": 2.2,
+        "memory_percent": 0.0,
+        "elapsed": "09-16:37:59"
+      },
+      {
+        "cpu_percent": 1.8,
+        "memory_percent": 0.2,
+        "elapsed": "06-09:24:22"
+      },
+      {
+        "cpu_percent": 1.6,
+        "memory_percent": 0.1,
+        "elapsed": "09-16:11:12"
+      },
+      {
+        "cpu_percent": 1.6,
+        "memory_percent": 0.1,
+        "elapsed": "09-16:10:53"
+      }
+    ]
+  },
+  "preflight": [
+    {
+      "config": "llama-f16-onon-d12-p6",
+      "phase": "preflight",
+      "round": null,
+      "order_index": null,
+      "profiles": {
+        "short": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+              "finish_reason": "length",
+              "first_token_seconds": 0.1263790840166621,
+              "request_seconds": 0.3134508340153843,
+              "steady_decode_seconds": 0.18699241598369554,
+              "steady_decode_tokens_per_second": 165.7821245686402,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 85,
+                "prompt_ms": 125.85,
+                "prompt_per_token_ms": 1.4805882352941175,
+                "prompt_per_second": 675.4072308303536,
+                "predicted_n": 32,
+                "predicted_ms": 187.081,
+                "predicted_per_token_ms": 6.034870967741935,
+                "predicted_per_second": 165.70362570223594
+              },
+              "eos_observed": false
+            }
+          ]
+        },
+        "long": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                17654,
+                323,
+                4938,
+                11,
+                1393,
+                47430,
+                374,
+                264,
+                943,
+                315,
+                4938,
+                6240,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+              "finish_reason": "length",
+              "first_token_seconds": 0.5271285000490025,
+              "request_seconds": 0.7421183750266209,
+              "steady_decode_seconds": 0.21492379199480638,
+              "steady_decode_tokens_per_second": 144.23717221939353,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 452,
+                "prompt_ms": 526.615,
+                "prompt_per_token_ms": 1.1650774336283185,
+                "prompt_per_second": 858.3120495998025,
+                "predicted_n": 32,
+                "predicted_ms": 214.926,
+                "predicted_per_token_ms": 6.933096774193548,
+                "predicted_per_second": 144.23569042368072
+              },
+              "eos_observed": false
+            }
+          ]
+        }
+      },
+      "startup_seconds": 0.7630911670275964,
+      "command": [
+        "$REPO/build/native-phase0/kleidi-on-lto-on/bin/llama-server",
+        "-m",
+        "$REPO/build/bench/qwen3-0.6b-f16.gguf",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "54472",
+        "-t",
+        "12",
+        "-tb",
+        "6",
+        "--prio",
+        "0",
+        "--prio-batch",
+        "0",
+        "--poll",
+        "50",
+        "--poll-batch",
+        "50",
+        "-c",
+        "4096",
+        "-np",
+        "1",
+        "-ngl",
+        "0",
+        "--no-kv-offload",
+        "--no-op-offload",
+        "--no-webui",
+        "--no-warmup",
+        "-ctk",
+        "f16",
+        "-ctv",
+        "f16"
+      ],
+      "metadata": {
+        "weight_storage": "f16",
+        "arithmetic": "llama.cpp native mixed-precision kernels",
+        "kv": "FP16",
+        "cpu_threads": 12,
+        "prefill_threads": 6,
+        "requested_priority": 0,
+        "requested_poll": 50,
+        "scheduling_note": "Same requested priority/poll for decode and prefill; no hard pinning or independent OS scheduling verification.",
+        "priority_failure_lines": [],
+        "cpu_thread_note": "Requested native thread counts, without affinity guarantees; CPU BLAS may use its own threads."
+      },
+      "runtime_log": {
+        "path": "$REPO/build/native-cpu/build-07-discovery-logs/preflight/llama-f16-onon-d12-p6/server.log",
+        "sha256": "6bdc10ce6568c3f210b4a444f2eaccdcad6d21c2a9ae07a163805986969a0fef"
+      }
+    },
+    {
+      "config": "native-cpu-f16-d12-p6",
+      "phase": "preflight",
+      "round": null,
+      "order_index": null,
+      "profiles": {
+        "short": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+              "finish_reason": "length",
+              "first_token_seconds": 0.10989495902322233,
+              "request_seconds": 0.3059495839988813,
+              "steady_decode_seconds": 0.19604374998016283,
+              "steady_decode_tokens_per_second": 158.12796890049702,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 85
+              },
+              "eos_observed": false
+            }
+          ]
+        },
+        "long": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                17654,
+                323,
+                4938,
+                11,
+                1393,
+                47430,
+                374,
+                264,
+                943,
+                315,
+                4938,
+                6240,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+              "finish_reason": "length",
+              "first_token_seconds": 0.6082077500177547,
+              "request_seconds": 0.8646683749975637,
+              "steady_decode_seconds": 0.2564581249607727,
+              "steady_decode_tokens_per_second": 120.8774337125864,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 452
+              },
+              "eos_observed": false
+            }
+          ]
+        }
+      },
+      "startup_seconds": 0.4348327080369927,
+      "command": [
+        "$REPO/build/native-cpu/build-07/qwen_cpu",
+        "--weights",
+        "$REPO/build/native-cpu/weights.bin",
+        "--threads",
+        "12",
+        "--prefill-threads",
+        "6",
+        "--context",
+        "4096"
+      ],
+      "metadata": {
+        "transport": "Persistent subprocess JSON lines; one step request per output",
+        "weight_storage": "FP16 matrices / FP32 norms",
+        "kv": "FP16",
+        "arithmetic": "Original C++ FP32 math",
+        "cpu_threads": 12,
+        "prefill_threads": 6,
+        "gpu": false,
+        "pytorch": false,
+        "prefill_weight_cache": "Layer FP16 weights widened once to FP32 for Accelerate prefill; embedding stays FP16",
+        "placement": "No hard pinning; VECLIB_MAXIMUM_THREADS requested, not independently verified",
+        "actual_startup": {
+          "ready": true,
+          "protocol": 1,
+          "position": 0,
+          "decode_threads": 12,
+          "prefill_threads": 6,
+          "context": 4096,
+          "gpu": false,
+          "pytorch": false,
+          "weight_precision": "f16",
+          "norm_precision": "f32",
+          "activation_precision": "f32",
+          "kv_precision": "f16",
+          "prefix_reuse": false,
+          "suffix_drafting": false
+        }
+      },
+      "runtime_log": {
+        "path": "$REPO/build/native-cpu/build-07-discovery-logs/preflight/native-cpu-f16-d12-p6/native.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "visits": [
+    {
+      "config": "llama-f16-onon-d12-p6",
+      "phase": "scored",
+      "round": 0,
+      "order_index": 0,
+      "profiles": {
+        "short": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+              "finish_reason": "length",
+              "first_token_seconds": 0.1877524169976823,
+              "request_seconds": 0.40059145796112716,
+              "steady_decode_seconds": 0.2126975409919396,
+              "steady_decode_tokens_per_second": 145.74686597422757,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 85,
+                "prompt_ms": 187.29,
+                "prompt_per_token_ms": 2.203411764705882,
+                "prompt_per_second": 453.8416359656149,
+                "predicted_n": 32,
+                "predicted_ms": 212.782,
+                "predicted_per_token_ms": 6.863935483870968,
+                "predicted_per_second": 145.68901504826536
+              },
+              "eos_observed": false
+            }
+          ],
+          "scored": {
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "output_token_count": 32,
+            "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+            "finish_reason": "length",
+            "first_token_seconds": 0.14852058299584314,
+            "request_seconds": 0.33918720798101276,
+            "steady_decode_seconds": 0.19060545897809789,
+            "steady_decode_tokens_per_second": 162.6396230527802,
+            "backend_timings": {
+              "cache_n": 0,
+              "prompt_n": 85,
+              "prompt_ms": 147.977,
+              "prompt_per_token_ms": 1.7409058823529413,
+              "prompt_per_second": 574.4135913013508,
+              "predicted_n": 32,
+              "predicted_ms": 190.671,
+              "predicted_per_token_ms": 6.150677419354839,
+              "predicted_per_second": 162.5837175029239
+            },
+            "eos_observed": false
+          }
+        },
+        "long": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                17654,
+                323,
+                4938,
+                11,
+                1393,
+                47430,
+                374,
+                264,
+                943,
+                315,
+                4938,
+                6240,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+              "finish_reason": "length",
+              "first_token_seconds": 0.5067320829839446,
+              "request_seconds": 0.7204350000247359,
+              "steady_decode_seconds": 0.21358470903942361,
+              "steady_decode_tokens_per_second": 145.1414763698182,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 452,
+                "prompt_ms": 506.071,
+                "prompt_per_token_ms": 1.1196261061946904,
+                "prompt_per_second": 893.1553082472617,
+                "predicted_n": 32,
+                "predicted_ms": 213.779,
+                "predicted_per_token_ms": 6.896096774193548,
+                "predicted_per_second": 145.009565953625
+              },
+              "eos_observed": false
+            }
+          ],
+          "scored": {
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "output_token_count": 32,
+            "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+            "finish_reason": "length",
+            "first_token_seconds": 0.5155159999849275,
+            "request_seconds": 0.7502213749685325,
+            "steady_decode_seconds": 0.23460508399875835,
+            "steady_decode_tokens_per_second": 132.13694891694703,
+            "backend_timings": {
+              "cache_n": 0,
+              "prompt_n": 452,
+              "prompt_ms": 515.042,
+              "prompt_per_token_ms": 1.1394734513274336,
+              "prompt_per_second": 877.5983317865339,
+              "predicted_n": 32,
+              "predicted_ms": 234.629,
+              "predicted_per_token_ms": 7.568677419354838,
+              "predicted_per_second": 132.1234800472235
+            },
+            "eos_observed": false
+          }
+        }
+      },
+      "startup_seconds": 0.7807517499895766,
+      "command": [
+        "$REPO/build/native-phase0/kleidi-on-lto-on/bin/llama-server",
+        "-m",
+        "$REPO/build/bench/qwen3-0.6b-f16.gguf",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "54495",
+        "-t",
+        "12",
+        "-tb",
+        "6",
+        "--prio",
+        "0",
+        "--prio-batch",
+        "0",
+        "--poll",
+        "50",
+        "--poll-batch",
+        "50",
+        "-c",
+        "4096",
+        "-np",
+        "1",
+        "-ngl",
+        "0",
+        "--no-kv-offload",
+        "--no-op-offload",
+        "--no-webui",
+        "--no-warmup",
+        "-ctk",
+        "f16",
+        "-ctv",
+        "f16"
+      ],
+      "metadata": {
+        "weight_storage": "f16",
+        "arithmetic": "llama.cpp native mixed-precision kernels",
+        "kv": "FP16",
+        "cpu_threads": 12,
+        "prefill_threads": 6,
+        "requested_priority": 0,
+        "requested_poll": 50,
+        "scheduling_note": "Same requested priority/poll for decode and prefill; no hard pinning or independent OS scheduling verification.",
+        "priority_failure_lines": [],
+        "cpu_thread_note": "Requested native thread counts, without affinity guarantees; CPU BLAS may use its own threads."
+      },
+      "runtime_log": {
+        "path": "$REPO/build/native-cpu/build-07-discovery-logs/round-000/llama-f16-onon-d12-p6/server.log",
+        "sha256": "3e5ac36691e4bd7d40b44d630f0299a12123649e2b37a549752e68b8206ded2d"
+      }
+    },
+    {
+      "config": "native-cpu-f16-d12-p6",
+      "phase": "scored",
+      "round": 0,
+      "order_index": 1,
+      "profiles": {
+        "short": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+              "finish_reason": "length",
+              "first_token_seconds": 0.11069291702006012,
+              "request_seconds": 0.30588433402590454,
+              "steady_decode_seconds": 0.1951822079718113,
+              "steady_decode_tokens_per_second": 158.82595202774374,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 85
+              },
+              "eos_observed": false
+            }
+          ],
+          "scored": {
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "output_token_count": 32,
+            "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+            "finish_reason": "length",
+            "first_token_seconds": 0.1016686669900082,
+            "request_seconds": 0.3291913329740055,
+            "steady_decode_seconds": 0.22751499997684732,
+            "steady_decode_tokens_per_second": 136.25475244777118,
+            "backend_timings": {
+              "cache_n": 0,
+              "prompt_n": 85
+            },
+            "eos_observed": false
+          }
+        },
+        "long": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                17654,
+                323,
+                4938,
+                11,
+                1393,
+                47430,
+                374,
+                264,
+                943,
+                315,
+                4938,
+                6240,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+              "finish_reason": "length",
+              "first_token_seconds": 0.5844476670026779,
+              "request_seconds": 0.8254868339863606,
+              "steady_decode_seconds": 0.2410376250045374,
+              "steady_decode_tokens_per_second": 128.6106266580433,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 452
+              },
+              "eos_observed": false
+            }
+          ],
+          "scored": {
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "output_token_count": 32,
+            "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+            "finish_reason": "length",
+            "first_token_seconds": 0.583219124993775,
+            "request_seconds": 0.8193458750029095,
+            "steady_decode_seconds": 0.23612537496956065,
+            "steady_decode_tokens_per_second": 131.28618643378022,
+            "backend_timings": {
+              "cache_n": 0,
+              "prompt_n": 452
+            },
+            "eos_observed": false
+          }
+        }
+      },
+      "startup_seconds": 0.4437205839785747,
+      "command": [
+        "$REPO/build/native-cpu/build-07/qwen_cpu",
+        "--weights",
+        "$REPO/build/native-cpu/weights.bin",
+        "--threads",
+        "12",
+        "--prefill-threads",
+        "6",
+        "--context",
+        "4096"
+      ],
+      "metadata": {
+        "transport": "Persistent subprocess JSON lines; one step request per output",
+        "weight_storage": "FP16 matrices / FP32 norms",
+        "kv": "FP16",
+        "arithmetic": "Original C++ FP32 math",
+        "cpu_threads": 12,
+        "prefill_threads": 6,
+        "gpu": false,
+        "pytorch": false,
+        "prefill_weight_cache": "Layer FP16 weights widened once to FP32 for Accelerate prefill; embedding stays FP16",
+        "placement": "No hard pinning; VECLIB_MAXIMUM_THREADS requested, not independently verified",
+        "actual_startup": {
+          "ready": true,
+          "protocol": 1,
+          "position": 0,
+          "decode_threads": 12,
+          "prefill_threads": 6,
+          "context": 4096,
+          "gpu": false,
+          "pytorch": false,
+          "weight_precision": "f16",
+          "norm_precision": "f32",
+          "activation_precision": "f32",
+          "kv_precision": "f16",
+          "prefix_reuse": false,
+          "suffix_drafting": false
+        }
+      },
+      "runtime_log": {
+        "path": "$REPO/build/native-cpu/build-07-discovery-logs/round-000/native-cpu-f16-d12-p6/native.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "config": "native-cpu-f16-d12-p6",
+      "phase": "scored",
+      "round": 1,
+      "order_index": 0,
+      "profiles": {
+        "short": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+              "finish_reason": "length",
+              "first_token_seconds": 0.10731579200364649,
+              "request_seconds": 0.3044991670176387,
+              "steady_decode_seconds": 0.1971730410004966,
+              "steady_decode_tokens_per_second": 157.22230505093202,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 85
+              },
+              "eos_observed": false
+            }
+          ],
+          "scored": {
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "output_token_count": 32,
+            "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+            "finish_reason": "length",
+            "first_token_seconds": 0.09943012497387826,
+            "request_seconds": 0.30842675000894815,
+            "steady_decode_seconds": 0.20899525005370378,
+            "steady_decode_tokens_per_second": 148.3287299210589,
+            "backend_timings": {
+              "cache_n": 0,
+              "prompt_n": 85
+            },
+            "eos_observed": false
+          }
+        },
+        "long": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                17654,
+                323,
+                4938,
+                11,
+                1393,
+                47430,
+                374,
+                264,
+                943,
+                315,
+                4938,
+                6240,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+              "finish_reason": "length",
+              "first_token_seconds": 0.6146417089621536,
+              "request_seconds": 0.8490025419741869,
+              "steady_decode_seconds": 0.234359291032888,
+              "steady_decode_tokens_per_second": 132.2755324244846,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 452
+              },
+              "eos_observed": false
+            }
+          ],
+          "scored": {
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "output_token_count": 32,
+            "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+            "finish_reason": "length",
+            "first_token_seconds": 0.6008055830025114,
+            "request_seconds": 0.8271302920184098,
+            "steady_decode_seconds": 0.22632358403643593,
+            "steady_decode_tokens_per_second": 136.9720267199785,
+            "backend_timings": {
+              "cache_n": 0,
+              "prompt_n": 452
+            },
+            "eos_observed": false
+          }
+        }
+      },
+      "startup_seconds": 0.4349227079655975,
+      "command": [
+        "$REPO/build/native-cpu/build-07/qwen_cpu",
+        "--weights",
+        "$REPO/build/native-cpu/weights.bin",
+        "--threads",
+        "12",
+        "--prefill-threads",
+        "6",
+        "--context",
+        "4096"
+      ],
+      "metadata": {
+        "transport": "Persistent subprocess JSON lines; one step request per output",
+        "weight_storage": "FP16 matrices / FP32 norms",
+        "kv": "FP16",
+        "arithmetic": "Original C++ FP32 math",
+        "cpu_threads": 12,
+        "prefill_threads": 6,
+        "gpu": false,
+        "pytorch": false,
+        "prefill_weight_cache": "Layer FP16 weights widened once to FP32 for Accelerate prefill; embedding stays FP16",
+        "placement": "No hard pinning; VECLIB_MAXIMUM_THREADS requested, not independently verified",
+        "actual_startup": {
+          "ready": true,
+          "protocol": 1,
+          "position": 0,
+          "decode_threads": 12,
+          "prefill_threads": 6,
+          "context": 4096,
+          "gpu": false,
+          "pytorch": false,
+          "weight_precision": "f16",
+          "norm_precision": "f32",
+          "activation_precision": "f32",
+          "kv_precision": "f16",
+          "prefix_reuse": false,
+          "suffix_drafting": false
+        }
+      },
+      "runtime_log": {
+        "path": "$REPO/build/native-cpu/build-07-discovery-logs/round-001/native-cpu-f16-d12-p6/native.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "config": "llama-f16-onon-d12-p6",
+      "phase": "scored",
+      "round": 1,
+      "order_index": 1,
+      "profiles": {
+        "short": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4628,
+                518,
+                892,
+                821,
+                646,
+                387,
+                22409,
+                1948,
+                279,
+                13940,
+                323,
+                1887,
+                4938,
+                13,
+                356,
+                11829,
+                374,
+                264,
+                14762,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264,
+                13340
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+              "finish_reason": "length",
+              "first_token_seconds": 0.17488179099746048,
+              "request_seconds": 0.39945820794673637,
+              "steady_decode_seconds": 0.22446954197948799,
+              "steady_decode_tokens_per_second": 138.10336906569168,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 85,
+                "prompt_ms": 174.35,
+                "prompt_per_token_ms": 2.0511764705882354,
+                "prompt_per_second": 487.52509320332666,
+                "predicted_n": 32,
+                "predicted_ms": 224.541,
+                "predicted_per_token_ms": 7.243258064516129,
+                "predicted_per_second": 138.05941899252252
+              },
+              "eos_observed": false
+            }
+          ],
+          "scored": {
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4628,
+              518,
+              892,
+              821,
+              646,
+              387,
+              22409,
+              1948,
+              279,
+              13940,
+              323,
+              1887,
+              4938,
+              13,
+              356,
+              11829,
+              374,
+              264,
+              14762,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264,
+              13340
+            ],
+            "output_token_count": 32,
+            "text": "Memory bandwidth refers to the speed at which data can be transferred between the CPU and main memory. Caching is a technique that stores frequently used data in a temporary",
+            "finish_reason": "length",
+            "first_token_seconds": 0.18684325000504032,
+            "request_seconds": 0.3840015419991687,
+            "steady_decode_seconds": 0.1970679170335643,
+            "steady_decode_tokens_per_second": 157.30617376302877,
+            "backend_timings": {
+              "cache_n": 0,
+              "prompt_n": 85,
+              "prompt_ms": 186.156,
+              "prompt_per_token_ms": 2.190070588235294,
+              "prompt_per_second": 456.60628719998283,
+              "predicted_n": 32,
+              "predicted_ms": 197.094,
+              "predicted_per_token_ms": 6.357870967741936,
+              "predicted_per_second": 157.28535622596326
+            },
+            "eos_observed": false
+          }
+        },
+        "long": {
+          "warmups": [
+            {
+              "output_token_ids": [
+                10642,
+                33394,
+                19257,
+                311,
+                279,
+                4379,
+                518,
+                892,
+                821,
+                374,
+                22409,
+                1948,
+                264,
+                17654,
+                323,
+                4938,
+                11,
+                1393,
+                47430,
+                374,
+                264,
+                943,
+                315,
+                4938,
+                6240,
+                429,
+                10533,
+                13814,
+                1483,
+                821,
+                304,
+                264
+              ],
+              "output_token_count": 32,
+              "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+              "finish_reason": "length",
+              "first_token_seconds": 0.5635242909775116,
+              "request_seconds": 0.8119268330046907,
+              "steady_decode_seconds": 0.24821145902387798,
+              "steady_decode_tokens_per_second": 124.89350863135532,
+              "backend_timings": {
+                "cache_n": 0,
+                "prompt_n": 452,
+                "prompt_ms": 563.003,
+                "prompt_per_token_ms": 1.2455818584070797,
+                "prompt_per_second": 802.8376402967657,
+                "predicted_n": 32,
+                "predicted_ms": 248.147,
+                "predicted_per_token_ms": 8.004741935483871,
+                "predicted_per_second": 124.92595114992324
+              },
+              "eos_observed": false
+            }
+          ],
+          "scored": {
+            "output_token_ids": [
+              10642,
+              33394,
+              19257,
+              311,
+              279,
+              4379,
+              518,
+              892,
+              821,
+              374,
+              22409,
+              1948,
+              264,
+              17654,
+              323,
+              4938,
+              11,
+              1393,
+              47430,
+              374,
+              264,
+              943,
+              315,
+              4938,
+              6240,
+              429,
+              10533,
+              13814,
+              1483,
+              821,
+              304,
+              264
+            ],
+            "output_token_count": 32,
+            "text": "Memory bandwidth refers to the rate at which data is transferred between a processor and memory, while caching is a type of memory management that stores frequently used data in a",
+            "finish_reason": "length",
+            "first_token_seconds": 0.5233445829944685,
+            "request_seconds": 0.7709795829723589,
+            "steady_decode_seconds": 0.24755004199687392,
+            "steady_decode_tokens_per_second": 125.22720557806034,
+            "backend_timings": {
+              "cache_n": 0,
+              "prompt_n": 452,
+              "prompt_ms": 522.808,
+              "prompt_per_token_ms": 1.1566548672566372,
+              "prompt_per_second": 864.562133708742,
+              "predicted_n": 32,
+              "predicted_ms": 247.578,
+              "predicted_per_token_ms": 7.986387096774194,
+              "predicted_per_second": 125.21306416563668
+            },
+            "eos_observed": false
+          }
+        }
+      },
+      "startup_seconds": 0.7659829169861041,
+      "command": [
+        "$REPO/build/native-phase0/kleidi-on-lto-on/bin/llama-server",
+        "-m",
+        "$REPO/build/bench/qwen3-0.6b-f16.gguf",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "54542",
+        "-t",
+        "12",
+        "-tb",
+        "6",
+        "--prio",
+        "0",
+        "--prio-batch",
+        "0",
+        "--poll",
+        "50",
+        "--poll-batch",
+        "50",
+        "-c",
+        "4096",
+        "-np",
+        "1",
+        "-ngl",
+        "0",
+        "--no-kv-offload",
+        "--no-op-offload",
+        "--no-webui",
+        "--no-warmup",
+        "-ctk",
+        "f16",
+        "-ctv",
+        "f16"
+      ],
+      "metadata": {
+        "weight_storage": "f16",
+        "arithmetic": "llama.cpp native mixed-precision kernels",
+        "kv": "FP16",
+        "cpu_threads": 12,
+        "prefill_threads": 6,
+        "requested_priority": 0,
+        "requested_poll": 50,
+        "scheduling_note": "Same requested priority/poll for decode and prefill; no hard pinning or independent OS scheduling verification.",
+        "priority_failure_lines": [],
+        "cpu_thread_note": "Requested native thread counts, without affinity guarantees; CPU BLAS may use its own threads."
+      },
+      "runtime_log": {
+        "path": "$REPO/build/native-cpu/build-07-discovery-logs/round-001/llama-f16-onon-d12-p6/server.log",
+        "sha256": "b469655919b3b8c699d2130bf892ae6a1401a55f91fbed3f6c19f349f38069eb"
+      }
+    }
+  ],
+  "results": [],
+  "sessions": [],
+  "limitations": [
+    "Llama uses HTTP streaming; original engine uses subprocess commands. End-to-end transport differs.",
+    "Native reset and greedy-mode setup are outside the clock; llama request includes cache-disabled request processing.",
+    "Original layer weights also have a persistent FP32 widened prefill cache; resident memory is not equivalent.",
+    "One process is live per visit; startup and warmup excluded. Background OS work and address placement uncontrolled.",
+    "All scores require separate numerical/quality review. Discovery is exploratory, never a performance claim."
+  ],
+  "inputs": {
+    "$REPO/build/native-cpu/build-07/qwen_cpu": "56b62381c7085f5061443371d4a1daa885f1bfdf4d99a2527155bcb403d2a468",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$REPO/build/bench/qwen3-0.6b-f16.gguf": "b91afb05689ed9ad8096f1e1274c416cff25f4db9fead4733806f7a669cadb1e",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/model.safetensors": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b",
+    "$REPO/build/native-cpu/build-07/manifest.json": "4ae29d65147917b0d1022a26005a4d83cc2feca394d8a48af2cfb94ac075777b"
+  },
+  "source_hashes": {
+    "$REPO/tools/benchmark_native_cpu.py": "dea53aeee80a1a32649a0e0c23b2136599655560f20b6c795c8421244c9bdd07",
+    "$REPO/tools/native_cpu_chat.py": "e7a024421812dc295fca7fa7c9052c62f3a87f2d233164aeda9ddfa0db8c8775",
+    "$REPO/tools/benchmark_native_phase0.py": "2072dff376baf6e0476c7beddfae311483ea2a15a3af54af8622ad8bbbe17b7e",
+    "$REPO/tools/benchmark_matched.py": "88627ed3b10440864d451d1d81bb72b08b62558737fe7bd968a4fb093f821fc6",
+    "$REPO/tools/check_native_phase0_quality.py": "019649bf7db8c51cf3c420d3042c0f2918f83bf440b9e16b9c976e094b9d6e12",
+    "$REPO/tools/conversation_eval.py": "ec227a96c449eedc32b38a8024b7d9747b30db25af66fd06f3364989eb61d8eb",
+    "$REPO/tools/chat_protocol.py": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e",
+    "$REPO/tools/benchmark_guard.py": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7",
+    "$REPO/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713"
+  },
+  "native_build": {
+    "completed": true,
+    "gpu": false,
+    "pytorch": false,
+    "guard": {
+      "directory": "$REPO/build/benchmark-status",
+      "metadata": {
+        "name": "Build native CPU vector SwiGLU activation",
+        "started_at": "2026-11-12T05:53:35.222307+00:00"
+      }
+    },
+    "command": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-O3",
+      "-mcpu=native",
+      "-flto=thin",
+      "-ffp-contract=fast",
+      "-fno-math-errno",
+      "-pthread",
+      "$REPO/engine/core.cpp",
+      "$REPO/engine/main.cpp",
+      "-framework",
+      "Accelerate",
+      "-o",
+      "$REPO/build/native-cpu/build-07/qwen_cpu"
+    ],
+    "source_sha256": {
+      "$REPO/engine/core.cpp": "f2ace769fdb8a932111d78bf76c756bfc717d95a0ade6c592e199f253174390e",
+      "$REPO/engine/core.hpp": "21152e59559d191431ea625202c9bf6bcc8ddc50e31de087ac0be2744b68de56",
+      "$REPO/engine/main.cpp": "342014c7d26688bba9465e543fe67f230da42246fd087c8bb3e58b1c117e18c8",
+      "$REPO/tools/build_native_cpu.py": "e100b8687f3cba52d94db9bb2e1700c6669f7081a6dde55609695f0b1d5d325a"
+    },
+    "removed_environment_keys": [],
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "started_at": "2026-11-12T05:53:35Z",
+    "exit_code": 0,
+    "binary": "$REPO/build/native-cpu/build-07/qwen_cpu",
+    "binary_sha256": "56b62381c7085f5061443371d4a1daa885f1bfdf4d99a2527155bcb403d2a468",
+    "linked_libraries": "$REPO/build/native-cpu/build-07/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+  },
+  "suite_sha256": "e83a1561ae3c1245ad1a2be15fc6521471ce63c2037da887af7ce0fec3136810",
+  "prompts": {
+    "short": {
+      "ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        840,
+        20772,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "count": 85
+    },
+    "long": {
+      "ids": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872,
+        198,
+        10642,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        13850,
+        33394,
+        10953,
+        821,
+        8317,
+        4379,
+        1948,
+        264,
+        17654,
+        323,
+        4938,
+        13,
+        356,
+        14242,
+        14060,
+        5926,
+        24758,
+        1995,
+        323,
+        646,
+        7949,
+        30611,
+        13,
+        81917,
+        4938,
+        33394,
+        323,
+        47430,
+        304,
+        3040,
+        63594,
+        22870,
+        13,
+        151645,
+        198,
+        151644,
+        77091,
+        198,
+        151667,
+        271,
+        151668,
+        271
+      ],
+      "count": 452
+    }
+  },
+  "preflight_same_precision_ids_passed": true,
+  "expected_output_ids": {
+    "short": [
+      10642,
+      33394,
+      19257,
+      311,
+      279,
+      4628,
+      518,
+      892,
+      821,
+      646,
+      387,
+      22409,
+      1948,
+      279,
+      13940,
+      323,
+      1887,
+      4938,
+      13,
+      356,
+      11829,
+      374,
+      264,
+      14762,
+      429,
+      10533,
+      13814,
+      1483,
+      821,
+      304,
+      264,
+      13340
+    ],
+    "long": [
+      10642,
+      33394,
+      19257,
+      311,
+      279,
+      4379,
+      518,
+      892,
+      821,
+      374,
+      22409,
+      1948,
+      264,
+      17654,
+      323,
+      4938,
+      11,
+      1393,
+      47430,
+      374,
+      264,
+      943,
+      315,
+      4938,
+      6240,
+      429,
+      10533,
+      13814,
+      1483,
+      821,
+      304,
+      264
+    ]
+  },
+  "summaries": {
+    "short": {
+      "llama-f16-onon-d12-p6": {
+        "first_token_seconds": {
+          "count": 2,
+          "median": 0.16768191650044173,
+          "mean": 0.16768191650044173,
+          "minimum": 0.14852058299584314,
+          "maximum": 0.18684325000504032,
+          "standard_deviation": 0.027098217715357312,
+          "median_absolute_deviation": 0.019161333504598588
+        },
+        "steady_decode_tokens_per_second": {
+          "count": 2,
+          "median": 159.9728984079045,
+          "mean": 159.9728984079045,
+          "minimum": 157.30617376302877,
+          "maximum": 162.6396230527802,
+          "standard_deviation": 3.7713181598978105,
+          "median_absolute_deviation": 2.666724644875714
+        },
+        "request_seconds": {
+          "count": 2,
+          "median": 0.36159437499009073,
+          "mean": 0.36159437499009073,
+          "minimum": 0.33918720798101276,
+          "maximum": 0.3840015419991687,
+          "standard_deviation": 0.03168851947859704,
+          "median_absolute_deviation": 0.022407167009077966
+        }
+      },
+      "native-cpu-f16-d12-p6": {
+        "first_token_seconds": {
+          "count": 2,
+          "median": 0.10054939598194323,
+          "mean": 0.10054939598194323,
+          "minimum": 0.09943012497387826,
+          "maximum": 0.1016686669900082,
+          "standard_deviation": 0.0015828882395764869,
+          "median_absolute_deviation": 0.0011192710080649704
+        },
+        "steady_decode_tokens_per_second": {
+          "count": 2,
+          "median": 142.29174118441506,
+          "mean": 142.29174118441506,
+          "minimum": 136.25475244777118,
+          "maximum": 148.3287299210589,
+          "standard_deviation": 8.537591347255368,
+          "median_absolute_deviation": 6.036988736643863
+        },
+        "request_seconds": {
+          "count": 2,
+          "median": 0.3188090414914768,
+          "mean": 0.3188090414914768,
+          "minimum": 0.30842675000894815,
+          "maximum": 0.3291913329740055,
+          "standard_deviation": 0.014682777423102715,
+          "median_absolute_deviation": 0.010382291482528672
+        }
+      }
+    },
+    "long": {
+      "llama-f16-onon-d12-p6": {
+        "first_token_seconds": {
+          "count": 2,
+          "median": 0.519430291489698,
+          "mean": 0.519430291489698,
+          "minimum": 0.5155159999849275,
+          "maximum": 0.5233445829944685,
+          "standard_deviation": 0.005535644133128256,
+          "median_absolute_deviation": 0.003914291504770517
+        },
+        "steady_decode_tokens_per_second": {
+          "count": 2,
+          "median": 128.68207724750368,
+          "mean": 128.68207724750368,
+          "minimum": 125.22720557806034,
+          "maximum": 132.13694891694703,
+          "standard_deviation": 4.885926371185361,
+          "median_absolute_deviation": 3.4548716694433494
+        },
+        "request_seconds": {
+          "count": 2,
+          "median": 0.7606004789704457,
+          "mean": 0.7606004789704457,
+          "minimum": 0.7502213749685325,
+          "maximum": 0.7709795829723589,
+          "standard_deviation": 0.01467826964478654,
+          "median_absolute_deviation": 0.01037910400191322
+        }
+      },
+      "native-cpu-f16-d12-p6": {
+        "first_token_seconds": {
+          "count": 2,
+          "median": 0.5920123539981432,
+          "mean": 0.5920123539981432,
+          "minimum": 0.583219124993775,
+          "maximum": 0.6008055830025114,
+          "standard_deviation": 0.012435503715029956,
+          "median_absolute_deviation": 0.008793229004368186
+        },
+        "steady_decode_tokens_per_second": {
+          "count": 2,
+          "median": 134.12910657687934,
+          "mean": 134.12910657687934,
+          "minimum": 131.28618643378022,
+          "maximum": 136.9720267199785,
+          "standard_deviation": 4.020496223114457,
+          "median_absolute_deviation": 2.8429201430991355
+        },
+        "request_seconds": {
+          "count": 2,
+          "median": 0.8232380835106596,
+          "mean": 0.8232380835106596,
+          "minimum": 0.8193458750029095,
+          "maximum": 0.8271302920184098,
+          "standard_deviation": 0.005504414059244255,
+          "median_absolute_deviation": 0.0038922085077501833
+        }
+      }
+    }
+  },
+  "paired_comparisons": {
+    "short": {
+      "native-cpu-f16-d12-p6": {
+        "reference": "llama-f16-onon-d12-p6",
+        "pairs": [
+          {
+            "round": 0,
+            "reference_before_candidate": true,
+            "decode_speedup": 0.8377709557501463,
+            "ttft_speedup": 1.4608294511271545,
+            "request_speedup": 1.0303649397956556
+          },
+          {
+            "round": 1,
+            "reference_before_candidate": false,
+            "decode_speedup": 0.9429301239282968,
+            "ttft_speedup": 1.879141256778333,
+            "request_speedup": 1.2450331950391071
+          }
+        ],
+        "ratios": {
+          "decode_speedup": {
+            "count": 2,
+            "median": 0.8903505398392215,
+            "mean": 0.8903505398392215,
+            "minimum": 0.8377709557501463,
+            "maximum": 0.9429301239282968,
+            "standard_deviation": 0.07435876092270684,
+            "median_absolute_deviation": 0.05257958408907526
+          },
+          "ttft_speedup": {
+            "count": 2,
+            "median": 1.6699853539527436,
+            "mean": 1.6699853539527436,
+            "minimum": 1.4608294511271545,
+            "maximum": 1.879141256778333,
+            "standard_deviation": 0.2957911144263375,
+            "median_absolute_deviation": 0.20915590282558927
+          },
+          "request_speedup": {
+            "count": 2,
+            "median": 1.1376990674173815,
+            "mean": 1.1376990674173815,
+            "minimum": 1.0303649397956556,
+            "maximum": 1.2450331950391071,
+            "standard_deviation": 0.15179337898812925,
+            "median_absolute_deviation": 0.10733412762172578
+          }
+        }
+      }
+    },
+    "long": {
+      "native-cpu-f16-d12-p6": {
+        "reference": "llama-f16-onon-d12-p6",
+        "pairs": [
+          {
+            "round": 0,
+            "reference_before_candidate": true,
+            "decode_speedup": 0.9935615095539889,
+            "ttft_speedup": 0.8839147721543422,
+            "request_speedup": 0.915634529759326
+          },
+          {
+            "round": 1,
+            "reference_before_candidate": false,
+            "decode_speedup": 1.0937880957073423,
+            "ttft_speedup": 0.871071437750406,
+            "request_speedup": 0.932113828271204
+          }
+        ],
+        "ratios": {
+          "decode_speedup": {
+            "count": 2,
+            "median": 1.0436748026306657,
+            "mean": 1.0436748026306657,
+            "minimum": 0.9935615095539889,
+            "maximum": 1.0937880957073423,
+            "standard_deviation": 0.07087089872421387,
+            "median_absolute_deviation": 0.05011329307667667
+          },
+          "ttft_speedup": {
+            "count": 2,
+            "median": 0.8774931049523741,
+            "mean": 0.8774931049523741,
+            "minimum": 0.871071437750406,
+            "maximum": 0.8839147721543422,
+            "standard_deviation": 0.009081608850069813,
+            "median_absolute_deviation": 0.006421667201968129
+          },
+          "request_speedup": {
+            "count": 2,
+            "median": 0.923874179015265,
+            "mean": 0.923874179015265,
+            "minimum": 0.915634529759326,
+            "maximum": 0.932113828271204,
+            "standard_deviation": 0.011652623726946327,
+            "median_absolute_deviation": 0.008239649255939008
+          }
+        }
+      }
+    }
+  },
+  "best_observed_decode": {
+    "short": "llama-f16-onon-d12-p6",
+    "long": "native-cpu-f16-d12-p6"
+  },
+  "best_observed_ttft": {
+    "short": "native-cpu-f16-d12-p6",
+    "long": "llama-f16-onon-d12-p6"
+  },
+  "guard_after": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Explore vector activation native CPU speed",
+      "started_at": "2026-11-12T05:55:40.432308+00:00"
+    }
+  },
+  "host_after": {
+    "timestamp_utc": "2026-11-12T05:55:59Z",
+    "load_average": [
+      7.576171875,
+      6.52392578125,
+      6.37255859375
+    ],
+    "busiest_processes_anonymized": [
+      {
+        "cpu_percent": 100.0,
+        "memory_percent": 0.1,
+        "elapsed": "00:19"
+      },
+      {
+        "cpu_percent": 59.6,
+        "memory_percent": 10.3,
+        "elapsed": "06-09:24:38"
+      },
+      {
+        "cpu_percent": 33.4,
+        "memory_percent": 0.3,
+        "elapsed": "05-14:34:10"
+      },
+      {
+        "cpu_percent": 17.9,
+        "memory_percent": 0.3,
+        "elapsed": "09-16:11:59"
+      },
+      {
+        "cpu_percent": 13.2,
+        "memory_percent": 0.1,
+        "elapsed": "06-11:17:51"
+      },
+      {
+        "cpu_percent": 6.3,
+        "memory_percent": 0.4,
+        "elapsed": "05-10:46:56"
+      },
+      {
+        "cpu_percent": 5.3,
+        "memory_percent": 0.0,
+        "elapsed": "09-16:11:50"
+      },
+      {
+        "cpu_percent": 4.8,
+        "memory_percent": 0.3,
+        "elapsed": "05-14:33:45"
+      },
+      {
+        "cpu_percent": 4.5,
+        "memory_percent": 0.0,
+        "elapsed": "09-16:11:51"
+      },
+      {
+        "cpu_percent": 4.2,
+        "memory_percent": 0.1,
+        "elapsed": "12:40:47"
+      },
+      {
+        "cpu_percent": 4.0,
+        "memory_percent": 0.2,
+        "elapsed": "01-04:05:19"
+      },
+      {
+        "cpu_percent": 3.6,
+        "memory_percent": 0.1,
+        "elapsed": "06-12:45:23"
+      },
+      {
+        "cpu_percent": 3.3,
+        "memory_percent": 0.0,
+        "elapsed": "09-16:11:31"
+      },
+      {
+        "cpu_percent": 2.7,
+        "memory_percent": 0.3,
+        "elapsed": "02-03:14:48"
+      },
+      {
+        "cpu_percent": 2.6,
+        "memory_percent": 0.0,
+        "elapsed": "09-16:11:05"
+      },
+      {
+        "cpu_percent": 2.2,
+        "memory_percent": 0.1,
+        "elapsed": "04-23:44:58"
+      },
+      {
+        "cpu_percent": 1.7,
+        "memory_percent": 0.1,
+        "elapsed": "09-16:11:30"
+      },
+      {
+        "cpu_percent": 1.6,
+        "memory_percent": 0.1,
+        "elapsed": "09-16:11:11"
+      },
+      {
+        "cpu_percent": 1.4,
+        "memory_percent": 0.3,
+        "elapsed": "05-12:52:46"
+      },
+      {
+        "cpu_percent": 1.3,
+        "memory_percent": 0.0,
+        "elapsed": "09-16:12:00"
+      }
+    ]
+  },
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-07-discovery.json",
+    "raw_source_sha256": "fa30eb1e8983c2f9dda5a5c94a4198c623d4689ec87457d1adfc50e5c68f0404",
+    "sanitization": "Repository/home prefixes replaced; PID/PPID and host process names omitted. CPU percentage retains original ps field index2; memory and elapsed retained. Embedded hashes identify original local artifacts."
+  }
+}

@@ -1,0 +1,405 @@
+{
+  "completed": true,
+  "calibration_only": false,
+  "passed": true,
+  "timing_claim": false,
+  "gpu": false,
+  "pytorch": false,
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Gate native CPU tiny full logits",
+      "started_at": "2026-11-12T05:54:08.772288+00:00"
+    }
+  },
+  "declared_tolerances": {
+    "atol": 0.01,
+    "rtol": 0.0,
+    "rms_atol": 0.002,
+    "greedy_identity_required": true
+  },
+  "inputs": {
+    "$REPO/build/native-cpu/build-07-tiny-logits/report.json": "f34fe292c78fd8d52cbf9ca809ccbec76cc09c48ee88f544d9db3763cb84dcb5",
+    "$REPO/build/native-cpu/build-07-tiny-logits/run0-step0.f32": "2d7038f76bdd3f4b8e4ada6c008321982139dc6f18e324c56519f19d83310f52",
+    "$REPO/build/native-cpu/build-07-tiny-logits/run0-step1.f32": "9b442ef7bab954ab3e4ec49a75cfc2b3a286ed6b2ffc581a0e5c5fc501de767b",
+    "$REPO/build/native-cpu/build-07-tiny-logits/run0-step2.f32": "d584d0ea7bf2c316577df767df4f73e168e488605f2ee5017da40f8a8007f154",
+    "$REPO/build/native-cpu/build-07-tiny-logits/run0-step3.f32": "5148c3737daee8467c1944a8eeae5df80ed72874ce1b31aad2dccfd4327c5470",
+    "$REPO/build/native-cpu/build-07/qwen_cpu": "56b62381c7085f5061443371d4a1daa885f1bfdf4d99a2527155bcb403d2a468",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$REPO/build/native-phase0/prompt-oracle.json": "86f30ec5ce6f5d0d841148dfb2b615cfd8fe617e461c0059f51a7171a4fe944d",
+    "$REPO/build/native-phase0/continuation-oracle.json": "5a8d5bea453b33d5ca2ea00c0f1b54d58e5984a63dbe3b6c82c54a2198de02f4",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/model.safetensors": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+  },
+  "source_hashes": {
+    "$REPO/tools/check_native_logits.py": "4b3b0e1330617f11d229452809ba54b82bc150f6f4b8787f16fb02633c053406",
+    "$REPO/tests/test_full_model.py": "5d56aa9784ec89a98f34cfdfd14aa7a0be9d356dd804754a8ec52c1b6e5fc439",
+    "$REPO/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713"
+  },
+  "oracle": {
+    "checkpoint": "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca",
+    "weight_precision": "f16",
+    "kv_precision": "f16",
+    "arithmetic": "NumPy FP32 network math; existing FP64 RoPE angle generation then FP32 sine/cosine.",
+    "kv_representation": "FP16-rounded values widened to FP32 before attention and cached as FP32",
+    "matrix_weight_rounding_only": true,
+    "norm_weights": "Original BF16 checkpoint values widened to FP32 without FP16 rounding",
+    "numpy_version": "2.5.4",
+    "library_threads": {
+      "VECLIB_MAXIMUM_THREADS": "4",
+      "OPENBLAS_NUM_THREADS": "4"
+    }
+  },
+  "captures": [
+    {
+      "path": "$REPO/build/native-cpu/build-07-tiny-logits/report.json",
+      "wrapped_provenance": false,
+      "configuration": {
+        "architecture": "qwen3",
+        "layers": 28,
+        "hidden": 1024,
+        "query_heads": 16,
+        "kv_heads": 8,
+        "vocabulary": 151936,
+        "weight_format": "QWCPU01",
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_type": "f16",
+        "gpu": false,
+        "pytorch": false,
+        "decode_threads": 12,
+        "prefill_threads": 6
+      },
+      "run_index": 0,
+      "warmup": false,
+      "native_mode": "teacher_forced",
+      "prompt": [
+        9707
+      ],
+      "consumed": [
+        11,
+        1917,
+        0
+      ],
+      "predictions": [
+        21806,
+        358,
+        11,
+        358
+      ],
+      "eog_prediction_steps": [],
+      "client_manifest": null,
+      "precision_matched": true
+    }
+  ],
+  "selected_steps": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "comparisons": [
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 6.103515625e-05,
+      "rms_error": 1.0641993104139836e-05,
+      "max_error_token_id": 111386,
+      "native_at_max_error": -10.370342254638672,
+      "oracle_at_max_error": -10.370281219482422,
+      "native_predicted_id": 21806,
+      "native_argmax_id": 21806,
+      "oracle_argmax_id": 21806,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 21806,
+          "logit": 8.139267921447754
+        },
+        {
+          "id": 14582,
+          "logit": 8.076953887939453
+        },
+        {
+          "id": 15846,
+          "logit": 7.632190704345703
+        },
+        {
+          "id": 477,
+          "logit": 7.579020977020264
+        },
+        {
+          "id": 1957,
+          "logit": 7.344371318817139
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 21806,
+          "logit": 8.139236450195312
+        },
+        {
+          "id": 14582,
+          "logit": 8.076905250549316
+        },
+        {
+          "id": 15846,
+          "logit": 7.6321539878845215
+        },
+        {
+          "id": 477,
+          "logit": 7.578988552093506
+        },
+        {
+          "id": 1957,
+          "logit": 7.344333171844482
+        }
+      ],
+      "native_top1_margin": 0.06231403350830078,
+      "oracle_top1_margin": 0.062331199645996094,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 0,
+      "context_tokens": 1,
+      "oracle_logits_sha256": "7134004998f4ecdc594ec9f16323172b90d7cecf3965abf9e56f91197f370d35",
+      "native_logits_sha256": "2d7038f76bdd3f4b8e4ada6c008321982139dc6f18e324c56519f19d83310f52"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.002505779266357422,
+      "rms_error": 0.00046552616689308937,
+      "max_error_token_id": 48466,
+      "native_at_max_error": -6.4800848960876465,
+      "oracle_at_max_error": -6.482590675354004,
+      "native_predicted_id": 358,
+      "native_argmax_id": 358,
+      "oracle_argmax_id": 358,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 358,
+          "logit": 17.176349639892578
+        },
+        {
+          "id": 323,
+          "logit": 16.739425659179688
+        },
+        {
+          "id": 847,
+          "logit": 14.997518539428711
+        },
+        {
+          "id": 1052,
+          "logit": 14.108403205871582
+        },
+        {
+          "id": 5019,
+          "logit": 14.093755722045898
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 358,
+          "logit": 17.17696762084961
+        },
+        {
+          "id": 323,
+          "logit": 16.73945426940918
+        },
+        {
+          "id": 847,
+          "logit": 14.997673034667969
+        },
+        {
+          "id": 1052,
+          "logit": 14.109174728393555
+        },
+        {
+          "id": 5019,
+          "logit": 14.09486198425293
+        }
+      ],
+      "native_top1_margin": 0.4369239807128906,
+      "oracle_top1_margin": 0.4375133514404297,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 1,
+      "context_tokens": 2,
+      "oracle_logits_sha256": "dd80d0184b327339fd17ce42e993d8f5d7e376c9a0fdd1c19e5ddc098c42d60d",
+      "native_logits_sha256": "9b442ef7bab954ab3e4ec49a75cfc2b3a286ed6b2ffc581a0e5c5fc501de767b"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.0024494528770446777,
+      "rms_error": 0.0005030032662769612,
+      "max_error_token_id": 62937,
+      "native_at_max_error": 0.8855200409889221,
+      "oracle_at_max_error": 0.8879694938659668,
+      "native_predicted_id": 11,
+      "native_argmax_id": 11,
+      "oracle_argmax_id": 11,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 11,
+          "logit": 14.922664642333984
+        },
+        {
+          "id": 0,
+          "logit": 14.445720672607422
+        },
+        {
+          "id": 13,
+          "logit": 13.933034896850586
+        },
+        {
+          "id": 323,
+          "logit": 13.52735424041748
+        },
+        {
+          "id": 2282,
+          "logit": 13.111295700073242
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 11,
+          "logit": 14.923208236694336
+        },
+        {
+          "id": 0,
+          "logit": 14.446864128112793
+        },
+        {
+          "id": 13,
+          "logit": 13.933691024780273
+        },
+        {
+          "id": 323,
+          "logit": 13.527902603149414
+        },
+        {
+          "id": 2282,
+          "logit": 13.11195182800293
+        }
+      ],
+      "native_top1_margin": 0.4769439697265625,
+      "oracle_top1_margin": 0.47634410858154297,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 2,
+      "context_tokens": 3,
+      "oracle_logits_sha256": "a270a34f000ebccd3cea881c8ecad5326959872bae899574dfb0540847a07103",
+      "native_logits_sha256": "d584d0ea7bf2c316577df767df4f73e168e488605f2ee5017da40f8a8007f154"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.0021779537200927734,
+      "rms_error": 0.0004745172440155292,
+      "max_error_token_id": 114661,
+      "native_at_max_error": -2.437666416168213,
+      "oracle_at_max_error": -2.43548846244812,
+      "native_predicted_id": 358,
+      "native_argmax_id": 358,
+      "oracle_argmax_id": 358,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 358,
+          "logit": 14.601438522338867
+        },
+        {
+          "id": 6771,
+          "logit": 13.30733585357666
+        },
+        {
+          "id": 1096,
+          "logit": 12.925156593322754
+        },
+        {
+          "id": 11201,
+          "logit": 12.754388809204102
+        },
+        {
+          "id": 576,
+          "logit": 12.691326141357422
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 358,
+          "logit": 14.601869583129883
+        },
+        {
+          "id": 6771,
+          "logit": 13.307380676269531
+        },
+        {
+          "id": 1096,
+          "logit": 12.925506591796875
+        },
+        {
+          "id": 11201,
+          "logit": 12.754122734069824
+        },
+        {
+          "id": 576,
+          "logit": 12.691120147705078
+        }
+      ],
+      "native_top1_margin": 1.294102668762207,
+      "oracle_top1_margin": 1.2944889068603516,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 3,
+      "context_tokens": 4,
+      "oracle_logits_sha256": "ccfc3a8b8b1e772e5314f4c26adf3986199d1b454cbb9d60964787f36abd8bea",
+      "native_logits_sha256": "5148c3737daee8467c1944a8eeae5df80ed72874ce1b31aad2dccfd4327c5470"
+    }
+  ],
+  "limitations": [
+    "Oracle replays native consumed IDs, including supplied teacher forcing after an EOS prediction; this is not an autonomous conversation-quality test.",
+    "Native mixed-precision kernels and reduction orders differ from independent NumPy FP32 math. Calibration reports errors and never declares a tolerance pass.",
+    "A gate applies only supplied limits at selected positions; tolerances must be justified before a separate validation run, not fitted retrospectively to these measurements.",
+    "One-dimensional norm tensors stay FP32; f16 rounds only two-dimensional checkpoint matrices. No quantized-weight oracle is provided."
+  ],
+  "summary": {
+    "compared_positions": 4,
+    "max_absolute_error": 0.002505779266357422,
+    "max_position_rms_error": 0.0005030032662769612,
+    "greedy_mismatches": 0
+  },
+  "guard_after": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Gate native CPU tiny full logits",
+      "started_at": "2026-11-12T05:54:08.772288+00:00"
+    }
+  },
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-07-tiny-gate.json",
+    "raw_source_sha256": "b82328def6de6ec667bdf21a8180f8d1868e233c5c74412598c14ad0a0f88f67",
+    "sanitization": "Repository/home prefixes replaced; PID/PPID and host process names omitted. CPU percentage retains original ps field index2; memory and elapsed retained. Embedded hashes identify original local artifacts."
+  }
+}
