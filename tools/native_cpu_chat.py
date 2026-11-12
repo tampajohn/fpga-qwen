@@ -16,7 +16,10 @@ class NativeCancelled(Exception):
 
 
 class NativeCPUChat:
-    def __init__(self, protocol, binary=None, weights=None, threads=12, prefill_threads=6):
+    def __init__(self, protocol, binary=None, weights=None, threads=12, prefill_threads=6, reuse_prefix=True):
+        if type(reuse_prefix) is not bool:
+            raise ValueError('reuse_prefix must be boolean')
+        self.reuse_prefix = reuse_prefix
         self.protocol = protocol
         self.binary = Path(binary or ROOT / 'build/native-cpu/qwen_cpu')
         self.weights = Path(weights or ROOT / 'build/native-cpu/weights.bin')
@@ -25,6 +28,18 @@ class NativeCPUChat:
         self.log = None
         self.buffer = b''
         self.ready = None
+        self._invalidate_cache()
+
+    def _invalidate_cache(self):
+        self.cache_ids = []
+        self.cache_session = None
+        self.canonical_reusable_tokens = 0
+
+    def prefix_reuse_supported(self):
+        return bool(self.ready and self.ready.get('prefix_reuse') is True
+                    and type(self.ready.get('prefix_reuse_chunk')) is int
+                    and self.ready['prefix_reuse_chunk'] == 512
+                    and self.process is not None and self.process.poll() is None)
 
     def available(self):
         return (self.binary.is_file() and os.access(self.binary, os.X_OK)
@@ -39,11 +54,17 @@ class NativeCPUChat:
             context_limit=4096, rtl=None, inference='Original native CPU engine (experimental)',
             accelerate_thread_request=self.prefill_threads,
             thread_placement='No hard pinning; Accelerate thread count requested, not independently verified',
-            cached_tokens=0, prefix_reuse_enabled=False, suffix_supported=False,
+            cached_tokens=len(self.cache_ids) if self.prefix_reuse_supported() else 0,
+            prefix_reuse_supported=self.prefix_reuse_supported(),
+            prefix_reuse_enabled=self.reuse_prefix and self.prefix_reuse_supported(),
+            canonical_reusable_tokens=self.canonical_reusable_tokens if self.prefix_reuse_supported() else 0,
+            canonical_prefix_policy='native_f16_prefill512_v1' if self.prefix_reuse_supported() else None,
+            suffix_supported=False,
             max_verified_draft=0, prefill_block_size=None, precision_profile=None,
             precision_verified=False, reduction_lanes=None, prefill_reduction_lanes=None)
 
     def close(self):
+        self._invalidate_cache()
         process, self.process = self.process, None
         if process is not None:
             if process.poll() is None:
@@ -84,9 +105,14 @@ class NativeCPUChat:
                 if len(self.buffer) > 1024 * 1024:
                     raise RuntimeError('Oversized native CPU protocol response')
 
-    def command(self, command, cancel):
+    def command(self, command, cancel, *, preserve_cache=False):
         if '\n' in command or '\r' in command:
             raise ValueError('Native command must occupy one line')
+        operation = command.split(' ', 1)[0]
+        # Raw protocol clients may mutate KV outside browser request tracking.
+        # Their default contract invalidates reuse metadata, including benchmarks.
+        if operation == 'reset' or (not preserve_cache and operation in ('rewind', 'prefill', 'step')):
+            self._invalidate_cache()
         try:
             if cancel.is_set():
                 raise NativeCancelled()
@@ -141,16 +167,43 @@ class NativeCPUChat:
         try:
             yield dict(type='loading', message='Loading original native CPU engine…')
             self.start(cancel)
-            reset = self.command('reset', cancel)
-            if reset.get('ok') is not True or reset.get('position') != 0:
-                raise RuntimeError('Native reset did not clear the context')
+            reuse = 0
+            if self.reuse_prefix and self.prefix_reuse_supported() and self.cache_session == request.session:
+                common = 0
+                for previous, current in zip(self.cache_ids, request.ids):
+                    if previous != current:
+                        break
+                    common += 1
+                # Reproduce a fresh prefill's exact512-token chunk shapes.
+                # Never reuse decoded KV or a partial prefill tail, and always
+                # recompute at least one prompt token to obtain current logits.
+                reuse = (min(common, self.canonical_reusable_tokens, len(request.ids)-1) // 512) * 512
+            if reuse:
+                acknowledgement = self.command(f'rewind {reuse}', cancel, preserve_cache=True)
+                if acknowledgement.get('ok') is not True or acknowledgement.get('position') != reuse:
+                    raise RuntimeError('Native rewind did not acknowledge the retained prefix')
+                self.cache_ids = self.cache_ids[:reuse]
+                self.canonical_reusable_tokens = reuse
+            else:
+                reset = self.command('reset', cancel)
+                if reset.get('ok') is not True or reset.get('position') != 0:
+                    raise RuntimeError('Native reset did not clear the context')
+            metrics['reused_prefix_tokens'] = reuse
+            metrics['evaluated_prompt_tokens'] = len(request.ids)-reuse
+            metrics['kv_tokens'] = reuse
             mode = 'mode greedy' if request.decoding == 'greedy' else f'mode chat {request.seed if request.seed is not None else secrets.randbits(32)}'
             if self.command(mode, cancel).get('ok') is not True:
                 raise RuntimeError('Native decoding mode was not acknowledged')
             yield dict(type='start', metrics=dict(metrics))
-            response = self.command('prefill ' + ' '.join(map(str, request.ids)), cancel)
+            response = self.command('prefill ' + ' '.join(map(str, request.ids[reuse:])), cancel, preserve_cache=True)
+            if response.get('position') != len(request.ids):
+                raise RuntimeError('Native prefill position differs from the full prompt')
+            self.cache_ids = list(request.ids)
+            self.cache_session = request.session
+            self.canonical_reusable_tokens = (len(request.ids) // 512) * 512 if self.prefix_reuse_supported() else 0
             metrics['elapsed_seconds'] = time.perf_counter()-started
-            yield dict(type='prefill', processed_tokens=len(request.ids), metrics=dict(metrics))
+            metrics['kv_tokens'] = len(request.ids)
+            yield dict(type='prefill', processed_tokens=len(request.ids)-reuse, metrics=dict(metrics))
             for index in range(request.max_new):
                 token, position = response.get('token'), response.get('position')
                 if type(token) is not int or not 0 <= token < 151936 or position != len(request.ids) + index:
@@ -168,9 +221,10 @@ class NativeCPUChat:
                 metrics.update(output_tokens=len(generated), rounds=len(generated), tokens_per_round=1,
                     elapsed_seconds=now-started,
                     decode_tokens_per_second=(len(generated)-1)/(now-first) if now>first else 0)
-                yield dict(type='update', text=text, metrics=dict(metrics))
+                yield dict(type='update', text=text, token_ids=list(generated), metrics=dict(metrics))
                 if index + 1 < request.max_new:
-                    response = self.command(f'step {token}', cancel)
+                    response = self.command(f'step {token}', cancel, preserve_cache=True)
+                    self.cache_ids.append(token)
             if cancel.is_set():
                 raise NativeCancelled()
         except NativeCancelled:
@@ -180,4 +234,4 @@ class NativeCPUChat:
             self.close()
             raise
         metrics['elapsed_seconds'] = time.perf_counter()-started
-        yield dict(type='done', text=text, metrics=dict(metrics), finish_reason=reason)
+        yield dict(type='done', text=text, token_ids=list(generated), metrics=dict(metrics), finish_reason=reason)
