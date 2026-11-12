@@ -847,3 +847,34 @@ passed with build12 still selected and suffix unavailable. This validates the
 current interface, not the unresolved near-4K arithmetic. Qwen3.5 and Metal
 remain deferred. **The follow-on goal is not complete while this numerical
 gap remains unresolved.**
+
+
+### Near-4K cross-engine independent oracle control
+
+A [completed shared oracle replay](../reports/native-cpu-context3968-native-llama-oracle-control.json)
+compares frozen native build12 and a separately captured tuned llama public-API
+client on identical prompt and teacher-forced continuation IDs. Both use FP16
+matrix weights and KV. The same actual independent NumPy logits were compared
+with both captures and persisted with hashes; the limits remain maximum
+absolute error ≤0.01, RMS ≤0.002 and relative tolerance zero.
+
+| Capture / context | Maximum absolute error | RMS error | Fixed gate |
+|---|---:|---:|---|
+| Native12 /3968 | 0.014894485 | 0.001661845 | Fail: absolute |
+| Llama diagnostic /3968 | 0.011971474 | 0.001880341 | Fail: absolute |
+| Native12 /3969 | 0.010632515 | 0.002044139 | Fail: absolute and RMS |
+| Llama diagnostic /3969 | 0.004652262 | 0.001116680 | Pass |
+
+All four arrays were finite and had identical greedy predictions. The llama
+capture uses diagnostic client v3, logical batch2048 and physical batch512;
+the3968-token prompt is submitted as2048+1920, with no sampling between
+submissions. It records actual batch capacities and checks public KV positions.
+Exact kernel/scheduling equivalence to the benchmark server has **not** been
+proved. No timing claim follows from this diagnostic client.
+
+Llama also failing the first position shows that the observed absolute-error
+gap at that position is not unique to the original engine. It neither excuses
+native12's failures nor establishes that the oracle or contract is wrong.
+The second-position difference remains, and neither reduction order nor any
+specific kernel has been established as its cause. Preserve the failed gates,
+keep near-4K performance diagnostic, and leave the follow-on numerical gap open.
