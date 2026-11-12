@@ -96,6 +96,19 @@ class PrefillModelTests(unittest.TestCase):
         report=dict(completed=False,fp64_b8_prefill_reached=4096,reference_checked=exact,
                     timing_claim=False,max_causal_position=4095)
         if exact:
+            # A scalar token uses the scalar attention route (including optional
+            # operation6), unlike no-logits prefill and B4 verification.
+            scalar_predictions=[]
+            for current in models:
+                self.assertEqual(current.command('truncate 4095'),'truncated')
+                scalar_predictions.append(current.token(9707))
+            self.assertEqual(scalar_predictions[0][:2],scalar_predictions[1][:2])
+            self.assertEqual(scalar_predictions[0][1],4096)
+            with tempfile.TemporaryDirectory()as directory:
+                arrays=[read_dump_logits(current,Path(directory)/str(i))for i,current in enumerate(models)]
+            self.assertEqual(arrays[0].tobytes(),arrays[1].tobytes())
+            report.update(max_position_scalar_id_position=list(scalar_predictions[0][:2]),
+                          scalar_full_logits_bit_identical=True)
             # The prefill wire intentionally has no logits. Explicit verification
             # observes operation5 at the same maximum causal position with a head.
             predictions=[]
