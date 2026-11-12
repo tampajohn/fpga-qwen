@@ -10,6 +10,7 @@
 #include <limits>
 #include <random>
 #include <sstream>
+#include <span>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -46,7 +47,8 @@ public:
     void reset() { std::fill(seen_.begin(),seen_.end(),0); }
     void mode(bool chat, uint64_t seed) { chat_=chat; random_.seed(seed); }
     void consumed(int id) { seen_.at(id)=1; }
-    int select(const std::vector<float>& logits) {
+    bool greedy_mode()const{return !chat_;}
+    int select(std::span<const float> logits) {
         if (logits.size()!=qwen_cpu::vocabulary) throw std::runtime_error("No current full-vocabulary logits");
         int best=0;
         for(int id=0;id<qwen_cpu::vocabulary;id++) {
@@ -73,7 +75,7 @@ void settings(const qwen_cpu::Options& options, const qwen_cpu::Model& model, bo
         << ",\"context\":" << options.context
         << ",\"lossless_bf16_decode_cache_bytes\":" << model.lossless_bf16_cache_bytes()
         << ",\"gpu\":false,\"pytorch\":false,\"weight_precision\":\"f16\",\"norm_precision\":\"f32\","
-           "\"activation_precision\":\"f32\",\"kv_precision\":\"f16\",\"prefix_reuse\":true,\"prefix_reuse_chunk\":" << qwen_cpu::prefix_reuse_chunk << ",\"suffix_drafting\":false}\n" << std::flush;
+           "\"activation_precision\":\"f32\",\"kv_precision\":\"f16\",\"prefix_reuse\":true,\"prefix_reuse_chunk\":" << qwen_cpu::prefix_reuse_chunk << ",\"suffix_drafting\":false,\"verify_greedy_b2\":true,\"max_verified_draft\":1}\n" << std::flush;
 }
 }
 int main(int argc,char** argv) {
@@ -123,6 +125,33 @@ int main(int argc,char** argv) {
                     else if(mode=="chat") {if(!(input>>seed))throw std::runtime_error("Chat seed required");no_extra(input);sampler.mode(true,integer<uint64_t>(seed));}
                     else throw std::runtime_error("Unknown decoding mode");
                     std::cout<<"{\"ok\":true}\n";
+                } else if(command=="verify-greedy") {
+                    std::string pending_text,draft_text;
+                    if(!(input>>pending_text>>draft_text))throw std::runtime_error("verify-greedy requires pending and draft IDs");
+                    no_extra(input);
+                    const int pending=integer<int>(pending_text),draft=integer<int>(draft_text);
+                    if(!sampler.greedy_mode())throw std::runtime_error("verify-greedy is unavailable in chat mode");
+                    if(consumed_history.size()!=size_t(model.position()))throw std::runtime_error("Consumed history does not match model position");
+                    const auto start=Clock::now();
+                    const auto rows=model.verify_two(pending,draft);
+                    const auto eos=[](int id){return id==151643||id==151645;};
+                    const int first=sampler.select(rows.logits.first(qwen_cpu::vocabulary));
+                    const bool accepted=first==draft;
+                    const int committed=accepted&&!eos(first)?2:1;
+                    int second=-1;
+                    if(committed==2)second=sampler.select(rows.logits.subspan(qwen_cpu::vocabulary,qwen_cpu::vocabulary));
+                    // Correction/bonus predictions remain unconsumed. Commit
+                    // only inputs actually traversed by sequential greedy decode.
+                    model.commit_verified(committed);
+                    consumed_history.push_back(pending);sampler.consumed(pending);
+                    if(committed==2){consumed_history.push_back(draft);sampler.consumed(draft);}
+                    const bool stopped=eos(first)||(committed==2&&eos(second));
+                    const double elapsed=std::chrono::duration<double>(Clock::now()-start).count();
+                    std::cout<<"{\"tokens\":["<<first;
+                    if(committed==2)std::cout<<","<<second;
+                    std::cout<<"],\"accepted\":"<<(accepted?1:0)<<",\"committed_inputs\":"<<committed
+                        <<",\"position\":"<<model.position()<<",\"verified_positions\":2,\"finish_reason\":"
+                        <<(stopped?"\"eos\"":"null")<<",\"seconds\":"<<std::setprecision(17)<<elapsed<<"}\n";
                 } else if(command=="prefill" || command=="step") {
                     std::vector<int> ids;std::string token;
                     while(input>>token) ids.push_back(integer<int>(token));
