@@ -130,6 +130,8 @@ def main():
     parser.add_argument('--checkpoint', type=Path)
     parser.add_argument('--short-prompt', type=Path, default=ROOT/'build/native-phase0/prompt-short.json')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--repeat-fixture', choices=('sequence', 'counting'), default='sequence',
+                        help='Preselect sequence or counting prompt before timing; preserve prior failed preflights')
     parser.add_argument('--rounds', type=int, default=10)
     parser.add_argument('--warmups', type=int, default=2)
     parser.add_argument('--threads', type=int, default=12)
@@ -146,6 +148,7 @@ def main():
     logs.mkdir(parents=True)
     report = dict(completed=False, paired_sampling_complete=False, performance_claim_eligible=False,
         mode='confirmation', gpu=False, pytorch=False, rounds=args.rounds, output_token_cap=64,
+        repeat_fixture=args.repeat_fixture,
         warmups_per_visit_profile=args.warmups, threads=args.threads, prefill_threads=args.prefill_threads,
         configurations=[dict(name='suffix-off', max_draft=0), dict(name='suffix-on', max_draft=1)],
         preflight=[], visits=[], guard_before=guarded, host_before=host_snapshot(),
@@ -187,7 +190,9 @@ def main():
         short_ids = json.loads(args.short_prompt.read_text())
         require(isinstance(short_ids, list) and len(short_ids) == 85 and short_ids == make_prompt(protocol, 'short'),
                 'Short fixture must match complete existing85-token standard prompt')
-        repeat_messages = [dict(role='user', content='Write the exact sequence red blue green twenty times, without commentary.')]
+        repeat_prompts = dict(sequence='Write the exact sequence red blue green twenty times, without commentary.',
+                              counting='Count from 1 to 40, separated by commas, without commentary.')
+        repeat_messages = [dict(role='user', content=repeat_prompts[args.repeat_fixture])]
         repeat = protocol.prepare(dict(session='suffix-repeat', messages=repeat_messages,
                                        max_new_tokens=64, decoding='greedy', max_draft=0))
         short = ChatRequest(session='suffix-low-repetition', ids=list(short_ids), max_new=64, max_draft=0, decoding='greedy')
