@@ -1,0 +1,13 @@
+# Standalone tiled online-softmax attention
+
+This is an original SystemVerilog numerical and compiler experiment, not a model backend. Both methods run in one stock-Verilator executable, using identical O3/ThinLTO/default contraction flags. C++ initializes deterministic binary-exact inputs and transports outputs; all attention arithmetic remains in SV.
+
+The baseline adapts this project's op5 QK2 loop to one head and contiguous K/V arrays, preserving pairwise key reuse and ascending feature/time reduction order. The online method retains a 16×8 score tile and rescales its running denominator and unnormalized output whenever the maximum changes. Query q sees exactly N−Q+q+1 keys. Q1 is a standalone query, not deployed op6 paired-GQA-head decode. Neither path includes real model DPI access, worker scheduling or full model cache footprint.
+
+Build and check with `python3 tools/check_online_attention_kernel.py`. The 54-case gate checks Q1/2/8, N128/129/512/513/2048/4096, three input magnitudes and all 128 output features against an independent 80-digit Decimal oracle. Exact fixture K and V periods are 23 and 29, so the oracle counts repeated mathematical terms over their joint period 667; it does not reproduce either float reduction sequence. The 1e-12 absolute fixture budget applies only to bounded finite inputs with |V|≤1.75. This is not a broad quality threshold or a bit-equivalence requirement.
+
+Frozen executable `ef8b364d9ed4f531d833a811e5915600e68bb8d06289ffe9b2a2dfb228e6a2e1` passed all 25,344 output comparisons per method. Maximum errors were 4.485e-16 (three-pass) and 2.264e-16 (online). Source/oracle peer review passed. The sanitized report records source/compiler hashes and build command. Correctness-run clock measurements are deliberately not reported as performance results.
+
+Linked assembly shows a significant implementation difference. In `Vonline_attention_kernel::evalNba`, the baseline feature loop at 0x10000fc80–0x10000fcb4 uses a shared scalar K load, adjacent Q vector load and register-held `fmla.2d`. The online query-update loop at 0x10000f6cc–0x10000f6fc uses scalar `fmadd` with a tile-score load/store on each feature/query update and dynamic index checks. Thus smaller score storage does not imply a faster compiled kernel. Timings remain pending an exclusive measurement window; the optional benchmark helper checks the full oracle gate and source/binary hashes before execution.
+
+Algorithm reference: [Dao et al., FlashAttention, Algorithm 1](https://arxiv.org/abs/2205.14135). This implementation is original; no llama.cpp code is used.
