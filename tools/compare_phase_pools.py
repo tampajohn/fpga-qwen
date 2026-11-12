@@ -90,6 +90,11 @@ def main():
             before=validate_telemetry(engines[index],report['selectors'][index])
             result=request(models[index],prompt,args.tokens)
             after=validate_telemetry(engines[index],report['selectors'][index])
+            delta=[[after['dispatch_counts'][p][k]-before['dispatch_counts'][p][k]for k in range(3)]for p in range(2)]
+            prefill_index=1 if report['selectors'][index]=='PREFILL_12' else 0
+            if delta[0][0]<=0 or delta[prefill_index][1]<=0 or delta[0][2]!=0 or delta[1][2]!=0 or delta[1][0]!=0 or delta[1-prefill_index][1]!=0:
+                raise AssertionError('Request phase routing counters differ from intended work')
+            result['phase_dispatch_delta']=delta
             result['phase_before']=before;result['phase_after']=after
             result['phase_scope']='dispatch/group counters are coordinator logical routing counts; no actual CPU affinity or per-core residency measurement'
             return result
