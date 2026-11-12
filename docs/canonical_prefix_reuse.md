@@ -1,6 +1,6 @@
 # Opt-in canonical prefix reuse for hybrid inference
 
-The hybrid engine can reuse completed FP64 B8 prompt blocks while preserving exact fresh-request behavior in the tested cases. The opt-in hybrid UI backend enables this policy with a capability-verified executable. FP64 remains the default backend, and hybrid suffix drafting remains disabled.
+The hybrid engine can reuse completed FP64 B8 prompt blocks while preserving exact fresh-request behavior in the tested cases. The opt-in hybrid UI backend enables this policy with a capability-verified executable. FP64 remains the default backend. Optional FP32 B4 suffix verification never advances the canonical boundary; only acknowledged full FP64 prefill blocks do.
 
 `RTLChatEngine(..., precision_profile='fp32_b1_fp64_prefill', block_size=1, prefill_size=8, lanes=8, workers=8, reuse_prefix=False, canonical_prefix_reuse=True)` selects the narrow policy. The runtime must explicitly advertise `canonical_prefix_policy: "fp64_b8_aligned_v1"`; older hybrid binaries reject this request before prefill. General `prefix_reuse_supported` remains false. No runtime capability or filename silently turns caching on.
 
