@@ -938,8 +938,12 @@ The subsequent held-out checks also completed under the unchanged limits:
 Together with the short and near-4K checks, this is finite-fixture numerical
 evidence for the disclosed FP64 norm accumulator. It does not cover every
 intermediate position or establish a general error bound. Tiny and chunk-boundary
-numerical checks, conversation quality, prefix behavior and performance remain
-pending. No promotion or performance result follows from these passes.
+numerical checks, conversation quality and performance remain pending. The
+[28-case prefix checker](../reports/native-cpu-norm-f64-prefix-check.json) has now
+completed and passed for this diagnostic candidate, covering its restricted
+canonical-prefix behavior. This is candidate-specific correctness evidence,
+not a cache speed measurement or promotion. No performance result follows
+from these passes.
 
 The candidate is **not released or promoted**. Live build12 and its original
 near-4K failures remain unchanged, and the follow-on goal remains open. There
