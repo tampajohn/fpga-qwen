@@ -14,111 +14,86 @@ timing does not predict FPGA performance. Current work lives in [`engine/`](engi
 
 ## Current result
 
-**Build-12 is the current local browser release**, with 12 decode / 6 prefill
-threads. It adds exact-safe prefix reuse of completed canonical 512-token prefill
-blocks and shares K/V conversion between paired query heads during batched
-prefill. Partial tails are recomputed; decoded KV is never reused as a canonical
-prefill block. Suffix drafting remains unavailable.
+**Build-18 is the current local browser release**, with 12 decode / 6
+prefill threads. Its [live browser check](reports/native-cpu-build-18-browser-live.json)
+passed, including prefix reuse, opt-in drafting, precision disclosure,
+cancellation, backend switching, and benchmark-lock visibility. It fixes the sampled
+near-4K numerical failure by accumulating FP32 normalization square products in
+FP64, then rounding the sum to FP32 before scaling. Matrix weights and KV remain
+FP16; normalization weights and stored activations remain FP32. This is an
+explicit arithmetic change, not an unchanged all-FP32 implementation.
 
-Newer experiments remain separate from that live release. Candidate 15 adds
-opt-in greedy two-token verification and has passed exact-logit, conversation,
-EOS and rollback checks. Its first paired suffix benchmark established no
-request-speed gain, so drafting stays off by default; see the
-[suffix correctness and timing evidence](docs/native_suffix_b2.md).
-The [standalone vocabulary-routing prototype](docs/native_head_probe.md)
-also passed its scoped correctness checks but was slower than the dense head.
-Neither experiment establishes a new speed win over llama.cpp.
+The [56-array binding gate](reports/native-cpu-build-18-exact-gate.json) matches
+the tested norm candidate exactly at 28 positions. Those independent numerical
+checks cover tiny/short/452-token prompts, 511/512/513 boundaries, and
+1024/2048/3968-token contexts, using unchanged maximum absolute error ≤0.01
+and RMS ≤0.002. See the [numerical evidence](docs/native_cpu_plan.md).
+These are selected-position checks, not full-context or full-generation proof.
+The [nine-case](reports/native-cpu-build-18-quality.json) and
+[18-case conversation gates](reports/native-cpu-build-18-extended-quality.json)
+retain scoped tuned-llama agreement; they do not establish improved answer accuracy.
 
-Its [56-array comparison](reports/native-cpu-build-12-exact-gate.json) matches
-prior canonical full logits exactly. The [nine-case quality suite](reports/native-cpu-build-12-quality.json)
-retains exact tuned-llama token trajectories and stopping behavior, with both
-engines scoring **4/9**. The [28-case prefix check](reports/native-cpu-build-12-prefix-check.json)
-covers greedy/seeded chat, edited and shorter prompts, session changes and
-cancellation. Baseline agreement is not improved answer accuracy. Earlier
-independent NumPy gates use fixed maximum absolute error ≤0.01 and RMS ≤0.002,
-including [511](reports/native-cpu-boundary-511-oracle-gate.json),
-[512](reports/native-cpu-boundary-512-oracle-gate.json), and
-[513-token chunk boundaries](reports/native-cpu-boundary-513-oracle-gate.json).
+Build-18 retains canonical 512-token prefix reuse and adds optional one-token
+n-gram drafting in Greedy mode. Drafting is **off by default**; prior suffix
+measurements established no request-speed gain. Its
+[28-case prefix check](reports/native-cpu-build-18-prefix-check.json),
+[B2 API checks](reports/native-cpu-build-18-verify-api.json),
+[suffix trajectory/lifecycle checks](reports/native-cpu-build-18-suffix-trajectories.json),
+and [isolated browser check](reports/native-cpu-build-18-browser-isolated.json)
+passed. Partial tails are recomputed, and decoded/verified KV is not reused as
+a canonical prefill block.
 
-In [ten paired cache-on/off rounds](reports/native-cpu-build-12-prefix-confirmation.json),
-primed prompts with an edited tail showed the following TTFT results. Priming is
-outside the measured request; these are not fresh-prompt speedups.
-
-| Prompt tokens | Median TTFT fresh → reused | Median paired speedup (95% interval) |
-| --- | ---: | ---: |
-| 1,024 | 1.335 → 0.803 s | 1.632× (1.575–1.730) |
-| 2,048 | 3.728 → 1.397 s | 2.672× (2.557–2.819) |
-| 3,968 | 11.719 → 1.974 s | 5.744× (5.512–6.512) |
-
-All decode-speed intervals in that cache comparison include 1: no decode gain
-is established from prefix reuse.
-
-The latest [ten-pair fresh-request confirmation](reports/native-cpu-build-12-final-standard-confirmation.json)
-retains build-12 against tuned KleidiAI-ON/LTO-ON llama FP16, both with 12 decode /
-6 prefill threads, identical 85/452-token prompts and 32 output tokens. Every
-visit has one unscored warmup per prompt; configurations alternate order.
-[Paired bootstrap intervals](reports/native-cpu-build-12-final-standard-analysis.json)
-retain all ten rounds. Ratios above 1 favor the original engine.
+Fresh direct comparisons against tuned KleidiAI-ON/LTO-ON llama FP16 use the
+same requested 12 decode / 6 prefill threads and identical prompt/output IDs.
+Each workload has ten alternating pairs and one unscored warmup per visit.
+The [standard run](reports/native-cpu-build-18-final-standard-confirmation.json)
+uses 32 output tokens; the [extended run](reports/native-cpu-build-18-final-extended-confirmation.json)
+uses 128. Natural EOS remains enabled. Ratios above 1 favor this engine:
 
 | Prompt tokens | Decode throughput ratio (95% interval) | TTFT speedup (95% interval) | Request-time speedup (95% interval) |
 | --- | ---: | ---: | ---: |
-| 85 | 0.974× (0.939–1.042) | 1.380× (1.313–1.715) | 1.109× (1.063–1.253) |
-| 452 | 0.953× (0.917–0.978) | 1.079× (1.010–1.181) | 1.040× (1.001–1.098) |
+| 85 | 0.945× (0.915–0.979) | 1.395× (1.333–1.540) | 1.102× (1.058–1.132) |
+| 452 | 0.949× (0.852–0.997) | 1.080× (1.008–1.179) | 1.029× (0.963–1.091) |
+| 1,024 | 1.000× (0.981–1.027) | 0.987× (0.955–1.113) | 0.993× (0.966–1.068) |
+| 2,048 | 1.017× (0.900–1.047) | 0.846× (0.821–1.002) | 0.888× (0.859–1.010) |
+| 3,968 | 1.119× (1.030–1.143) | 0.748× (0.698–0.810) | 0.805× (0.758–0.875) |
 
-These workloads show lower TTFT and request time, **not a decode win**. The
-452-token decode interval indicates a slowdown; both decode intervals remain
-within the declared 10% allowance at their lower bounds. The 452-token request
-interval barely excludes 1, and these are separate, unadjusted workload/metric
-intervals. They do not establish broad superiority.
+The [standard analysis](reports/native-cpu-build-18-final-standard-analysis.json)
+shows decode about 5–6% slower at both short prompts, with both intervals below
+1. First-token latency is about 28% and 7% lower. The
+[extended analysis](reports/native-cpu-build-18-final-extended-analysis.json)
+shows no established decode difference at 1K or 2K. Near 4K, decode is about
+11.9% faster, but first-token latency is about 34% higher and the whole request
+about 24% slower. **There is no overall performance win over llama.cpp.**
+Percentages use median paired ratios; these separate intervals are unadjusted
+and must not be pooled or chained through earlier comparisons.
 
-**Near-4K numerical validation failed for the selected build-12.** The fixed
-NumPy contract remains maximum absolute error ≤0.01 and RMS ≤0.002. The
-[3968/3969-position control](reports/native-cpu-build-12-context3968-oracle-control.json)
-reported maximum errors 0.0148945 / 0.0106325 and RMS errors 0.00166184 /
-0.00204414. Both positions fail; the second exceeds both limits. Greedy IDs
-still matched, which does not satisfy the full-logit contract. The
-[1024/1025](reports/native-cpu-build-12-context1024-oracle-control.json) and
-[2048/2049](reports/native-cpu-build-12-context2048-oracle-control.json)
-controls passed, within those selected positions' scope. The completed
-[128-output extended timing run](reports/native-cpu-build-12-final-extended-confirmation.json)
-is retained, but near-4K timing is diagnostic evidence and cannot support a
-qualified speed win. The numerical gap remains unresolved; the follow-on goal
-is not complete, and tolerances have not been relaxed.
+Historical failures remain part of the evidence. Build-12's
+[3968/3969 NumPy control](reports/native-cpu-build-12-context3968-oracle-control.json)
+failed the same fixed limits despite matching greedy IDs: maximum errors were
+0.0148945 / 0.0106325 and RMS errors 0.00166184 / 0.00204414. Build-18 passes
+those sampled positions with changed norm accumulation; it does not erase that
+failure or establish correctness at every position. Build-12's
+[final standard](reports/native-cpu-build-12-final-standard-analysis.json),
+[final extended](reports/native-cpu-build-12-final-extended-analysis.json), and
+[earlier unfavorable comparison](reports/native-cpu-build-12-standard-confirmation-analysis.json)
+remain archived. Its [cache-on/off comparison](reports/native-cpu-build-12-prefix-confirmation.json)
+showed scoped TTFT benefits after untimed priming, without an established decode
+benefit; those measurements are not new build-18 results. Build-10's
+[30-pair confirmation](reports/native-cpu-build-10-confirmation.json) also remains
+historical evidence. The [vocabulary-routing prototype](docs/native_head_probe.md)
+was slower than the dense head, and [suffix timing](docs/native_suffix_b2.md)
+did not establish a request-speed gain.
 
-For the two shorter extended workloads, the [ten-pair 128-output analysis](reports/native-cpu-build-12-final-extended-analysis.json)
-reports decode ratios 0.991× (0.913–1.039) at 1024 prompt tokens and 1.077×
-(0.947–1.175) at 2048. Neither establishes a decode improvement; their TTFT
-and whole-request intervals also include 1. Independent oracle checks cover
-two positions per prompt, not all 128 outputs. These scoped results must not
-be pooled with the numerically failed near-4K workload.
-
-The earlier [unfavorable ten-pair comparison](reports/native-cpu-build-12-standard-confirmation.json)
-is retained separately: paired decode ratios were 0.687× and 0.772×, with
-[intervals](reports/native-cpu-build-12-standard-confirmation-analysis.json)
-0.487–0.914 and 0.658–0.923. Reported concurrent machine activity remains a
-possible confound, not an established explanation. The newer run does not erase
-those measurements or establish why results differed.
-
-Build-10's earlier [30-pair confirmation](reports/native-cpu-build-10-confirmation.json)
-met the Phase 1 within-10% decode target, with paired native/llama ratios 1.028×
-(0.954–1.079) and 0.980× (0.905–1.022). This is historical evidence for build-10,
-not build-12 performance. The immutable build-10 artifact remains available.
-Earlier and negative results are retained in the [current plan](docs/native_cpu_plan.md).
-
-These are single-stream measurements on an Apple M5 Max. Native subprocess
-transport differs from llama.cpp HTTP streaming; native prefill retains a
-1.76 GB widened FP32 layer cache; background activity is uncontrolled. Numerical
-and conversation checks cover their declared fixtures, not every context or
-all model behavior. Build-12 is exposed locally at the user's request; its
-[latest live browser checks](reports/native-cpu-build-12-final-browser-live.json) passed: default/reload,
-dropdown interaction across status polls, cached-prefix replies to changed
-questions, cancellation/new chat, backend switching and the benchmark lock.
-
-The primary target remains the tuned **FP16** baseline. FP32 and constrained
-KleidiAI-OFF Q4 measurements are separate precision classes, not interchangeable
-quality/performance claims. See the [current plan and evidence](docs/native_cpu_plan.md)
-and [matched benchmark protocol](docs/BENCHMARK_PROTOCOL.md). Historical results
-and implementation notes are retained in [`docs/`](docs/) and [`reports/`](reports/).
+These are single-stream Apple M5 Max measurements. Native subprocess transport
+differs from llama.cpp HTTP streaming; native reset/setup is outside the clock,
+and a widened FP32 prefill weight cache adds roughly 1.76 GB. Requested worker
+counts do not establish identical CPU placement or internal BLAS threading.
+Background activity is uncontrolled, arithmetic differs, and numerical and
+conversation checks cover their stated fixtures. The primary comparison is
+FP16 weight/KV storage; FP32 and Q4 results are separate precision classes.
+See the [current plan](docs/native_cpu_plan.md) and
+[matched benchmark protocol](docs/BENCHMARK_PROTOCOL.md).
 
 ## Local browser chat
 
@@ -136,7 +111,7 @@ make setup
 ```
 
 Open **http://127.0.0.1:8765**. The installed native release appears first and
-is selected automatically. The local deployment uses **build-12**, with 12
+is selected automatically. The local deployment uses **build-18**, with 12
 decode / 6 prefill threads; simulator worker controls do not apply. The
 `--native-only` launcher needs no simulator binary or simulator imports. Omit
 that flag to include any installed legacy simulator choices. Starting the
@@ -144,7 +119,8 @@ server does not build the engine, export weights, or download a model.
 
 Native prefix reuse is enabled for completed canonical 512-token prefill blocks
 in the same conversation; partial tails are recomputed. Prefixes shorter than a
-complete block are processed fresh. Suffix drafting is unavailable. Stop
+complete block are processed fresh. Supporting releases offer one-token n-gram
+drafting in Greedy mode, off by default; Chat mode disables it. Stop
 terminates the active native process, and the next request starts with fresh KV state. Benchmark jobs block generation and
 show a banner through browser polling.
 
@@ -161,7 +137,9 @@ exposing localhost through a tunnel requires your own access controls.
 
 Use macOS ARM with the Xcode command-line compiler and Accelerate available.
 The original engine uses FP16 matrix weights, FP32 normalization weights and
-arithmetic, and FP16 current/past KV storage. The embedding is tied to the output
+stored activations, and FP16 current/past KV storage. Normalization square
+products are FP32, their sum accumulates in FP64, and the sum rounds to FP32
+before the remaining scale/output operations. The embedding is tied to the output
 head. Its [weight and process contract](engine/INTERFACE.md) describes the pack,
 precision, and persistent protocol.
 
