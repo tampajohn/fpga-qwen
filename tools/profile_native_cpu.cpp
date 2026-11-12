@@ -28,8 +28,10 @@ class PersistentPools {
     using Owner=std::unique_ptr<ggml_threadpool,decltype(&ggml_threadpool_free)>;
     Owner decode_{nullptr,ggml_threadpool_free},prefill_{nullptr,ggml_threadpool_free};
     bool separate_;
+    int decode_threads_,prefill_threads_;
 public:
-    PersistentPools(int decode_threads,int prefill_threads):separate_(decode_threads!=prefill_threads) {
+    PersistentPools(int decode_threads,int prefill_threads):separate_(decode_threads!=prefill_threads),
+        decode_threads_(decode_threads),prefill_threads_(prefill_threads) {
         auto decode_params=ggml_threadpool_params_default(decode_threads);
         auto prefill_params=ggml_threadpool_params_default(prefill_threads);
         // Public API defaults match server common CPU settings: poll50, normal
@@ -52,8 +54,9 @@ public:
     ggml_threadpool_t prefill() const {return prefill_.get();}
     Json settings() const {
         return Json{{"attached",true},{"persistent",true},{"pool_constructions",separate_?2:1},
-            {"decode_threads",ggml_threadpool_get_n_threads(decode_.get())},
-            {"prefill_threads",ggml_threadpool_get_n_threads(separate_?prefill_.get():decode_.get())},
+            {"decode_threads_requested",decode_threads_},
+            {"prefill_threads_requested",prefill_threads_},
+            {"thread_count_evidence","Successful public pool construction with these requested counts; this llama revision has no implemented pool-count getter"},
             {"shared_when_thread_counts_equal",!separate_},{"poll",50},{"priority","normal"},
             {"strict_cpu",false},{"cpu_affinity","inherited/default, not pinned"},
             {"initial_decode_paused",separate_},{"initial_prefill_paused",false},
