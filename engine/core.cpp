@@ -26,6 +26,7 @@
 namespace qwen_cpu {
 namespace {
 constexpr int H=1024, D=128, Q=16, K=8, F=3072, L=28;
+constexpr size_t prefill_chunk=512;
 using Half=__fp16;
 static_assert(sizeof(Half)==2 && sizeof(float)==4);
 static_assert(std::endian::native==std::endian::little,"Weight pack requires little endian");
@@ -205,8 +206,8 @@ struct Model::Impl {
         std::sort(ranges.begin(),ranges.end());for(size_t i=1;i<ranges.size();++i)require(ranges[i].first>=ranges[i-1].second,"Overlapping tensors");
         keys.resize(size_t(L)*opt.context*K*D);values.resize(keys.size());
         attention_scores.resize(size_t(std::max(opt.decode_threads,opt.prefill_threads))*opt.context);
-        x.reserve(64*H);h.reserve(64*H);q.reserve(64*Q*D);k.reserve(64*K*D);v.reserve(64*K*D);
-        attended.reserve(64*Q*D);residual.reserve(64*H);gate.reserve(64*F);up.reserve(64*F);
+        x.reserve(prefill_chunk*H);h.reserve(prefill_chunk*H);q.reserve(prefill_chunk*Q*D);k.reserve(prefill_chunk*K*D);v.reserve(prefill_chunk*K*D);
+        attended.reserve(prefill_chunk*Q*D);residual.reserve(prefill_chunk*H);gate.reserve(prefill_chunk*F);up.reserve(prefill_chunk*F);
         output.reserve(vocabulary);
         cosines.resize(size_t(opt.context)*64);sines.resize(cosines.size());
         for(int p=0;p<opt.context;++p)for(int j=0;j<64;++j){double angle=p/std::pow(1000000.0,2.0*j/D);cosines[p*64+j]=std::cos(angle);sines[p*64+j]=std::sin(angle);}
@@ -303,7 +304,7 @@ struct Model::Impl {
         require(!ids.empty(),"Empty token input");require(ids.size()<=size_t(options.context-pos),"Context capacity exceeded");
         for(int id:ids)require(id>=0&&id<vocabulary,"Token ID out of range");
         Pool& pool=prefill?*prefill_pool:*decode_pool;
-        for(size_t begin=0;begin<ids.size();begin+=64){int batch=std::min(size_t(64),ids.size()-begin);chunk(ids.data()+begin,batch,pool);}
+        for(size_t begin=0;begin<ids.size();begin+=prefill_chunk){int batch=std::min(prefill_chunk,ids.size()-begin);chunk(ids.data()+begin,batch,pool);}
         output.resize(vocabulary);project(tensor("model.embed_tokens.weight"),last_hidden.data(),output.data(),1,pool);
     }
 };
