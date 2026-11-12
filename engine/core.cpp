@@ -200,6 +200,25 @@ struct Model::Impl {
             pool.run(size_t(batch)*w.rows,[&](size_t begin,size_t end,int){for(size_t i=begin;i<end;++i)y[i]=dot(x+(i/w.rows)*w.cols,w.half+(i%w.rows)*w.cols,w.cols);});
         }
     }
+    // Independent projections sharing one input can share one worker launch.
+    // Only row ownership changes: each dot keeps the original eight-lane order.
+    template<size_t N> void project_group(const std::array<Tensor*,N>& weights,
+                                          const float* input,
+                                          const std::array<float*,N>& outputs,Pool& pool) {
+        size_t total=0;for(const Tensor* w:weights)total+=w->rows;
+        pool.run(total,[&](size_t begin,size_t end,int){
+            size_t offset=0;
+            for(size_t segment=0;segment<N;++segment) {
+                const Tensor& w=*weights[segment];const size_t limit=offset+w.rows;
+                const size_t first=std::max(begin,offset),last=std::min(end,limit);
+                for(size_t i=first;i<last;++i) {
+                    const size_t row=i-offset;
+                    outputs[segment][row]=dot(input,w.half+row*w.cols,w.cols);
+                }
+                offset=limit;
+            }
+        });
+    }
     size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*options.context+position)*K+head)*D;}
     void chunk(const int* ids,int batch,Pool& pool) {
         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
@@ -209,9 +228,14 @@ struct Model::Impl {
         for(int layer=0;layer<L;++layer){std::string p="model.layers."+std::to_string(layer)+".";
             const float* nw=tensor(p+"input_layernorm.weight").norm;
             for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
-            project(tensor(p+"self_attn.q_proj.weight"),h.data(),q.data(),batch,pool);
-            project(tensor(p+"self_attn.k_proj.weight"),h.data(),k.data(),batch,pool);
-            project(tensor(p+"self_attn.v_proj.weight"),h.data(),v.data(),batch,pool);
+            if(batch==1) {
+                project_group<3>({&tensor(p+"self_attn.q_proj.weight"),&tensor(p+"self_attn.k_proj.weight"),&tensor(p+"self_attn.v_proj.weight")},
+                                 h.data(),{q.data(),k.data(),v.data()},pool);
+            } else {
+                project(tensor(p+"self_attn.q_proj.weight"),h.data(),q.data(),batch,pool);
+                project(tensor(p+"self_attn.k_proj.weight"),h.data(),k.data(),batch,pool);
+                project(tensor(p+"self_attn.v_proj.weight"),h.data(),v.data(),batch,pool);
+            }
             const float* qn=tensor(p+"self_attn.q_norm.weight").norm;const float* kn=tensor(p+"self_attn.k_norm.weight").norm;
             for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
                 for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
@@ -233,7 +257,11 @@ struct Model::Impl {
             project(tensor(p+"self_attn.o_proj.weight"),attended.data(),residual.data(),batch,pool);
             for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
             nw=tensor(p+"post_attention_layernorm.weight").norm;for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
-            project(tensor(p+"mlp.gate_proj.weight"),h.data(),gate.data(),batch,pool);project(tensor(p+"mlp.up_proj.weight"),h.data(),up.data(),batch,pool);
+            if(batch==1) {
+                project_group<2>({&tensor(p+"mlp.gate_proj.weight"),&tensor(p+"mlp.up_proj.weight")},h.data(),{gate.data(),up.data()},pool);
+            } else {
+                project(tensor(p+"mlp.gate_proj.weight"),h.data(),gate.data(),batch,pool);project(tensor(p+"mlp.up_proj.weight"),h.data(),up.data(),batch,pool);
+            }
             for(size_t j=0;j<gate.size();++j)gate[j]=gate[j]*(0.5f+0.5f*std::tanh(gate[j]*0.5f))*up[j];
             project(tensor(p+"mlp.down_proj.weight"),gate.data(),residual.data(),batch,pool);
             for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
