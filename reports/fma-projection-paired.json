@@ -1,0 +1,794 @@
+{
+  "completed": true,
+  "workers": 8,
+  "repetitions": 1000,
+  "model_provenance": {
+    "same_original_checkpoint_for_both_engines": true,
+    "original_checkpoint": {
+      "filename": "model.safetensors",
+      "bytes": 1503300328,
+      "sha256": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+    },
+    "config_tokenizer_template_files": {
+      "config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+      "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+      "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+    },
+    "chat_protocol_source_sha256": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e",
+    "candidate_artifact_limitation": "External quantized weights/calibration artifacts are not discovered automatically; supply their separate manifest before claiming full candidate reproducibility."
+  },
+  "gate_sha256": "af1190c075d17f4c0f480f28290792777345f60f0d1375f7da378feb97a04514",
+  "source_sha256": "57b4c231a99900951f381f9d77dee9fc0e5eec5c02736649ba9ad4a45af25ebd",
+  "artifacts": [
+    {
+      "batch": 1,
+      "kind": "separate",
+      "path": "$EXPERIMENT/build/fma-projection/separate/fp32-b1/Vfp32_projection_kernel",
+      "sha256": "1588c39c00022292c78d615892644d436fa400caa480536394d2c586b4ad1d02",
+      "manifest": {
+        "binary": "$EXPERIMENT/build/fma-projection/separate/fp32-b1/Vfp32_projection_kernel",
+        "binary_sha256": "1588c39c00022292c78d615892644d436fa400caa480536394d2c586b4ad1d02",
+        "command": [
+          "$FMA_COMPILER/bin/verilator",
+          "--cc",
+          "--exe",
+          "--build",
+          "-j",
+          "4",
+          "--top-module",
+          "fp32_projection_kernel",
+          "--Mdir",
+          "$EXPERIMENT/build/fma-projection/separate/fp32-b1",
+          "-Wall",
+          "-Wno-BLKSEQ",
+          "-Wno-fatal",
+          "-CFLAGS",
+          "-std=c++17 -O3 -DKERNEL_BATCH=1 -DKERNEL_ROWS=3072 -flto=thin -fno-fast-math -ffp-contract=off",
+          "-MAKEFLAGS",
+          "OPT_FAST=-O3",
+          "-LDFLAGS",
+          "-flto=thin",
+          "-O3",
+          "+define+KERNEL_BATCH=1",
+          "+define+KERNEL_ROWS=3072",
+          "$EXPERIMENT/rtl/fp32_projection_kernel.sv",
+          "$EXPERIMENT/sim/fp32_projection_probe.cpp"
+        ],
+        "version": "rev v5.054-1-gc607db4 (mod)",
+        "compiler_binary_sha256": "3a123151340a420d36edd1766585218ad882c343bf8b03c7db8ffdfb89de8c87",
+        "compiler_patch_base": "bbb60a403932a9f695cb6ff001ceb73de6ad9234",
+        "compiler_git_head": "47ce0bd9dd0b263f913389a7380e7ad3784ceb2f",
+        "compiler_patch_sha256": "74aac15474621dfc50fb29aeb498bd9fdc455c6adcc99d8312ebd22fcc0e693c",
+        "environment": {
+          "VERILATOR_ROOT": "$FMA_COMPILER",
+          "VERILATOR_BIN": "$FMA_COMPILER/build-local/src/verilator_bin"
+        },
+        "source_hashes": {
+          "rtl/fp32_projection_kernel.sv": "cd705b77783470610997424c902ffb27fd67d0b755adece8802e0f35b2c11613",
+          "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+          "tools/probe_fp32_projection.py": "87ff5035596729129efa48741da0f89c384da82a89c2c42dbfef1d394e997334",
+          "tools/fp32_rounding_oracle.py": "7ff3c2bf46541c9fe062c180631cab915d4dfd88624ec38bc6e67f1be3d45dd6"
+        }
+      }
+    },
+    {
+      "batch": 1,
+      "kind": "fused",
+      "path": "$EXPERIMENT/build/fma-projection/fused/fp32-b1/Vfp32_projection_kernel",
+      "sha256": "82f2b670f6dc582db1593dcb65099210118a9767eda78823f082f2bda689b93e",
+      "manifest": {
+        "binary": "$EXPERIMENT/build/fma-projection/fused/fp32-b1/Vfp32_projection_kernel",
+        "binary_sha256": "82f2b670f6dc582db1593dcb65099210118a9767eda78823f082f2bda689b93e",
+        "command": [
+          "$FMA_COMPILER/bin/verilator",
+          "--cc",
+          "--exe",
+          "--build",
+          "-j",
+          "4",
+          "--top-module",
+          "fp32_projection_kernel",
+          "--Mdir",
+          "$EXPERIMENT/build/fma-projection/fused/fp32-b1",
+          "-Wall",
+          "-Wno-BLKSEQ",
+          "-Wno-fatal",
+          "-CFLAGS",
+          "-std=c++17 -O3 -DKERNEL_BATCH=1 -DKERNEL_ROWS=3072 -flto=thin -fno-fast-math -ffp-contract=off",
+          "-MAKEFLAGS",
+          "OPT_FAST=-O3",
+          "-LDFLAGS",
+          "-flto=thin",
+          "-O3",
+          "+define+KERNEL_BATCH=1",
+          "+define+KERNEL_ROWS=3072",
+          "+define+FP32_EXPLICIT_FMA",
+          "$EXPERIMENT/rtl/fp32_projection_kernel.sv",
+          "$EXPERIMENT/sim/fp32_projection_probe.cpp"
+        ],
+        "version": "rev v5.054-1-gc607db4 (mod)",
+        "compiler_binary_sha256": "3a123151340a420d36edd1766585218ad882c343bf8b03c7db8ffdfb89de8c87",
+        "compiler_patch_base": "bbb60a403932a9f695cb6ff001ceb73de6ad9234",
+        "compiler_git_head": "47ce0bd9dd0b263f913389a7380e7ad3784ceb2f",
+        "compiler_patch_sha256": "74aac15474621dfc50fb29aeb498bd9fdc455c6adcc99d8312ebd22fcc0e693c",
+        "environment": {
+          "VERILATOR_ROOT": "$FMA_COMPILER",
+          "VERILATOR_BIN": "$FMA_COMPILER/build-local/src/verilator_bin"
+        },
+        "source_hashes": {
+          "rtl/fp32_projection_kernel.sv": "cd705b77783470610997424c902ffb27fd67d0b755adece8802e0f35b2c11613",
+          "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+          "tools/probe_fp32_projection.py": "87ff5035596729129efa48741da0f89c384da82a89c2c42dbfef1d394e997334",
+          "tools/fp32_rounding_oracle.py": "7ff3c2bf46541c9fe062c180631cab915d4dfd88624ec38bc6e67f1be3d45dd6"
+        }
+      }
+    },
+    {
+      "batch": 4,
+      "kind": "separate",
+      "path": "$EXPERIMENT/build/fma-projection/separate/fp32-b4/Vfp32_projection_kernel",
+      "sha256": "170d1f5d6f4b048508104f87ab0007a9ac5164a1ba222abc7599efbed60bf5e5",
+      "manifest": {
+        "binary": "$EXPERIMENT/build/fma-projection/separate/fp32-b4/Vfp32_projection_kernel",
+        "binary_sha256": "170d1f5d6f4b048508104f87ab0007a9ac5164a1ba222abc7599efbed60bf5e5",
+        "command": [
+          "$FMA_COMPILER/bin/verilator",
+          "--cc",
+          "--exe",
+          "--build",
+          "-j",
+          "4",
+          "--top-module",
+          "fp32_projection_kernel",
+          "--Mdir",
+          "$EXPERIMENT/build/fma-projection/separate/fp32-b4",
+          "-Wall",
+          "-Wno-BLKSEQ",
+          "-Wno-fatal",
+          "-CFLAGS",
+          "-std=c++17 -O3 -DKERNEL_BATCH=4 -DKERNEL_ROWS=3072 -flto=thin -fno-fast-math -ffp-contract=off",
+          "-MAKEFLAGS",
+          "OPT_FAST=-O3",
+          "-LDFLAGS",
+          "-flto=thin",
+          "-O3",
+          "+define+KERNEL_BATCH=4",
+          "+define+KERNEL_ROWS=3072",
+          "$EXPERIMENT/rtl/fp32_projection_kernel.sv",
+          "$EXPERIMENT/sim/fp32_projection_probe.cpp"
+        ],
+        "version": "rev v5.054-1-gc607db4 (mod)",
+        "compiler_binary_sha256": "3a123151340a420d36edd1766585218ad882c343bf8b03c7db8ffdfb89de8c87",
+        "compiler_patch_base": "bbb60a403932a9f695cb6ff001ceb73de6ad9234",
+        "compiler_git_head": "47ce0bd9dd0b263f913389a7380e7ad3784ceb2f",
+        "compiler_patch_sha256": "74aac15474621dfc50fb29aeb498bd9fdc455c6adcc99d8312ebd22fcc0e693c",
+        "environment": {
+          "VERILATOR_ROOT": "$FMA_COMPILER",
+          "VERILATOR_BIN": "$FMA_COMPILER/build-local/src/verilator_bin"
+        },
+        "source_hashes": {
+          "rtl/fp32_projection_kernel.sv": "cd705b77783470610997424c902ffb27fd67d0b755adece8802e0f35b2c11613",
+          "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+          "tools/probe_fp32_projection.py": "87ff5035596729129efa48741da0f89c384da82a89c2c42dbfef1d394e997334",
+          "tools/fp32_rounding_oracle.py": "7ff3c2bf46541c9fe062c180631cab915d4dfd88624ec38bc6e67f1be3d45dd6"
+        }
+      }
+    },
+    {
+      "batch": 4,
+      "kind": "fused",
+      "path": "$EXPERIMENT/build/fma-projection/fused/fp32-b4/Vfp32_projection_kernel",
+      "sha256": "3128ddef719899a5c118d179ad437d1dc48a61bd185ec5d67ac1eefa64a31cf4",
+      "manifest": {
+        "binary": "$EXPERIMENT/build/fma-projection/fused/fp32-b4/Vfp32_projection_kernel",
+        "binary_sha256": "3128ddef719899a5c118d179ad437d1dc48a61bd185ec5d67ac1eefa64a31cf4",
+        "command": [
+          "$FMA_COMPILER/bin/verilator",
+          "--cc",
+          "--exe",
+          "--build",
+          "-j",
+          "4",
+          "--top-module",
+          "fp32_projection_kernel",
+          "--Mdir",
+          "$EXPERIMENT/build/fma-projection/fused/fp32-b4",
+          "-Wall",
+          "-Wno-BLKSEQ",
+          "-Wno-fatal",
+          "-CFLAGS",
+          "-std=c++17 -O3 -DKERNEL_BATCH=4 -DKERNEL_ROWS=3072 -flto=thin -fno-fast-math -ffp-contract=off",
+          "-MAKEFLAGS",
+          "OPT_FAST=-O3",
+          "-LDFLAGS",
+          "-flto=thin",
+          "-O3",
+          "+define+KERNEL_BATCH=4",
+          "+define+KERNEL_ROWS=3072",
+          "+define+FP32_EXPLICIT_FMA",
+          "$EXPERIMENT/rtl/fp32_projection_kernel.sv",
+          "$EXPERIMENT/sim/fp32_projection_probe.cpp"
+        ],
+        "version": "rev v5.054-1-gc607db4 (mod)",
+        "compiler_binary_sha256": "3a123151340a420d36edd1766585218ad882c343bf8b03c7db8ffdfb89de8c87",
+        "compiler_patch_base": "bbb60a403932a9f695cb6ff001ceb73de6ad9234",
+        "compiler_git_head": "47ce0bd9dd0b263f913389a7380e7ad3784ceb2f",
+        "compiler_patch_sha256": "74aac15474621dfc50fb29aeb498bd9fdc455c6adcc99d8312ebd22fcc0e693c",
+        "environment": {
+          "VERILATOR_ROOT": "$FMA_COMPILER",
+          "VERILATOR_BIN": "$FMA_COMPILER/build-local/src/verilator_bin"
+        },
+        "source_hashes": {
+          "rtl/fp32_projection_kernel.sv": "cd705b77783470610997424c902ffb27fd67d0b755adece8802e0f35b2c11613",
+          "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+          "tools/probe_fp32_projection.py": "87ff5035596729129efa48741da0f89c384da82a89c2c42dbfef1d394e997334",
+          "tools/fp32_rounding_oracle.py": "7ff3c2bf46541c9fe062c180631cab915d4dfd88624ec38bc6e67f1be3d45dd6"
+        }
+      }
+    },
+    {
+      "batch": 8,
+      "kind": "separate",
+      "path": "$EXPERIMENT/build/fma-projection/separate/fp32-b8/Vfp32_projection_kernel",
+      "sha256": "fcbe8a8a60ac39ff63ed592a5490faa366a0af3489644d66ce2736b24523db84",
+      "manifest": {
+        "binary": "$EXPERIMENT/build/fma-projection/separate/fp32-b8/Vfp32_projection_kernel",
+        "binary_sha256": "fcbe8a8a60ac39ff63ed592a5490faa366a0af3489644d66ce2736b24523db84",
+        "command": [
+          "$FMA_COMPILER/bin/verilator",
+          "--unroll-count",
+          "1",
+          "--cc",
+          "--exe",
+          "--build",
+          "-j",
+          "4",
+          "--top-module",
+          "fp32_projection_kernel",
+          "--Mdir",
+          "$EXPERIMENT/build/fma-projection/separate/fp32-b8",
+          "-Wall",
+          "-Wno-BLKSEQ",
+          "-Wno-fatal",
+          "-CFLAGS",
+          "-std=c++17 -O3 -DKERNEL_BATCH=8 -DKERNEL_ROWS=3072 -flto=thin -fno-fast-math -ffp-contract=off",
+          "-MAKEFLAGS",
+          "OPT_FAST=-O3",
+          "-LDFLAGS",
+          "-flto=thin",
+          "-O3",
+          "+define+KERNEL_BATCH=8",
+          "+define+KERNEL_ROWS=3072",
+          "$EXPERIMENT/rtl/fp32_projection_kernel.sv",
+          "$EXPERIMENT/sim/fp32_projection_probe.cpp"
+        ],
+        "version": "rev v5.054-1-gc607db4 (mod)",
+        "compiler_binary_sha256": "3a123151340a420d36edd1766585218ad882c343bf8b03c7db8ffdfb89de8c87",
+        "compiler_patch_base": "bbb60a403932a9f695cb6ff001ceb73de6ad9234",
+        "compiler_git_head": "47ce0bd9dd0b263f913389a7380e7ad3784ceb2f",
+        "compiler_patch_sha256": "74aac15474621dfc50fb29aeb498bd9fdc455c6adcc99d8312ebd22fcc0e693c",
+        "environment": {
+          "VERILATOR_ROOT": "$FMA_COMPILER",
+          "VERILATOR_BIN": "$FMA_COMPILER/build-local/src/verilator_bin"
+        },
+        "source_hashes": {
+          "rtl/fp32_projection_kernel.sv": "cd705b77783470610997424c902ffb27fd67d0b755adece8802e0f35b2c11613",
+          "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+          "tools/probe_fp32_projection.py": "87ff5035596729129efa48741da0f89c384da82a89c2c42dbfef1d394e997334",
+          "tools/fp32_rounding_oracle.py": "7ff3c2bf46541c9fe062c180631cab915d4dfd88624ec38bc6e67f1be3d45dd6"
+        }
+      }
+    },
+    {
+      "batch": 8,
+      "kind": "fused",
+      "path": "$EXPERIMENT/build/fma-projection/fused/fp32-b8/Vfp32_projection_kernel",
+      "sha256": "27aec72494af07d0ea70ec91efa4a45413013ae28f1c17e1a07e1a2e79c110f8",
+      "manifest": {
+        "binary": "$EXPERIMENT/build/fma-projection/fused/fp32-b8/Vfp32_projection_kernel",
+        "binary_sha256": "27aec72494af07d0ea70ec91efa4a45413013ae28f1c17e1a07e1a2e79c110f8",
+        "command": [
+          "$FMA_COMPILER/bin/verilator",
+          "--unroll-count",
+          "1",
+          "--cc",
+          "--exe",
+          "--build",
+          "-j",
+          "4",
+          "--top-module",
+          "fp32_projection_kernel",
+          "--Mdir",
+          "$EXPERIMENT/build/fma-projection/fused/fp32-b8",
+          "-Wall",
+          "-Wno-BLKSEQ",
+          "-Wno-fatal",
+          "-CFLAGS",
+          "-std=c++17 -O3 -DKERNEL_BATCH=8 -DKERNEL_ROWS=3072 -flto=thin -fno-fast-math -ffp-contract=off",
+          "-MAKEFLAGS",
+          "OPT_FAST=-O3",
+          "-LDFLAGS",
+          "-flto=thin",
+          "-O3",
+          "+define+KERNEL_BATCH=8",
+          "+define+KERNEL_ROWS=3072",
+          "+define+FP32_EXPLICIT_FMA",
+          "$EXPERIMENT/rtl/fp32_projection_kernel.sv",
+          "$EXPERIMENT/sim/fp32_projection_probe.cpp"
+        ],
+        "version": "rev v5.054-1-gc607db4 (mod)",
+        "compiler_binary_sha256": "3a123151340a420d36edd1766585218ad882c343bf8b03c7db8ffdfb89de8c87",
+        "compiler_patch_base": "bbb60a403932a9f695cb6ff001ceb73de6ad9234",
+        "compiler_git_head": "47ce0bd9dd0b263f913389a7380e7ad3784ceb2f",
+        "compiler_patch_sha256": "74aac15474621dfc50fb29aeb498bd9fdc455c6adcc99d8312ebd22fcc0e693c",
+        "environment": {
+          "VERILATOR_ROOT": "$FMA_COMPILER",
+          "VERILATOR_BIN": "$FMA_COMPILER/build-local/src/verilator_bin"
+        },
+        "source_hashes": {
+          "rtl/fp32_projection_kernel.sv": "cd705b77783470610997424c902ffb27fd67d0b755adece8802e0f35b2c11613",
+          "sim/fp32_projection_probe.cpp": "4efb55198bcfbcca60b8a94b1960ef88f35b3f53a0ef66908a4d6a9047bbcd1d",
+          "tools/probe_fp32_projection.py": "87ff5035596729129efa48741da0f89c384da82a89c2c42dbfef1d394e997334",
+          "tools/fp32_rounding_oracle.py": "7ff3c2bf46541c9fe062c180631cab915d4dfd88624ec38bc6e67f1be3d45dd6"
+        }
+      }
+    }
+  ],
+  "runs": [
+    {
+      "batch": 1,
+      "name": "q",
+      "slot": 4,
+      "rows": 2048,
+      "width": 1024,
+      "pairs": [
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.019025542,
+            "fused": 0.022262542
+          },
+          "speedup": 0.8545988144570372,
+          "max_absolute_rounding_difference": 5.960464477539062e-07
+        },
+        {
+          "order": [
+            "fused",
+            "separate"
+          ],
+          "seconds": {
+            "fused": 0.021907875,
+            "separate": 0.018997708
+          },
+          "speedup": 0.8671634286757615,
+          "max_absolute_rounding_difference": 5.960464477539062e-07
+        },
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.018903959,
+            "fused": 0.022215166
+          },
+          "speedup": 0.8509483566316812,
+          "max_absolute_rounding_difference": 5.960464477539062e-07
+        }
+      ],
+      "speedup": {
+        "median": 0.8545988144570372,
+        "minimum": 0.8509483566316812,
+        "maximum": 0.8671634286757615
+      }
+    },
+    {
+      "batch": 1,
+      "name": "gate",
+      "slot": 11,
+      "rows": 3072,
+      "width": 1024,
+      "pairs": [
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.028313292,
+            "fused": 0.033973583
+          },
+          "speedup": 0.8333914029615304,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        },
+        {
+          "order": [
+            "fused",
+            "separate"
+          ],
+          "seconds": {
+            "fused": 0.033205334,
+            "separate": 0.029088125
+          },
+          "speedup": 0.8760076016702617,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        },
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.029811917,
+            "fused": 0.033431542
+          },
+          "speedup": 0.8917302408605621,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        }
+      ],
+      "speedup": {
+        "median": 0.8760076016702617,
+        "minimum": 0.8333914029615304,
+        "maximum": 0.8917302408605621
+      }
+    },
+    {
+      "batch": 1,
+      "name": "down",
+      "slot": 13,
+      "rows": 1024,
+      "width": 3072,
+      "pairs": [
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.031508291,
+            "fused": 0.040130834
+          },
+          "speedup": 0.7851392024397001,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        },
+        {
+          "order": [
+            "fused",
+            "separate"
+          ],
+          "seconds": {
+            "fused": 0.039288791,
+            "separate": 0.031160417
+          },
+          "speedup": 0.7931121372505455,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        },
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.032225833,
+            "fused": 0.039754666
+          },
+          "speedup": 0.8106176266202312,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        }
+      ],
+      "speedup": {
+        "median": 0.7931121372505455,
+        "minimum": 0.7851392024397001,
+        "maximum": 0.8106176266202312
+      }
+    },
+    {
+      "batch": 4,
+      "name": "q",
+      "slot": 4,
+      "rows": 2048,
+      "width": 1024,
+      "pairs": [
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.086441375,
+            "fused": 0.070835792
+          },
+          "speedup": 1.2203064659741505,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        },
+        {
+          "order": [
+            "fused",
+            "separate"
+          ],
+          "seconds": {
+            "fused": 0.070827083,
+            "separate": 0.084650625
+          },
+          "speedup": 1.1951731091339735,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        },
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.084785875,
+            "fused": 0.070405458
+          },
+          "speedup": 1.2042514516417178,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        }
+      ],
+      "speedup": {
+        "median": 1.2042514516417178,
+        "minimum": 1.1951731091339735,
+        "maximum": 1.2203064659741505
+      }
+    },
+    {
+      "batch": 4,
+      "name": "gate",
+      "slot": 11,
+      "rows": 3072,
+      "width": 1024,
+      "pairs": [
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.124591,
+            "fused": 0.104774458
+          },
+          "speedup": 1.189135237521343,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        },
+        {
+          "order": [
+            "fused",
+            "separate"
+          ],
+          "seconds": {
+            "fused": 0.106786083,
+            "separate": 0.129412708
+          },
+          "speedup": 1.2118873954764309,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        },
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.130765,
+            "fused": 0.107627042
+          },
+          "speedup": 1.2149827549845695,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        }
+      ],
+      "speedup": {
+        "median": 1.2118873954764309,
+        "minimum": 1.189135237521343,
+        "maximum": 1.2149827549845695
+      }
+    },
+    {
+      "batch": 4,
+      "name": "down",
+      "slot": 13,
+      "rows": 1024,
+      "width": 3072,
+      "pairs": [
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.128242166,
+            "fused": 0.10637125
+          },
+          "speedup": 1.2056092788229902,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        },
+        {
+          "order": [
+            "fused",
+            "separate"
+          ],
+          "seconds": {
+            "fused": 0.107402875,
+            "separate": 0.128222875
+          },
+          "speedup": 1.1938495594275291,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        },
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.128786625,
+            "fused": 0.108518625
+          },
+          "speedup": 1.1867697826064418,
+          "max_absolute_rounding_difference": 9.5367431640625e-07
+        }
+      ],
+      "speedup": {
+        "median": 1.1938495594275291,
+        "minimum": 1.1867697826064418,
+        "maximum": 1.2056092788229902
+      }
+    },
+    {
+      "batch": 8,
+      "name": "q",
+      "slot": 4,
+      "rows": 2048,
+      "width": 1024,
+      "pairs": [
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.156030375,
+            "fused": 0.109588625
+          },
+          "speedup": 1.423782577799475,
+          "max_absolute_rounding_difference": 1.1920928955078125e-06
+        },
+        {
+          "order": [
+            "fused",
+            "separate"
+          ],
+          "seconds": {
+            "fused": 0.112296959,
+            "separate": 0.159547709
+          },
+          "speedup": 1.4207660690081554,
+          "max_absolute_rounding_difference": 1.1920928955078125e-06
+        },
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.15627325,
+            "fused": 0.112892875
+          },
+          "speedup": 1.3842614071082873,
+          "max_absolute_rounding_difference": 1.1920928955078125e-06
+        }
+      ],
+      "speedup": {
+        "median": 1.4207660690081554,
+        "minimum": 1.3842614071082873,
+        "maximum": 1.423782577799475
+      }
+    },
+    {
+      "batch": 8,
+      "name": "gate",
+      "slot": 11,
+      "rows": 3072,
+      "width": 1024,
+      "pairs": [
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.236109792,
+            "fused": 0.171420875
+          },
+          "speedup": 1.3773689581271826,
+          "max_absolute_rounding_difference": 1.1920928955078125e-06
+        },
+        {
+          "order": [
+            "fused",
+            "separate"
+          ],
+          "seconds": {
+            "fused": 0.172889542,
+            "separate": 0.241557583
+          },
+          "speedup": 1.39717868533656,
+          "max_absolute_rounding_difference": 1.1920928955078125e-06
+        },
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.245795584,
+            "fused": 0.166963208
+          },
+          "speedup": 1.4721541766255475,
+          "max_absolute_rounding_difference": 1.1920928955078125e-06
+        }
+      ],
+      "speedup": {
+        "median": 1.39717868533656,
+        "minimum": 1.3773689581271826,
+        "maximum": 1.4721541766255475
+      }
+    },
+    {
+      "batch": 8,
+      "name": "down",
+      "slot": 13,
+      "rows": 1024,
+      "width": 3072,
+      "pairs": [
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.242410792,
+            "fused": 0.173827167
+          },
+          "speedup": 1.394550668826122,
+          "max_absolute_rounding_difference": 1.430511474609375e-06
+        },
+        {
+          "order": [
+            "fused",
+            "separate"
+          ],
+          "seconds": {
+            "fused": 0.176154333,
+            "separate": 0.244496042
+          },
+          "speedup": 1.3879649613841745,
+          "max_absolute_rounding_difference": 1.430511474609375e-06
+        },
+        {
+          "order": [
+            "separate",
+            "fused"
+          ],
+          "seconds": {
+            "separate": 0.243709167,
+            "fused": 0.175620167
+          },
+          "speedup": 1.3877060428942651,
+          "max_absolute_rounding_difference": 1.430511474609375e-06
+        }
+      ],
+      "speedup": {
+        "median": 1.3879649613841745,
+        "minimum": 1.3877060428942651,
+        "maximum": 1.394550668826122
+      }
+    }
+  ],
+  "scope": "Warmed isolated full Q/gate/down matrices with synthetic activations. SV input conversion and repeated eval included; initial setup/input copies precede the timer. Workers signal completion before their output copy/teardown, so earlier worker copies may overlap a still-timed straggler; output traffic is not fully isolated. One worker-launch/completion barrier around repetitions, not per model projection dispatch. No full-model speed or quality claim.",
+  "policy": "Same reviewed compiler and strict FP flags for separate/fused; explicit FMA only changes accumulation rounding. Separate final lane sum unchanged. B8 retains unroll-count1; no global forced vector width."
+}

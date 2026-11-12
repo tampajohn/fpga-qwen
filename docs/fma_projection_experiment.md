@@ -9,3 +9,21 @@ Independent final-linked assembly review confirmed B1's inner loop at0x100008eb4
 The optional builder argument is `--candidate-explicit-fma`; build-only use avoids accidentally applying the old separate-rounding oracle to fused results. `tools/check_fma_projection.py` takes the new build directory and three explicit legacy artifact paths. `tools/compare_fma_projection.py` requires the completed correctness report and uses1000 repeated projections and three alternating pairs by default. It checks stable outputs separately within each rounding mode and reports cross-rounding differences descriptively.
 
 The probe times SV conversion and repeated eval work after initial input setup. A worker signals completion before output copy/teardown, so an earlier worker's copy may overlap a still-timed straggler. Output traffic is not fully isolated. There is one launch/completion barrier around repetitions, not one per model-layer dispatch. Any timing result is therefore a warmed synthetic-activation projection microbenchmark, not model prefill latency or inference throughput. Full-model quality, cache/suffix semantics, dispatch overhead and representative vocabulary work require later independent gates.
+
+The authorized exclusive projection timing window completed with1000 repeated evals, eight workers, and three alternating pairs for each batch/matrix. All output checks within each rounding mode remained exact.
+
+| Batch | Matrix | Median fused speedup | Range |
+|---:|---|---:|---:|
+| 1 | q | 0.855× | 0.851–0.867× |
+| 1 | gate | 0.876× | 0.833–0.892× |
+| 1 | down | 0.793× | 0.785–0.811× |
+| 4 | q | 1.204× | 1.195–1.220× |
+| 4 | gate | 1.212× | 1.189–1.215× |
+| 4 | down | 1.194× | 1.187–1.206× |
+| 8 | q | 1.421× | 1.384–1.424× |
+| 8 | gate | 1.397× | 1.377–1.472× |
+| 8 | down | 1.388× | 1.388–1.395× |
+
+Every B4 and B8 pair favored fused arithmetic; every B1 pair favored separate arithmetic. The bounded result supports exploring fused prefill without changing scalar decode. B4 verification cannot simply switch to FMA while B1 stays separate: speculative verification needs target-equivalent arithmetic, so preserve existing B4 verification until explicitly proved otherwise. A prefill-only integration must separate prefill tails from verification routing and establish its own numerical/cache policy.
+
+The raw paired report is `reports/fma-projection-paired.json`. No full-model speed, quality improvement, or general FMA advantage is claimed. Existing live defaults are unchanged.
