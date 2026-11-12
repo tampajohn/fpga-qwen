@@ -166,6 +166,8 @@ def main():
     parser.add_argument('--rms-atol', type=float)
     parser.add_argument('--guard-state-dir', type=Path, default=ROOT / 'build/benchmark-status')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--save-oracle-logits', action='store_true',
+                        help='Persist selected actual FP32 oracle vectors in a fresh output-adjacent directory; no cache reuse')
     args = parser.parse_args()
     if args.atol is None and (args.rtol is not None or args.rms_atol is not None):
         parser.error('--rtol/--rms-atol require an explicit --atol')
@@ -177,6 +179,9 @@ def main():
     guarded = guard(args.guard_state_dir.resolve())
     if args.output.exists():
         parser.error('Preserve existing reports; choose a fresh output path')
+    oracle_directory = args.output.resolve().parent / (args.output.stem + '-oracle-logits')
+    if args.save_oracle_logits and oracle_directory.exists():
+        parser.error('Preserve existing oracle arrays; choose a fresh output path/directory')
     inputs = {}
     captures = [load_capture(path, args.run_index, inputs) for path in args.profile_report]
     first = captures[0]
@@ -220,11 +225,22 @@ def main():
                                'Native mixed-precision kernels and reduction orders differ from independent NumPy FP32 math. Calibration reports errors and never declares a tolerance pass.',
                                'A gate applies only supplied limits at selected positions; tolerances must be justified before a separate validation run, not fitted retrospectively to these measurements.',
                                'One-dimensional norm tensors stay FP32; f16 rounds only two-dimensional checkpoint matrices. No quantized-weight oracle is provided.'])
+    if args.save_oracle_logits:
+        report['oracle_logits_storage'] = dict(directory=str(oracle_directory),
+            report=str(args.output.resolve()),
+            dtype='float32', byte_order='little', shape=[151936],
+            prompt_ids=list(first['prompt']), consumed_continuation_ids=list(first['consumed']),
+            provenance_fields=dict(input_hashes='inputs', oracle_source_hashes='source_hashes',
+                                   capture_configuration='captures', oracle_configuration='oracle'),
+            provenance='Inputs and source_hashes in this report bind checkpoint, native capture/pack evidence and oracle implementation. Each dump step consumes prompt_ids plus consumed_continuation_ids[:step].',
+            numerical_conversion=False, cache_consumption=False, dumps=[])
     args.output.parent.mkdir(parents=True, exist_ok=True)
     def save():
         args.output.write_text(json.dumps(report, indent=2) + '\n')
     try:
         save()  # Preserve declared thresholds before constructing/running the oracle.
+        if args.save_oracle_logits:
+            oracle_directory.mkdir(exist_ok=False)
         oracle = NumpyQwen(checkpoint, weight_precision=args.weight_precision, kv_precision=args.kv_precision)
         prompt = first['prompt']
         for offset, token in enumerate(prompt[:-1]):
@@ -236,6 +252,27 @@ def main():
             expected = oracle.token(token, logits=step in steps)
             if step not in steps:
                 continue
+            if args.save_oracle_logits:
+                # Do not silently cast/reorder network arithmetic to accommodate
+                # persistence. Save the same actual FP32 bytes used by compare.
+                if (not isinstance(expected, np.ndarray) or expected.dtype != np.dtype('<f4')
+                        or expected.shape != (151936,)):
+                    raise RuntimeError('Oracle persistence requires actual151936-element little-endian FP32 logits')
+                path = oracle_directory / f'step-{step:06d}-context-{len(prompt)+step:06d}.f32'
+                stored = dict(completed=False, step=step, context_tokens=len(prompt)+step,
+                              path=str(path), shape=[151936], dtype='float32', byte_order='little',
+                              consumed_continuation_count=step)
+                report['oracle_logits_storage']['dumps'].append(stored)
+                save()
+                payload = expected.tobytes()
+                with path.open('xb') as stream:
+                    if stream.write(payload) != len(payload):
+                        raise RuntimeError('Incomplete oracle vector write')
+                digest = hashlib.sha256(payload).hexdigest()
+                if path.stat().st_size != 151936*4 or sha(path) != digest:
+                    raise RuntimeError('Persisted oracle vector size/hash mismatch')
+                stored.update(completed=True, bytes=len(payload), sha256=digest)
+                save()
             for index, capture in enumerate(captures):
                 dump = Path(capture['dumps'][step]['path'])
                 actual = np.fromfile(dump, dtype='<f4')
@@ -256,6 +293,9 @@ def main():
             raise RuntimeError('Captured report, logits or model input changed during numerical replay')
         if any(sha(path) != digest for path, digest in report['source_hashes'].items()):
             raise RuntimeError('Independent oracle/helper source changed during replay')
+        if args.save_oracle_logits and any(not row['completed'] or sha(row['path']) != row['sha256']
+                for row in report['oracle_logits_storage']['dumps']):
+            raise RuntimeError('Persisted oracle vectors changed during replay')
         report['guard_after'] = guard(args.guard_state_dir.resolve())
         report['passed'] = None if args.atol is None else all(row['passed'] for row in report['comparisons'])
         report['completed'] = True
