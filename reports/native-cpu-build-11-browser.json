@@ -1,0 +1,59 @@
+{
+  "completed": true,
+  "gpu_inference": false,
+  "inference_interface": "Actual localhost browser chat",
+  "url": "http://127.0.0.1:8766",
+  "live_deployment_check": false,
+  "checks": {
+    "latest_release_first_and_default_after_reload": true,
+    "catalog_and_controls": true,
+    "fresh_context_status": true,
+    "canonical_prefix_reuse_and_changed_question": {
+      "reused_tokens": 512
+    },
+    "guard_visible_and_server_blocks": true,
+    "cancel_then_fresh_request": true,
+    "backend_switch_roundtrip": true
+  },
+  "replies": [
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-11 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.52 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "What word did you just say? Answer with that word only.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-11 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.16 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Background notes:\nThis is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. \nAnswer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-11 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 1.06 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Now answer with the single word green.",
+      "text": "green",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-11 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.59 s \u00b7 512 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word green.",
+      "text": "green",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-11 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.54 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "llama.cpp \u00b7 FP16 \u00b7 Greedy \u00b7 Complete \u00b7 2 tokens \u00b7 0.72 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-11 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.56 s \u00b7 0 prefix tokens reused"
+    }
+  ],
+  "console_errors": [],
+  "initial_selection": "native-cpu-f16",
+  "scope": "Isolated localhost8766 browser candidate11; stable binary remainsbuild10; no timingclaim.",
+  "binary_sha256": "a65a58680995845a8dab0a6ec563180da58ed04b53fc8f280373977998145143"
+}
