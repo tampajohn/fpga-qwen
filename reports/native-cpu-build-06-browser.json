@@ -1,0 +1,51 @@
+{
+  "completed": true,
+  "gpu_inference": false,
+  "inference_interface": "Actual localhost browser chat",
+  "checks": {
+    "catalog_and_controls": true,
+    "fresh_context_status": true,
+    "guard_visible_and_server_blocks": true,
+    "cancel_then_fresh_request": true,
+    "backend_switch_roundtrip": true
+  },
+  "replies": [
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 experimental \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.56 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "What word did you just say? Answer with that word only.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 experimental \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.22 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word green.",
+      "text": "green",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 experimental \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.52 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "llama.cpp \u00b7 FP16 \u00b7 Greedy \u00b7 Complete \u00b7 2 tokens \u00b7 0.47 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 experimental \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.52 s \u00b7 0 prefix tokens reused"
+    }
+  ],
+  "console_errors": [],
+  "initial_selection": "rtl",
+  "validated_binary": "build/native-cpu/build-06/qwen_cpu",
+  "binary_sha256": "e570f11d190e2fdf3c19e73ce6433a7bc218ccf4988f364648015e23a4930ee0",
+  "deployment_scope": "Isolated localhost:8766 test server; live localhost:8765 and stable binary path unchanged.",
+  "source_sha256": {
+    "tests/browser_native_cpu.py": "d2fdaac399d18cab8f84217c64393e17845ea537bb923e25816af25514592075",
+    "tests/native_cpu_browser_server.py": "77f603a5befc7bbf13637f5245837a4b0d49404a3b789e7487321ec7d0c00c0c",
+    "tools/native_cpu_chat.py": "e7a024421812dc295fca7fa7c9052c62f3a87f2d233164aeda9ddfa0db8c8775",
+    "tools/chat_backends.py": "8c8e21c8770f37638fe388f24f75985207e8903475e93d735ab1e7374bb90211",
+    "web/app.js": "91421abd4cea56c371fda650214a4e08fe8ebcdc5dbe415a1a8112890eda5a66"
+  }
+}

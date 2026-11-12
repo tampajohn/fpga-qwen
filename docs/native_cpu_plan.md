@@ -335,3 +335,12 @@ Evidence: [build-02 quality-v2](../reports/native-cpu-build-02-quality-v2.json),
 [build-03 confirmation](../reports/native-cpu-build-03-confirmation.json), and
 [build-03 paired uncertainty](../reports/native-cpu-build-03-confirmation-analysis.json).
 Sanitized archives retain raw-report hashes and anonymized host CPU percentages.
+
+## First actual browser validation
+
+Build 06 passed the real Chrome browser suite against an isolated localhost:8766
+server: multi-turn recall, native controls, zero prefix reuse, benchmark polling
+and server409, cancellation followed by a fresh request, and native/llama/native
+backend switching. No browser JavaScript errors occurred. The live localhost:8765
+server and stable native binary path were unchanged. See
+[browser evidence](../reports/native-cpu-build-06-browser.json).
