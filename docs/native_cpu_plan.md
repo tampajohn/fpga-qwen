@@ -51,3 +51,18 @@ The worktree/branch inventory is in the local
 `build/cpu-engine-worktree-inventory.txt`: 68 worktrees, 70 codex branches,
 65 not ancestry-merged into main at the direction change. Cherry-picked work
 may already be on main. Nothing was deleted.
+
+## Initial baseline discovery
+
+All four KleidiAI/LTO combinations compiled from the same clean cb44fdb source
+with native CPU flags, Accelerate, OpenMP explicitly off, and GPU backends off.
+Their build manifests are archived under `reports/native-phase0-*-build.json`.
+The first FP16 build sweep completed two exploratory alternating rounds at
+8 decode / 12 prefill threads; all configurations matched greedy IDs on the
+85/452-token prompts and processed uncached prompts.
+
+The [discovery report](../reports/native-phase0-f16-build-discovery.json) shows
+no established universal winner: the untuned build had the highest observed
+short decode median, and KleidiAI+LTO the highest observed long decode median.
+Two observations are insufficient for a performance claim. Thread discovery,
+numerical checks, profiling and ten-pair confirmation remain pending.
