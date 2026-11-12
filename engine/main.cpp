@@ -137,6 +137,15 @@ int main(int argc,char** argv) {
                     const int selected=sampler.select(model.logits());
                     const double elapsed=std::chrono::duration<double>(Clock::now()-start).count();
                     std::cout<<"{\"token\":"<<selected<<",\"position\":"<<model.position()<<",\"seconds\":"<<std::setprecision(17)<<elapsed<<"}\n";
+                } else if(command=="dump-hidden") {
+                    const auto begin=line.find(' ');
+                    if(begin==std::string::npos || begin+1==line.size())throw std::runtime_error("Hidden dump path required");
+                    const auto hidden=model.hidden();
+                    std::ofstream out(line.substr(begin+1),std::ios::binary|std::ios::trunc);
+                    if(!out)throw std::runtime_error("Cannot open hidden dump path");
+                    out.write(reinterpret_cast<const char*>(hidden.data()),hidden.size_bytes());out.close();
+                    if(!out)throw std::runtime_error("Failed writing hidden dump");
+                    std::cout<<"{\"ok\":true,\"count\":"<<hidden.size()<<",\"position\":"<<model.position()<<",\"format\":\"f32le\"}\n";
                 } else if(command=="dump") {
                     const auto begin=line.find(' ');
                     if(begin==std::string::npos || begin+1==line.size())throw std::runtime_error("Dump path required");

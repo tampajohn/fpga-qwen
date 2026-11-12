@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <memory>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -28,6 +29,9 @@ public:
     void prefill(const std::vector<int>& ids);
     void step(int token);
     const std::vector<float>& logits() const;
+    // Diagnostic view of the final normalized hidden state backing current
+    // logits; invalid after reset/rewind or any subsequent inference mutation.
+    std::span<const float> hidden() const;
     int position() const;
     // Auxiliary decode encoding, populated only for exactly representable matrices.
     std::size_t lossless_bf16_cache_bytes() const;

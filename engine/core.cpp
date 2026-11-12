@@ -419,6 +419,10 @@ void Model::truncate(int position){
 void Model::prefill(const std::vector<int>& ids){impl_->append(ids,true);}
 void Model::step(int token){impl_->append(std::vector<int>{token},false);}
 const std::vector<float>& Model::logits()const{return impl_->output;}
+std::span<const float> Model::hidden()const{
+    require(impl_->pos>0&&impl_->output.size()==vocabulary,"No current hidden state");
+    return std::span<const float>(impl_->last_hidden);
+}
 int Model::position()const{return impl_->pos;}
 std::size_t Model::lossless_bf16_cache_bytes()const{return 0;}
 }
