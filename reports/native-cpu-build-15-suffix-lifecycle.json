@@ -1,0 +1,2184 @@
+{
+  "completed": true,
+  "passed": true,
+  "gpu": false,
+  "pytorch": false,
+  "performance_claim_eligible": false,
+  "scope": "Original35 fixed-suite/budget cases remain unchanged. Additional explicit cached-prefix, edited/session followups and verify-dispatch cancellation/restart cases compare real-adapter exact IDs, EOS and text. No independent answer-quality or performance claim.",
+  "hashes": {
+    "$REPO/build/native-cpu/build-15/qwen_cpu": "0317e37023a50e2a9902e0aba58110a27158ec6af61ac7aa6da1c19c41837f59",
+    "$REPO/build/native-cpu/build-12/qwen_cpu": "bada457a466db58a0ac8908c4d9fa59846d4f5c6a4773d812498a1ee38569059",
+    "$REPO/build/native-cpu/build-15/manifest.json": "5f2b777eee11833dd7fa7aa0a8c1a1e663d9950f49f7f3730dacefcc17060cbf",
+    "$REPO/build/native-cpu/build-12/manifest.json": "325ec8a546c49b38ab98f1a74911637ff69fe7b0768ae621119780306fc916ec",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+    "$REPO/tools/check_native_suffix.py": "0b701b30e77ee646c9ed1cbc6fd828384bccc4dca2afd080d9a7061648dd473d",
+    "$REPO/tools/native_cpu_chat.py": "730b53fddf34da236140424128d8099a9024eebf5a75d2ac9c320a7f348c79cd",
+    "$REPO/tools/suffix.py": "06bd949ad8f1c4b96fa641b1bbde8a0e706519f26d4267e7e4e3342999a12ab7",
+    "$REPO/tools/chat_protocol.py": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e",
+    "$REPO/tools/conversation_eval.py": "ec227a96c449eedc32b38a8024b7d9747b30db25af66fd06f3364989eb61d8eb",
+    "$REPO/tools/check_native_conversation_extended.py": "1bd7ad07d8539cbe25a91c871d04df8aa015b13056aadd18f7f2fdb17a115478",
+    "$REPO/tools/benchmark_native_phase0.py": "2072dff376baf6e0476c7beddfae311483ea2a15a3af54af8622ad8bbbe17b7e",
+    "$REPO/tools/benchmark_matched.py": "88627ed3b10440864d451d1d81bb72b08b62558737fe7bd968a4fb093f821fc6",
+    "$REPO/tools/benchmark_guard.py": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7",
+    "$REPO/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713"
+  },
+  "builds": {
+    "$REPO/build/native-cpu/build-15/qwen_cpu": {
+      "completed": true,
+      "gpu": false,
+      "pytorch": false,
+      "guard": {
+        "directory": "$REPO/build/benchmark-status",
+        "metadata": {
+          "name": "Build experimental greedy suffix candidate 15",
+          "started_at": "2026-11-12T16:47:18.971801+00:00"
+        }
+      },
+      "command": [
+        "/usr/bin/clang++",
+        "-std=c++20",
+        "-O3",
+        "-mcpu=native",
+        "-flto=thin",
+        "-ffp-contract=fast",
+        "-fno-math-errno",
+        "-pthread",
+        "$REPO/engine/core.cpp",
+        "$REPO/engine/main.cpp",
+        "-framework",
+        "Accelerate",
+        "-o",
+        "$REPO/build/native-cpu/build-15/qwen_cpu"
+      ],
+      "source_sha256": {
+        "$REPO/engine/core.cpp": "e4d2a029f6f9e169f85483e4eecb1fb5a425bc796e4422d63a4857a32244ebdc",
+        "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+        "$REPO/engine/main.cpp": "45ac7cd9f3e64c5c4029505628674ccc6229f1e4395ad5306adb98e3b8917f45",
+        "$REPO/tools/build_native_cpu.py": "e100b8687f3cba52d94db9bb2e1700c6669f7081a6dde55609695f0b1d5d325a"
+      },
+      "removed_environment_keys": [],
+      "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+      "started_at": "2026-11-12T16:47:19Z",
+      "exit_code": 0,
+      "binary": "$REPO/build/native-cpu/build-15/qwen_cpu",
+      "binary_sha256": "0317e37023a50e2a9902e0aba58110a27158ec6af61ac7aa6da1c19c41837f59",
+      "linked_libraries": "$REPO/build/native-cpu/build-15/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+    },
+    "$REPO/build/native-cpu/build-12/qwen_cpu": {
+      "completed": true,
+      "gpu": false,
+      "pytorch": false,
+      "guard": {
+        "directory": "$REPO/build/benchmark-status",
+        "metadata": {
+          "name": "Build paired-query prefill candidate12",
+          "started_at": "2026-11-12T15:25:44.544453+00:00"
+        }
+      },
+      "command": [
+        "/usr/bin/clang++",
+        "-std=c++20",
+        "-O3",
+        "-mcpu=native",
+        "-flto=thin",
+        "-ffp-contract=fast",
+        "-fno-math-errno",
+        "-pthread",
+        "$REPO/engine/core.cpp",
+        "$REPO/engine/main.cpp",
+        "-framework",
+        "Accelerate",
+        "-o",
+        "$REPO/build/native-cpu/build-12/qwen_cpu"
+      ],
+      "source_sha256": {
+        "$REPO/engine/core.cpp": "fe3722e296bcf5be1461b184519993da1ee80f3366e8a3b63d229a4a941bfcbb",
+        "$REPO/engine/core.hpp": "118a347df720f8156bc606266b1b31095f921ecc4e8ed57229d6a09e0ad62622",
+        "$REPO/engine/main.cpp": "eb9629da9e6cd3c01ca4afd12117d0deaf287bddb016d0f2281d1786554df4ed",
+        "$REPO/tools/build_native_cpu.py": "e100b8687f3cba52d94db9bb2e1700c6669f7081a6dde55609695f0b1d5d325a"
+      },
+      "removed_environment_keys": [],
+      "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+      "started_at": "2026-11-12T15:25:44Z",
+      "exit_code": 0,
+      "binary": "$REPO/build/native-cpu/build-12/qwen_cpu",
+      "binary_sha256": "bada457a466db58a0ac8908c4d9fa59846d4f5c6a4773d812498a1ee38569059",
+      "linked_libraries": "$REPO/build/native-cpu/build-12/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+    }
+  },
+  "original35_passed": true,
+  "drafted_tokens": 63,
+  "accepted_tokens": 32,
+  "rejected_tokens": 31,
+  "cached_prefix_verification_calls": 11,
+  "cancellation": {
+    "passed": true,
+    "dispatch": {
+      "command": "verify-greedy 856 11",
+      "pending": 856,
+      "draft": 11,
+      "base_position": 1030
+    },
+    "returncode": -15,
+    "result": {
+      "result": {
+        "token_ids": [
+          87,
+          11,
+          856,
+          11,
+          856
+        ],
+        "text": "x, x, x",
+        "finish_reason": "stopped"
+      },
+      "predicted_ids_including_eos": [
+        87,
+        11,
+        856,
+        11,
+        856
+      ],
+      "metrics": {
+        "prompt_tokens": 1026,
+        "reused_prefix_tokens": 1024,
+        "output_tokens": 5,
+        "rounds": 5,
+        "proposed_tokens": 1,
+        "accepted_tokens": 0,
+        "rejected_tokens": 0,
+        "tokens_per_round": 1.0,
+        "suffix_enabled": true,
+        "verification_calls": 1,
+        "verified_positions": 0,
+        "kv_tokens": 1030,
+        "context_limit": 4096,
+        "evaluated_prompt_tokens": 2
+      },
+      "decoded_inputs": [
+        87,
+        11,
+        856,
+        11
+      ],
+      "transactions": []
+    },
+    "scope": "Cancel after verify bytes are flushed, before receiving its response; internal arithmetic progress is not inferred."
+  },
+  "restart": {
+    "passed": true,
+    "baseline": {
+      "result": {
+        "token_ids": [
+          87,
+          11,
+          856,
+          11,
+          856,
+          11,
+          856
+        ],
+        "text": "x, x, x, x",
+        "finish_reason": "eos"
+      },
+      "predicted_ids_including_eos": [
+        87,
+        11,
+        856,
+        11,
+        856,
+        11,
+        856,
+        151645
+      ],
+      "metrics": {
+        "prompt_tokens": 1026,
+        "reused_prefix_tokens": 0,
+        "output_tokens": 7,
+        "rounds": 8,
+        "proposed_tokens": 0,
+        "accepted_tokens": 0,
+        "rejected_tokens": 0,
+        "tokens_per_round": 0.875,
+        "suffix_enabled": false,
+        "verification_calls": 0,
+        "verified_positions": 0,
+        "kv_tokens": 1033,
+        "context_limit": 4096,
+        "evaluated_prompt_tokens": 1026
+      },
+      "decoded_inputs": [
+        87,
+        11,
+        856,
+        11,
+        856,
+        11,
+        856
+      ],
+      "transactions": []
+    },
+    "restarted": {
+      "result": {
+        "token_ids": [
+          87,
+          11,
+          856,
+          11,
+          856,
+          11,
+          856
+        ],
+        "text": "x, x, x, x",
+        "finish_reason": "eos"
+      },
+      "predicted_ids_including_eos": [
+        87,
+        11,
+        856,
+        11,
+        856,
+        11,
+        856,
+        151645
+      ],
+      "metrics": {
+        "prompt_tokens": 1026,
+        "reused_prefix_tokens": 0,
+        "output_tokens": 7,
+        "rounds": 7,
+        "proposed_tokens": 2,
+        "accepted_tokens": 1,
+        "rejected_tokens": 1,
+        "tokens_per_round": 1.0,
+        "suffix_enabled": true,
+        "verification_calls": 2,
+        "verified_positions": 4,
+        "kv_tokens": 1033,
+        "context_limit": 4096,
+        "evaluated_prompt_tokens": 1026
+      },
+      "decoded_inputs": [
+        87,
+        11,
+        856,
+        11,
+        856,
+        11,
+        856
+      ],
+      "transactions": [
+        {
+          "pending": 856,
+          "draft": 11,
+          "response": {
+            "tokens": [
+              11,
+              856
+            ],
+            "accepted": 1,
+            "committed_inputs": 2,
+            "position": 1032,
+            "verified_positions": 2,
+            "finish_reason": null
+          }
+        },
+        {
+          "pending": 856,
+          "draft": 11,
+          "response": {
+            "tokens": [
+              151645
+            ],
+            "accepted": 0,
+            "committed_inputs": 1,
+            "position": 1033,
+            "verified_positions": 2,
+            "finish_reason": "eos"
+          }
+        }
+      ]
+    },
+    "repeated": {
+      "result": {
+        "token_ids": [
+          87,
+          11,
+          856,
+          11,
+          856,
+          11,
+          856
+        ],
+        "text": "x, x, x, x",
+        "finish_reason": "eos"
+      },
+      "predicted_ids_including_eos": [
+        87,
+        11,
+        856,
+        11,
+        856,
+        11,
+        856,
+        151645
+      ],
+      "metrics": {
+        "prompt_tokens": 1026,
+        "reused_prefix_tokens": 1024,
+        "output_tokens": 7,
+        "rounds": 7,
+        "proposed_tokens": 2,
+        "accepted_tokens": 1,
+        "rejected_tokens": 1,
+        "tokens_per_round": 1.0,
+        "suffix_enabled": true,
+        "verification_calls": 2,
+        "verified_positions": 4,
+        "kv_tokens": 1033,
+        "context_limit": 4096,
+        "evaluated_prompt_tokens": 2
+      },
+      "decoded_inputs": [
+        87,
+        11,
+        856,
+        11,
+        856,
+        11,
+        856
+      ],
+      "transactions": [
+        {
+          "pending": 856,
+          "draft": 11,
+          "response": {
+            "tokens": [
+              11,
+              856
+            ],
+            "accepted": 1,
+            "committed_inputs": 2,
+            "position": 1032,
+            "verified_positions": 2,
+            "finish_reason": null
+          }
+        },
+        {
+          "pending": 856,
+          "draft": 11,
+          "response": {
+            "tokens": [
+              151645
+            ],
+            "accepted": 0,
+            "committed_inputs": 1,
+            "position": 1033,
+            "verified_positions": 2,
+            "finish_reason": "eos"
+          }
+        }
+      ]
+    }
+  },
+  "original_case_count": 35,
+  "extended_cases": [
+    {
+      "name": "initial",
+      "expected_reused_tokens": 0,
+      "results": [
+        {
+          "configuration": "reference_fresh",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220,
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19
+            ],
+            "text": "1, 2, 3, 4",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1025
+          },
+          "decoded_inputs": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19
+          ],
+          "transactions": []
+        },
+        {
+          "configuration": "candidate_suffix_fresh",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220,
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19
+            ],
+            "text": "1, 2, 3, 4",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 3,
+            "accepted_tokens": 0,
+            "rejected_tokens": 3,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1025
+          },
+          "decoded_inputs": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19
+          ],
+          "transactions": [
+            {
+              "pending": 220,
+              "draft": 17,
+              "response": {
+                "tokens": [
+                  18
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1031,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 220,
+              "draft": 18,
+              "response": {
+                "tokens": [
+                  19
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1034,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 19,
+              "draft": 15,
+              "response": {
+                "tokens": [
+                  151645
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1035,
+                "verified_positions": 2,
+                "finish_reason": "eos"
+              }
+            }
+          ]
+        },
+        {
+          "configuration": "candidate_suffix_cached",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220,
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19
+            ],
+            "text": "1, 2, 3, 4",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 3,
+            "accepted_tokens": 0,
+            "rejected_tokens": 3,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1025
+          },
+          "decoded_inputs": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19
+          ],
+          "transactions": [
+            {
+              "pending": 220,
+              "draft": 17,
+              "response": {
+                "tokens": [
+                  18
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1031,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 220,
+              "draft": 18,
+              "response": {
+                "tokens": [
+                  19
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1034,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 19,
+              "draft": 15,
+              "response": {
+                "tokens": [
+                  151645
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1035,
+                "verified_positions": 2,
+                "finish_reason": "eos"
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true,
+      "prompt_tokens": 1025,
+      "prompt_ids_canonical_json_sha256": "b85d4eb7201b1e642c897455120989873ee6516f00ea2c85da79715d534449ae"
+    },
+    {
+      "name": "identical",
+      "expected_reused_tokens": 1024,
+      "results": [
+        {
+          "configuration": "reference_fresh",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220,
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19
+            ],
+            "text": "1, 2, 3, 4",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1025
+          },
+          "decoded_inputs": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19
+          ],
+          "transactions": []
+        },
+        {
+          "configuration": "candidate_suffix_fresh",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220,
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19
+            ],
+            "text": "1, 2, 3, 4",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 3,
+            "accepted_tokens": 0,
+            "rejected_tokens": 3,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1025
+          },
+          "decoded_inputs": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19
+          ],
+          "transactions": [
+            {
+              "pending": 220,
+              "draft": 17,
+              "response": {
+                "tokens": [
+                  18
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1031,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 220,
+              "draft": 18,
+              "response": {
+                "tokens": [
+                  19
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1034,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 19,
+              "draft": 15,
+              "response": {
+                "tokens": [
+                  151645
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1035,
+                "verified_positions": 2,
+                "finish_reason": "eos"
+              }
+            }
+          ]
+        },
+        {
+          "configuration": "candidate_suffix_cached",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220,
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19
+            ],
+            "text": "1, 2, 3, 4",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 1024,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 3,
+            "accepted_tokens": 0,
+            "rejected_tokens": 3,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1
+          },
+          "decoded_inputs": [
+            16,
+            11,
+            220,
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19
+          ],
+          "transactions": [
+            {
+              "pending": 220,
+              "draft": 17,
+              "response": {
+                "tokens": [
+                  18
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1031,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 220,
+              "draft": 18,
+              "response": {
+                "tokens": [
+                  19
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1034,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 19,
+              "draft": 15,
+              "response": {
+                "tokens": [
+                  151645
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1035,
+                "verified_positions": 2,
+                "finish_reason": "eos"
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true,
+      "prompt_tokens": 1025,
+      "prompt_ids_canonical_json_sha256": "b85d4eb7201b1e642c897455120989873ee6516f00ea2c85da79715d534449ae"
+    },
+    {
+      "name": "tail-edit",
+      "expected_reused_tokens": 512,
+      "results": [
+        {
+          "configuration": "reference_fresh",
+          "result": {
+            "token_ids": [
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19,
+              11,
+              220,
+              20
+            ],
+            "text": "2, 3, 4, 5",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1025
+          },
+          "decoded_inputs": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20
+          ],
+          "transactions": []
+        },
+        {
+          "configuration": "candidate_suffix_fresh",
+          "result": {
+            "token_ids": [
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19,
+              11,
+              220,
+              20
+            ],
+            "text": "2, 3, 4, 5",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 3,
+            "accepted_tokens": 0,
+            "rejected_tokens": 3,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1025
+          },
+          "decoded_inputs": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20
+          ],
+          "transactions": [
+            {
+              "pending": 220,
+              "draft": 18,
+              "response": {
+                "tokens": [
+                  19
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1031,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 19,
+              "draft": 16,
+              "response": {
+                "tokens": [
+                  11
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1032,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 220,
+              "draft": 19,
+              "response": {
+                "tokens": [
+                  20
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1034,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            }
+          ]
+        },
+        {
+          "configuration": "candidate_suffix_cached",
+          "result": {
+            "token_ids": [
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19,
+              11,
+              220,
+              20
+            ],
+            "text": "2, 3, 4, 5",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 512,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 3,
+            "accepted_tokens": 0,
+            "rejected_tokens": 3,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 513
+          },
+          "decoded_inputs": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20
+          ],
+          "transactions": [
+            {
+              "pending": 220,
+              "draft": 18,
+              "response": {
+                "tokens": [
+                  19
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1031,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 19,
+              "draft": 16,
+              "response": {
+                "tokens": [
+                  11
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1032,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 220,
+              "draft": 19,
+              "response": {
+                "tokens": [
+                  20
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1034,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true,
+      "prompt_tokens": 1025,
+      "prompt_ids_canonical_json_sha256": "8809578694a382afa8c3a76a2384d2b22a82d99f9071e9fefbcaa9a06ccd1baf"
+    },
+    {
+      "name": "identical-tail-edit",
+      "expected_reused_tokens": 1024,
+      "results": [
+        {
+          "configuration": "reference_fresh",
+          "result": {
+            "token_ids": [
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19,
+              11,
+              220,
+              20
+            ],
+            "text": "2, 3, 4, 5",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1025
+          },
+          "decoded_inputs": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20
+          ],
+          "transactions": []
+        },
+        {
+          "configuration": "candidate_suffix_fresh",
+          "result": {
+            "token_ids": [
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19,
+              11,
+              220,
+              20
+            ],
+            "text": "2, 3, 4, 5",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 3,
+            "accepted_tokens": 0,
+            "rejected_tokens": 3,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1025
+          },
+          "decoded_inputs": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20
+          ],
+          "transactions": [
+            {
+              "pending": 220,
+              "draft": 18,
+              "response": {
+                "tokens": [
+                  19
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1031,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 19,
+              "draft": 16,
+              "response": {
+                "tokens": [
+                  11
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1032,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 220,
+              "draft": 19,
+              "response": {
+                "tokens": [
+                  20
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1034,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            }
+          ]
+        },
+        {
+          "configuration": "candidate_suffix_cached",
+          "result": {
+            "token_ids": [
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19,
+              11,
+              220,
+              20
+            ],
+            "text": "2, 3, 4, 5",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1025,
+            "reused_prefix_tokens": 1024,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 3,
+            "accepted_tokens": 0,
+            "rejected_tokens": 3,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 1035,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1
+          },
+          "decoded_inputs": [
+            17,
+            11,
+            220,
+            18,
+            11,
+            220,
+            19,
+            11,
+            220,
+            20
+          ],
+          "transactions": [
+            {
+              "pending": 220,
+              "draft": 18,
+              "response": {
+                "tokens": [
+                  19
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1031,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 19,
+              "draft": 16,
+              "response": {
+                "tokens": [
+                  11
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1032,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 220,
+              "draft": 19,
+              "response": {
+                "tokens": [
+                  20
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1034,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true,
+      "prompt_tokens": 1025,
+      "prompt_ids_canonical_json_sha256": "8809578694a382afa8c3a76a2384d2b22a82d99f9071e9fefbcaa9a06ccd1baf"
+    },
+    {
+      "name": "early-edit",
+      "expected_reused_tokens": 0,
+      "results": [
+        {
+          "configuration": "reference_fresh",
+          "result": {
+            "token_ids": [
+              87,
+              11,
+              856,
+              11,
+              856,
+              11,
+              856
+            ],
+            "text": "x, x, x, x",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1026,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 7,
+            "rounds": 8,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.875,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 1033,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1026
+          },
+          "decoded_inputs": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856
+          ],
+          "transactions": []
+        },
+        {
+          "configuration": "candidate_suffix_fresh",
+          "result": {
+            "token_ids": [
+              87,
+              11,
+              856,
+              11,
+              856,
+              11,
+              856
+            ],
+            "text": "x, x, x, x",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1026,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 7,
+            "rounds": 7,
+            "proposed_tokens": 2,
+            "accepted_tokens": 1,
+            "rejected_tokens": 1,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 1033,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1026
+          },
+          "decoded_inputs": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856
+          ],
+          "transactions": [
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  11,
+                  856
+                ],
+                "accepted": 1,
+                "committed_inputs": 2,
+                "position": 1032,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  151645
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1033,
+                "verified_positions": 2,
+                "finish_reason": "eos"
+              }
+            }
+          ]
+        },
+        {
+          "configuration": "candidate_suffix_cached",
+          "result": {
+            "token_ids": [
+              87,
+              11,
+              856,
+              11,
+              856,
+              11,
+              856
+            ],
+            "text": "x, x, x, x",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1026,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 7,
+            "rounds": 7,
+            "proposed_tokens": 2,
+            "accepted_tokens": 1,
+            "rejected_tokens": 1,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 1033,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1026
+          },
+          "decoded_inputs": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856
+          ],
+          "transactions": [
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  11,
+                  856
+                ],
+                "accepted": 1,
+                "committed_inputs": 2,
+                "position": 1032,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  151645
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1033,
+                "verified_positions": 2,
+                "finish_reason": "eos"
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true,
+      "prompt_tokens": 1026,
+      "prompt_ids_canonical_json_sha256": "a0f3cb862fa610b9622424741c3dff9c2570b326ec1efc71ddec610bd35d2e64"
+    },
+    {
+      "name": "session-switch",
+      "expected_reused_tokens": 0,
+      "results": [
+        {
+          "configuration": "reference_fresh",
+          "result": {
+            "token_ids": [
+              87,
+              11,
+              856,
+              11,
+              856,
+              11,
+              856
+            ],
+            "text": "x, x, x, x",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1026,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 7,
+            "rounds": 8,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.875,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 1033,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1026
+          },
+          "decoded_inputs": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856
+          ],
+          "transactions": []
+        },
+        {
+          "configuration": "candidate_suffix_fresh",
+          "result": {
+            "token_ids": [
+              87,
+              11,
+              856,
+              11,
+              856,
+              11,
+              856
+            ],
+            "text": "x, x, x, x",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1026,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 7,
+            "rounds": 7,
+            "proposed_tokens": 2,
+            "accepted_tokens": 1,
+            "rejected_tokens": 1,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 1033,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1026
+          },
+          "decoded_inputs": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856
+          ],
+          "transactions": [
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  11,
+                  856
+                ],
+                "accepted": 1,
+                "committed_inputs": 2,
+                "position": 1032,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  151645
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1033,
+                "verified_positions": 2,
+                "finish_reason": "eos"
+              }
+            }
+          ]
+        },
+        {
+          "configuration": "candidate_suffix_cached",
+          "result": {
+            "token_ids": [
+              87,
+              11,
+              856,
+              11,
+              856,
+              11,
+              856
+            ],
+            "text": "x, x, x, x",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1026,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 7,
+            "rounds": 7,
+            "proposed_tokens": 2,
+            "accepted_tokens": 1,
+            "rejected_tokens": 1,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 1033,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1026
+          },
+          "decoded_inputs": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856
+          ],
+          "transactions": [
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  11,
+                  856
+                ],
+                "accepted": 1,
+                "committed_inputs": 2,
+                "position": 1032,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  151645
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1033,
+                "verified_positions": 2,
+                "finish_reason": "eos"
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true,
+      "prompt_tokens": 1026,
+      "prompt_ids_canonical_json_sha256": "a0f3cb862fa610b9622424741c3dff9c2570b326ec1efc71ddec610bd35d2e64"
+    },
+    {
+      "name": "identical-new-session",
+      "expected_reused_tokens": 1024,
+      "results": [
+        {
+          "configuration": "reference_fresh",
+          "result": {
+            "token_ids": [
+              87,
+              11,
+              856,
+              11,
+              856,
+              11,
+              856
+            ],
+            "text": "x, x, x, x",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1026,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 7,
+            "rounds": 8,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.875,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 1033,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1026
+          },
+          "decoded_inputs": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856
+          ],
+          "transactions": []
+        },
+        {
+          "configuration": "candidate_suffix_fresh",
+          "result": {
+            "token_ids": [
+              87,
+              11,
+              856,
+              11,
+              856,
+              11,
+              856
+            ],
+            "text": "x, x, x, x",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1026,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 7,
+            "rounds": 7,
+            "proposed_tokens": 2,
+            "accepted_tokens": 1,
+            "rejected_tokens": 1,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 1033,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 1026
+          },
+          "decoded_inputs": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856
+          ],
+          "transactions": [
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  11,
+                  856
+                ],
+                "accepted": 1,
+                "committed_inputs": 2,
+                "position": 1032,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  151645
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1033,
+                "verified_positions": 2,
+                "finish_reason": "eos"
+              }
+            }
+          ]
+        },
+        {
+          "configuration": "candidate_suffix_cached",
+          "result": {
+            "token_ids": [
+              87,
+              11,
+              856,
+              11,
+              856,
+              11,
+              856
+            ],
+            "text": "x, x, x, x",
+            "finish_reason": "eos"
+          },
+          "predicted_ids_including_eos": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856,
+            151645
+          ],
+          "metrics": {
+            "prompt_tokens": 1026,
+            "reused_prefix_tokens": 1024,
+            "output_tokens": 7,
+            "rounds": 7,
+            "proposed_tokens": 2,
+            "accepted_tokens": 1,
+            "rejected_tokens": 1,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 1033,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 2
+          },
+          "decoded_inputs": [
+            87,
+            11,
+            856,
+            11,
+            856,
+            11,
+            856
+          ],
+          "transactions": [
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  11,
+                  856
+                ],
+                "accepted": 1,
+                "committed_inputs": 2,
+                "position": 1032,
+                "verified_positions": 2,
+                "finish_reason": null
+              }
+            },
+            {
+              "pending": 856,
+              "draft": 11,
+              "response": {
+                "tokens": [
+                  151645
+                ],
+                "accepted": 0,
+                "committed_inputs": 1,
+                "position": 1033,
+                "verified_positions": 2,
+                "finish_reason": "eos"
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true,
+      "prompt_tokens": 1026,
+      "prompt_ids_canonical_json_sha256": "a0f3cb862fa610b9622424741c3dff9c2570b326ec1efc71ddec610bd35d2e64"
+    }
+  ],
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-15-suffix-trajectories-v2.json",
+    "raw_source_sha256": "065604c098e60ea309bafab3b707ef383fd198c282c3729370e88489d37fb1e2",
+    "sanitization": "Repository/home prefixes and process IDs removed. Original35 detailed cases, repeated padding text/token arrays and unscored latency/rate fields omitted for compactness; prompt token arrays retain canonical-JSON hashes. Artifact hashes identify raw inputs."
+  }
+}

@@ -114,8 +114,8 @@ switching. No browser console errors were recorded.
 and then switched to chat before submitting. This test validates mode controls
 and safe request construction; it does not demonstrate browser-submitted
 suffix-on inference. The separate 35-trajectory real-adapter gate exercised
-suffix-on acceptance/rejection. A future browser suffix-on request remains a
-separate coverage item. The isolated server was stopped after testing; this
+suffix-on acceptance/rejection. That run left browser suffix-on inference as a separate coverage item,
+subsequently addressed by the browser follow-up below. The isolated server was stopped after testing; this
 result does not deploy candidate15 or change the live build12 release.
 
 Evidence: [isolated browser report](../reports/native-cpu-build-15-browser-isolated.json).
@@ -139,3 +139,41 @@ Per 64-token counting request, drafting proposed **27** tokens and accepted **9*
 The observed paired TTFT ratios were 0.906694 (0.893014–0.957502) for counting and 0.962948 (0.942146–1.091532) for prose. B2 verification starts **after the first emitted token**. Therefore these TTFT differences are not established algorithmic B2 overhead; scheduling, address placement and background activity remain uncontrolled. Whole-request time is the primary end-to-end measure; decode-rate timing also has batching/EOS-tail limitations and is reported separately.
 
 The evidence supports keeping suffix drafting **off by default**. Build12 remains the live release at this report's publication; candidate15 browser verification is a separate step and no deployment or speedup is claimed here.
+
+## Prefix-cache and cancellation lifecycle validation
+
+The expanded candidate15 adapter gate passed all original 35 cases again and
+seven additional cached-conversation cases: initial request, identical repeat,
+tail edit, repeated tail edit, early edit, session switch and identical request
+in the new session. The expected reuse was respectively 0, 1024, 512, 1024,
+0, 0 and 1024 tokens. The cached requests exercised **11 actual B2 verification
+calls**, and matched fresh-reference IDs, text and EOS behavior. This closes the
+previous gap between independently tested prefix reuse and suffix verification.
+
+Cancellation was triggered after verification command bytes were flushed but
+before its response was received. The owned process was reaped, cache state
+was invalidated, and restarting reproduced the fresh reference; repeating the
+restarted request then reused the expected canonical prefix. This establishes
+dispatch/response lifecycle behavior, not the amount of arithmetic completed
+before termination. No latency or speed conclusion follows from these checks.
+
+Evidence: [compact lifecycle gate](../reports/native-cpu-build-15-suffix-lifecycle.json).
+
+## Actual browser suffix-on follow-up
+
+The second isolated candidate15 browser run closed the suffix-on submission
+gap. Using the normal **128-token UI selection**, a fresh greedy counting
+request with drafting off was compared with another fresh session with the
+checkbox enabled. The real POST carried `max_draft: 1`; the completed response
+reported **59 proposals and 25 accepted tokens**. Visible token IDs, text and
+the natural output-cap outcome matched the suffix-off reference exactly. Both
+requests used zero reused-prefix tokens. Mode controls, chat's zero-draft
+payload, prefix reuse, cancellation and backend switching also passed.
+
+This is exercised browser correctness coverage, not a speed benchmark; proposal
+counts differ from the earlier 64-token adapter fixture because the browser
+used its ordinary 128-token limit. The isolated server was stopped after the
+test. Candidate15 remains experimental and is not deployed; build12 remains
+the live backend.
+
+Evidence: [actual suffix-on browser report](../reports/native-cpu-build-15-browser-suffix-on.json).
