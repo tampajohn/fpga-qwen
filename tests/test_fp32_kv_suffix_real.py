@@ -18,6 +18,25 @@ KV_BINARY=os.environ.get('SV_FP32_KV_BINARY')
 
 @unittest.skipUnless(KV_BINARY and Path(KV_BINARY).is_file(),'Set SV_FP32_KV_BINARY to the frozen experimental FP32 KV artifact')
 class RealFP32KVSuffixTests(unittest.TestCase):
+    def test_all_prefill_tails_exact_reset_and_restart(self):
+        engine=RTLChatEngine(binary=KV_BINARY,workers=8,lanes=8,block_size=4,prefill_size=8,
+                             reuse_prefix=False,precision_profile='fp32_b1_fp64_prefill_fp32_kv')
+        self.addCleanup(engine.close)
+        with tempfile.TemporaryDirectory() as directory:
+            for tail in range(1,9):
+                request=ChatRequest('same-session',[9707]*(8+tail)+[11],3,0,decoding='chat',seed=42)
+                snapshots=[]
+                for repeat in range(3):
+                    if repeat==2:engine.close()
+                    final=list(engine.stream(request,threading.Event()))[-1]
+                    self.assertEqual(final['type'],'done')
+                    self.assertEqual(final['metrics']['reused_prefix_tokens'],0)
+                    snapshots.append((final['token_ids'],list(engine.cache_ids),
+                        read_dump_logits(engine.sim,Path(directory)/'logits').view(np.uint64).copy()))
+                for actual in snapshots[1:]:
+                    self.assertEqual(actual[:2],snapshots[0][:2])
+                    np.testing.assert_array_equal(actual[2],snapshots[0][2])
+
     def test_seeded_greedy_cache_rejection_and_cancel_replay(self):
         settings=dict(binary=KV_BINARY,workers=8,lanes=8,block_size=4,prefill_size=8,
                       reuse_prefix=False,precision_profile='fp32_b1_fp64_prefill_fp32_kv')
