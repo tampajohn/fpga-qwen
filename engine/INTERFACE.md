@@ -31,13 +31,25 @@ including when position equals the current position. It checks the range
 `0..current_position` before changing state; invalid targets leave the core
 state unchanged. The CLI error handler subsequently resets all state on errors.
 KV is FP16 at the current position before attention, not only past positions.
-Output is full FP32 logits. Exceptions report errors; no silent truncation.
+Output is full FP32 logits. Normalization multiplies FP32 inputs into FP32
+square products, accumulates those rounded squares in FP64, and rounds the sum
+once to FP32 before the existing FP32 scale and output operations. Normalization
+weights and stored activations remain FP32; this is mixed-precision arithmetic,
+not an all-FP32 computation. Exceptions report errors; no silent truncation.
 
 ## Persistent process protocol v1
 
 Executable startup: `--weights PATH --threads N --prefill-threads N --context N`.
 Stdout is exclusively one JSON object per line; diagnostics use stderr.
 Startup emits `{"ready":true,"protocol":1,...}` with actual precision/settings.
+Startup and `stats` distinguish `norm_precision: "f32"` (normalization weights)
+from `norm_accumulator_precision: "f64"` (the square-sum accumulator).
+`weight_precision: "f16"`, `activation_precision: "f32"`, and
+`kv_precision: "f16"` continue to describe their respective stored values.
+Older binaries may omit `norm_accumulator_precision`; adapters report unknown
+rather than inferring an accumulator precision from FP32 weights or activations.
+The browser derives this disclosure from the warmed process handshake, not its
+build label or an uninitialized catalog entry.
 Commands (one line, one response):
 
 - `reset`: clear KV/history; response `{"ok":true,"position":0}`.
@@ -48,6 +60,15 @@ Commands (one line, one response):
   response `{"ok":true}`. Call again for each request, including cache hits.
 - `prefill ID ID ...`: append IDs; response has `token`, `position`, `seconds`.
 - `step ID`: append one ID; same response fields.
+- `verify-greedy PENDING DRAFT`: available only when startup/stats advertise
+  `verify_greedy_b2: true` and `max_verified_draft: 1`, and mode is greedy.
+  Verify two consumed positions with sequential-step-equivalent arithmetic.
+  The response includes `tokens`, `accepted` (0 or 1), `committed_inputs`,
+  `position`, `verified_positions: 2`, `finish_reason`, and `seconds`.
+  Commit PENDING; commit DRAFT too only when the first prediction equals DRAFT
+  and is not EOS. Return the first prediction and, when two inputs commit, the
+  second prediction. Correction/bonus predictions remain unconsumed. A matched
+  EOS draft can report `accepted: 1` with `committed_inputs: 1`.
 - `dump PATH`: write current full vocabulary FP32 little-endian logits;
   response `{"ok":true,"count":151936,"position":...}`. Path is remainder
   of command line, so spaces are retained. No newline paths.
@@ -80,7 +101,14 @@ into that cache: changing SGEMM batch shapes can change numerical results.
 After rewind, prefill the entire remaining suffix so its chunk boundaries match
 a fresh request. These restrictions belong to the adapter; the core rewind
 primitive permits arbitrary valid positions without promising fresh-request
-bit identity for arbitrary batch histories. Suffix drafting remains unsupported.
+bit identity for arbitrary batch histories. Supporting binaries advertise B2
+verification separately from `suffix_drafting: false`: the latter keeps drafting
+off by default and does not negate `verify_greedy_b2`. The browser offers optional
+one-token n-gram drafting only after that capability is observed, only in greedy
+mode, and only after explicit user opt-in. Chat mode disables drafting. Older
+binaries without the verification capability remain unsupported. The adapter
+requires sufficient output budget/context, preserves EOS and cancellation, and
+never marks decoded/verified KV as canonical reusable prefill chunks.
 Preserve ChatProtocol and existing NDJSON event
 contracts, EOS handling, natural cap and cancellation. No promotion/default
 selection until correctness and performance evidence. Python adapter may use
