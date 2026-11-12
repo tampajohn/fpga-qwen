@@ -211,12 +211,21 @@ def presence_report(dense, upper):
                       'Three masks checked empirically; not exhaustive enumeration or formal verification.')
 
 
-def evaluate(matrix, hidden, dense, rows_per_chunk, block_size=64):
+def norm2_up(magnitudes):
+    """Euclidean enclosure from nonnegative component upper bounds."""
+    return up(np.sqrt(positive_sum_up(up(magnitudes*magnitudes))))
+
+
+def evaluate(matrix, hidden, dense, rows_per_chunk, block_size=64, bound_type='linf'):
     require(block_size in (64, 1024), 'Quantization block must be64 or1024')
+    require(bound_type in ('linf', 'l2'), 'Unknown bound family')
     x = hidden.astype(np.float64).reshape(COLS//block_size, block_size)
     qx, sx, ax, ex = quantize(x)
     sum_x = positive_sum_up(np.abs(x))
     max_x = np.max(np.abs(x), axis=-1)
+    if bound_type == 'l2':
+        norm_x = norm2_up(np.abs(x))
+        residual_x = norm2_up(up(np.abs(x-ax)))
     unit_roundoff = np.float64(2**-24)
     gamma = up((131*unit_roundoff)/(1-131*unit_roundoff))
     amplification = up(1+gamma)
@@ -232,13 +241,20 @@ def evaluate(matrix, hidden, dense, rows_per_chunk, block_size=64):
         invalid_weight_rows[begin:end] = ~valid
         w = np.where(np.isfinite(w), w, 0)
         qw, sw, aw, ew = quantize(w)
-        # Model the planned three-FP32 metadata fields: power-of-two scale,
-        # upward max residual, and exact reconstructed block L1 norm.
-        ew = float32_up(ew).astype(np.float64)
-        sum_a = np.sum(np.abs(qw.astype(np.int32)), axis=-1, dtype=np.int64).astype(np.float64)*sw
-        require(np.all(sw.astype(np.float32).astype(np.float64) == sw)
-                and np.all(sum_a.astype(np.float32).astype(np.float64) == sum_a),
-                'Weight metadata is not exactly representable as planned FP32 fields')
+        if bound_type == 'linf':
+            # Original three fields: scale, max residual, reconstructed L1.
+            ew = float32_up(ew).astype(np.float64)
+            sum_a = np.sum(np.abs(qw.astype(np.int32)), axis=-1, dtype=np.int64).astype(np.float64)*sw
+            require(np.all(sw.astype(np.float32).astype(np.float64) == sw)
+                    and np.all(sum_a.astype(np.float32).astype(np.float64) == sum_a),
+                    'Weight metadata is not exactly representable as planned FP32 fields')
+        else:
+            # Same three-field budget: scale, upward residual L2, upward
+            # reconstructed L2. Activation norms remain FP64, not metadata.
+            residual_w = float32_up(norm2_up(up(np.abs(w-aw)))).astype(np.float64)
+            norm_a = float32_up(norm2_up(np.abs(aw))).astype(np.float64)
+            valid &= np.all(np.isfinite(residual_w) & np.isfinite(norm_a)
+                            & (sw.astype(np.float32).astype(np.float64) == sw), axis=-1)
         integer_dot = np.sum(qw.astype(np.int32)*qx.astype(np.int32), axis=-1, dtype=np.int64)
         require(np.all(np.abs(integer_dot) <= block_size*127*127), 'Integer accumulation exceeded exact int32 range')
         # Integer magnitude is below2**24 even for the whole1024-element row,
@@ -251,9 +267,17 @@ def evaluate(matrix, hidden, dense, rows_per_chunk, block_size=64):
             approximate_lo = down(approximate_lo + terms[:, block])
             approximate_hi = up(approximate_hi + terms[:, block])
         # wx-ab = (w-a)x + a(x-b). Every positive operation rounds outward.
-        quant = positive_sum_up(up(up(ew*sum_x) + up(ex*sum_a)))
-        sum_w = positive_sum_up(up(sum_a + up(block_size*ew)))
-        absolute_products = positive_sum_up(up(up(sum_a + up(block_size*ew))*max_x))
+        if bound_type == 'linf':
+            quant = positive_sum_up(up(up(ew*sum_x) + up(ex*sum_a)))
+            sum_w = positive_sum_up(up(sum_a + up(block_size*ew)))
+            absolute_products = positive_sum_up(up(up(sum_a + up(block_size*ew))*max_x))
+        else:
+            # Cauchy per block and triangle inequality for ||w||2.
+            quant = positive_sum_up(up(up(residual_w*norm_x) + up(residual_x*norm_a)))
+            norm_w = up(norm_a+residual_w)
+            absolute_products = positive_sum_up(up(norm_w*norm_x))
+            # Both supported block sizes have exact integer square roots.
+            sum_w = positive_sum_up(up(np.sqrt(np.float64(block_size))*norm_w))
         # 1024 FMAs plus seven reduction additions. Three tiny allowances per
         # operation conservatively cover subnormal intermediate/result flushing;
         # hidden-input flushing additionally contributes tiny*sum|w|. Inflate
@@ -261,6 +285,9 @@ def evaluate(matrix, hidden, dense, rows_per_chunk, block_size=64):
         underflow = up(up(up(tiny*sum_w) + up(np.float64(3*1031)*tiny))*amplification)
         reference = up(up(gamma*absolute_products) + underflow)
         unsafe = ~valid | (up(absolute_products+reference) > maximum)
+        if bound_type == 'l2':
+            unsafe |= ~(np.isfinite(quant) & np.isfinite(reference)
+                        & np.isfinite(approximate_lo) & np.isfinite(approximate_hi))
         total = up(quant+reference)
         lower[begin:end] = np.where(unsafe, -np.inf, down(approximate_lo-total))
         upper[begin:end] = np.where(unsafe, np.inf, up(approximate_hi+total))
@@ -274,6 +301,9 @@ def evaluate(matrix, hidden, dense, rows_per_chunk, block_size=64):
     presence = presence_report(dense, upper)
     return dict(passed=not failures.size and all(row['true_top_retained'] for row in top)
                        and all(row['true_top_retained'] for row in presence['observed_mask_checks']),
+        bound_type=bound_type,
+        metadata_fields=['power_of_two_scale', 'upward_max_residual', 'exact_reconstructed_l1']
+            if bound_type == 'linf' else ['power_of_two_scale', 'upward_residual_l2', 'upward_reconstructed_l2'],
         quantization_block=block_size, blocks_per_row=COLS//block_size,
         maximum_absolute_integer_block_dot=block_size*127*127,
         integer_accumulation='int32-safe; offline reduction uses int64 for explicit checking',
@@ -302,7 +332,9 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--rows-per-chunk', type=int, default=256)
     parser.add_argument('--block-size', type=int, choices=(64, 1024), default=64,
-                        help='Auxiliary quantization block;1024 uses one scale/residual/L1 record per whole row')
+                        help='Auxiliary quantization block;1024 uses one three-field record per whole row')
+    parser.add_argument('--bound-type', choices=('linf', 'l2'), default='linf',
+                        help='Standalone Linf/L1 or Cauchy L2 bound; never takes their minimum')
     parser.add_argument('--guard-state-dir', type=Path, default=ROOT/'build/benchmark-status')
     args = parser.parse_args()
     if not 1 <= args.rows_per_chunk <= 4096:
@@ -315,6 +347,7 @@ def main():
     weights, hidden_path, logits_path = args.weights.resolve(), args.hidden.resolve(), args.logits.resolve()
     report = dict(completed=False, passed=False, offline_only=True, inference_run=False,
         performance_claim_eligible=False, formal_proof=False, gpu=False, pytorch=False,
+        bound_type=args.bound_type,
         model_shape=dict(vocabulary=ROWS, hidden=COLS, quantization_block=args.block_size), numpy_version=np.__version__,
         assumptions=[
             'Saved dense logits use exactly this hidden state and canonical FP16 output matrix.',
@@ -365,7 +398,7 @@ def main():
             offline_rows_per_chunk=args.rows_per_chunk,
             note='Proposed persistent cache sizes, not measured RSS. Offline quantization uses temporary row chunks.')
         save()
-        report['evaluation'] = evaluate(matrix, hidden, dense, args.rows_per_chunk, args.block_size)
+        report['evaluation'] = evaluate(matrix, hidden, dense, args.rows_per_chunk, args.block_size, args.bound_type)
         require(all(sha(Path(path)) == digest for path, digest in report['inputs'].items()), 'Immutable inputs changed')
         report.update(completed=True, passed=report['evaluation']['passed'])
     except BaseException as error:
