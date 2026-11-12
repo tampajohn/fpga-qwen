@@ -185,7 +185,11 @@ void dot_verify_two_rows(const float* x0,const float* x1,const Half* w,int n,flo
     y1[0]=vaddvq_f32(vaddq_f32(a10,b10));y1[1]=vaddvq_f32(vaddq_f32(a11,b11));
 }
 void norm(const float* x,const float* w,float* out,int n) {
-    float sum=0;for(int j=0;j<n;++j)sum+=x[j]*x[j];
+    // Accumulate FP32-rounded squares in FP64, then round the sum once
+    // before the existing FP32 scale and output operations.
+    double precise_sum=0;
+    for(int j=0;j<n;++j){const float square=x[j]*x[j];precise_sum+=static_cast<double>(square);}
+    const float sum=static_cast<float>(precise_sum);
     const float inv=1.0f/std::sqrt(sum/n+1e-6f);
     for(int j=0;j<n;++j)out[j]=(x[j]*inv)*w[j];
 }

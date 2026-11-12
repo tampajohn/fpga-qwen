@@ -75,7 +75,7 @@ void settings(const qwen_cpu::Options& options, const qwen_cpu::Model& model, bo
         << ",\"context\":" << options.context
         << ",\"lossless_bf16_decode_cache_bytes\":" << model.lossless_bf16_cache_bytes()
         << ",\"gpu\":false,\"pytorch\":false,\"weight_precision\":\"f16\",\"norm_precision\":\"f32\","
-           "\"activation_precision\":\"f32\",\"kv_precision\":\"f16\",\"prefix_reuse\":true,\"prefix_reuse_chunk\":" << qwen_cpu::prefix_reuse_chunk << ",\"suffix_drafting\":false,\"verify_greedy_b2\":true,\"max_verified_draft\":1}\n" << std::flush;
+           "\"norm_accumulator_precision\":\"f64\",\"activation_precision\":\"f32\",\"kv_precision\":\"f16\",\"prefix_reuse\":true,\"prefix_reuse_chunk\":" << qwen_cpu::prefix_reuse_chunk << ",\"suffix_drafting\":false,\"verify_greedy_b2\":true,\"max_verified_draft\":1}\n" << std::flush;
 }
 }
 int main(int argc,char** argv) {
