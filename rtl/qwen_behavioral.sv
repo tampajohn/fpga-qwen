@@ -27,6 +27,9 @@ module qwen_behavioral (
     output real best_logit
 );
     import "DPI-C" function real weight_value(input longint index);
+`ifdef FP32_KV
+    import "DPI-C" function void write_fp32_kv(input int layer, input int position, input real keys[], input real values[]);
+`endif
     import "DPI-C" function longint tensor_base(input int slot);
     import "DPI-C" function void dispatch_projection(input longint base, input int rows, width,
                                                       input real activation[], output real result[]);
@@ -58,12 +61,14 @@ module qwen_behavioral (
 `endif
     localparam int H=1024, D=128, Q=2048, I=3072, L=28, C=4096, V=151936;
     real x[H], n[H], q[Q], k[H], v[H], a[Q], gate[I], up[I];
+`ifndef FP32_KV
 `ifdef STATIC_KV
     // Exact dimensions avoid deque-backed dynamic indexing without changing
     // attention arithmetic or rounding. Do not pad these giant arrays.
     real keys[L*C*H], values[L*C*H];
 `else
     real keys[], values[];
+`endif
 `endif
     real scores[C], cosine[64], sine[64];
     // Debug outputs are scalar transport only; all arithmetic is performed here.
@@ -72,11 +77,14 @@ module qwen_behavioral (
     int token_history[C];
     `include "sampling.svh"
 
+`ifndef FP32_KV
 `ifndef STATIC_KV
     initial begin
         keys = new[L*C*H];
         values = new[L*C*H];
     end
+`endif
+
 `endif
 
     task automatic normalize_hidden(input int slot);
@@ -187,9 +195,13 @@ module qwen_behavioral (
             end
         end
         index=(layer*C+position)*H;
+`ifdef FP32_KV
+        write_fp32_kv(layer,position,k,v);
+`else
         for (int j=0;j<H;j++) begin
             keys[index+j]=k[j]; values[index+j]=v[j];
         end
+`endif
     endtask
 `endif
 
@@ -222,15 +234,20 @@ module qwen_behavioral (
             end
         end
         index=(layer*C+position)*H;
+`ifdef FP32_KV
+        write_fp32_kv(layer,position,k,v);
+`else
         for (int j=0;j<H;j++) begin
             keys[index+j]=k[j]; values[index+j]=v[j];
         end
+`endif
 `ifdef PARALLEL_ATTENTION
         if (parallel_workers>0) begin
             dispatch_attention(layer,position,q,attention_output);
             for (int j=0;j<Q;j++) a[j]=attention_output[j];
         end else begin
 `endif
+`ifndef FP32_KV
         for (int head=0;head<16;head++) begin
             kvhead=head/2;
             maximum=-1.0e300;
@@ -265,6 +282,9 @@ module qwen_behavioral (
             end
 `endif
         end
+`else
+        $fatal(1,"FP32 KV requires parallel attention");
+`endif
 `ifdef PARALLEL_ATTENTION
         end
 `endif

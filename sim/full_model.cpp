@@ -7,7 +7,16 @@ static constexpr int block_capacity=4;
 // Verilator, and exchange integer token IDs. No neural-network arithmetic here.
 #include "Vqwen_behavioral.h"
 #include "Vqwen_behavioral___024root.h"
+#include "Vqwen_behavioral__Dpi.h"
 #include "verilated.h"
+#ifdef FP32_KV
+#if !defined(FP32_PROJECTION_B1) || !defined(FP32_VERIFICATION_B4) || !defined(PREFILL_B8) || !defined(PARALLEL_ATTENTION) || defined(FP32_PREFILL_B8) || defined(STATIC_KV)
+#error "FP32 KV requires hybrid B1/B4/B8 parallel mode without competing KV/prefill layouts"
+#endif
+#include <type_traits>
+#include "Vfp32_kv_store.h"
+#include "Vfp32_kv_store___024root.h"
+#endif
 #include "projection_pool.h"
 #include <chrono>
 #include <iomanip>
@@ -58,12 +67,32 @@ struct VerificationCommand {
     VerificationCommand() {verification_command=true;}
     ~VerificationCommand() {verification_command=false;}
 };
+#ifdef FP32_KV
+static std::unique_ptr<VerilatedContext> kv_context;
+static std::unique_ptr<Vfp32_kv_store> kv_store;
+static_assert(std::is_same_v<std::remove_reference_t<decltype(std::declval<Vfp32_kv_store___024root>().fp32_kv_store__DOT__keys[0])>,float>);
+static_assert(std::is_same_v<std::remove_reference_t<decltype(std::declval<Vfp32_kv_store___024root>().fp32_kv_store__DOT__values[0])>,float>);
+static_assert(sizeof(std::declval<Vfp32_kv_store___024root>().fp32_kv_store__DOT__keys)+sizeof(std::declval<Vfp32_kv_store___024root>().fp32_kv_store__DOT__values)==939524096);
+extern "C" void write_fp32_kv(int layer,int position,const svOpenArrayHandle keys,const svOpenArrayHandle values) {
+    const auto* k=static_cast<const double*>(svGetArrayPtr(keys));
+    const auto* v=static_cast<const double*>(svGetArrayPtr(values));
+    if(!kv_store || layer<0 || layer>=28 || position<0 || position>=4096 || !k || !v || svSize(keys,1)!=1024 || svSize(values,1)!=1024)
+        throw std::runtime_error("Invalid FP32 KV write");
+    // Coordinator is the sole writer; every pool dispatch is synchronous.
+    kv_store->clk=0;kv_store->write_enable=1;kv_store->write_base=(layer*4096+position)*1024;
+    std::memcpy(kv_store->write_keys.data(),k,1024*sizeof(double));
+    std::memcpy(kv_store->write_values.data(),v,1024*sizeof(double));
+    kv_store->eval();kv_store->clk=1;kv_store->eval();
+}
+#endif
 #ifdef PARALLEL_ATTENTION
 static const Vqwen_behavioral___024root* attention_root=nullptr;
 extern "C" double attention_key_value(int index) {
     if(!attention_root || index<0 || index>=28*4096*1024)
         throw std::runtime_error("Invalid attention key address");
-#ifdef STATIC_KV
+#ifdef FP32_KV
+    return kv_store->rootp->fp32_kv_store__DOT__keys[index];
+#elif defined(STATIC_KV)
     return attention_root->qwen_behavioral__DOT__keys[index];
 #else
     return attention_root->__Vnontrivs.qwen_behavioral__DOT__keys.at(index);
@@ -72,7 +101,9 @@ extern "C" double attention_key_value(int index) {
 extern "C" double attention_value_value(int index) {
     if(!attention_root || index<0 || index>=28*4096*1024)
         throw std::runtime_error("Invalid attention value address");
-#ifdef STATIC_KV
+#ifdef FP32_KV
+    return kv_store->rootp->fp32_kv_store__DOT__values[index];
+#elif defined(STATIC_KV)
     return attention_root->qwen_behavioral__DOT__values[index];
 #else
     return attention_root->__Vnontrivs.qwen_behavioral__DOT__values.at(index);
@@ -187,6 +218,11 @@ int main(int argc,char** argv) {
 #endif
         if(count) pool=std::make_unique<ProjectionPool>(count,reduction_lanes);
         auto context=std::make_unique<VerilatedContext>();
+#ifdef FP32_KV
+        kv_context=std::make_unique<VerilatedContext>();kv_context->threads(1);
+        kv_store=std::make_unique<Vfp32_kv_store>(kv_context.get());
+        kv_store->clk=0;kv_store->write_enable=0;kv_store->read_index=0;kv_store->eval();
+#endif
         auto d=std::make_unique<Vqwen_behavioral>(context.get());
 #ifdef PARALLEL_ATTENTION
         attention_root=d->rootp;
@@ -303,7 +339,9 @@ int main(int argc,char** argv) {
 #endif
 #ifdef FP32_PROJECTION_B1
             } else if(command=="precision") {
-#ifdef FP32_PREFILL_B8
+#ifdef FP32_KV
+                std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill_fp32_kv","scalar_projection":"fp32","prefill_projection":"fp64","verification_projection":"fp32","attention_arithmetic":"fp64","kv_storage":"fp32","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
+#elif defined(FP32_PREFILL_B8)
                 std::cout<<R"({"precision_profile":"fp32_b1_fp32_prefill","scalar_projection":"fp32","prefill_projection":"fp32","verification_projection":"fp32","attention_kv":"fp64","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
 #elif defined(FP32_VERIFICATION_B4)
                 std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill","scalar_projection":"fp32","prefill_projection":"fp64","verification_projection":"fp32","attention_kv":"fp64","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"fp64_b8_aligned_v1"})"<<'\n'<<std::flush;
