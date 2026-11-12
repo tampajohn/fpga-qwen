@@ -1,0 +1,3621 @@
+{
+  "completed": true,
+  "passed": true,
+  "gpu": false,
+  "performance_claim_eligible": false,
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Validate candidate15 conversation trajectories with suffix off and on",
+      "started_at": "2026-11-12T16:48:23.399631+00:00"
+    }
+  },
+  "cases": [
+    {
+      "name": "fact_recall",
+      "prompt_tokens": 162,
+      "cap": 16,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              22,
+              18,
+              16,
+              24
+            ],
+            "text": "7319",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 162,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 4,
+            "rounds": 5,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 166,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 162
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              22,
+              18,
+              16,
+              24
+            ],
+            "text": "7319",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 162,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 4,
+            "rounds": 5,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 166,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 162
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              22,
+              18,
+              16,
+              24
+            ],
+            "text": "7319",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 162,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 4,
+            "rounds": 4,
+            "proposed_tokens": 2,
+            "accepted_tokens": 1,
+            "rejected_tokens": 1,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 166,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 162
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "corrected_fact",
+      "prompt_tokens": 213,
+      "cap": 16,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              43,
+              7523,
+              13
+            ],
+            "text": "Lima.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 213,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 4,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.75,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 216,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 213
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              43,
+              7523,
+              13
+            ],
+            "text": "Lima.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 213,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 4,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.75,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 216,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 213
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              43,
+              7523,
+              13
+            ],
+            "text": "Lima.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 213,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 4,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.75,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 216,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 213
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "assistant_quote",
+      "prompt_tokens": 146,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              13936,
+              36506,
+              11,
+              50344,
+              0
+            ],
+            "text": "Welcome aboard, Maya!",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 146,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 5,
+            "rounds": 6,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8333333333333334,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 151,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 146
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              13936,
+              36506,
+              11,
+              50344,
+              0
+            ],
+            "text": "Welcome aboard, Maya!",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 146,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 5,
+            "rounds": 6,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8333333333333334,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 151,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 146
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              13936,
+              36506,
+              11,
+              50344,
+              0
+            ],
+            "text": "Welcome aboard, Maya!",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 146,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 5,
+            "rounds": 4,
+            "proposed_tokens": 2,
+            "accepted_tokens": 2,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.25,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 151,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 146
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "task_switch",
+      "prompt_tokens": 222,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              24,
+              11,
+              220,
+              17,
+              11,
+              220,
+              20,
+              13
+            ],
+            "text": "9, 2, 5.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 222,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 230,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 222
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              24,
+              11,
+              220,
+              17,
+              11,
+              220,
+              20,
+              13
+            ],
+            "text": "9, 2, 5.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 222,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 230,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 222
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              24,
+              11,
+              220,
+              17,
+              11,
+              220,
+              20,
+              13
+            ],
+            "text": "9, 2, 5.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 222,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 6,
+            "proposed_tokens": 4,
+            "accepted_tokens": 3,
+            "rejected_tokens": 1,
+            "tokens_per_round": 1.3333333333333333,
+            "suffix_enabled": true,
+            "verification_calls": 4,
+            "verified_positions": 8,
+            "kv_tokens": 230,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 222
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "json_extraction",
+      "prompt_tokens": 107,
+      "cap": 48,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              73594,
+              2236,
+              198,
+              4913,
+              606,
+              788,
+              330,
+              44,
+              8832,
+              497,
+              330,
+              3423,
+              788,
+              330,
+              665,
+              278,
+              16707,
+              73594
+            ],
+            "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 107,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 18,
+            "rounds": 19,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9473684210526315,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 125,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 107
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              73594,
+              2236,
+              198,
+              4913,
+              606,
+              788,
+              330,
+              44,
+              8832,
+              497,
+              330,
+              3423,
+              788,
+              330,
+              665,
+              278,
+              16707,
+              73594
+            ],
+            "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 107,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 18,
+            "rounds": 19,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9473684210526315,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 125,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 107
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              73594,
+              2236,
+              198,
+              4913,
+              606,
+              788,
+              330,
+              44,
+              8832,
+              497,
+              330,
+              3423,
+              788,
+              330,
+              665,
+              278,
+              16707,
+              73594
+            ],
+            "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 107,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 18,
+            "rounds": 19,
+            "proposed_tokens": 2,
+            "accepted_tokens": 0,
+            "rejected_tokens": 2,
+            "tokens_per_round": 0.9473684210526315,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 125,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 107
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "two_step_arithmetic",
+      "prompt_tokens": 103,
+      "cap": 16,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              785,
+              2790,
+              1372,
+              315,
+              54208,
+              374,
+              220,
+              16,
+              22,
+              2518,
+              488,
+              220,
+              23,
+              6303,
+              284,
+              220
+            ],
+            "text": "The total number of beads is 17 red + 8 blue = ",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 103,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 16,
+            "rounds": 16,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 118,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 103
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              785,
+              2790,
+              1372,
+              315,
+              54208,
+              374,
+              220,
+              16,
+              22,
+              2518,
+              488,
+              220,
+              23,
+              6303,
+              284,
+              220
+            ],
+            "text": "The total number of beads is 17 red + 8 blue = ",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 103,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 16,
+            "rounds": 16,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 118,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 103
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              785,
+              2790,
+              1372,
+              315,
+              54208,
+              374,
+              220,
+              16,
+              22,
+              2518,
+              488,
+              220,
+              23,
+              6303,
+              284,
+              220
+            ],
+            "text": "The total number of beads is 17 red + 8 blue = ",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 103,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 16,
+            "rounds": 14,
+            "proposed_tokens": 3,
+            "accepted_tokens": 2,
+            "rejected_tokens": 1,
+            "tokens_per_round": 1.1428571428571428,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 118,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 103
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "distractor_recall",
+      "prompt_tokens": 176,
+      "cap": 16,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              34,
+              33215
+            ],
+            "text": "Cedar",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 176,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 178,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 176
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              34,
+              33215
+            ],
+            "text": "Cedar",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 176,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 178,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 176
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              34,
+              33215
+            ],
+            "text": "Cedar",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 176,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 178,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 176
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "evidence_only",
+      "prompt_tokens": 112,
+      "cap": 16,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              16088
+            ],
+            "text": "unknown",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 112,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 113,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 112
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              16088
+            ],
+            "text": "unknown",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 112,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 113,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 112
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              16088
+            ],
+            "text": "unknown",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 112,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 113,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 112
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "new_question_after_repetition",
+      "prompt_tokens": 285,
+      "cap": 16,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              22
+            ],
+            "text": "7",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 285,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 286,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 285
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              22
+            ],
+            "text": "7",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 285,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 286,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 285
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              22
+            ],
+            "text": "7",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 285,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 286,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 285
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "latest_opposite",
+      "prompt_tokens": 146,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              3522,
+              13
+            ],
+            "text": "Empty.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 146,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 148,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 146
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              3522,
+              13
+            ],
+            "text": "Empty.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 146,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 148,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 146
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              3522,
+              13
+            ],
+            "text": "Empty.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 146,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 148,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 146
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "latest_sort",
+      "prompt_tokens": 154,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              18,
+              11,
+              220,
+              23,
+              11,
+              220,
+              16,
+              19
+            ],
+            "text": "3, 8, 14",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 154,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 162,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 154
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              18,
+              11,
+              220,
+              23,
+              11,
+              220,
+              16,
+              19
+            ],
+            "text": "3, 8, 14",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 154,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 162,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 154
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              18,
+              11,
+              220,
+              23,
+              11,
+              220,
+              16,
+              19
+            ],
+            "text": "3, 8, 14",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 154,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 7,
+            "proposed_tokens": 4,
+            "accepted_tokens": 2,
+            "rejected_tokens": 2,
+            "tokens_per_round": 1.1428571428571428,
+            "suffix_enabled": true,
+            "verification_calls": 4,
+            "verified_positions": 8,
+            "kv_tokens": 162,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 154
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "latest_object",
+      "prompt_tokens": 153,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              18170
+            ],
+            "text": "fish",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 153,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 154,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 153
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              18170
+            ],
+            "text": "fish",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 153,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 154,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 153
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              18170
+            ],
+            "text": "fish",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 153,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 154,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 153
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "corrected_destination",
+      "prompt_tokens": 209,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              98977,
+              13
+            ],
+            "text": "York.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 209,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 211,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 209
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              98977,
+              13
+            ],
+            "text": "York.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 209,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 211,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 209
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              98977,
+              13
+            ],
+            "text": "York.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 209,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 211,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 209
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "corrected_count",
+      "prompt_tokens": 219,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              16,
+              16
+            ],
+            "text": "11",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 219,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 221,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 219
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              16,
+              16
+            ],
+            "text": "11",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 219,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 221,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 219
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              16,
+              16
+            ],
+            "text": "11",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 219,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 1,
+            "accepted_tokens": 0,
+            "rejected_tokens": 1,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": true,
+            "verification_calls": 1,
+            "verified_positions": 2,
+            "kv_tokens": 221,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 219
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "corrected_owner",
+      "prompt_tokens": 211,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              36,
+              742,
+              13
+            ],
+            "text": "Eli.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 211,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 4,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.75,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 214,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 211
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              36,
+              742,
+              13
+            ],
+            "text": "Eli.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 211,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 4,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.75,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 214,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 211
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              36,
+              742,
+              13
+            ],
+            "text": "Eli.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 211,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 4,
+            "proposed_tokens": 1,
+            "accepted_tokens": 0,
+            "rejected_tokens": 1,
+            "tokens_per_round": 0.75,
+            "suffix_enabled": true,
+            "verification_calls": 1,
+            "verified_positions": 2,
+            "kv_tokens": 214,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 211
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "recall_user_fact",
+      "prompt_tokens": 147,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              8015
+            ],
+            "text": "pear",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 147,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 148,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 147
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              8015
+            ],
+            "text": "pear",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 147,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 148,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 147
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              8015
+            ],
+            "text": "pear",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 147,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 148,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 147
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "quote_assistant_verbatim",
+      "prompt_tokens": 145,
+      "cap": 32,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              40,
+              614,
+              12433,
+              697,
+              21933,
+              13
+            ],
+            "text": "I have recorded your preference.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 145,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 6,
+            "rounds": 7,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8571428571428571,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 151,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 145
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              40,
+              614,
+              12433,
+              697,
+              21933,
+              13
+            ],
+            "text": "I have recorded your preference.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 145,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 6,
+            "rounds": 7,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8571428571428571,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 151,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 145
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              40,
+              614,
+              12433,
+              697,
+              21933,
+              13
+            ],
+            "text": "I have recorded your preference.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 145,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 6,
+            "rounds": 5,
+            "proposed_tokens": 3,
+            "accepted_tokens": 3,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.2,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 151,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 145
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "quote_user_verbatim",
+      "prompt_tokens": 149,
+      "cap": 32,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              785,
+              23285,
+              73165,
+              374,
+              29388,
+              279,
+              6006,
+              13
+            ],
+            "text": "The copper lantern is beside the door.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 149,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 157,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 149
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              785,
+              23285,
+              73165,
+              374,
+              29388,
+              279,
+              6006,
+              13
+            ],
+            "text": "The copper lantern is beside the door.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 149,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 157,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 149
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              785,
+              23285,
+              73165,
+              374,
+              29388,
+              279,
+              6006,
+              13
+            ],
+            "text": "The copper lantern is beside the door.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 149,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 6,
+            "proposed_tokens": 4,
+            "accepted_tokens": 4,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.3333333333333333,
+            "suffix_enabled": true,
+            "verification_calls": 4,
+            "verified_positions": 8,
+            "kv_tokens": 157,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 149
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "loop_recovery_arithmetic",
+      "prompt_tokens": 273,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              16,
+              18
+            ],
+            "text": "13",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 273,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 275,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 273
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              16,
+              18
+            ],
+            "text": "13",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 273,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 275,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 273
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              16,
+              18
+            ],
+            "text": "13",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 273,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 275,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 273
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "loop_recovery_identity",
+      "prompt_tokens": 226,
+      "cap": 32,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              48,
+              16948,
+              18,
+              12,
+              15,
+              13,
+              21,
+              33
+            ],
+            "text": "Qwen3-0.6B",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 226,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 234,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 226
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              48,
+              16948,
+              18,
+              12,
+              15,
+              13,
+              21,
+              33
+            ],
+            "text": "Qwen3-0.6B",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 226,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 234,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 226
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              48,
+              16948,
+              18,
+              12,
+              15,
+              13,
+              21,
+              33
+            ],
+            "text": "Qwen3-0.6B",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 226,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 6,
+            "proposed_tokens": 3,
+            "accepted_tokens": 3,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.3333333333333333,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 234,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 226
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "loop_recovery_yes_no",
+      "prompt_tokens": 210,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              9693
+            ],
+            "text": "yes",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 210,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 211,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 210
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              9693
+            ],
+            "text": "yes",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 210,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 211,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 210
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              9693
+            ],
+            "text": "yes",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 210,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 211,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 210
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "arithmetic_subtraction",
+      "prompt_tokens": 88,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              17,
+              18,
+              481,
+              220,
+              24,
+              284,
+              220,
+              16,
+              19,
+              13
+            ],
+            "text": "23 - 9 = 14.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 88,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 98,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 88
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              17,
+              18,
+              481,
+              220,
+              24,
+              284,
+              220,
+              16,
+              19,
+              13
+            ],
+            "text": "23 - 9 = 14.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 88,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 98,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 88
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              17,
+              18,
+              481,
+              220,
+              24,
+              284,
+              220,
+              16,
+              19,
+              13
+            ],
+            "text": "23 - 9 = 14.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 88,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 10,
+            "rounds": 11,
+            "proposed_tokens": 2,
+            "accepted_tokens": 0,
+            "rejected_tokens": 2,
+            "tokens_per_round": 0.9090909090909091,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 98,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 88
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "arithmetic_groups",
+      "prompt_tokens": 96,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              18,
+              96338,
+              817,
+              3745,
+              24768,
+              220,
+              19,
+              14697,
+              284,
+              220,
+              16,
+              17,
+              96338,
+              13
+            ],
+            "text": "3 pencils per box \u00d7 4 boxes = 12 pencils.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 96,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 14,
+            "rounds": 15,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9333333333333333,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 110,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 96
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              18,
+              96338,
+              817,
+              3745,
+              24768,
+              220,
+              19,
+              14697,
+              284,
+              220,
+              16,
+              17,
+              96338,
+              13
+            ],
+            "text": "3 pencils per box \u00d7 4 boxes = 12 pencils.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 96,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 14,
+            "rounds": 15,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9333333333333333,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 110,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 96
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              18,
+              96338,
+              817,
+              3745,
+              24768,
+              220,
+              19,
+              14697,
+              284,
+              220,
+              16,
+              17,
+              96338,
+              13
+            ],
+            "text": "3 pencils per box \u00d7 4 boxes = 12 pencils.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 96,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 14,
+            "rounds": 15,
+            "proposed_tokens": 2,
+            "accepted_tokens": 0,
+            "rejected_tokens": 2,
+            "tokens_per_round": 0.9333333333333333,
+            "suffix_enabled": true,
+            "verification_calls": 2,
+            "verified_positions": 4,
+            "kv_tokens": 110,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 96
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "arithmetic_remaining",
+      "prompt_tokens": 106,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              17,
+              16
+            ],
+            "text": "21",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 106,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 108,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 106
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              17,
+              16
+            ],
+            "text": "21",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 106,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 108,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 106
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              17,
+              16
+            ],
+            "text": "21",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 106,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 108,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 106
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "unknown_birthday",
+      "prompt_tokens": 105,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              2679,
+              902,
+              15198,
+              374,
+              2661,
+              11,
+              279,
+              4226,
+              374,
+              9788,
+              13
+            ],
+            "text": "If no birthday is given, the answer is unknown.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 105,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 11,
+            "rounds": 12,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9166666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 116,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 105
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              2679,
+              902,
+              15198,
+              374,
+              2661,
+              11,
+              279,
+              4226,
+              374,
+              9788,
+              13
+            ],
+            "text": "If no birthday is given, the answer is unknown.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 105,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 11,
+            "rounds": 12,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.9166666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 116,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 105
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              2679,
+              902,
+              15198,
+              374,
+              2661,
+              11,
+              279,
+              4226,
+              374,
+              9788,
+              13
+            ],
+            "text": "If no birthday is given, the answer is unknown.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 105,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 11,
+            "rounds": 10,
+            "proposed_tokens": 3,
+            "accepted_tokens": 3,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.1,
+            "suffix_enabled": true,
+            "verification_calls": 3,
+            "verified_positions": 6,
+            "kv_tokens": 116,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 105
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "unknown_code",
+      "prompt_tokens": 155,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              13790,
+              13
+            ],
+            "text": "Unknown.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 155,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 157,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 155
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              13790,
+              13
+            ],
+            "text": "Unknown.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 155,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 157,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 155
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              13790,
+              13
+            ],
+            "text": "Unknown.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 155,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.6666666666666666,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 157,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 155
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "unknown_cutoff",
+      "prompt_tokens": 109,
+      "cap": 24,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              16088
+            ],
+            "text": "unknown",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 109,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 110,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 109
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              16088
+            ],
+            "text": "unknown",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 109,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 110,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 109
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              16088
+            ],
+            "text": "unknown",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 109,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.5,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 110,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 109
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "repeat-budget-1",
+      "prompt_tokens": 87,
+      "cap": 1,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              6033
+            ],
+            "text": "Red",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 1,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 87,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              6033
+            ],
+            "text": "Red",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 1,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 87,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              6033
+            ],
+            "text": "Red",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 1,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 87,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "repeat-budget-2",
+      "prompt_tokens": 87,
+      "cap": 2,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              6033,
+              11
+            ],
+            "text": "Red,",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 88,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              6033,
+              11
+            ],
+            "text": "Red,",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 88,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              6033,
+              11
+            ],
+            "text": "Red,",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 88,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "repeat-budget-3",
+      "prompt_tokens": 87,
+      "cap": 3,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              6033,
+              11,
+              8697
+            ],
+            "text": "Red, Blue",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 89,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              6033,
+              11,
+              8697
+            ],
+            "text": "Red, Blue",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 89,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              6033,
+              11,
+              8697
+            ],
+            "text": "Red, Blue",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 89,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "repeat-budget-64",
+      "prompt_tokens": 87,
+      "cap": 64,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              6033,
+              11,
+              8697,
+              11,
+              7840,
+              11,
+              43856,
+              13
+            ],
+            "text": "Red, Blue, Green, Twenty.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 95,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              6033,
+              11,
+              8697,
+              11,
+              7840,
+              11,
+              43856,
+              13
+            ],
+            "text": "Red, Blue, Green, Twenty.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 95,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              6033,
+              11,
+              8697,
+              11,
+              7840,
+              11,
+              43856,
+              13
+            ],
+            "text": "Red, Blue, Green, Twenty.",
+            "finish_reason": "eos"
+          },
+          "metrics": {
+            "prompt_tokens": 87,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 8,
+            "rounds": 9,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 0.8888888888888888,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 95,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 87
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "count-budget-1",
+      "prompt_tokens": 90,
+      "cap": 1,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              16
+            ],
+            "text": "1",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 1,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 90,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              16
+            ],
+            "text": "1",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 1,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 90,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              16
+            ],
+            "text": "1",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 1,
+            "rounds": 1,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 90,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "count-budget-2",
+      "prompt_tokens": 90,
+      "cap": 2,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              16,
+              11
+            ],
+            "text": "1,",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 91,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              16,
+              11
+            ],
+            "text": "1,",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 91,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              16,
+              11
+            ],
+            "text": "1,",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 2,
+            "rounds": 2,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 91,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "count-budget-3",
+      "prompt_tokens": 90,
+      "cap": 3,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220
+            ],
+            "text": "1, ",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 92,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220
+            ],
+            "text": "1, ",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 92,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220
+            ],
+            "text": "1, ",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 3,
+            "rounds": 3,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": true,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 92,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "count-budget-64",
+      "prompt_tokens": 90,
+      "cap": 64,
+      "results": [
+        {
+          "configuration": "reference",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220,
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19,
+              11,
+              220,
+              20,
+              11,
+              220,
+              21,
+              11,
+              220,
+              22,
+              11,
+              220,
+              23,
+              11,
+              220,
+              24,
+              11,
+              220,
+              16,
+              15,
+              11,
+              220,
+              16,
+              16,
+              11,
+              220,
+              16,
+              17,
+              11,
+              220,
+              16,
+              18,
+              11,
+              220,
+              16,
+              19,
+              11,
+              220,
+              16,
+              20,
+              11,
+              220,
+              16,
+              21,
+              11,
+              220,
+              16,
+              22,
+              11,
+              220,
+              16,
+              23,
+              11,
+              220,
+              16
+            ],
+            "text": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 1",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 64,
+            "rounds": 64,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 153,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        },
+        {
+          "configuration": "candidate_dense",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220,
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19,
+              11,
+              220,
+              20,
+              11,
+              220,
+              21,
+              11,
+              220,
+              22,
+              11,
+              220,
+              23,
+              11,
+              220,
+              24,
+              11,
+              220,
+              16,
+              15,
+              11,
+              220,
+              16,
+              16,
+              11,
+              220,
+              16,
+              17,
+              11,
+              220,
+              16,
+              18,
+              11,
+              220,
+              16,
+              19,
+              11,
+              220,
+              16,
+              20,
+              11,
+              220,
+              16,
+              21,
+              11,
+              220,
+              16,
+              22,
+              11,
+              220,
+              16,
+              23,
+              11,
+              220,
+              16
+            ],
+            "text": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 1",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 64,
+            "rounds": 64,
+            "proposed_tokens": 0,
+            "accepted_tokens": 0,
+            "rejected_tokens": 0,
+            "tokens_per_round": 1.0,
+            "suffix_enabled": false,
+            "verification_calls": 0,
+            "verified_positions": 0,
+            "kv_tokens": 153,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        },
+        {
+          "configuration": "candidate_suffix",
+          "result": {
+            "token_ids": [
+              16,
+              11,
+              220,
+              17,
+              11,
+              220,
+              18,
+              11,
+              220,
+              19,
+              11,
+              220,
+              20,
+              11,
+              220,
+              21,
+              11,
+              220,
+              22,
+              11,
+              220,
+              23,
+              11,
+              220,
+              24,
+              11,
+              220,
+              16,
+              15,
+              11,
+              220,
+              16,
+              16,
+              11,
+              220,
+              16,
+              17,
+              11,
+              220,
+              16,
+              18,
+              11,
+              220,
+              16,
+              19,
+              11,
+              220,
+              16,
+              20,
+              11,
+              220,
+              16,
+              21,
+              11,
+              220,
+              16,
+              22,
+              11,
+              220,
+              16,
+              23,
+              11,
+              220,
+              16
+            ],
+            "text": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 1",
+            "finish_reason": "length"
+          },
+          "metrics": {
+            "prompt_tokens": 90,
+            "reused_prefix_tokens": 0,
+            "output_tokens": 64,
+            "rounds": 55,
+            "proposed_tokens": 27,
+            "accepted_tokens": 9,
+            "rejected_tokens": 18,
+            "tokens_per_round": 1.1636363636363636,
+            "suffix_enabled": true,
+            "verification_calls": 27,
+            "verified_positions": 54,
+            "kv_tokens": 153,
+            "context_limit": 4096,
+            "evaluated_prompt_tokens": 90
+          }
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "scope": "Exact visible IDs, text and natural stop/cap through the real adapter; fixed nine and eighteen case suites plus repetitive/budget fixtures. Not an independent model-quality claim.",
+  "hashes": {
+    "$REPO/build/native-cpu/build-15/qwen_cpu": "0317e37023a50e2a9902e0aba58110a27158ec6af61ac7aa6da1c19c41837f59",
+    "$REPO/build/native-cpu/build-12/qwen_cpu": "bada457a466db58a0ac8908c4d9fa59846d4f5c6a4773d812498a1ee38569059",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/tools/check_native_suffix.py": "1b1330b5bca22e844a2c7357ef2eb3525783cf75f227d6e7fb256a8723897617",
+    "$REPO/tools/native_cpu_chat.py": "730b53fddf34da236140424128d8099a9024eebf5a75d2ac9c320a7f348c79cd",
+    "$REPO/tools/suffix.py": "06bd949ad8f1c4b96fa641b1bbde8a0e706519f26d4267e7e4e3342999a12ab7"
+  },
+  "drafted_tokens": 63,
+  "accepted_tokens": 32,
+  "guard_after": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Validate candidate15 conversation trajectories with suffix off and on",
+      "started_at": "2026-11-12T16:48:23.399631+00:00"
+    }
+  },
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-15-suffix-trajectories.json",
+    "raw_source_sha256": "6b89b5c5dd364317b05e415fa4abce22cff4184db21117eebe06bc3c3cc52976",
+    "sanitization": "Repository/home prefixes replaced; process IDs and unscored incidental latency/rate metrics omitted. Embedded hashes identify raw artifacts."
+  }
+}

@@ -57,3 +57,44 @@ matrix, not suffix acceptance rates, browser correctness or speed. CLI/adapter
 integration, EOS behavior and measured benefit require separate gates.
 
 Evidence: [sanitized full B2 API gate](../reports/native-cpu-b2-api-gate.json).
+
+## Candidate-15 CLI and adapter correctness
+
+Candidate-15 passed the real CLI gate using a greeting prompt that naturally
+reached EOS. The five cases covered first rejection, acceptance plus bonus,
+first-position EOS matching/rejecting the proposal, and bonus EOS. Every
+committed full-logit and hidden-vector state matched the ordinary sequential
+path. Malformed commands and chat-mode verification were rejected with the
+specified full reset.
+
+The first attempt used a prompt that did not reach EOS within the checker's
+64-step discovery cap. That run never reached the EOS-specific verification
+cases; it is a **test-fixture limitation**, not evidence of an engine failure.
+Both the incomplete attempt and the successful greeting-fixture result are
+preserved.
+
+Across 35 real-adapter fixtures, frozen build12, candidate15 with suffix off,
+and candidate15 with greedy suffix on produced identical visible token IDs,
+text and natural stop/output-cap outcomes. These included the fixed nine- and
+eighteen-case suites plus repetitive and budget fixtures. The enabled path
+made **63 proposals and accepted 32**. Those counts demonstrate exercised
+acceptance/rejection paths on these fixtures; they are not a general acceptance
+rate estimate or a performance result. Unscored incidental timing fields were
+omitted from the published correctness archive.
+
+Candidate15 is not the live release; build12 remains live. No suffix speedup
+or default-enablement claim is made. Chat drafting remains unsupported.
+
+Evidence: [CLI gate](../reports/native-cpu-build-15-suffix-cli.json),
+[original fixture limitation](../reports/native-cpu-build-15-suffix-cli-fixture-limit.json),
+and [35 adapter trajectories](../reports/native-cpu-build-15-suffix-trajectories.json).
+
+The candidate15 ordinary path also matched frozen build12 bit-for-bit on
+**32 full-vocabulary arrays**: two repeated captures of four tiny positions,
+eight short-prompt positions, two 513-token boundary positions and two
+3968-token-context positions. This independently checks the default path
+against the prior binary, complementing the direct API gate that compares
+verification with sequential steps inside the new core. It supports carrying
+forward prior numerical evidence on these matched trajectories, without
+claiming exhaustive equivalence.
+See the [frozen-build exact gate](../reports/native-cpu-build-15-exact-gate.json).
