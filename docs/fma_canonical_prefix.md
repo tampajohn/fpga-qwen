@@ -44,3 +44,24 @@ Use the chosen combined artifact for any required maximum-context gate, avoiding
 redundant capacity fills on superseded binaries. Only after exact route gates may
 an exclusive paired cache-on/off benchmark measure benefit. Cross-profile FMA
 versus FP64 equivalence is not claimed. Frozen binaries are never relabeled.
+
+## Completed combined-artifact route evidence
+
+Build `fma-prefill-752d43807904a35f`, SHA256
+`6c9ab44bf49b9f35ebf1a86897c284640041fb2a1a811f38184bff306f9e1b89`,
+combines fused prefill, phase pools and the opt-in capability. With explicit
+`PREFILL_12`, the existing suites passed 31 cache lifecycle comparisons, matching
+decode-token exclusion, and 14 greedy/seeded suffix/recovery comparisons. Cache-off
+and cache-on retained-position logits and IDs were exact; the cache lifecycle
+suite reused 472 acknowledged safe tokens in total. This is fixed-eight decode /
+twelve-prefill coverage, not arbitrary worker-count coverage. All source and
+artifact hashes remained unchanged. See `reports/fma-canonical-real.json` and its
+companion reports. These correctness runs are not performance measurements.
+
+The same frozen combined artifact subsequently passed the actual 4,096-token
+boundary against frozen fused-only reference `013a56b2`: full B8 fill, scalar
+decode at position 4,096, B4 verification through position 4,096, valid one-token
+prefill tail, and overflow rejection. Scalar/B4 IDs and complete logit bytes
+matched. Phase telemetry showed two pool constructions and correct purpose
+routing; both binary hashes remained unchanged. The 275.744-second elapsed test
+is correctness evidence only. See `reports/fma-canonical-capacity.json`.

@@ -1,0 +1,236 @@
+{
+  "completed": true,
+  "reference_checked": true,
+  "timing_claim": false,
+  "max_causal_position": 4095,
+  "max_position_scalar_id_position": [
+    21806,
+    4096
+  ],
+  "scalar_full_logits_bit_identical": true,
+  "max_position_fp32_b4_verification_ids_positions": [
+    [
+      21806,
+      4093
+    ],
+    [
+      21806,
+      4094
+    ],
+    [
+      21806,
+      4095
+    ],
+    [
+      21806,
+      4096
+    ]
+  ],
+  "full_logits_bit_identical": true,
+  "valid_single_token_tail": true,
+  "overflow_rejected": true,
+  "phase_routing_at_boundary": [
+    {
+      "method": "prefill",
+      "position": 4096,
+      "routing": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71680,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            28672,
+            71680,
+            43008,
+            33822867456
+          ]
+        ]
+      }
+    },
+    {
+      "method": "token",
+      "position": 4096,
+      "routing": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            141,
+            0,
+            0
+          ],
+          [
+            0,
+            71680,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            56,
+            140,
+            84,
+            5505024
+          ],
+          [
+            28672,
+            71680,
+            43008,
+            33822867456
+          ]
+        ]
+      }
+    },
+    {
+      "method": "block",
+      "position": 4096,
+      "routing": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            141,
+            0,
+            144
+          ],
+          [
+            0,
+            71680,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            112,
+            280,
+            168,
+            27525120
+          ],
+          [
+            28672,
+            71680,
+            43008,
+            33822867456
+          ]
+        ]
+      }
+    },
+    {
+      "method": "prefill",
+      "position": 4096,
+      "routing": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            141,
+            0,
+            144
+          ],
+          [
+            0,
+            71820,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            112,
+            280,
+            168,
+            27525120
+          ],
+          [
+            28728,
+            71820,
+            43092,
+            33855897600
+          ]
+        ]
+      }
+    }
+  ],
+  "b8_prefill_reached": 4096,
+  "artifacts": [
+    {
+      "reference": false,
+      "binary": "$WORKSPACE/fpga-qwen-fma-canonical-cache/build/variants/fma-prefill-752d43807904a35f/full/Vqwen_behavioral",
+      "sha256": "6c9ab44bf49b9f35ebf1a86897c284640041fb2a1a811f38184bff306f9e1b89",
+      "precision": {
+        "precision_profile": "fp32_b1_fp32_fma_prefill",
+        "scalar_projection": "fp32",
+        "prefill_projection": "fp32",
+        "verification_projection": "fp32",
+        "vocabulary_projection": "fp32",
+        "scalar_accumulation": "separate",
+        "prefill_accumulation": "fused",
+        "verification_accumulation": "separate",
+        "vocabulary_accumulation": "separate",
+        "attention_kv": "fp64",
+        "max_verification_block": 4,
+        "prefix_reuse_supported": false,
+        "canonical_prefix_policy": "fp32_fma_b8_aligned_v1"
+      }
+    },
+    {
+      "reference": true,
+      "binary": "$WORKSPACE/fpga-qwen-fma32-prefill-model/build/variants/fma-prefill-2029086fc68c8bdc/full/Vqwen_behavioral",
+      "sha256": "013a56b2271120f6ca39cf38f74398b2d918e7d8c5e7dfe0b37679bd8317ec32",
+      "precision": {
+        "precision_profile": "fp32_b1_fp32_fma_prefill",
+        "scalar_projection": "fp32",
+        "prefill_projection": "fp32",
+        "verification_projection": "fp32",
+        "vocabulary_projection": "fp32",
+        "scalar_accumulation": "separate",
+        "prefill_accumulation": "fused",
+        "verification_accumulation": "separate",
+        "vocabulary_accumulation": "separate",
+        "attention_kv": "fp64",
+        "max_verification_block": 4,
+        "prefix_reuse_supported": false,
+        "canonical_prefix_policy": "none"
+      }
+    }
+  ],
+  "artifacts_unchanged": true,
+  "source_commit": "46517a9",
+  "test_source_hashes": {
+    "tools/check_phase_capacity.py": "7c5ec63134f4ca5cdfdffe459ef1e0ec79b0da427bea73cc080b8d0844677028",
+    "tests/test_prefill_model.py": "04a6007488c81e2b85d6152ea8db188aa2b5c4b999d0e6522e3551453a01a06d"
+  },
+  "wall_seconds": 275.744
+}
