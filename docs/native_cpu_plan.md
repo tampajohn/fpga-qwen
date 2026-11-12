@@ -643,3 +643,19 @@ start was not independently confirmed, and the raw profile remains local.
 
 Evidence: [extended conversation results](../reports/native-cpu-build-11-extended-quality.json)
 and [sanitized 3968-token profile summary](../reports/native-cpu-build-11-profile3968-summary.json).
+
+### Candidate 12: paired GQA prefill and measured prefix reuse
+
+Candidate 12 shares K/V conversion between the two query heads belonging to each KV head during batched prefill. Its [immutable build record](../reports/native-cpu-build-12-build.json), [56-array exact comparison](../reports/native-cpu-build-12-exact-gate.json), [nine-case quality suite](../reports/native-cpu-build-12-quality.json), and [28-case prefix checker](../reports/native-cpu-build-12-prefix-check.json) are archived. The compared full-logit arrays match exactly; quality trajectories match the tuned llama baseline, with both scoring 4/9 under the unchanged rubric. Prefix checks include greedy and seeded chat, edits, session changes, cancellation and CLI behavior. These are scoped correctness results, not a general model-quality claim.
+
+The [two-pair discovery against build 11](../reports/native-cpu-build-12-vs11-extended-discovery.json) remains exploratory. It does not establish a performance improvement. Separately, the [ten-pair cache-on/off confirmation](../reports/native-cpu-build-12-prefix-confirmation.json) measures the same build 12 binary on primed prompts with an edited tail, with priming outside the measured request. Output IDs and stop behavior match between configurations. The cache reuses only completed canonical 512-token prefill blocks and recomputes the remaining tail.
+
+| Prompt tokens | Median TTFT fresh → reused (seconds) | Median paired TTFT speedup | 95% paired bootstrap interval |
+|---|---|---|---|
+| 1,024 | 1.335 → 0.803 | 1.632× | 1.575–1.730× |
+| 2,048 | 3.728 → 1.397 | 2.672× | 2.557–2.819× |
+| 3,968 | 11.719 → 1.974 | 5.744× | 5.512–6.512× |
+
+These paired ratios are calculated per round, not from ratios of independent medians. All three decode-speed confidence intervals include 1, so there is no established decode improvement from reuse. The TTFT finding applies to this primed, edited-tail workload; it does not describe a fresh prompt or arbitrary conversation reuse. The browser benchmark guard excludes chat contention, but unrelated host activity was not controlled. Standard candidate-12 versus llama confirmation and browser promotion are separate steps; this entry does not claim deployment.
+
+The [short-context build-11 profiling summary](../reports/native-cpu-build-11-profile85-summary.json) is also archived: 85 prompt tokens, 32-token requests, 48 fresh requests, 12 decode/6 prefill threads. Its 239,921 thread-stack observations include 134,510 waiting observations (`__psynch_cvwait`) and 27,503 ordinary projection-worker observations. These counts include sleeping threads and are not CPU percentages or wall-time attribution. The aggregate profile has no phase filter and does not isolate vocabulary-head projection from other projections; attach-start confirmation is also limited as recorded in the report.
