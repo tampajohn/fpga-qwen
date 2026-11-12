@@ -1,0 +1,15 @@
+{
+  "completed": false,
+  "inference_started": false,
+  "scoreboard_directory_created": false,
+  "error": "Input/hash mismatch: tools/native_cpu_chat.py",
+  "reason": "Metadata-only update after diagnostic saved-oracle capture; historical helper version requires explicit provenance binding.",
+  "diagnostic_helper_sha256": "730b53fddf34da236140424128d8099a9024eebf5a75d2ac9c320a7f348c79cd",
+  "current_helper_sha256": "154729079992e9c8c0df6e43077789ea73b8f85decb0a000f40e4cc3853b5882",
+  "historical_git_ref": "a435f1e^:tools/native_cpu_chat.py",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/build-18-scoreboard-preflight-failure.json",
+    "source_sha256": "f1d4d4bb00255ae790e5f7cc9ba00e525216a2b09b4fe0cbfff96e4d8e784a9e",
+    "sanitization": "No local identifiers present; failed status and historical/current helper hashes retained."
+  }
+}

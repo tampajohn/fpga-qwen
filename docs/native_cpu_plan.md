@@ -1093,3 +1093,23 @@ This is interface correctness evidence, not a timing benchmark or deployment.
 The owned isolated server was stopped after the test; live build12 was not
 replaced. Candidate18's direct comparison against tuned llama remains a
 separate pending measurement, and no broad speed or completion claim follows.
+
+
+### Candidate18 scoreboard: preserved provenance preflight failure
+
+The [first scoreboard attempt](../reports/native-cpu-build-18-scoreboard-preflight-failure.json)
+stopped before inference or scoreboard-directory creation because the saved
+diagnostic capture bound an older `native_cpu_chat.py` hash. **No timing samples
+were collected.** The subsequent change only exposed norm precision metadata;
+the old and current helper hashes are retained in the failed evidence.
+
+The exact historical helper SHA was matched to Git commit
+`e80d9159dc134eba9821b9ed7706172f7602e9a3`. The retry uses a narrowly scoped
+historical-helper resolver and independently pins the current helper used for
+execution. It does not waive weights, binaries, fixtures or arbitrary source
+mismatches. This separates historical evidence provenance from current run
+provenance instead of rewriting the saved report as though it used new code.
+
+A new direct candidate18-versus-llama run has started separately. Its timing
+and selection results remain pending; no partial results or samples from the
+failed preflight are represented as performance evidence here.
