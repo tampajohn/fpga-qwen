@@ -22,6 +22,8 @@ def main():
     parser.add_argument('--url', default='http://127.0.0.1:8766')
     parser.add_argument('--live', action='store_true', help='Explicitly allow deployment checks on localhost:8765')
     parser.add_argument('--expect-prefix-reuse', action='store_true')
+    parser.add_argument('--expect-norm-accumulator-f64', action='store_true',
+                        help='After native startup, require FP64 norm accumulation in HTTP/catalog and UI')
     parser.add_argument('--expect-greedy-suffix', action='store_true',
                         help='Expect a capability-aware B2 engine; old build12 remains the no-flag case')
     parser.add_argument('--directory', type=Path, required=True)
@@ -37,6 +39,7 @@ def main():
     args.directory.mkdir(parents=True, exist_ok=False)
     report = dict(completed=False, gpu_inference=False, inference_interface='Actual localhost browser chat',
                   url=args.url, live_deployment_check=args.live, expect_greedy_suffix=args.expect_greedy_suffix,
+                  expect_norm_accumulator_f64=args.expect_norm_accumulator_f64,
                   checks={}, replies=[], console_errors=[])
     def save():
         (args.directory/'report.json').write_text(json.dumps(report,indent=2)+'\n')
@@ -122,6 +125,18 @@ def main():
             if not args.expect_prefix_reuse:
                 assert status['cached_tokens']==0
             report['checks']['fresh_context_status'] = True
+            if args.expect_norm_accumulator_f64:
+                # Capabilities come from the running binary handshake: never
+                # require precision metadata from the cold catalog before send.
+                native = next(item for item in status['backends'] if item['id'] == 'native-cpu-f16')
+                assert status.get('norm_accumulator_precision') == 'f64'
+                assert native.get('norm_accumulator_precision') == 'f64'
+                expect(page.locator('#backend-about')).to_contain_text(
+                    'Normalization sums accumulate in FP64.', timeout=15000)
+                report['checks']['warm_norm_accumulator_precision'] = dict(
+                    http=status['norm_accumulator_precision'], catalog=native['norm_accumulator_precision'],
+                    ui_disclosure=True)
+                save()
             if args.expect_greedy_suffix:
                 native = next(item for item in status['backends'] if item['id'] == 'native-cpu-f16')
                 assert native['suffix_supported'] is True and native['suffix_greedy_only'] is True
