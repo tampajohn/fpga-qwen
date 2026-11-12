@@ -924,7 +924,11 @@ trajectory; it does not establish a general root cause, universal accuracy, or
 a speed improvement. The helper affects layer, Q/K and final normalization,
 and later FP16 KV rounding can amplify changes. FP64 accumulation is a disclosed
 mixed-precision diagnostic, not evidence that an unchanged all-FP32 engine now
-passes. Shorter held-out numerical/quality checks remain pending.
+passes. The separate [short held-out oracle gate](../reports/native-cpu-norm-f64-short-oracle.json)
+passed all eight positions 85–92 under unchanged limits: maximum absolute error
+0.007540464 and maximum per-position RMS 0.001723343, with all greedy IDs matching.
+Further 452/1024/2048 numerical checks and broader quality validation remain
+pending; no result is inferred for them from this short pass.
 
 The candidate is **not released or promoted**. Live build12 and its original
 near-4K failures remain unchanged, and the follow-on goal remains open. There
