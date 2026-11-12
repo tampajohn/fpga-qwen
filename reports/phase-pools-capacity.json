@@ -1,0 +1,202 @@
+{
+  "completed": true,
+  "fp64_b8_prefill_reached": 4096,
+  "reference_checked": true,
+  "timing_claim": false,
+  "max_causal_position": 4095,
+  "max_position_scalar_id_position": [
+    21806,
+    4096
+  ],
+  "scalar_full_logits_bit_identical": true,
+  "max_position_fp32_b4_verification_ids_positions": [
+    [
+      21806,
+      4093
+    ],
+    [
+      21806,
+      4094
+    ],
+    [
+      21806,
+      4095
+    ],
+    [
+      21806,
+      4096
+    ]
+  ],
+  "full_logits_bit_identical": true,
+  "valid_single_token_tail": true,
+  "overflow_rejected": true,
+  "phase_routing_at_boundary": [
+    {
+      "method": "prefill",
+      "position": 4096,
+      "routing": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71680,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            28672,
+            71680,
+            43008,
+            33822867456
+          ]
+        ]
+      }
+    },
+    {
+      "method": "token",
+      "position": 4096,
+      "routing": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            141,
+            0,
+            0
+          ],
+          [
+            0,
+            71680,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            56,
+            140,
+            84,
+            5505024
+          ],
+          [
+            28672,
+            71680,
+            43008,
+            33822867456
+          ]
+        ]
+      }
+    },
+    {
+      "method": "block",
+      "position": 4096,
+      "routing": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            141,
+            0,
+            144
+          ],
+          [
+            0,
+            71680,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            112,
+            280,
+            168,
+            27525120
+          ],
+          [
+            28672,
+            71680,
+            43008,
+            33822867456
+          ]
+        ]
+      }
+    },
+    {
+      "method": "prefill",
+      "position": 4096,
+      "routing": {
+        "selector": "PREFILL_12",
+        "resident_decode_workers": 8,
+        "resident_prefill_workers": 12,
+        "prefill_workers": 12,
+        "decode_workers": 8,
+        "pool_constructions": 2,
+        "dispatch_counts": [
+          [
+            141,
+            0,
+            144
+          ],
+          [
+            0,
+            71820,
+            0
+          ]
+        ],
+        "group_counters": [
+          [
+            112,
+            280,
+            168,
+            27525120
+          ],
+          [
+            28728,
+            71820,
+            43092,
+            33855897600
+          ]
+        ]
+      }
+    }
+  ],
+  "post_terminal_artifacts": [
+    {
+      "path": "$WORKSPACE/fpga-qwen-attention-combined/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-static-kv-prefill-b8-scalar-group-fp32-b1-verify-b4-batch-attention-qk2-head-pairs-value-pairs/full/Vqwen_behavioral",
+      "sha256": "f17ae654f0c64ac47b63225a3406edc8bcd114cc86e67d56610090bf5d7c075d"
+    },
+    {
+      "path": "$WORKSPACE/fpga-qwen-phase-pools/build/variants/phase-pools-b3eaa86c6c880192/full/Vqwen_behavioral",
+      "sha256": "162bed6577d91b19a57ea0f83d244d3fbb2666e329e90733f56f347267e8580d"
+    }
+  ],
+  "session_id": 56923,
+  "exit_code": 0,
+  "fixture_sha256": "d393d317e995837fffd84aa6f89b93359e4efd49a81a7d76c3fd0c0ee6fd176d",
+  "base_fixture_sha256": "04a6007488c81e2b85d6152ea8db188aa2b5c4b999d0e6522e3551453a01a06d",
+  "scope": "Actual4096fill, maxscalar andB4verifier final fullbits, exactIDs, tail/overflow, candidatepurpose telemetry. Correctness only; concurrent compilation permitted."
+}

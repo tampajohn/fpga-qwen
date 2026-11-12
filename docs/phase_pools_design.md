@@ -1,6 +1,6 @@
 # Proposed persistent pools by command purpose
 
-Status: optional implementation and correctness gates complete; both timing comparisons complete; actual capacity validation is running. Worktree base `4abf9cd`; deployed combined artifact f17 remains immutable. The measured worker sweep motivates testing twelve prefill workers while keeping eight scalar/verification workers. A gain is a hypothesis, not a multiplied estimate from separate sweep results.
+Status: optional implementation and correctness gates complete; both timing comparisons and actual capacity validation are complete; no default or UI promotion is included. Worktree base `4abf9cd`; deployed combined artifact f17 remains immutable. The measured worker sweep motivates testing twelve prefill workers while keeping eight scalar/verification workers. A gain is a hypothesis, not a multiplied estimate from separate sweep results.
 
 ## Bounded first implementation
 
@@ -47,7 +47,7 @@ Frozen artifact `162bed6577d91b19a57ea0f83d244d3fbb2666e329e90733f56f347267e8580
 
 [Gate evidence](../reports/phase-pools-gates.json) includes exact full-vocabulary/ID comparisons against f17 for all8prefill tails, sampled verification1..4,85/452contexts and no-logits verification1..4 followed by scalar continuation. Logical counters prove12pool receives only prefill and OFF never dispatches it; aggregate groupstats equals the sum of per-pool counters. Policy mocks cover scopes/configuration/exception restoration. Existing canonical-prefix, matching-decode-token exclusion and seeded suffix/rejection/cancellation/restart checks passed in enabled mode.
 
-The first generic canonical run stopped at an intentionally unsupported workers1 reconfiguration, not a numerical mismatch. An explicit `SV_CANONICAL_FIXED_WORKERS=8` test mode then passed the full supported lifecycle path; default fixture1/3/17 behavior remains unchanged. Second-pool startup-failure cleanup was source-reviewed but not independently fault-injected; do not describe it as a tested failure path. Actual 4096-token capacity remains a separate promotion gate; both timing comparisons are recorded below. No default or UI change is included.
+The first generic canonical run stopped at an intentionally unsupported workers1 reconfiguration, not a numerical mismatch. An explicit `SV_CANONICAL_FIXED_WORKERS=8` test mode then passed the full supported lifecycle path; default fixture1/3/17 behavior remains unchanged. Second-pool startup-failure cleanup was source-reviewed but not independently fault-injected; do not describe it as a tested failure path. Actual 4096-token capacity and both timing comparisons are recorded below; deployment changes require their own validation. No default or UI change is included.
 
 ## Same-binary paired timing
 
@@ -62,3 +62,9 @@ The [direct report](../reports/phase-pools-deployed.json) compares frozen deploy
 All six prefill and total pairs favored the phase candidate. Short medians: prefill1.093× (1.079–1.113), decode1.026× (1.001–1.050), total1.072× (1.043–1.076). Long medians: prefill1.179× (1.101–1.190), decode1.003× (0.926–1.037), total1.152× (1.087–1.160). All scored pairs passed output ID, consumed-position and positive candidate purpose-counter checks. Full-logit bits matched at warmup and after the final pair of each profile; intermediate scored pairs were not independently dumped. This is evidence of a total-request gain against deployment, with mixed long decode results. It does not isolate the idle pool's cost or prove a decode gain; separately linked host code, thread residency and scheduling all belong to this composition. Do not multiply it with same-binary ratios or compare runs as though host conditions were identical. No default promotion is included.
 
 Interpretation of the direct total ratios: a median 1.072× speedup corresponds to approximately 6.7% less elapsed time, and 1.152× corresponds to approximately 13.2% less elapsed time. Speedup ratios and percentage latency reductions are different quantities.
+
+## Actual context-capacity gate
+
+The [capacity report](../reports/phase-pools-capacity.json) records a real fill to 4096 tokens for frozen phase artifact 162bed and frozen f17, without injected positions. After filling 4088 tokens, an eight-token prefill reaches the limit. Truncating to 4095 then executing a scalar token exercises operation 6 at the maximum causal position; truncating to 4092 then verifying four tokens exercises operation 5 there. Both final full-vocabulary dumps and IDs/positions matched bit-for-bit. A one-token prefill tail reaches 4096, and a five-token request from 4092 is rejected.
+
+Candidate telemetry at the boundary confirms that prefill dispatches used the twelve-worker pool, scalar/verification dispatches used the eight-worker pool, and exactly two pools were constructed. Session 56923 exited successfully and all test processes closed. Explicit post-terminal binary hashes still match both frozen artifacts. The approximately 292-second test duration is correctness runtime, not benchmark evidence; unrelated compiler work could overlap. The [wrapper](../tools/check_phase_capacity.py) reuses the existing capacity test and adds phase telemetry.
