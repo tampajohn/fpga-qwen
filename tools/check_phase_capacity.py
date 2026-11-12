@@ -1,5 +1,6 @@
 """Actual4096 boundary gate with phase-routing telemetry; no timing claim."""
 import json
+import hashlib
 import os
 from pathlib import Path
 import sys
@@ -9,11 +10,14 @@ from tests.test_prefill_model import PrefillModelTests, PrefillProtocolModel, BI
 
 class PhaseCapacityTests(PrefillModelTests):
     observations=[]
+    artifacts=[]
     def model(self,reference=False,workers=8):
         model=PrefillProtocolModel(binary=REFERENCE if reference else BINARY,workers=workers,lanes=8)
         self.addCleanup(model.close)
         model.phase_pool_selector=None if reference else 'PREFILL_12'
         model.start()
+        binary=Path(REFERENCE if reference else BINARY).resolve()
+        self.artifacts.append(dict(reference=reference,binary=str(binary),sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),precision=json.loads(model.command('precision'))))
         if not reference:
             initial=json.loads(model.command('phase_pools'))
             self.assertEqual(initial['selector'],'PREFILL_12')
@@ -40,6 +44,11 @@ class PhaseCapacityTests(PrefillModelTests):
         self.assertGreater(last[0][0],0);self.assertGreater(last[0][2],0);self.assertGreater(last[1][1],0)
         path=Path(os.environ['PREFILL_CAPACITY_REPORT'])
         report=json.loads(path.read_text());report['phase_routing_at_boundary']=self.observations
+        report['b8_prefill_reached']=report.pop('fp64_b8_prefill_reached')
+        report['artifacts']=self.artifacts
+        for artifact in self.artifacts:
+            self.assertEqual(hashlib.sha256(Path(artifact['binary']).read_bytes()).hexdigest(),artifact['sha256'])
+        report['artifacts_unchanged']=True
         path.write_text(json.dumps(report,indent=2)+'\n')
 
 if __name__=='__main__':
