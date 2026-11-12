@@ -5,13 +5,14 @@
 #include <algorithm>
 #include <array>
 #include <bit>
+#include <atomic>
+#include <chrono>
 #include <cmath>
 #include <condition_variable>
 #include <cstdint>
 #include <cstring>
 #include <fcntl.h>
 #include <fstream>
-#include <functional>
 #include <limits>
 #include <map>
 #include <mutex>
@@ -30,39 +31,76 @@ static_assert(sizeof(Half)==2 && sizeof(float)==4);
 static_assert(std::endian::native==std::endian::little,"Weight pack requires little endian");
 void require(bool yes,const std::string& message) { if(!yes) throw std::runtime_error(message); }
 
-// Sleeping persistent workers; the submitting thread is worker zero. Each job
-// completes before buffers are reused, including exceptional worker completion.
+// The submitting thread is worker zero. Workers spin briefly between adjacent
+// kernels, then park; an inactive pool never spins indefinitely. Publication and
+// the transition into CV wait share a mutex, preventing a lost wakeup. Completion
+// has one cache-line-separated release/acquire slot per worker, not a shared
+// decrement counter. All jobs complete before scratch or job storage is reused.
 class Pool {
+    struct alignas(128) Completion { std::atomic<uint64_t> generation{0}; };
     int n_; std::vector<std::thread> threads_; std::mutex mutex_;
-    std::condition_variable start_,done_; bool stop_=false;
-    uint64_t generation_=0; int remaining_=0; size_t count_=0;
-    std::function<void(size_t,size_t)> job_; std::exception_ptr error_;
+    std::condition_variable start_; std::atomic<bool> stop_{false};
+    alignas(128) std::atomic<uint64_t> generation_{0};
+    std::array<Completion,64> completed_{};
+    int parked_=0; size_t count_=0;
+    void* job_context_=nullptr;
+    void (*job_)(void*,size_t,size_t,int)=nullptr; std::exception_ptr error_;
+    void work(int i) {
+        uint64_t seen=0;
+        for(;;) {
+            const auto deadline=std::chrono::steady_clock::now()+std::chrono::microseconds(50);
+            unsigned spins=0;
+            while(generation_.load(std::memory_order_acquire)==seen && !stop_.load(std::memory_order_relaxed)) {
+                // ARM's scheduling hint does not enter the kernel.
+                __asm__ volatile("yield" ::: "memory");
+                if((++spins&63)==0 && std::chrono::steady_clock::now()>=deadline)break;
+            }
+            if(stop_.load(std::memory_order_acquire))return;
+            if(generation_.load(std::memory_order_acquire)==seen) {
+                std::unique_lock lock(mutex_);++parked_;
+                start_.wait(lock,[&]{return stop_.load(std::memory_order_relaxed) || generation_.load(std::memory_order_acquire)!=seen;});
+                --parked_;
+                if(stop_.load(std::memory_order_relaxed))return;
+            }
+            const uint64_t next=generation_.load(std::memory_order_acquire);
+            const size_t count=count_;
+            try {job_(job_context_,count*i/n_,count*(i+1)/n_,i);}
+            catch(...) {std::lock_guard lock(mutex_);if(!error_)error_=std::current_exception();}
+            seen=next;completed_[i].generation.store(seen,std::memory_order_release);
+        }
+    }
 public:
     explicit Pool(int n):n_(n) {
-        try { for(int i=1;i<n_;++i) threads_.emplace_back([this,i] {
-            uint64_t seen=0;
-            for(;;) {
-                std::unique_lock lock(mutex_);
-                start_.wait(lock,[&]{return stop_ || generation_!=seen;});
-                if(stop_) return;
-                seen=generation_; auto count=count_; lock.unlock();
-                try { job_(count*i/n_,count*(i+1)/n_); }
-                catch(...) { std::lock_guard guard(mutex_); if(!error_) error_=std::current_exception(); }
-                lock.lock(); if(--remaining_==0) done_.notify_one();
-            }
-        }); } catch(...) { shutdown(); throw; }
+        try {for(int i=1;i<n_;++i)threads_.emplace_back([this,i]{work(i);});}
+        catch(...) {shutdown();throw;}
     }
     ~Pool(){shutdown();}
     void shutdown() {
-        {std::lock_guard lock(mutex_);stop_=true;}
-        start_.notify_all(); for(auto& t:threads_) if(t.joinable()) t.join();
+        {std::lock_guard lock(mutex_);stop_.store(true,std::memory_order_release);}
+        start_.notify_all();for(auto& t:threads_)if(t.joinable())t.join();
     }
     template<class Fn> void run(size_t count,Fn fn) {
-        {std::lock_guard lock(mutex_); job_=fn;count_=count;remaining_=n_-1;error_=nullptr;++generation_;}
-        start_.notify_all();
-        try {job_(0,count/n_);} catch(...) {std::lock_guard lock(mutex_);if(!error_)error_=std::current_exception();}
-        std::unique_lock lock(mutex_);done_.wait(lock,[&]{return remaining_==0;});
-        job_={};if(error_)std::rethrow_exception(error_);
+        uint64_t next;bool wake;
+        {
+            std::lock_guard lock(mutex_);
+            // fn stays on this caller's stack until every completion is acquired.
+            // A non-owning thunk avoids per-kernel std::function allocations.
+            job_context_=&fn;job_=[](void* context,size_t begin,size_t end,int worker){(*static_cast<Fn*>(context))(begin,end,worker);};
+            count_=count;error_=nullptr;
+            next=generation_.load(std::memory_order_relaxed)+1;
+            generation_.store(next,std::memory_order_release);wake=parked_!=0;
+        }
+        if(wake)start_.notify_all();
+        try {job_(job_context_,0,count/n_,0);}
+        catch(...) {std::lock_guard lock(mutex_);if(!error_)error_=std::current_exception();}
+        for(int i=1;i<n_;++i) {
+            unsigned spins=0;
+            while(completed_[i].generation.load(std::memory_order_acquire)!=next) {
+                __asm__ volatile("yield" ::: "memory");
+                if((++spins&1023)==0)std::this_thread::yield();
+            }
+        }
+        job_=nullptr;job_context_=nullptr;if(error_)std::rethrow_exception(error_);
     }
 };
 struct Mapping {
@@ -98,6 +136,10 @@ struct Model::Impl {
     Options options;Mapping mapping;std::map<std::string,Tensor> tensors;
     std::unique_ptr<Pool> decode_pool,prefill_pool;
     std::vector<Half> keys,values;std::vector<float> cosines,sines,output;
+    // Retain allocation capacity across prefill chunks and decode steps. Every
+    // logical element is overwritten before use; reset only invalidates KV/logits.
+    std::vector<float> x,h,q,k,v,attended,residual,gate,up,attention_scores;
+    std::array<float,H> last_hidden{};
     int pos=0;
     Impl(const std::string& path,Options opt):options(opt),mapping(path) {
         require(opt.decode_threads>=1&&opt.decode_threads<=64&&opt.prefill_threads>=1&&opt.prefill_threads<=64,"Threads must be in 1..64");
@@ -142,6 +184,10 @@ struct Model::Impl {
         std::string extra;require(!(index>>extra),"Trailing weight index data");
         std::sort(ranges.begin(),ranges.end());for(size_t i=1;i<ranges.size();++i)require(ranges[i].first>=ranges[i-1].second,"Overlapping tensors");
         keys.resize(size_t(L)*opt.context*K*D);values.resize(keys.size());
+        attention_scores.resize(size_t(std::max(opt.decode_threads,opt.prefill_threads))*opt.context);
+        x.reserve(64*H);h.reserve(64*H);q.reserve(64*Q*D);k.reserve(64*K*D);v.reserve(64*K*D);
+        attended.reserve(64*Q*D);residual.reserve(64*H);gate.reserve(64*F);up.reserve(64*F);
+        output.reserve(vocabulary);
         cosines.resize(size_t(opt.context)*64);sines.resize(cosines.size());
         for(int p=0;p<opt.context;++p)for(int j=0;j<64;++j){double angle=p/std::pow(1000000.0,2.0*j/D);cosines[p*64+j]=std::cos(angle);sines[p*64+j]=std::sin(angle);}
         decode_pool=std::make_unique<Pool>(opt.decode_threads);prefill_pool=std::make_unique<Pool>(opt.prefill_threads);
@@ -151,13 +197,13 @@ struct Model::Impl {
         if(batch>1&&!w.wide.empty()) {
             cblas_sgemm(CblasRowMajor,CblasNoTrans,CblasTrans,batch,w.rows,w.cols,1.0f,x,w.cols,w.wide.data(),w.cols,0.0f,y,w.rows);
         } else {
-            pool.run(size_t(batch)*w.rows,[&](size_t begin,size_t end){for(size_t i=begin;i<end;++i)y[i]=dot(x+(i/w.rows)*w.cols,w.half+(i%w.rows)*w.cols,w.cols);});
+            pool.run(size_t(batch)*w.rows,[&](size_t begin,size_t end,int){for(size_t i=begin;i<end;++i)y[i]=dot(x+(i/w.rows)*w.cols,w.half+(i%w.rows)*w.cols,w.cols);});
         }
     }
     size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*options.context+position)*K+head)*D;}
     void chunk(const int* ids,int batch,Pool& pool) {
-        std::vector<float> x(size_t(batch)*H),h(x.size()),q(size_t(batch)*Q*D),k(size_t(batch)*K*D),v(k.size());
-        std::vector<float> attended(q.size()),residual(x.size()),gate(size_t(batch)*F),up(gate.size());
+        x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
+        attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
         const Half* embeddings=tensor("model.embed_tokens.weight").half;
         for(int b=0;b<batch;++b)for(int j=0;j<H;++j)x[b*H+j]=embeddings[size_t(ids[b])*H+j];
         for(int layer=0;layer<L;++layer){std::string p="model.layers."+std::to_string(layer)+".";
@@ -172,8 +218,8 @@ struct Model::Impl {
                 for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
                 size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
             }
-            pool.run(size_t(batch)*Q,[&](size_t begin,size_t end){
-                std::vector<float> scores(pos+batch);
+            pool.run(size_t(batch)*Q,[&](size_t begin,size_t end,int worker){
+                float* scores=attention_scores.data()+size_t(worker)*options.context;
                 for(size_t item=begin;item<end;++item){int b=item/Q,head=item%Q,kh=head/2,n=pos+b+1;
                     const float* query=q.data()+item*D;float maximum=-std::numeric_limits<float>::infinity();
                     for(int t=0;t<n;++t){float s=dot(query,keys.data()+cache_offset(layer,t,kh),D)*(1.0f/std::sqrt(float(D)));scores[t]=s;maximum=std::max(maximum,s);}
@@ -194,14 +240,14 @@ struct Model::Impl {
         }
         pos+=batch;
         // Keep only last hidden state; vocabulary is computed once per API call.
-        output.resize(H);norm(x.data()+size_t(batch-1)*H,tensor("model.norm.weight").norm,output.data(),H);
+        norm(x.data()+size_t(batch-1)*H,tensor("model.norm.weight").norm,last_hidden.data(),H);
     }
     void append(const std::vector<int>& ids,bool prefill) {
         require(!ids.empty(),"Empty token input");require(ids.size()<=size_t(options.context-pos),"Context capacity exceeded");
         for(int id:ids)require(id>=0&&id<vocabulary,"Token ID out of range");
         Pool& pool=prefill?*prefill_pool:*decode_pool;
         for(size_t begin=0;begin<ids.size();begin+=64){int batch=std::min(size_t(64),ids.size()-begin);chunk(ids.data()+begin,batch,pool);}
-        auto hidden=std::move(output);output.resize(vocabulary);project(tensor("model.embed_tokens.weight"),hidden.data(),output.data(),1,pool);
+        output.resize(vocabulary);project(tensor("model.embed_tokens.weight"),last_hidden.data(),output.data(),1,pool);
     }
 };
 Model::Model(const std::string& path,Options options):impl_(std::make_unique<Impl>(path,options)){}
