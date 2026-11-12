@@ -1141,3 +1141,39 @@ Extended direct timing remains pending in its separate run; no partial
 selection or extended results are published here. Candidate18 is still
 unpromoted, with FP64 norm accumulation disclosed and the original failures
 retained. This standard comparison does not itself complete the follow-on goal.
+
+
+### Candidate18 direct extended scoreboard completed
+
+The [extended ten-pair confirmation](../reports/native-cpu-build-18-final-extended-confirmation.json),
+[analysis](../reports/native-cpu-build-18-final-extended-analysis.json), and
+[completed frozen selection record](../reports/native-cpu-build-18-final-selection.json)
+retain all rounds at 1024/2048/3968 prompt tokens and 128 outputs, without
+pooling contexts or removing outliers. The direct baseline is tuned ON/ON FP16
+llama; both use 12 decode / 6 prefill threads. Ratios above 1 favor candidate18;
+parentheses contain 95% paired bootstrap intervals.
+
+| Prompt tokens | Decode ratio | TTFT speedup | Request speedup |
+|---|---:|---:|---:|
+| 1024 | 0.99957 (0.98132–1.02684) | 0.98708 (0.95471–1.11275) | 0.99321 (0.96547–1.06804) |
+| 2048 | 1.01693 (0.90021–1.04697) | 0.84581 (0.82136–1.00181) | 0.88822 (0.85890–1.00974) |
+| 3968 | 1.11865 (1.02976–1.14253) | 0.74753 (0.69844–0.81015) | 0.80476 (0.75765–0.87475) |
+
+The 1024- and 2048-token decode intervals include 1. Near4K, decode throughput
+favors the candidate, but TTFT and whole-request time favor llama: reciprocal
+median speedups correspond to approximately 34% longer native TTFT and 24%
+longer native request time. Thus faster near4K decode does not make the full
+request faster. The standard-context decode slowdowns above remain part of
+the same scoreboard; there is **no general performance win**.
+
+Candidate18's numerical qualification is the artifact-bound 28-position
+unchanged-limit matrix, plus exact baseline IDs during these 128-output timing
+runs; it is not independent full-logit validation of every generated position.
+FP16 weights/KV and FP64 norm accumulation remain disclosed. Original build12
+failures and unsuccessful optimization experiments remain archived.
+
+The root orchestration selected candidate18 for its validated numerical fix,
+not for universal speed. Deployment and actual live-browser verification are
+pending at this entry; the isolated browser pass is separate evidence. The
+completed scoreboard alone is not a declaration that release work or the
+follow-on goal is complete.
