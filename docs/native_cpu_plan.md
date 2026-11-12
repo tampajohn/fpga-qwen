@@ -694,3 +694,17 @@ FMA order and separate vector nonlinear calls. Pending speculative KV must not
 become committed history or canonical prefix-cache state. There is no browser
 suffix capability or default enablement yet. Numerical, rollback/EOS, browser,
 and paired latency/acceptance gates remain required.
+
+### Direct build-12 versus build-10 uncached control
+
+A separate [completed ten-pair control](../reports/native-cpu-build-12-vs10-standard-confirmation.json) compares the two original native binaries directly, with the same 12/6 threads, weights, subprocess transport, uncached 85/452-token prompts, and 32 exact matching output IDs. The [paired analysis](../reports/native-cpu-build-12-vs10-standard-confirmation-analysis.json) retains every round and uses the existing deterministic 10,000-resample paired bootstrap. Each binary ran first in five rounds.
+
+| Metric (ratio above 1 favors build 12) | 85-token prompt median paired ratio (95% interval) | 452-token prompt median paired ratio (95% interval) |
+|---|---|---|
+| Decode throughput, build 12 / build 10 | 1.040 (0.831–1.331) | 0.989 (0.799–1.172) |
+| TTFT, build 10 / build 12 | 1.028 (0.980–1.149) | 1.055 (0.998–1.125) |
+| Total request time, build 10 / build 12 | 1.022 (0.895–1.214) | 1.028 (0.939–1.140) |
+
+All intervals include 1. This control establishes neither a direct gain nor a direct regression, and the broad bounds do not establish equivalence or a within-10% noninferiority guarantee. For descriptive context only, median decode rates were 131.04/134.61 tokens/s for build 10/12 at the short prompt and 131.02/123.95 at the long prompt; these independent medians are not the paired ratios above.
+
+The result does not explain or erase the preceding unfavorable build-12 versus llama run. Background contention remains a possible uncontrolled influence, not a demonstrated cause. Nor can the historical build-10 versus llama measurement be combined transitively with this control to claim current build-12 versus llama parity. The original reports, including all slow rounds, remain archived. This analysis performs no inference, compilation, or change to the live browser release.
