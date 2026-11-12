@@ -101,7 +101,6 @@ async function checkStatus() {
     if (status.device !== 'cpu' || status.gpu_inference !== false) throw new Error('CPU-only backend check failed');
     ready = status.ready;
     if (!backends.length && status.backends) {
-      const selected = $('backend').value || status.active_backend;
       const releases = ['rtl-fp32-fused-phase', 'rtl-fp32-phase', 'rtl-fp32', 'rtl'];
       const rank = b => releases.includes(b.id) ? releases.indexOf(b.id) : releases.length;
       backends = [...status.backends].sort((a, b) =>
@@ -113,7 +112,8 @@ async function checkStatus() {
         option.disabled = !b.available;
         return option;
       }));
-      if (backends.some(b => b.id === selected && b.available)) $('backend').value = selected;
+      const latest = backends.find(b => b.available);
+      if (latest) $('backend').value = latest.id;
       backendChanged();
     }
     $('connection').textContent = connectionLabel();
