@@ -107,3 +107,31 @@ Ten-round confirmation compares KleidiAI+LTO at 10/6, 12/6, and 12/4
 decode/prefill threads against the KleidiAI-off/LTO-off 8/6 control.
 Normal priority and polling 50 are retained. A priority-1 probe failed preflight
 with macOS permission denied; no elevated scheduling is claimed or required.
+
+## FP16 confirmation result
+
+Ten alternating paired rounds completed, with uncached identical 85/452-token
+prompts and 32 identical greedy output tokens per request. The primary target
+configuration is KleidiAI ON, LTO ON, twelve decode threads, six prefill threads,
+normal priority and polling 50. It produced median decode rates of 144.01 and
+135.88 tokens/s, with median first-token times 0.215 and 0.588 seconds.
+The ten-thread candidate was close at 142.49/135.38 tokens/s; these observations
+do not establish a meaningful twelve-versus-ten-thread advantage.
+
+Against the OFF/OFF 8/6 control, the primary configuration's median paired
+decode speedups were 1.153x short (95% paired-bootstrap interval 1.056–1.423)
+and 1.122x long (1.048–1.240). These compare complete configurations, not the
+isolated effect of KleidiAI or LTO. Background scheduling variation remains
+substantial. Future engine comparisons must rerun this baseline interleaved
+with the candidate, rather than compare against these historical medians alone.
+
+All four configurations matched exact output IDs, stop behavior, text and
+grades on the existing nine-case conversation suite. Each scored 4/9 correct;
+this is a no-regression result, not a claim of strong model answer quality.
+Numerical checks cover the declared held-out positions, not every suite logit.
+
+Evidence: [confirmation](../reports/native-phase0-f16-confirmation.json),
+[paired uncertainty](../reports/native-phase0-f16-confirmation-analysis.json),
+and [conversation gate](../reports/native-phase0-f16-confirmation-quality.json).
+Phase 0 profiling and separate FP32/Q4 measurements remain in progress.
+The four-hour Phase 1 implementation clock has not started.
