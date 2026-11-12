@@ -12,7 +12,16 @@ from benchmark_matched import SVEngine,make_prompt
 from compare_attention_dot import request
 from chat_protocol import ChatProtocol
 from experiment import locate_model
-from evaluate_projection_quality import read_dump_logits,model_provenance
+from evaluate_projection_quality import validate_logits,model_provenance
+
+
+def read_dump_logits(model,path):
+    # Both evaluated artifacts close/check the file before acknowledging.
+    # Historical lane barriers recreate pools and would invalidate warmup.
+    path=Path(path)
+    if model.command(f'dump {path}')!='dumped':raise RuntimeError('Invalid dump acknowledgement')
+    if path.stat().st_size!=151936*8:raise ValueError('Wrong full-vocabulary dump byte count')
+    return validate_logits(np.fromfile(path,dtype=np.float64))
 
 
 def sha(path):
@@ -46,7 +55,7 @@ def main():
         binaries=[dict(path=str(p),sha256=sha(p))for p in paths],model_provenance=model_provenance(checkpoint),
         source_hashes={p.name:sha(p)for p in (Path(__file__),Path(__file__).with_name('compare_attention_dot.py'),Path(__file__).with_name('benchmark_matched.py'),Path(__file__).with_name('rtl_model.py'))},
         policy='Both requests reset KV and prefill prompt[:-1] in canonical chunks8 with B4 tails; Both use FP64 prefill projections and FP32 scalar final-prompt/decode. Candidate batches FP64 attention dispatch across query tokens with unchanged per-query order. No prefix reuse or suffix verification.',
-        limitations='Two resident models; sequential warmed inference in alternating order. No OS cache eviction or hard host isolation. Full-logit bits and fixed greedy IDs must match; separate causal/cache/sampled verification gates required.',profiles=[])
+        limitations='Two resident models; sequential warmed inference in alternating order. Direct acknowledged/closed dumps preserve worker pools after warmup. No OS cache eviction or hard host isolation. Full-logit bits and fixed greedy IDs must match; separate causal/cache/sampled verification gates required.',profiles=[])
     args.output.parent.mkdir(parents=True,exist_ok=True)
     try:
         report['startup_seconds']=[engine.start()for engine in engines]
