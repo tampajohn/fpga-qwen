@@ -80,14 +80,16 @@ class RealHybridRouteTests(unittest.TestCase):
 
 
 VERIFY_BINARY=os.environ.get('SV_FP32_VERIFY_BINARY')
+VERIFY_PROFILE=os.environ.get('SV_FP32_VERIFY_PROFILE','fp32_b1_fp64_prefill')
+if VERIFY_PROFILE not in ('fp32_b1_fp64_prefill','fp32_b1_fp32_fma_prefill'):raise ValueError('Unsupported suffix test profile')
 
 
 @unittest.skipUnless(VERIFY_BINARY and Path(VERIFY_BINARY).is_file(),'Set SV_FP32_VERIFY_BINARY to the isolated FP32 B4 verification artifact')
 class RealFP32SuffixTests(unittest.TestCase):
     def test_seeded_greedy_cache_rejection_and_cancel_replay(self):
         settings=dict(binary=VERIFY_BINARY,workers=8,lanes=8,block_size=4,prefill_size=8,
-                      reuse_prefix=False,precision_profile='fp32_b1_fp64_prefill',canonical_prefix_reuse=True)
-        serial=RTLChatEngine(**settings);drafted=RTLChatEngine(**settings)
+                      reuse_prefix=False,precision_profile=VERIFY_PROFILE,canonical_prefix_reuse=True)
+        serial=RTLChatEngine(**dict(settings,canonical_prefix_reuse=VERIFY_PROFILE=='fp32_b1_fp64_prefill'));drafted=RTLChatEngine(**settings)
         for instance in (serial,drafted):instance.sim.phase_pool_selector=os.environ.get('SV_PHASE_POOL_SELECTOR')
         self.addCleanup(serial.close);self.addCleanup(drafted.close)
         for engine in (serial,drafted):
@@ -121,17 +123,22 @@ class RealFP32SuffixTests(unittest.TestCase):
                     self.assertEqual(continuation[1],position+1)
                     logits.append(read_dump_logits(engine.sim,Path(directory)/str(index)))
                     self.assertEqual(engine.sim.command(f'truncate {position}'),'truncated')
-                    outputs.append(dict(result=result,cache_ids=list(engine.cache_ids),canonical_end=engine.canonical_prefix.end,
+                    outputs.append(dict(result=result,cache_ids=list(engine.cache_ids),canonical_end=engine.canonical_prefix.end if engine.canonical_prefix else 0,
                         raw_final_logits_sha256=hashlib.sha256(raw.tobytes()).hexdigest(),raw_logit_position=raw_position,
                         retained_position=position,continuation=continuation[:2]))
                 for key in ('text','token_ids','finish_reason'):
                     self.assertEqual(outputs[0]['result'][key],outputs[1]['result'][key],name)
                 self.assertEqual(outputs[0]['cache_ids'],outputs[1]['cache_ids'])
-                self.assertEqual(outputs[0]['canonical_end'],outputs[1]['canonical_end'])
+                if VERIFY_PROFILE=='fp32_b1_fp64_prefill':
+                    self.assertEqual(outputs[0]['canonical_end'],outputs[1]['canonical_end'])
+                else:
+                    self.assertEqual(outputs[0]['canonical_end'],0)
+                    self.assertEqual(outputs[0]['result']['metrics']['reused_prefix_tokens'],0)
                 self.assertEqual(outputs[0]['continuation'],outputs[1]['continuation'])
                 if outputs[0]['raw_final_logits_sha256']!=outputs[1]['raw_final_logits_sha256']:
                     self.assertNotEqual(outputs[0]['raw_logit_position'],outputs[1]['raw_logit_position'])
                     self.assertGreater(outputs[1]['raw_logit_position'],outputs[1]['retained_position'])
+                self.assertTrue(all(len(a)==151936 and np.isfinite(a).all() for a in logits))
                 np.testing.assert_array_equal(logits[0].view(np.uint64),logits[1].view(np.uint64))
                 rows.append(dict(name=name,decoding=decoding,seed=seed,draft=draft,outputs=outputs,
                     exact_logits=True,logits_sha256=hashlib.sha256(logits[0].tobytes()).hexdigest()))
@@ -159,7 +166,7 @@ class RealFP32SuffixTests(unittest.TestCase):
             self.assertEqual(drafted.cache_ids,[])
             self.assertEqual(drafted.canonical_prefix.end,0)
             compare('after-cancel','chat',42,3)
-        report=dict(phase_pool_selector=os.environ.get('SV_PHASE_POOL_SELECTOR'),
+        report=dict(precision_profile=VERIFY_PROFILE,cache_off_reference=VERIFY_PROFILE=='fp32_b1_fp32_fma_prefill',phase_pool_selector=os.environ.get('SV_PHASE_POOL_SELECTOR'),
                     binary_sha256=hashlib.sha256(Path(VERIFY_BINARY).read_bytes()).hexdigest(),
                     completed=True,cancellation_recovery=True,timing_claim=False,
                     logit_gate='Fixed token198 continuation on retained accepted KV, then truncate probe; raw final dump may reference discarded speculative position',cases=rows)
