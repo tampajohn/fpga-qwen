@@ -17,3 +17,21 @@ A separately tagged `--paired` configuration is prepared but not built or measur
 The paired configuration was subsequently built and passed all 54 cases (25,344 outputs per method), with the same maximum oracle errors as the first configuration. Artifact SHA256: `1e3ac32c2ad28ce2b15b0873b5a31a79a3ead0bf04e22aa52ccc8f3a7ca9763f`. Its report is `reports/online-attention-kernel-paired-correctness.json`.
 
 Actual paired online QK assembly at 0x10000f6b4–0x10000f6f0 keeps two scalar sums in registers and shares one key load; it uses scalar `fmadd` at 0x10000f6c8 and 0x10000f6d4. The per-feature tile-score loads/stores from the first implementation are gone, but the compiler did **not** produce `fmla.2d` for this online loop. The same executable's baseline still uses `fmla.2d` at 0x10000fc50. There is no timing result yet, and register residency alone does not establish a speed gain.
+# Guarded standalone timing
+
+The first [paired timing run](../reports/online-attention-paired-timing.json)
+completed under the browser benchmark guard. It covered 12 shapes and three
+alternating pairs per shape, comparing both methods in both frozen executables.
+All 144 scored intervals met the 100 ms target, and every method reproduced its
+own output hash. The original online implementation had median speed ratios of
+0.72–0.88 versus its three-pass baseline. The paired-query implementation improved
+that result, but its ratios remained 0.91–0.985: roughly 2–10% longer elapsed time
+than its own three-pass baseline. All twelve paired-online median ratios were
+below one.
+
+This is a negative result for these standalone CPU implementations, not a claim
+about FlashAttention generally. Q1 does not represent deployed paired-head decode.
+The prototype has contiguous arrays and no model dispatch/DPI access. The two
+executables also have different baseline layouts, so their absolute times cannot
+isolate the effect of the online recurrence. No model integration or deployment
+is justified by this measurement.
