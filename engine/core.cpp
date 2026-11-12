@@ -145,6 +145,18 @@ void dot4(const float* x,const Half* w,int n,float* y) {
     y[0]=vaddvq_f32(vaddq_f32(a0,b0));y[1]=vaddvq_f32(vaddq_f32(a1,b1));
     y[2]=vaddvq_f32(vaddq_f32(a2,b2));y[3]=vaddvq_f32(vaddq_f32(a3,b3));
 }
+// Two GQA queries share K conversion; each keeps the original dot's two
+// accumulators and identical per-lane FMA and final reduction order.
+void dot_query_pair(const float* q0,const float* q1,const Half* key,float& out0,float& out1) {
+    float32x4_t a0=vdupq_n_f32(0),b0=a0,a1=a0,b1=a0;
+    for(int j=0;j<D;j+=8) {
+        const float16x8_t packed=vld1q_f16(key+j);
+        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+        a0=vfmaq_f32(a0,vld1q_f32(q0+j),lo);b0=vfmaq_f32(b0,vld1q_f32(q0+j+4),hi);
+        a1=vfmaq_f32(a1,vld1q_f32(q1+j),lo);b1=vfmaq_f32(b1,vld1q_f32(q1+j+4),hi);
+    }
+    out0=vaddvq_f32(vaddq_f32(a0,b0));out1=vaddvq_f32(vaddq_f32(a1,b1));
+}
 // Canonical FP16 K was widened once into shared prefill scratch. Loading those
 // exact FP32 values preserves both queries' original two accumulators,
 // increasing-j FMA sequence, operand order and final reduction.
@@ -400,10 +412,13 @@ struct Model::Impl {
                 size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
             }
             if(batch>1) {
-                // One shared conversion per KV head/time for this layer/chunk.
-                // Copying the visible extent does not change any query's causal
-                // n below. B1 decode and the separate B2 verifier do not use it.
-                widen_prefill_kv(layer,pos+batch,pool);
+                // Measured short-context shapes motivate this provisional policy;
+                // new boundary shapes must validate it before any promotion.
+                const bool use_wide=batch>=64 && pos+batch<=512;
+                auto attention_chunk=[&]<bool Wide>() {
+                    // Widen only canonical rounded KV, then publish via the pool
+                    // barrier. The Half specialization needs no conversion pass.
+                    if constexpr(Wide)widen_prefill_kv(layer,pos+batch,pool);
                 // One item owns both query heads for one KV head. The factor
                 // two cancels in the cumulative-cost scheduling targets.
                 pool.run(size_t(batch)*K,[&](size_t,size_t,int worker){
@@ -419,7 +434,10 @@ struct Model::Impl {
                         float maximum0=-std::numeric_limits<float>::infinity(),maximum1=maximum0;
                         for(int t=0;t<n;++t) {
                             float score0,score1;
-                            dot_query_pair_wide(query0,query1,prefill_keys.data()+prefill_cache_offset(t,kh),score0,score1);
+                            if constexpr(Wide)
+                                dot_query_pair_wide(query0,query1,prefill_keys.data()+prefill_cache_offset(t,kh),score0,score1);
+                            else
+                                dot_query_pair(query0,query1,keys.data()+cache_offset(layer,t,kh),score0,score1);
                             score0*=1.0f/std::sqrt(float(D));score1*=1.0f/std::sqrt(float(D));
                             scores0[t]=score0;scores1[t]=score1;
                             maximum0=std::max(maximum0,score0);maximum1=std::max(maximum1,score1);
@@ -435,9 +453,16 @@ struct Model::Impl {
                         std::fill(dest0,dest0+D,0.0f);std::fill(dest1,dest1+D,0.0f);
                         for(int t=0;t<n;++t) {
                             const float prob0=probs0[t]/sum0,prob1=probs1[t]/sum1;
-                            const float* val=prefill_values.data()+prefill_cache_offset(t,kh);
                             for(int j=0;j<D;j+=8) {
-                                const float32x4_t lo=vld1q_f32(val+j),hi=vld1q_f32(val+j+4);
+                                float32x4_t lo,hi;
+                                if constexpr(Wide) {
+                                    const float* val=prefill_values.data()+prefill_cache_offset(t,kh);
+                                    lo=vld1q_f32(val+j);hi=vld1q_f32(val+j+4);
+                                } else {
+                                    const Half* val=values.data()+cache_offset(layer,t,kh);
+                                    const float16x8_t packed=vld1q_f16(val+j);
+                                    lo=vcvt_f32_f16(vget_low_f16(packed));hi=vcvt_f32_f16(vget_high_f16(packed));
+                                }
                                 vst1q_f32(dest0+j,vfmaq_n_f32(vld1q_f32(dest0+j),lo,prob0));
                                 vst1q_f32(dest0+j+4,vfmaq_n_f32(vld1q_f32(dest0+j+4),hi,prob0));
                                 vst1q_f32(dest1+j,vfmaq_n_f32(vld1q_f32(dest1+j),lo,prob1));
@@ -446,6 +471,11 @@ struct Model::Impl {
                         }
                     }
                 });
+                };
+                // One dispatch per layer; key/value selection is compile-time
+                // inside the causal loops, with the original arithmetic order.
+                if(use_wide)attention_chunk.template operator()<true>();
+                else attention_chunk.template operator()<false>();
             } else pool.run(size_t(batch)*Q,[&](size_t begin,size_t end,int worker){
                 float* scores=attention_scores.data()+size_t(worker)*options.context;
                 float* shifted=shifted_scores.data()+size_t(worker)*options.context;
