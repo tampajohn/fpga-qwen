@@ -145,6 +145,18 @@ void dot4(const float* x,const Half* w,int n,float* y) {
     y[0]=vaddvq_f32(vaddq_f32(a0,b0));y[1]=vaddvq_f32(vaddq_f32(a1,b1));
     y[2]=vaddvq_f32(vaddq_f32(a2,b2));y[3]=vaddvq_f32(vaddq_f32(a3,b3));
 }
+// Two GQA queries share K conversion; each keeps the original dot's two
+// accumulators and identical per-lane FMA and final reduction order.
+void dot_query_pair(const float* q0,const float* q1,const Half* key,float& out0,float& out1) {
+    float32x4_t a0=vdupq_n_f32(0),b0=a0,a1=a0,b1=a0;
+    for(int j=0;j<D;j+=8) {
+        const float16x8_t packed=vld1q_f16(key+j);
+        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+        a0=vfmaq_f32(a0,vld1q_f32(q0+j),lo);b0=vfmaq_f32(b0,vld1q_f32(q0+j+4),hi);
+        a1=vfmaq_f32(a1,vld1q_f32(q1+j),lo);b1=vfmaq_f32(b1,vld1q_f32(q1+j+4),hi);
+    }
+    out0=vaddvq_f32(vaddq_f32(a0,b0));out1=vaddvq_f32(vaddq_f32(a1,b1));
+}
 void norm(const float* x,const float* w,float* out,int n) {
     float sum=0;for(int j=0;j<n;++j)sum+=x[j]*x[j];
     const float inv=1.0f/std::sqrt(sum/n+1e-6f);
@@ -163,6 +175,7 @@ struct Model::Impl {
     std::vector<float> x,h,q,k,v,attended,residual,gate,up,attention_scores;
     std::vector<float> half_gate,tanh_gate;
     std::vector<float> shifted_scores,probabilities;
+    std::vector<float> pair_scores,pair_shifted,pair_probabilities;
     std::array<float,H> last_hidden{};
     int pos=0;
     Impl(const std::string& path,Options opt):options(opt),mapping(path) {
@@ -210,6 +223,7 @@ struct Model::Impl {
         keys.resize(size_t(L)*opt.context*K*D);values.resize(keys.size());
         attention_scores.resize(size_t(std::max(opt.decode_threads,opt.prefill_threads))*opt.context);
         shifted_scores.resize(attention_scores.size());probabilities.resize(attention_scores.size());
+        pair_scores.resize(attention_scores.size());pair_shifted.resize(attention_scores.size());pair_probabilities.resize(attention_scores.size());
         x.reserve(prefill_chunk*H);h.reserve(prefill_chunk*H);q.reserve(prefill_chunk*Q*D);k.reserve(prefill_chunk*K*D);v.reserve(prefill_chunk*K*D);
         attended.reserve(prefill_chunk*Q*D);residual.reserve(prefill_chunk*H);gate.reserve(prefill_chunk*F);up.reserve(prefill_chunk*F);
         half_gate.reserve(prefill_chunk*F);tanh_gate.reserve(prefill_chunk*F);
@@ -264,12 +278,12 @@ struct Model::Impl {
         // query ownership and each query's arithmetic/reduction order.
         std::array<size_t,65> attention_ranges{};
         if(batch>1) {
-            const size_t items=size_t(batch)*Q;
+            const size_t items=size_t(batch)*K;
             const int workers=pool.worker_count();
             auto prefix_cost=[&](size_t item)->uint64_t {
-                const uint64_t b=item/Q,head=item%Q;
+                const uint64_t b=item/K,head=item%K;
                 const uint64_t preceding=b*(uint64_t(2)*pos+b+1)/2;
-                return Q*preceding+head*(pos+b+1);
+                return K*preceding+head*(pos+b+1);
             };
             const uint64_t total=prefix_cost(items);
             attention_ranges[0]=0;attention_ranges[workers]=items;
@@ -302,8 +316,51 @@ struct Model::Impl {
                 for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
                 size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
             }
-            pool.run(size_t(batch)*Q,[&](size_t begin,size_t end,int worker){
-                if(batch>1){begin=attention_ranges[worker];end=attention_ranges[worker+1];}
+            if(batch>1) {
+                // One item owns both query heads for one KV head. The factor
+                // two cancels in the cumulative-cost scheduling targets.
+                pool.run(size_t(batch)*K,[&](size_t,size_t,int worker){
+                    const size_t begin=attention_ranges[worker],end=attention_ranges[worker+1];
+                    const size_t scratch=size_t(worker)*options.context;
+                    float* scores0=attention_scores.data()+scratch;float* scores1=pair_scores.data()+scratch;
+                    float* shifted0=shifted_scores.data()+scratch;float* shifted1=pair_shifted.data()+scratch;
+                    float* probs0=probabilities.data()+scratch;float* probs1=pair_probabilities.data()+scratch;
+                    for(size_t item=begin;item<end;++item) {
+                        const int b=item/K,kh=item%K,n=pos+b+1;
+                        const size_t head0=size_t(b)*Q+2*kh;
+                        const float* query0=q.data()+head0*D;const float* query1=query0+D;
+                        float maximum0=-std::numeric_limits<float>::infinity(),maximum1=maximum0;
+                        for(int t=0;t<n;++t) {
+                            float score0,score1;
+                            dot_query_pair(query0,query1,keys.data()+cache_offset(layer,t,kh),score0,score1);
+                            score0*=1.0f/std::sqrt(float(D));score1*=1.0f/std::sqrt(float(D));
+                            scores0[t]=score0;scores1[t]=score1;
+                            maximum0=std::max(maximum0,score0);maximum1=std::max(maximum1,score1);
+                        }
+                        for(int t=0;t<n;++t)shifted0[t]=scores0[t]-maximum0;
+                        for(int t=0;t<n;++t)shifted1[t]=scores1[t]-maximum1;
+                        // Keep separate vector-libm calls of the original length;
+                        // concatenating the heads could select different arithmetic.
+                        vvexpf(probs0,shifted0,&n);vvexpf(probs1,shifted1,&n);
+                        float sum0=0;for(int t=0;t<n;++t)sum0+=probs0[t];
+                        float sum1=0;for(int t=0;t<n;++t)sum1+=probs1[t];
+                        float* dest0=attended.data()+head0*D;float* dest1=dest0+D;
+                        std::fill(dest0,dest0+D,0.0f);std::fill(dest1,dest1+D,0.0f);
+                        for(int t=0;t<n;++t) {
+                            const float prob0=probs0[t]/sum0,prob1=probs1[t]/sum1;
+                            const Half* val=values.data()+cache_offset(layer,t,kh);
+                            for(int j=0;j<D;j+=8) {
+                                const float16x8_t packed=vld1q_f16(val+j);
+                                const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                vst1q_f32(dest0+j,vfmaq_n_f32(vld1q_f32(dest0+j),lo,prob0));
+                                vst1q_f32(dest0+j+4,vfmaq_n_f32(vld1q_f32(dest0+j+4),hi,prob0));
+                                vst1q_f32(dest1+j,vfmaq_n_f32(vld1q_f32(dest1+j),lo,prob1));
+                                vst1q_f32(dest1+j+4,vfmaq_n_f32(vld1q_f32(dest1+j+4),hi,prob1));
+                            }
+                        }
+                    }
+                });
+            } else pool.run(size_t(batch)*Q,[&](size_t begin,size_t end,int worker){
                 float* scores=attention_scores.data()+size_t(worker)*options.context;
                 float* shifted=shifted_scores.data()+size_t(worker)*options.context;
                 float* probs=probabilities.data()+size_t(worker)*options.context;
