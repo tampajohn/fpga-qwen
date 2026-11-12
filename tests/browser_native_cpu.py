@@ -22,6 +22,8 @@ def main():
     parser.add_argument('--url', default='http://127.0.0.1:8766')
     parser.add_argument('--live', action='store_true', help='Explicitly allow deployment checks on localhost:8765')
     parser.add_argument('--expect-prefix-reuse', action='store_true')
+    parser.add_argument('--expect-greedy-suffix', action='store_true',
+                        help='Expect a capability-aware B2 engine; old build12 remains the no-flag case')
     parser.add_argument('--directory', type=Path, required=True)
     parser.add_argument('--guard-state-dir', type=Path, default=ROOT/'build/benchmark-status')
     parser.add_argument('--chrome', default='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
@@ -34,7 +36,7 @@ def main():
         raise RuntimeError('Wait for the active benchmark before browser inference')
     args.directory.mkdir(parents=True, exist_ok=False)
     report = dict(completed=False, gpu_inference=False, inference_interface='Actual localhost browser chat',
-                  url=args.url, live_deployment_check=args.live,
+                  url=args.url, live_deployment_check=args.live, expect_greedy_suffix=args.expect_greedy_suffix,
                   checks={}, replies=[], console_errors=[])
     def save():
         (args.directory/'report.json').write_text(json.dumps(report,indent=2)+'\n')
@@ -80,21 +82,26 @@ def main():
             report['checks']['focused_backend_stable_during_status_polling'] = True
             page.locator('#backend').select_option('native-cpu-f16')
             expect(page.locator('#workers-row')).to_be_hidden()
+            expect(page.locator('#decoding')).to_have_value('chat')
             expect(page.locator('#suffix')).to_be_disabled()
             expect(page.locator('#suffix')).not_to_be_checked()
             expect(page.locator('#backend-tag')).to_contain_text('Native CPU')
-            expect(page.locator('#backend-about')).to_contain_text('Suffix drafting is unavailable')
+            if not args.expect_greedy_suffix:
+                expect(page.locator('#backend-about')).to_contain_text('Suffix drafting is unavailable')
             report['checks']['catalog_and_controls'] = True
             page.locator('#decoding').select_option('greedy')
             page.locator('#reply-limit').select_option('128')
             def send(text):
                 page.locator('#prompt').fill(text)
-                page.locator('#send').click()
+                with page.expect_request(lambda request: request.method == 'POST' and urlparse(request.url).path == '/api/chat') as sent:
+                    page.locator('#send').click()
+                payload = sent.value.post_data_json
                 expect(page.locator('#prompt')).to_be_enabled(timeout=180000)
                 expect(page.locator('#error')).to_be_hidden()
                 reply = page.locator('.assistant .content').last.inner_text()
                 assert reply.strip()
                 report['replies'].append(dict(prompt=text,text=reply,
+                    request=dict(backend=payload.get('backend'), decoding=payload.get('decoding'), max_draft=payload.get('max_draft')),
                     metadata=page.locator('.assistant .reply-meta').last.inner_text()))
                 save()
                 return reply
@@ -104,11 +111,35 @@ def main():
             expect(page.locator('#reused')).to_have_text('0')
             status = page.request.get(args.url+'/api/status').json()
             assert status['active_backend']=='native-cpu-f16' and status['device']=='cpu'
-            assert status['gpu_inference'] is False and status['suffix_supported'] is False
+            assert status['gpu_inference'] is False and status['suffix_supported'] is args.expect_greedy_suffix
             assert status['prefix_reuse_enabled'] is args.expect_prefix_reuse
             if not args.expect_prefix_reuse:
                 assert status['cached_tokens']==0
             report['checks']['fresh_context_status'] = True
+            if args.expect_greedy_suffix:
+                native = next(item for item in status['backends'] if item['id'] == 'native-cpu-f16')
+                assert native['suffix_supported'] is True and native['suffix_greedy_only'] is True
+                assert native['max_draft'] == 1 and status['max_verified_draft'] == 1
+                expect(page.locator('#suffix')).to_be_enabled(timeout=15000)
+                expect(page.locator('#suffix')).not_to_be_checked()
+                expect(page.locator('#suffix-note')).to_contain_text('one verified n-gram draft token')
+                page.locator('#suffix').check()
+                page.locator('#decoding').select_option('chat')
+                expect(page.locator('#suffix')).not_to_be_checked()
+                expect(page.locator('#suffix')).to_be_disabled()
+                expect(page.locator('#suffix-note')).to_contain_text('Greedy only')
+                send('Answer with the single word blue.')
+                assert report['replies'][-1]['request'] == dict(backend='native-cpu-f16', decoding='chat', max_draft=0)
+                page.locator('#decoding').select_option('greedy')
+                expect(page.locator('#suffix')).to_be_enabled()
+                expect(page.locator('#suffix')).not_to_be_checked()
+                # Status polling must not silently re-enable the earlier opt-in.
+                page.wait_for_timeout(2200)
+                expect(page.locator('#suffix')).not_to_be_checked()
+                report['checks']['greedy_suffix_mode_gating_and_chat_payload'] = True
+            else:
+                expect(page.locator('#suffix')).to_be_disabled()
+                report['checks']['old_binary_suffix_unavailable'] = True
             if args.expect_prefix_reuse:
                 expect(page.locator('#backend-about')).to_contain_text('Reuses completed 512-token prefill blocks', timeout=15000)
                 page.locator('#new-chat').click()
