@@ -25,6 +25,8 @@ public:
     void step(int token);
     const std::vector<float>& logits() const;
     int position() const;
+    // Auxiliary decode encoding, populated only for exactly representable matrices.
+    std::size_t lossless_bf16_cache_bytes() const;
 private:
     struct Impl;
     std::unique_ptr<Impl> impl_;

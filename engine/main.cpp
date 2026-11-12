@@ -66,10 +66,12 @@ public:
         return scores_[count-1].id;
     }
 };
-void settings(const qwen_cpu::Options& options, int position, bool ready) {
+void settings(const qwen_cpu::Options& options, const qwen_cpu::Model& model, bool ready) {
+    const int position=model.position();
     std::cout << "{\"ready\":" << (ready?"true":"false") << ",\"protocol\":1,\"position\":" << position
         << ",\"decode_threads\":" << options.decode_threads << ",\"prefill_threads\":" << options.prefill_threads
         << ",\"context\":" << options.context
+        << ",\"lossless_bf16_decode_cache_bytes\":" << model.lossless_bf16_cache_bytes()
         << ",\"gpu\":false,\"pytorch\":false,\"weight_precision\":\"f16\",\"norm_precision\":\"f32\","
            "\"activation_precision\":\"f32\",\"kv_precision\":\"f16\",\"prefix_reuse\":false,\"suffix_drafting\":false}\n" << std::flush;
 }
@@ -91,7 +93,7 @@ int main(int argc,char** argv) {
         if(weights.empty()) throw std::runtime_error("--weights is required");
         qwen_cpu::Model model(weights,options);
         Sampler sampler;
-        settings(options,0,true);
+        settings(options,model,true);
         std::string line;
         while(std::getline(std::cin,line)) {
             try {
@@ -130,7 +132,7 @@ int main(int argc,char** argv) {
                     out.write(reinterpret_cast<const char*>(logits.data()),logits.size()*sizeof(float));out.close();
                     if(!out)throw std::runtime_error("Failed writing logits dump");
                     std::cout<<"{\"ok\":true,\"count\":"<<qwen_cpu::vocabulary<<",\"position\":"<<model.position()<<"}\n";
-                } else if(command=="stats") {no_extra(input);settings(options,model.position(),true);continue;}
+                } else if(command=="stats") {no_extra(input);settings(options,model,true);continue;}
                 else throw std::runtime_error("Unknown command");
             } catch(const std::exception& error) {
                 model.reset();sampler.reset();
