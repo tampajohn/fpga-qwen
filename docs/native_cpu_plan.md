@@ -38,7 +38,7 @@ budget is four hours of wall-clock implementation and evaluation, starting
 when Phase 1 begins after Phase 0 establishes the target. Record the actual
 start/deadline at that point. Apply the brief's stop rule: if the correct plain
 engine is below 90% of tuned FP16 decode at expiry, stop and report the gap.
-No Phase 1 implementation has started. Existing auto-push behavior continues.
+Phase 1 start/deadline are recorded in `engine/phase1-window.json`. Existing auto-push behavior continues.
 
 Use an explicit numerical contract covering weights, activations, accumulation,
 normalization and KV. BF16 and FP16 are not numerically interchangeable. Retain
@@ -268,3 +268,11 @@ Evidence: [FP32 thread discovery](../reports/native-phase0-f32-thread-discovery.
 Archives preserve raw-report SHA256 provenance and anonymized host CPU
 percentages. Analysis reports retain their conservative automatic claim flags;
 the interpretation above is scoped to the separately reviewed quality results.
+
+## Phase 1 started
+
+Start: 2026-11-12T05:25:15.063226+00:00; deadline: 2026-11-12T09:25:15.063226+00:00.
+Four-hour wall-clock implementation/evaluation budget. The FP16 target is
+ON/ON 12 decode / 6 prefill, with the frozen numerical and conversation gates.
+Phase 0 is complete; constrained Q4 exclusions and profiling limits remain
+explicit. No native engine performance result exists at this start point.

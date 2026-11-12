@@ -1,0 +1,8 @@
+{
+  "started_at": "2026-11-12T05:25:15.063226+00:00",
+  "deadline": "2026-11-12T09:25:15.063226+00:00",
+  "budget_hours": 4,
+  "primary_target": "kleidi-on-lto-on-d12-p6",
+  "primary_precision": "FP16 matrix weights, FP32 activations/accumulation, FP16 KV",
+  "stop_rule": "At expiry, if correct plain engine is below90% of tuned FP16 decode, stop and report. Compare interleaved at both85/452 contexts; do not substitute historical medians for matched rerun."
+}
