@@ -27,4 +27,10 @@ Startup diagnostics appear separately in the raw report and were not scored as i
 
 ### Short-run variability
 
-The three baseline short decode intervals were 0.4989/0.5258/0.5127 seconds; fixed KV took 0.4670/0.5832/0.5672 seconds in AB/BA/AB order. Candidate decode therefore worsened after its first pair despite nearly constant candidate prefill times (0.6597/0.6628/0.6625 seconds). This does not isolate a structural regression or simple ordering bias. A later bounded confirmation should repeat the same 85-token/32-output workload with additional alternating pairs; lengthening decode would also change context length and answer a different question. No confirmation has been run in this report.
+The three baseline short decode intervals were 0.4989/0.5258/0.5127 seconds; fixed KV took 0.4670/0.5832/0.5672 seconds in AB/BA/AB order. Candidate decode therefore worsened after its first pair despite nearly constant candidate prefill times (0.6597/0.6628/0.6625 seconds). This does not isolate a structural regression or simple ordering bias. A later bounded confirmation should repeat the same 85-token/32-output workload with additional alternating pairs; lengthening decode would also change context length and answer a different question. The separate confirmation below was run afterward; the initial measurements remain unchanged.
+
+### Separate short-workload confirmation
+
+The [five-pair confirmation](../reports/static-kv-short-confirmation.json) repeats the same frozen artifacts, source/options, 85-token prompt and 32 outputs, using unchanged warm-pool methodology. Decode ratios are 1.018/1.143/1.207/0.997/1.021×, median **1.021×**. Median prefill ratio is **1.050×** and total ratio **1.026×**; all five total-time pairs favor fixed KV. All output IDs and warm/final full-logit bits remain exact.
+
+The original short decode regression was not reproduced. The defensible short-workload conclusion is a modest, noisy benefit, not the much larger favorable outliers. Keep the two sessions separate: the confirmation does not overwrite the initial 0.904× median or establish an invariant speedup. The initial longer-workload result remains three positive pairs; actual fixed-array capacity validation is still pending before promotion.
