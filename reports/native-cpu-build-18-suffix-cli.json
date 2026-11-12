@@ -1,0 +1,143 @@
+{
+  "completed": true,
+  "passed": true,
+  "diagnostic_only": true,
+  "performance_claim_eligible": false,
+  "cases": [
+    {
+      "name": "reject_first",
+      "expected": {
+        "tokens": [
+          0
+        ],
+        "accepted": 0,
+        "committed_inputs": 1,
+        "position": 76,
+        "verified_positions": 2,
+        "finish_reason": null
+      },
+      "full_state_sha256": [
+        "979a12cf8203f512418b5d3bd1c5d0a08a00e7e9e89f3da102c4be8418c6f4ab",
+        "a619dd69d1256bc273811bf098d45540edc81af1994d65f9eecc1e3b74e4f6d7"
+      ]
+    },
+    {
+      "name": "accept_bonus",
+      "expected": {
+        "tokens": [
+          0,
+          2585
+        ],
+        "accepted": 1,
+        "committed_inputs": 2,
+        "position": 77,
+        "verified_positions": 2,
+        "finish_reason": null
+      },
+      "full_state_sha256": [
+        "18e963d98693d117e09d3676c5f18fcbb8c807574c8b552aeccc16fe8a23881c",
+        "75ef54b9f60a5e204fb4ee45289b93515a8da27aae5c07165f116e483594cfb3"
+      ]
+    },
+    {
+      "name": "eos_first_match",
+      "expected": {
+        "tokens": [
+          151645
+        ],
+        "accepted": 1,
+        "committed_inputs": 1,
+        "position": 84,
+        "verified_positions": 2,
+        "finish_reason": "eos"
+      },
+      "full_state_sha256": [
+        "df138670820c191036b93899223d3c36b7aabced57d71b060a0bdd191aa5da1e",
+        "997abcbb2606b9014a6cfbce70c318f5b99887b7c0d25e817bd59f230e5f5ac4"
+      ]
+    },
+    {
+      "name": "eos_first_reject",
+      "expected": {
+        "tokens": [
+          151645
+        ],
+        "accepted": 0,
+        "committed_inputs": 1,
+        "position": 84,
+        "verified_positions": 2,
+        "finish_reason": "eos"
+      },
+      "full_state_sha256": [
+        "df138670820c191036b93899223d3c36b7aabced57d71b060a0bdd191aa5da1e",
+        "997abcbb2606b9014a6cfbce70c318f5b99887b7c0d25e817bd59f230e5f5ac4"
+      ]
+    },
+    {
+      "name": "eos_bonus",
+      "expected": {
+        "tokens": [
+          30,
+          151645
+        ],
+        "accepted": 1,
+        "committed_inputs": 2,
+        "position": 84,
+        "verified_positions": 2,
+        "finish_reason": "eos"
+      },
+      "full_state_sha256": [
+        "df138670820c191036b93899223d3c36b7aabced57d71b060a0bdd191aa5da1e",
+        "997abcbb2606b9014a6cfbce70c318f5b99887b7c0d25e817bd59f230e5f5ac4"
+      ]
+    }
+  ],
+  "inputs": {
+    "$REPO/build/native-cpu/build-18/qwen_cpu": "3fd042ff0abd1925bec4c7b31946156ef14adf8bb82c5c4e945c3e752cb544fc",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$REPO/build/native-cpu/build-18/manifest.json": "8d9ec131d1ba710a92f26cd8f5ed6deac041ea994c93c0f4fa86fb7eb63a740e",
+    "$REPO/build/native-cpu/suffix-eos-hi.json": "03996c203ffcca74b674a6660e1075cc5535f0b22b9ab3c429d03294b317e316",
+    "$REPO/tools/check_native_suffix_cli.py": "9d8cfc781a5523e865bc476b7ab6708c64c2c5f95467283ba4cb2edf80489b2a"
+  },
+  "ready": {
+    "ready": true,
+    "protocol": 1,
+    "position": 0,
+    "decode_threads": 12,
+    "prefill_threads": 6,
+    "context": 4096,
+    "lossless_bf16_decode_cache_bytes": 0,
+    "gpu": false,
+    "pytorch": false,
+    "weight_precision": "f16",
+    "norm_precision": "f32",
+    "norm_accumulator_precision": "f64",
+    "activation_precision": "f32",
+    "kv_precision": "f16",
+    "prefix_reuse": true,
+    "prefix_reuse_chunk": 512,
+    "suffix_drafting": false,
+    "verify_greedy_b2": true,
+    "max_verified_draft": 1
+  },
+  "reference_ids": [
+    9707,
+    0,
+    2585,
+    646,
+    358,
+    7789,
+    498,
+    3351,
+    30,
+    151645
+  ],
+  "invalid_and_chat_commands_reset": true,
+  "archive_provenance": {
+    "source_report": "build/native-cpu/build-18-suffix-cli-hi/report.json",
+    "source_sha256": "f38e1c51d9916669fa8d3baa7ed1235958cc604ffd036d3499c7c88e42a65b0d",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted; original artifact hashes retained."
+  }
+}

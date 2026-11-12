@@ -1049,9 +1049,30 @@ separate hidden/logit rows, rollback and state/capacity checks. Shared-weight
 verification therefore retains the tested sequential behavior after the norm
 change. API checks alone do not establish browser suffix integration or speed.
 
-Candidate18 remains **unpromoted**. Its own prefix, nine-case and expanded
-conversation suites, suffix integration and browser acceptance are still
-separate pending checks. Ready/status/catalog plumbing advertises the norm
+Candidate18 remains **unpromoted**. Its prefix, conversation and suffix
+integration checks subsequently passed as recorded below; browser acceptance
+is still a separate pending check. Ready/status/catalog plumbing advertises the norm
 accumulator only when reported by the running executable; older binaries remain
 supported without inferring arithmetic from build names. No live-release or
 performance claim follows from these new artifact-bound gates.
+
+
+### Candidate18: prefix, quality and suffix integration passed
+
+The candidate-specific [28-case prefix gate](../reports/native-cpu-build-18-prefix-check.json)
+passed. The [nine-case quality suite](../reports/native-cpu-build-18-quality.json)
+and [18-case expanded suite](../reports/native-cpu-build-18-extended-quality.json)
+passed exact baseline trajectory/stopping/grade comparisons. Scores remain 4/9
+and 10/18 respectively for both native and llama: these checks establish no new
+fixture regressions, not improved answer accuracy.
+
+The [suffix trajectory and lifecycle gate](../reports/native-cpu-build-18-suffix-trajectories.json)
+passed 35 initial cases and seven cached-prefix cases, including cancellation,
+process reap/restart and subsequent reuse. The [five CLI cases](../reports/native-cpu-build-18-suffix-cli.json)
+passed the greeting fixture's accept/reject/EOS/rollback behavior. These checks
+validate the candidate's greedy-only B2 integration; they are not a suffix
+speed benchmark and do not change the off-by-default policy.
+
+The isolated browser check remains pending. Candidate18 is not promoted by
+these reports, live build12 remains unchanged, and its original near-4K
+numerical failures remain preserved. No timing claim follows from acceptance.
