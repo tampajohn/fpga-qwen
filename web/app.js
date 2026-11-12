@@ -86,6 +86,8 @@ function updateMetrics(m) {
   $('rate').textContent = m.output_tokens ? m.decode_tokens_per_second.toFixed(1) : '—';
   $('first-token').textContent = Number.isFinite(m.first_token_ms) ? (m.first_token_ms / 1000).toFixed(2) : '—';
   $('reused').textContent = m.reused_prefix_tokens.toLocaleString();
+  $('uncached').textContent = Number.isFinite(m.prompt_tokens) && Number.isFinite(m.reused_prefix_tokens)
+    ? Math.max(0, m.prompt_tokens - m.reused_prefix_tokens).toLocaleString() : '—';
   $('accepted').textContent = selectedBackend()?.suffix_supported === false ? '—' : `${m.accepted_tokens} / ${m.proposed_tokens}`;
   $('rounds').textContent = m.rounds ? m.tokens_per_round.toFixed(2) : '—';
   $('context').textContent = `${m.kv_tokens.toLocaleString()} / 4,096 context tokens`;

@@ -32,10 +32,11 @@
         <div><dt>Generation</dt><dd><span id="rate">—</span><small> tok/s</small></dd></div>
         <div><dt>First token</dt><dd><span id="first-token">—</span><small> s</small></dd></div>
         <div><dt>Prefix reused</dt><dd id="reused">—</dd></div>
+        <div><dt>Uncached prompt</dt><dd id="uncached">—</dd></div>
         <div><dt>Drafts accepted</dt><dd id="accepted">—</dd></div>
         <div><dt>Tokens / round</dt><dd id="rounds">—</dd></div>
       </dl>
-      <p class="measurement-note">Measured CPU run, not predicted FPGA speed.</p>
+      <p class="measurement-note">Prefix reuse reduces prompt work. Generation still reads the full context. Measured CPU run, not predicted FPGA speed.</p>
     </section>
     <details class="details"><summary>About this experiment</summary><p id="backend-about">All model math and KV data run in a behavioral SystemVerilog model via Verilator. This floating-point baseline is not synthesizable or cycle-accurate.</p><p>Sampled chat or greedy testing · 4,096-token context · one active reply at a time.</p></details>
     <div class="local-note"><span class="dot" id="connection-dot"></span><span id="connection">Connecting to local engine</span></div>
