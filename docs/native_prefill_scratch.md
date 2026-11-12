@@ -16,8 +16,25 @@ This is an arithmetic-preserving design on the tested implementation. Source ins
 
 The compact archives retain fixtures, token IDs, array hashes, protocol counters and helper hashes, with raw-report SHA256 provenance. Host identifiers and incidental unscored timing fields are omitted. Correctness gates do not provide benchmark evidence, and the exact matrix is scoped to its recorded snapshots.
 
-## Performance decision still pending
+## Shape diagnostic outcome: no candidate-16 promotion
 
-Candidate 16 is experimental and has not been promoted to the live browser. The next diagnostic compares it directly with frozen build 15 at fixed prefix/tail shapes, using complete full-logit and hidden-state equality before any timing. Prefix 3584 is primed outside the timed command and rewound before each visit; those results will describe retained-prefix tail-prefill commands, including the final vocabulary head and token selection, **not fresh-request TTFT** or a llama comparison. A broader end-to-end comparison is separate. No threshold will be selected simply from the fastest noisy shape.
+The [completed shape diagnostic](../reports/native-cpu-build-16-prefill-shapes.json) compares frozen build 15 against candidate 16 using ten alternating pairs and two symmetric warmups per shape. All eight preflight shapes matched full logits and normalized hidden vectors exactly before any timing, and every measured visit matched its expected token. The archive retains all **80 measured pairs**, not a selected subset.
+
+Each ratio is reference 15 latency divided by candidate 16 latency; values above 1 favor candidate 16. These are tail-prefill command timings including the final vocabulary head and greedy selection. Prefix 3584 was primed outside timing and retained by rewind, so these are not fresh-request TTFT or llama comparisons. Two processes stayed resident, executing serially.
+
+| Retained prefix P | Tail B | Paired CLI speedup (95% interval) | Paired pipe-wall speedup (95% interval) |
+|---|---|---|---|
+| 0 | 2 | 0.978007 (0.943269–1.006321) | 0.977996 (0.943225–1.006107) |
+| 0 | 16 | 1.002736 (0.990368–1.015592) | 1.002732 (0.990085–1.015918) |
+| 0 | 85 | 1.057285 (1.033078–1.079073) | 1.057186 (1.033099–1.078990) |
+| 0 | 452 | 1.053737 (1.047142–1.058044) | 1.053774 (1.047139–1.058024) |
+| 3584 | 2 | 0.863544 (0.846016–0.915251) | 0.863689 (0.847148–0.915423) |
+| 3584 | 16 | 1.025833 (0.940283–1.036988) | 1.025852 (0.940201–1.037006) |
+| 3584 | 64 | 1.052144 (1.011330–1.091992) | 1.052152 (1.011202–1.091998) |
+| 3584 | 384 | 0.981335 (0.967012–0.990022) | 0.981344 (0.967018–0.990025) |
+
+The outcome is mixed. The unadjusted intervals favor widening for P0/B85, P0/B452 and P3584/B64, but favor the prior path for P3584/B2 and P3584/B384. Other intervals include 1. In particular, the long-prefix two-token tail regressed; the unconditional candidate 16 policy is **not promoted**. These separate intervals are not adjusted for multiple shape comparisons and do not establish a universal speedup or an optimal dispatch threshold. The 32MiB allocation also remains part of the tradeoff.
+
+A new, explicitly declared dispatch hypothesis limits widening to batches of at least 64 tokens with at most 512 total visible tokens. Candidate 17 must validate the held-out short-prefix boundary 63/64 and new 32/128/256/512 tails, plus the long-prefix controls, with a fresh ten-pair run against build 15. The original diagnostic suite remains the default; selecting `--suite dispatch-validation` records the new suite before timing. This is validation of a fixed proposed policy, not permission to tune a threshold to each noisy winning shape. No candidate 17 timing result is available here.
 
 The rejected build 14 BLAS-attention experiment is distinct: it changed reduction association and failed the unchanged independent RMS gate at context 1024. Candidate 16's exact-array comparisons do not rehabilitate that experiment or relax its numerical limits.
