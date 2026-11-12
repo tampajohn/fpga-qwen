@@ -75,6 +75,9 @@ Frozen executable `a3459b7dbf1d08e47923005283449cd5b8bd090f304fea94cc6a97b056a2b
 compiled successfully. Forced OFF passed 60 exact full-vocabulary comparisons
 against deployed `6c9ab44b`, including tails, sampled/no-logit verification and
 scalar continuation at prefixes 0/63/451. See the `query-value-dispatch-build`
-and `query-value-dispatch-reference-gates` reports. Three-policy threshold,
-capacity, lifecycle and performance checks remain pending. No crossover or
-speed improvement is established for this binary.
+and `query-value-dispatch-reference-gates` reports. The [three-policy gate](../reports/query-value-dispatch-gates.json) passed 169
+exact full-vocabulary comparisons and 771 actual route-count checks across
+OFF/ON/MIN_CONTEXT:256. It includes threshold neighborhoods, odd tails,
+verification, scalar continuation, full B8 prefill to position 4096, overflow
+rejection and restart. Canonical/suffix lifecycle and performance checks remain
+pending. No crossover or speed improvement is established for this binary.
