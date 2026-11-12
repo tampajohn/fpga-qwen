@@ -40,6 +40,7 @@ def main():
     parser.add_argument('--pool', choices=['cv', 'hybrid'], default='cv')
     parser.add_argument('--scalar-group', action='store_true')
     parser.add_argument('--fp32-projection-b1', action='store_true', help='Experimental FP32 scalar projections with FP64 prefill/attention; no prefix reuse or block verification')
+    parser.add_argument('--fp32-row-pairs', action='store_true', help='Experimental exact two-row tile for separate-rounded FP32 B1 projections only')
     parser.add_argument('--fp32-verification-b4', action='store_true', help='Experimental explicit FP32 B4 verification; FP64 prefill unchanged')
     parser.add_argument('--phase-pools-experiment',action='store_true',help='Persistent12 prefill /8 scalar pools selected by trusted environment')
     parser.add_argument('--fp32-kv', action='store_true', help='Experimental single SV FP32 KV store; distinct no-cache profile')
@@ -54,6 +55,7 @@ def main():
     if args.fp32_prefill_fma and not args.fp32_prefill_b8:parser.error('--fp32-prefill-fma requires --fp32-prefill-b8')
     if args.fp32_prefill_b8 and not args.fp32_verification_b4:parser.error('--fp32-prefill-b8 requires --fp32-verification-b4')
     if args.fp32_verification_b4 and not args.fp32_projection_b1:parser.error('--fp32-verification-b4 requires --fp32-projection-b1')
+    if args.fp32_row_pairs and not args.fp32_projection_b1:parser.error('--fp32-row-pairs requires --fp32-projection-b1')
     if args.fp32_projection_b1:
         if not (args.lto and args.parallel_attention and args.batched_prefill and args.prefill_b8 and args.scalar_group and args.storage=='scalar' and args.opt=='O3'):
             parser.error('FP32 B1 requires scalar O3/LTO, parallel attention, B8 prefill and scalar grouping')
@@ -101,6 +103,7 @@ def main():
     if args.pool != 'cv': tag += '-pool-'+args.pool
     if args.scalar_group: tag += '-scalar-group'
     if args.fp32_projection_b1: tag += '-fp32-b1'
+    if args.fp32_row_pairs: tag += '-fp32-row-pairs'
     if args.fp32_verification_b4: tag += '-verify-b4'
     if args.fp32_prefill_b8: tag += '-fp32-prefill-b8'
     if args.fp32_prefill_fma: tag += '-prefill-fma'
@@ -235,6 +238,8 @@ def main():
                 tail_command[tail_command.index('Vfp32_verification_kernel')]='Vfp32_prefill_tail_kernel'
                 tail_command.insert(-1,'+define+FP32_EXPLICIT_FMA')
                 commands.insert(3,tail_command);environments.insert(3,patched_env)
+        # Add only after copying the B4/B8/tail commands: their routes stay intact.
+        if args.fp32_row_pairs:command.insert(-1,'+define+FP32_ROW_PAIRS')
         if args.fp32_kv:
             kv_module.mkdir(parents=True,exist_ok=True)
             kv_command=[str(compiler_root/'bin/verilator'),'--cc','--build','-j','4','--top-module','fp32_kv_store','--Mdir',str(kv_module),

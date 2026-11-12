@@ -29,11 +29,61 @@ module fp32_projection_kernel(
 `define STEP(lane) \
     weight=shortreal'(weight_value_unchecked(base+longint'(row)*width+longint'(column+lane))); \
     for(int t=0;t<B;t++) `ACCUM(lane,t)
+`ifdef FP32_ROW_PAIRS
+    // Two independent output rows reuse each converted activation. Every row
+    // retains eight column lanes and separately rounded multiplication/addition.
+    // No packing, host arithmetic, horizontal reduction or cross-row sum.
+    shortreal row_partial[2][8];
+    shortreal row_total[2];
+    initial begin
+        if(B!=1) $fatal(1,"FP32 row pairs require scalar B1");
+`ifdef FP32_EXPLICIT_FMA
+        $fatal(1,"FP32 row pairs preserve separate multiplication/addition");
+`endif
+    end
+`define ROW_PAIR_STEP(lane) \
+    x=converted[(column+lane)&4095]; \
+    w0=shortreal'(weight_value_unchecked(base+longint'(first)*width+longint'(column+lane))); \
+    w1=shortreal'(weight_value_unchecked(base+(longint'(first)+1)*width+longint'(column+lane))); \
+    row_partial[0][lane]=shortreal'(row_partial[0][lane]+shortreal'(x*w0)); \
+    row_partial[1][lane]=shortreal'(row_partial[1][lane]+shortreal'(x*w1));
+    task automatic project_row_pair(input int unsigned first);
+        shortreal x,w0,w1;
+        for(int r=0;r<2;r++) begin
+            row_total[r]=shortreal'(0.0);
+            for(int lane=0;lane<8;lane++) row_partial[r][lane]=shortreal'(0.0);
+        end
+        for(int unsigned column=0;column<width;column+=8) begin
+            `ROW_PAIR_STEP(0)
+            `ROW_PAIR_STEP(1)
+            `ROW_PAIR_STEP(2)
+            `ROW_PAIR_STEP(3)
+            `ROW_PAIR_STEP(4)
+            `ROW_PAIR_STEP(5)
+            `ROW_PAIR_STEP(6)
+            `ROW_PAIR_STEP(7)
+        end
+        for(int r=0;r<2;r++) begin
+            for(int lane=0;lane<8;lane++)
+                row_total[r]=shortreal'(row_total[r]+row_partial[r][lane]);
+            result[first+r]=real'(row_total[r]);
+        end
+    endtask
+`undef ROW_PAIR_STEP
+`endif
     always @(posedge clk) begin
         if(start) begin
             for(int unsigned column=0;column<width;column++)
                 for(int t=0;t<B;t++) converted[column*B+t]=shortreal'(activation[column*B+t]);
+`ifdef FP32_ROW_PAIRS
+            // Each worker owns [first_row,end_row); never pair across its boundary.
+            for(int unsigned row=first_row;row+1<end_row;row+=2)
+                project_row_pair(row);
+            // The existing scalar kernel handles a partition's odd final row.
+            for(int unsigned row=first_row+((end_row-first_row)/2)*2;row<end_row;row++) begin
+`else
             for(int unsigned row=first_row;row<end_row;row++) begin
+`endif
                 for(int t=0;t<B;t++) begin
                     totals[t]=shortreal'(0.0);
                     for(int lane=0;lane<8;lane++)partial[lane][t]=shortreal'(0.0);

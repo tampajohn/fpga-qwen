@@ -21,7 +21,7 @@ def sha(path):
     with Path(path).open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
 
 
-def build(directory,batch,kind,compiler_root,vocabulary=False,no_lto=False,unroll_count=None,explicit_fma=False):
+def build(directory,batch,kind,compiler_root,vocabulary=False,no_lto=False,unroll_count=None,explicit_fma=False,row_pairs=False):
     destination=directory/f'{kind}-b{batch}';destination.mkdir(parents=True,exist_ok=True)
     baseline=kind=='fp64'
     env=os.environ.copy()
@@ -42,6 +42,7 @@ def build(directory,batch,kind,compiler_root,vocabulary=False,no_lto=False,unrol
         flags+=' -fno-fast-math -ffp-contract=off'
         defines=[f'KERNEL_BATCH={batch}',f'KERNEL_ROWS={151936 if vocabulary else 3072}']
         if explicit_fma:defines.append('FP32_EXPLICIT_FMA')
+        if row_pairs:defines.append('FP32_ROW_PAIRS')
     source=ROOT/'rtl'/f'{top}.sv'
     command=[compiler,*(['--unroll-count',str(unroll_count)]if not baseline and unroll_count is not None else []),'--cc','--exe','--build','-j','4','--top-module',top,'--Mdir',str(destination),
              '-Wall','-Wno-BLKSEQ','-Wno-fatal','-CFLAGS',flags,'-MAKEFLAGS','OPT_FAST=-O3',
@@ -73,6 +74,7 @@ def main():
     parser.add_argument('--compiler-root',type=Path)
     parser.add_argument('--candidate-no-lto',action='store_true')
     parser.add_argument('--candidate-explicit-fma',action='store_true',help='Experimental fused binary32 accumulation; build only, use dedicated fused oracle gate')
+    parser.add_argument('--candidate-row-pairs',action='store_true',help='Build-only exact B1 two-row tile; use a dedicated output directory and separate same-FP32 gate')
     parser.add_argument('--candidate-unroll-count',type=int,choices=range(0,65))
     parser.add_argument('--vocabulary',action='store_true')
     parser.add_argument('--matrices',default='q,gate,down')
@@ -85,10 +87,12 @@ def main():
     if any(b not in (1,4,8)for b in batches) or not 1<=args.workers<=32 or not 1<=args.repetitions<=10000 or not 1<=args.pairs<=10:parser.error('Invalid workload')
     if args.vocabulary and batches!=[1]:parser.error('Vocabulary probe supports B1 only')
     if args.candidate_explicit_fma and not args.build_only:parser.error('Use the dedicated fused oracle gate for FMA outputs')
+    if args.candidate_row_pairs and (not args.build_only or batches!=[1] or args.candidate_explicit_fma or args.directory.resolve()==(ROOT/'build/fp32-projection').resolve()):
+        parser.error('Row-pair experiment requires --build-only --batches 1, separate arithmetic and a dedicated --directory')
     if args.build_only:
         if not args.compiler_root:parser.error('Explicit reviewed compiler root required')
         for batch in batches:
-            for kind in ('fp64','fp32'):build(args.directory,batch,kind,args.compiler_root.resolve(),args.vocabulary,args.candidate_no_lto,args.candidate_unroll_count,args.candidate_explicit_fma)
+            for kind in ('fp64','fp32'):build(args.directory,batch,kind,args.compiler_root.resolve(),args.vocabulary,args.candidate_no_lto,args.candidate_unroll_count,args.candidate_explicit_fma,args.candidate_row_pairs)
         return
     model,layout=prepare_layout(locate_model(None))
     header,start,_=read_header(model/'model.safetensors')
