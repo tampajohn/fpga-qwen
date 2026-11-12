@@ -18,6 +18,9 @@
 #include "Vfp32_verification_kernel.h"
 #ifdef FP32_PREFILL_B8
 #include "Vfp32_prefill_kernel.h"
+#ifdef FP32_PREFILL_FMA
+#include "Vfp32_prefill_tail_kernel.h"
+#endif
 #endif
 #endif
 #if !defined(PARALLEL_ATTENTION) || !defined(BATCH_PREFILL) || !defined(PREFILL_B8)
@@ -41,6 +44,9 @@
 #include "projection_descriptors.h"
 #endif
 
+#if defined(FP32_PREFILL_FMA) && (!defined(FP32_PREFILL_B8) || defined(FP32_KV))
+#error "Fused prefill requires FP32 B8 with FP64 KV"
+#endif
 extern "C" void validate_weight_span(int64_t index,int64_t count);
 
 class ProjectionPool {
@@ -107,6 +113,12 @@ class ProjectionPool {
             auto prefill=std::make_unique<Vfp32_prefill_kernel>(prefill_context.get());
             prefill->start=0;prefill->clk=0;prefill->eval();
 #endif
+#ifdef FP32_PREFILL_FMA
+            auto tail_context=std::make_unique<VerilatedContext>();
+            tail_context->threads(1);
+            auto tail=std::make_unique<Vfp32_prefill_tail_kernel>(tail_context.get());
+            tail->start=0;tail->clk=0;tail->eval();
+#endif
             std::unique_lock<std::mutex> lock(mutex);
             ++ready;complete.notify_one();
             uint64_t seen=0;
@@ -151,9 +163,15 @@ class ProjectionPool {
 #endif
 #ifdef FP32_PROJECTION_B1
                 // One copy per dispatch, including a multi-matrix scalar group.
+#ifdef FP32_PREFILL_FMA
+                if(operation==2) {
+                    for(int j=0;j<width;++j) for(int t=0;t<4;++t)
+                        tail->activation[j*4+t]=t<batch_count?input[j*8+t]:0.0;
+                } else
+#endif
 #ifdef FP32_VERIFICATION_B4
                 if(operation==4
-#ifdef FP32_PREFILL_B8
+#if defined(FP32_PREFILL_B8) && !defined(FP32_PREFILL_FMA)
                    || operation==2
 #endif
                 ) {
@@ -206,9 +224,17 @@ class ProjectionPool {
 #endif
                 int begin=job_rows*id/count, end=job_rows*(id+1)/count;
 #ifdef FP32_PROJECTION_B1
+#ifdef FP32_PREFILL_FMA
+                if(operation==2) {
+                    tail->base=job_base;tail->width=width;tail->first_row=begin;tail->end_row=end;
+                    tail->start=1;tail->clk=0;tail->eval();tail->clk=1;tail->eval();
+                    for(int r=begin;r<end;++r) for(int t=0;t<batch_count;++t)
+                        destination[(output_offset+r)*8+t]=tail->result[r*4+t];
+                } else
+#endif
 #ifdef FP32_VERIFICATION_B4
                 if(operation==4
-#ifdef FP32_PREFILL_B8
+#if defined(FP32_PREFILL_B8) && !defined(FP32_PREFILL_FMA)
                    || operation==2
 #endif
                 ) {

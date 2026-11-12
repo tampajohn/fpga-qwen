@@ -422,6 +422,8 @@ int main(int argc,char** argv) {
             } else if(command=="precision") {
 #ifdef FP32_KV
                 std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill_fp32_kv","scalar_projection":"fp32","prefill_projection":"fp64","verification_projection":"fp32","attention_arithmetic":"fp64","kv_storage":"fp32","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
+#elif defined(FP32_PREFILL_FMA)
+                std::cout<<R"({"precision_profile":"fp32_b1_fp32_fma_prefill","scalar_projection":"fp32","prefill_projection":"fp32","verification_projection":"fp32","vocabulary_projection":"fp32","scalar_accumulation":"separate","prefill_accumulation":"fused","verification_accumulation":"separate","vocabulary_accumulation":"separate","attention_kv":"fp64","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
 #elif defined(FP32_PREFILL_B8)
                 std::cout<<R"({"precision_profile":"fp32_b1_fp32_prefill","scalar_projection":"fp32","prefill_projection":"fp32","verification_projection":"fp32","attention_kv":"fp64","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
 #elif defined(FP32_VERIFICATION_B4)

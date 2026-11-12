@@ -1,0 +1,18 @@
+{
+  "completed": true,
+  "driver_session": 42742,
+  "driver_exit_code": 0,
+  "candidate_sha256": "013a56b2271120f6ca39cf38f74398b2d918e7d8c5e7dfe0b37679bd8317ec32",
+  "tests_passed": 3,
+  "correctness_elapsed_seconds": 37.895,
+  "timing_claim": false,
+  "coverage": [
+    "24 verification parity cases",
+    "fixed-route tails 1 through 8 with reset/restart",
+    "14 suffix comparisons including wrong drafts, cancellation and retained-KV continuation"
+  ],
+  "test_sources_sha256": {
+    "tests/test_fp32_verification_real.py": "a0d9565e65d778db896f1f1d1409baea0218f2564fa9c6641d17ea081b6fd9a7",
+    "tests/test_fma_prefill_suffix_real.py": "84921a78d6787ff03d539bc9fd26c3669fe8667024eacd6713e12611a27101cc"
+  }
+}

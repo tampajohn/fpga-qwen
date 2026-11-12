@@ -41,11 +41,13 @@ def main():
     parser.add_argument('--fp32-verification-b4', action='store_true', help='Experimental explicit FP32 B4 verification; FP64 prefill unchanged')
     parser.add_argument('--phase-pools-experiment',action='store_true',help='Persistent12 prefill /8 scalar pools selected by trusted environment')
     parser.add_argument('--fp32-kv', action='store_true', help='Experimental single SV FP32 KV store; distinct no-cache profile')
+    parser.add_argument('--fp32-prefill-fma', action='store_true', help='Experimental explicit fused FP32 prefill only, separate B1/B4 verification')
     parser.add_argument('--fp32-prefill-b8', action='store_true', help='Experimental FP32 B8 prefill and B4 tails; distinct precision profile')
     parser.add_argument('--shortreal-compiler', default='', help='Reviewed patched Verilator root for isolated FP32 archive')
     parser.add_argument('--tag', default='', help='Extra alphanumeric/dash suffix for a reproducible experiment')
     parser.add_argument('--print-path', action='store_true', help='Print output path without compiling')
     args = parser.parse_args()
+    if args.fp32_prefill_fma and not args.fp32_prefill_b8:parser.error('--fp32-prefill-fma requires --fp32-prefill-b8')
     if args.fp32_prefill_b8 and not args.fp32_verification_b4:parser.error('--fp32-prefill-b8 requires --fp32-verification-b4')
     if args.fp32_verification_b4 and not args.fp32_projection_b1:parser.error('--fp32-verification-b4 requires --fp32-projection-b1')
     if args.fp32_projection_b1:
@@ -95,6 +97,7 @@ def main():
     if args.fp32_projection_b1: tag += '-fp32-b1'
     if args.fp32_verification_b4: tag += '-verify-b4'
     if args.fp32_prefill_b8: tag += '-fp32-prefill-b8'
+    if args.fp32_prefill_fma: tag += '-prefill-fma'
     if args.batch_attention: tag += '-batch-attention'
     if args.attention_qk2: tag += '-qk2'
     if args.attention_head_pairs: tag += '-head-pairs'
@@ -102,11 +105,14 @@ def main():
     if args.fp32_kv: tag += '-fp32-kv'
     if args.phase_pools_experiment: tag = 'phase-pools-'+hashlib.sha256(tag.encode()).hexdigest()[:16]
     if args.tag: tag += '-'+args.tag
+    if args.fp32_prefill_fma or len(tag.encode())>240:
+        tag=('fma-prefill-' if args.fp32_prefill_fma else 'variant-')+hashlib.sha256(tag.encode()).hexdigest()[:16]
     directory = ROOT / 'build/variants' / tag
     projection, full = directory / 'projection', directory / 'full'
     fp32 = directory / 'fp32'
     fp32_b4 = directory / 'fp32-b4'
     fp32_b8 = directory / 'fp32-b8'
+    fp32_tail = directory / 'fp32-prefill-tail'
     kv_module = directory / 'fp32-kv'
     binary = full/'Vqwen_behavioral'
     if args.print_path:
@@ -119,6 +125,7 @@ def main():
     if args.fp32_kv: flags += ' -DFP32_KV -I'+str(kv_module)
     if args.scalar_group: flags += ' -DSCALAR_GROUP'
     if args.fp32_projection_b1: flags += ' -DFP32_PROJECTION_B1 -I'+str(fp32)
+    if args.fp32_prefill_fma: flags += ' -DFP32_PREFILL_FMA -I'+str(fp32_tail)
     if args.fp32_prefill_b8: flags += ' -DFP32_PREFILL_B8 -I'+str(fp32_b8)
     if args.fp32_verification_b4: flags += ' -DFP32_VERIFICATION_B4 -I'+str(fp32_b4)
     if args.cpu == 'native': flags += ' -mcpu=native'
@@ -176,6 +183,7 @@ def main():
          *([str(fp32/'Vfp32_projection_kernel__ALL.a')]if args.fp32_projection_b1 else []),
          *([str(fp32_b4/'Vfp32_verification_kernel__ALL.a')] if args.fp32_verification_b4 else []),
          *([str(fp32_b8/'Vfp32_prefill_kernel__ALL.a')] if args.fp32_prefill_b8 else []),
+         *([str(fp32_tail/'Vfp32_prefill_tail_kernel__ALL.a')] if args.fp32_prefill_fma else []),
          *([str(kv_module/'Vfp32_kv_store__ALL.a')] if args.fp32_kv else [])]]
     stock_env=os.environ.copy()
     stock_env.pop('VERILATOR_ROOT',None);stock_env.pop('VERILATOR_BIN',None)
@@ -183,6 +191,7 @@ def main():
     fp32_info=None
     if args.fp32_projection_b1:
         compiler_root=Path(args.shortreal_compiler).resolve();compiler_binary=compiler_root/'build-local/src/verilator_bin'
+        if args.fp32_prefill_fma and hashlib.sha256(compiler_binary.read_bytes()).hexdigest()!='3a123151340a420d36edd1766585218ad882c343bf8b03c7db8ffdfb89de8c87':raise RuntimeError('Fused prefill requires the reviewed frozen FMA32 compiler')
         patched_env=stock_env.copy();patched_env['VERILATOR_ROOT']=str(compiler_root);patched_env['VERILATOR_BIN']=str(compiler_binary)
         fp32.mkdir(parents=True,exist_ok=True)
         command=[str(compiler_root/'bin/verilator'),'--cc','--build','-j','4','--top-module','fp32_projection_kernel','--Mdir',str(fp32),
@@ -204,7 +213,15 @@ def main():
             prefill_command[prefill_command.index('+define+KERNEL_BATCH=1')]='+define+KERNEL_BATCH=8'
             prefill_command[prefill_command.index('+define+KERNEL_ROWS=151936')]='+define+KERNEL_ROWS=3072'
             prefill_command[1:1]=['--prefix','Vfp32_prefill_kernel','--unroll-count','1']
+            if args.fp32_prefill_fma:prefill_command.insert(-1,'+define+FP32_EXPLICIT_FMA')
             commands.insert(2,prefill_command);environments.insert(2,patched_env)
+            if args.fp32_prefill_fma:
+                fp32_tail.mkdir(parents=True,exist_ok=True)
+                tail_command=verify_command.copy()
+                tail_command[tail_command.index('--Mdir')+1]=str(fp32_tail)
+                tail_command[tail_command.index('Vfp32_verification_kernel')]='Vfp32_prefill_tail_kernel'
+                tail_command.insert(-1,'+define+FP32_EXPLICIT_FMA')
+                commands.insert(3,tail_command);environments.insert(3,patched_env)
         if args.fp32_kv:
             kv_module.mkdir(parents=True,exist_ok=True)
             kv_command=[str(compiler_root/'bin/verilator'),'--cc','--build','-j','4','--top-module','fp32_kv_store','--Mdir',str(kv_module),
@@ -219,7 +236,7 @@ def main():
             headers[name]=a
         fp32_info=dict(compiler_binary_sha256=hashlib.sha256(compiler_binary.read_bytes()).hexdigest(),
             git_head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=compiler_root,text=True).strip(),runtime_header_hashes=headers,
-            policy='FP32 archives only use strict flags; stock worker/main/runtime retain original O3 ThinLTO/contraction. B1 FP32; attention FP64, KV storage specified by manifest kv_storage. Prefill precision and verification capacity are specified by the adjacent manifest fields.', kv_storage='fp32' if args.fp32_kv else 'fp64', kv_payload_bytes=28*4096*1024*2*(4 if args.fp32_kv else 8), verification_batch=4 if args.fp32_verification_b4 else 1, prefill_projection='fp32' if args.fp32_prefill_b8 else 'fp64', prefill_unroll_count=1 if args.fp32_prefill_b8 else None)
+            policy='FP32 archives only use strict flags; stock worker/main/runtime retain original O3 ThinLTO/contraction. B1 FP32; attention FP64, KV storage specified by manifest kv_storage. Prefill precision and verification capacity are specified by the adjacent manifest fields.', kv_storage='fp32' if args.fp32_kv else 'fp64', kv_payload_bytes=28*4096*1024*2*(4 if args.fp32_kv else 8), prefill_accumulation='fused' if args.fp32_prefill_fma else 'separate', scalar_accumulation='separate', verification_accumulation='separate', vocabulary_accumulation='separate', verification_batch=4 if args.fp32_verification_b4 else 1, prefill_projection='fp32' if args.fp32_prefill_b8 else 'fp64', prefill_unroll_count=1 if args.fp32_prefill_b8 else None)
     sources = ['rtl/projection_worker.sv', 'rtl/qwen_behavioral.sv', 'rtl/sampling.svh',
                'sim/full_model.cpp', 'sim/projection_pool.h', 'sim/projection_descriptors.h', 'tools/build_projection_variant.py']
     if args.phase_pools_experiment:sources.append('sim/phase_pool_policy.h')
