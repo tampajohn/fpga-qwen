@@ -186,6 +186,30 @@
     "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)"
   },
   "timing_claim": false,
-  "deployed": false,
-  "capacity_report": "reports/phase-pools-capacity.json"
+  "deployed": true,
+  "capacity_report": "reports/phase-pools-capacity.json",
+  "deployment": {
+    "verified_at_utc": "2026-11-12T03:12:49.921077+00:00",
+    "url": "http://127.0.0.1:8765",
+    "server_session": 27617,
+    "default_backend": "rtl",
+    "phase_catalog": {
+      "id": "rtl-fp32-phase",
+      "label": "SystemVerilog \u00b7 FP32 hybrid \u00b7 12 prefill / 8 decode",
+      "available": true,
+      "cpu_threads": 20,
+      "simulation": true,
+      "min_workers": 1,
+      "fixed_workers": 8,
+      "prefill_workers": 12,
+      "decode_workers": 8,
+      "precision": "BF16 weights / FP32 scalar projections / FP64 prefill, attention and KV",
+      "prefix_reuse_supported": true,
+      "canonical_prefix_policy": "fp64_b8_aligned_v1",
+      "suffix_supported": true,
+      "max_draft": 3,
+      "prefill_block_size": 8
+    },
+    "browser_report": "reports/phase-ui-browser.json"
+  }
 }
