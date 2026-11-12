@@ -1,0 +1,245 @@
+{
+  "completed": true,
+  "timing_claim": false,
+  "artifacts": [
+    {
+      "path": "$WORKSPACE/fpga-qwen-fma32-prefill-model/build/variants/fma-prefill-2029086fc68c8bdc/full/Vqwen_behavioral",
+      "sha256": "013a56b2271120f6ca39cf38f74398b2d918e7d8c5e7dfe0b37679bd8317ec32"
+    },
+    {
+      "path": "$WORKSPACE/fpga-qwen-fma-phase-design/build/variants/fma-prefill-167c4131e06f4c74/full/Vqwen_behavioral",
+      "sha256": "d0e52c31cbc51234e80fefa547a6dbe64484c32e28a89b8e2792f585daccaf5a"
+    }
+  ],
+  "cases": [
+    {
+      "label": "prefill63",
+      "ids_positions": [
+        9707,
+        64
+      ],
+      "bit_exact": true,
+      "logits_sha256": "d4c19cb13025772bccf89ccec4ffc4d3388bb58cdf6e910faf1be77671b46765"
+    },
+    {
+      "label": "replace63",
+      "ids_positions": [
+        9707,
+        64
+      ],
+      "bit_exact": true,
+      "logits_sha256": "a9f5a78d356a9e9be81f5cb5092adb158e6714dea5e5a620625e6ea433779b52"
+    },
+    {
+      "label": "prefill64",
+      "ids_positions": [
+        198,
+        65
+      ],
+      "bit_exact": true,
+      "logits_sha256": "9a3083ebfcbb62d9d09f6bfb718085eb9f76b8ec5007629cda5615ec8092cb75"
+    },
+    {
+      "label": "replace64",
+      "ids_positions": [
+        9707,
+        65
+      ],
+      "bit_exact": true,
+      "logits_sha256": "0d208cfffd56ffdca882b68aa200d50ec8fe37e683039783ca8f4924182788ba"
+    },
+    {
+      "label": "prefill65",
+      "ids_positions": [
+        9707,
+        66
+      ],
+      "bit_exact": true,
+      "logits_sha256": "5ced5a7e8a4c2526c665e7606580c7de35bc7e7297d77a9173cbb3ffc9e0081e"
+    },
+    {
+      "label": "replace65",
+      "ids_positions": [
+        9707,
+        66
+      ],
+      "bit_exact": true,
+      "logits_sha256": "c81d084dc5d8437cc3c04f63aac7f01e0d4d8d094d6e43e0f4ac4b248b7a20ee"
+    },
+    {
+      "label": "prefill127",
+      "ids_positions": [
+        9707,
+        128
+      ],
+      "bit_exact": true,
+      "logits_sha256": "c794c135472f63d1ce4a2c426fa9e9697040a649136c3dbe1cc0b414aa8bcc38"
+    },
+    {
+      "label": "replace127",
+      "ids_positions": [
+        9707,
+        128
+      ],
+      "bit_exact": true,
+      "logits_sha256": "dd35ef928c48e15266ed09e031c03399d06cbf01c26ba47bc1f9037cfbfd75c6"
+    },
+    {
+      "label": "prefill128",
+      "ids_positions": [
+        198,
+        129
+      ],
+      "bit_exact": true,
+      "logits_sha256": "cb6f3ae6201888335e7f09dcceef4b29acd4cd80858c34ed97eed733b8b1b359"
+    },
+    {
+      "label": "replace128",
+      "ids_positions": [
+        9707,
+        129
+      ],
+      "bit_exact": true,
+      "logits_sha256": "f37da31a18452bccf193263c0a4c109d0273b6c075c8a12b40331568212219e7"
+    },
+    {
+      "label": "prefill129",
+      "ids_positions": [
+        9707,
+        130
+      ],
+      "bit_exact": true,
+      "logits_sha256": "9228e601719ccc6cfa00ebb0892fa5912235b3697ac080ff018a48e0ee50cabe"
+    },
+    {
+      "label": "replace129",
+      "ids_positions": [
+        9707,
+        130
+      ],
+      "bit_exact": true,
+      "logits_sha256": "be060bd94e966d63d59c4513c892fc3a52fe229144efd2eadd25c494993d9a99"
+    },
+    {
+      "label": "prefill451",
+      "ids_positions": [
+        9707,
+        452
+      ],
+      "bit_exact": true,
+      "logits_sha256": "0f709a3392f641ad8ae89bfb6c8574252bcbfb77ded736df025567c6ade1971b"
+    },
+    {
+      "label": "replace451",
+      "ids_positions": [
+        9707,
+        452
+      ],
+      "bit_exact": true,
+      "logits_sha256": "c052631e249a029b0f1b9d0ba563f9dcec71507f1c42c78dbe63e4efa5b9d5ea"
+    },
+    {
+      "label": "no-logits-verification1",
+      "ids_positions": [
+        13048,
+        10
+      ],
+      "bit_exact": true,
+      "logits_sha256": "e65e1bc84efdc4efa78fc29428312b24823fefad76d4c9d9951607fc74da9b9b"
+    },
+    {
+      "label": "no-logits-verification2",
+      "ids_positions": [
+        13048,
+        11
+      ],
+      "bit_exact": true,
+      "logits_sha256": "04eada863dcb2b875692518ff79b38fd11133b396b554f74df300de897106925"
+    },
+    {
+      "label": "no-logits-verification3",
+      "ids_positions": [
+        13048,
+        12
+      ],
+      "bit_exact": true,
+      "logits_sha256": "0728716eeac6de8642f0f7282c8889fa0da5e632cd0f6626cd21195aa83ca0f5"
+    },
+    {
+      "label": "no-logits-verification4",
+      "ids_positions": [
+        13048,
+        13
+      ],
+      "bit_exact": true,
+      "logits_sha256": "436ac01480c34bf22129992a584dd0a445ec10da6a164b59e8dc58eda398a098"
+    }
+  ],
+  "capabilities": [
+    {
+      "precision_profile": "fp32_b1_fp32_fma_prefill",
+      "scalar_projection": "fp32",
+      "prefill_projection": "fp32",
+      "verification_projection": "fp32",
+      "vocabulary_projection": "fp32",
+      "scalar_accumulation": "separate",
+      "prefill_accumulation": "fused",
+      "verification_accumulation": "separate",
+      "vocabulary_accumulation": "separate",
+      "attention_kv": "fp64",
+      "max_verification_block": 4,
+      "prefix_reuse_supported": false,
+      "canonical_prefix_policy": "none"
+    },
+    {
+      "precision_profile": "fp32_b1_fp32_fma_prefill",
+      "scalar_projection": "fp32",
+      "prefill_projection": "fp32",
+      "verification_projection": "fp32",
+      "vocabulary_projection": "fp32",
+      "scalar_accumulation": "separate",
+      "prefill_accumulation": "fused",
+      "verification_accumulation": "separate",
+      "vocabulary_accumulation": "separate",
+      "attention_kv": "fp64",
+      "max_verification_block": 4,
+      "prefix_reuse_supported": false,
+      "canonical_prefix_policy": "none"
+    }
+  ],
+  "telemetry": {
+    "selector": "PREFILL_12",
+    "resident_decode_workers": 8,
+    "resident_prefill_workers": 12,
+    "prefill_workers": 12,
+    "decode_workers": 8,
+    "pool_constructions": 2,
+    "dispatch_counts": [
+      [
+        2538,
+        0,
+        560
+      ],
+      [
+        0,
+        19880,
+        0
+      ]
+    ],
+    "group_counters": [
+      [
+        1232,
+        3080,
+        1848,
+        187170816
+      ],
+      [
+        7952,
+        19880,
+        11928,
+        9050259456
+      ]
+    ]
+  },
+  "artifact_hashes_stable": true
+}

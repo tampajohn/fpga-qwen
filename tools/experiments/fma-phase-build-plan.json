@@ -1,5 +1,5 @@
 {
-  "status": "source/options plan only; no build or numerical/performance evidence",
+  "status": "Built; initial and expanded exact route gates passed. Performance and final canonical-cache artifact pending.",
   "base_commit": "d4d9f1e1cec2464ce23ac8a2c87e854f3ca52abd",
   "build_command": [
     "python3",
@@ -36,7 +36,7 @@
   "predicted_binary_path": "$WORKSPACE/fpga-qwen-fma-phase-design/build/variants/fma-prefill-167c4131e06f4c74/full/Vqwen_behavioral",
   "compiler_binary_sha256": "3a123151340a420d36edd1766585218ad882c343bf8b03c7db8ffdfb89de8c87",
   "direct_reference_sha256": "013a56b2271120f6ca39cf38f74398b2d918e7d8c5e7dfe0b37679bd8317ec32",
-  "candidate_sha256": null,
+  "candidate_sha256": "d0e52c31cbc51234e80fefa547a6dbe64484c32e28a89b8e2792f585daccaf5a",
   "precision_profile": "fp32_b1_fp32_fma_prefill",
   "canonical_prefix_policy": "none",
   "workers": {

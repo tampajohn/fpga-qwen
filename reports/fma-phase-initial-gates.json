@@ -1,0 +1,152 @@
+{
+  "completed": true,
+  "cases": [
+    {
+      "label": "prefill tail1",
+      "exact": true,
+      "logits_sha256": "3bc72ec38d24306d236fb2f1489e9404178e4719392888fe01e99da8ef14b502"
+    },
+    {
+      "label": "prefill tail2",
+      "exact": true,
+      "logits_sha256": "01c8a1d28dc32b41798fe3fc341c1a70fc07607f72848fe8275bbf14f790a04f"
+    },
+    {
+      "label": "prefill tail3",
+      "exact": true,
+      "logits_sha256": "bd429f8b990298511d889cbe188fdf5e2abc9bf56766f17418213a8948311bc6"
+    },
+    {
+      "label": "prefill tail4",
+      "exact": true,
+      "logits_sha256": "4b68aa6cbac6ac6ee0f2904ca38c796cf86b099f05428c6f8d7404f70fca2491"
+    },
+    {
+      "label": "prefill tail5",
+      "exact": true,
+      "logits_sha256": "17e4b5701abbf9d40a925eba43ee886e13662bfe33a8e267438d112854efc407"
+    },
+    {
+      "label": "prefill tail6",
+      "exact": true,
+      "logits_sha256": "3bb07441a7553fae404cc312904ebd5fd7541474e28da558ae7ae6a80ba8d65e"
+    },
+    {
+      "label": "prefill tail7",
+      "exact": true,
+      "logits_sha256": "a106b9e71e1abb60466a0aab65783005992566d7276b3f8322ac3c59f79956e1"
+    },
+    {
+      "label": "prefill tail8",
+      "exact": true,
+      "logits_sha256": "468d9f73fa3f2c806376b70c0dbb78331434051e12fd0eca50d6d78fe0d37597"
+    },
+    {
+      "label": "sampled verification1",
+      "exact": true,
+      "logits_sha256": "468d9f73fa3f2c806376b70c0dbb78331434051e12fd0eca50d6d78fe0d37597"
+    },
+    {
+      "label": "sampled verification2",
+      "exact": true,
+      "logits_sha256": "919b751e6aa3944cf2995b4555c310e1cdc5f6c827fa542b4e896bebb4b454b7"
+    },
+    {
+      "label": "sampled verification3",
+      "exact": true,
+      "logits_sha256": "b98e21753d5471c5c8a2a5eba0619d3929760feee931f1f1353485a56fa7cab6"
+    },
+    {
+      "label": "sampled verification4",
+      "exact": true,
+      "logits_sha256": "08c19e51606f7a2d4f0791971215fd88af5ead1cf5ee51ad56b7ae95d6a80429"
+    },
+    {
+      "label": "short",
+      "exact": true,
+      "logits_sha256": "81f7701602856adf18ac054f39296b01c6cee1fef8eae19dfbb83dee6906b9ca"
+    },
+    {
+      "label": "long",
+      "exact": true,
+      "logits_sha256": "a03f912957db2f7659c2a8aa25e4e79cc0ebb5013dc23f7eb13d7396098933d4"
+    }
+  ],
+  "telemetry": [
+    {
+      "selector": "OFF",
+      "resident_decode_workers": 8,
+      "resident_prefill_workers": 12,
+      "prefill_workers": 8,
+      "decode_workers": 8,
+      "pool_constructions": 2,
+      "dispatch_counts": [
+        [
+          1410,
+          11200,
+          570
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "group_counters": [
+        [
+          5264,
+          13160,
+          7896,
+          3534225408
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "selector": "PREFILL_12",
+      "resident_decode_workers": 8,
+      "resident_prefill_workers": 12,
+      "prefill_workers": 12,
+      "decode_workers": 8,
+      "pool_constructions": 2,
+      "dispatch_counts": [
+        [
+          1410,
+          0,
+          570
+        ],
+        [
+          0,
+          11200,
+          0
+        ]
+      ],
+      "group_counters": [
+        [
+          784,
+          1960,
+          1176,
+          143130624
+        ],
+        [
+          4480,
+          11200,
+          6720,
+          5086642176
+        ]
+      ]
+    }
+  ],
+  "binary_sha256": "d0e52c31cbc51234e80fefa547a6dbe64484c32e28a89b8e2792f585daccaf5a",
+  "reference_provenance": {
+    "path": "$WORKSPACE/fpga-qwen-fma32-prefill-model/build/variants/fma-prefill-2029086fc68c8bdc/full/Vqwen_behavioral",
+    "sha256_after": "013a56b2271120f6ca39cf38f74398b2d918e7d8c5e7dfe0b37679bd8317ec32",
+    "scope": "Reference hash captured after terminal; expanded gate captures and verifies both hashes before/after."
+  },
+  "timing_claim": false
+}
