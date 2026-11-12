@@ -1,0 +1,24 @@
+{
+  "completed": true,
+  "binary_sha256": "c7a41fd46cb72ae0d2b1789c5be4b2926b8b7bb41ca440b0ecbe52fe6b3f5624",
+  "test_source_sha256": "d88b1d2e8a5fce87b3c1138140f5fb777215c7ed15886553f635726a8e47f19c",
+  "tests": [
+    "test_all_prefill_tails_exact_reset_and_restart",
+    "test_seeded_greedy_cache_rejection_and_cancel_replay"
+  ],
+  "passed": 2,
+  "elapsed_seconds_not_performance": 34.731,
+  "prefill_tails": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "repetitions_per_tail": 3,
+  "same_route_gate": "full vocabulary bit identity after reset and process restart",
+  "timing_claim": false
+}
