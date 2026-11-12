@@ -878,3 +878,23 @@ native12's failures nor establishes that the oracle or contract is wrong.
 The second-position difference remains, and neither reduction order nor any
 specific kernel has been established as its cause. Preserve the failed gates,
 keep near-4K performance diagnostic, and leave the follow-on numerical gap open.
+
+
+### Final-tail batching diagnostic against the saved oracle
+
+The [offline tail comparison](../reports/native-cpu-context3968-tail-saved-oracle.json)
+uses the same persisted independent oracle vectors and unchanged limits. A
+hidden-capable build15 diagnostic primes a shared canonical 3584-token prefix.
+Branch A processes the remaining 384 prompt IDs as prefill and must reproduce
+both frozen build12 full-logit repeats exactly. Branch B rewinds to that same
+prefix, then consumes all 384 fixed teacher IDs through B1 steps; both branches
+consume the same final continuation ID. No intermediate prediction selects inputs.
+
+Branch A reproduced the original two failing arrays. Branch B reduced the
+3968 maximum error to 0.010817528 but had RMS 0.002041098, failing both limits.
+At 3969, branch B passed with maximum error 0.009735107 and RMS 0.001728274.
+All greedy predictions matched. Changing final-tail batching affects the
+numerical trajectory, but it does not repair both failing positions or isolate
+one kernel: layer projections and attention execution differ, and the first
+3584 tokens still share the original prefilled KV. This diagnostic is not a
+whole-prompt B1 oracle, a speed result, or a release change. The gap remains open.
