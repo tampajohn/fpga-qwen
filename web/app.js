@@ -17,6 +17,22 @@ function connectionLabel() {
   return `Local engine · ${selectedBackend()?.cpu_threads ?? 6} CPU threads`;
 }
 function selectedBackend() { return backends.find(b => b.id === $('backend').value); }
+function refreshBackendOptions() {
+  const select = $('backend');
+  // Native select popups can close when even an unchanged option is rewritten.
+  // Focus also covers keyboard interaction; apply pending metadata after blur.
+  if (document.activeElement === select) return;
+  const selected = select.value;
+  for (const option of select.options) {
+    const backend = backends.find(item => item.id === option.value);
+    if (!backend) continue;
+    const label = backend.label + (backend.available ? '' : ' (not installed)');
+    const disabled = !backend.available;
+    if (option.textContent !== label) option.textContent = label;
+    if (option.disabled !== disabled) option.disabled = disabled;
+  }
+  if (select.value !== selected) select.value = selected;
+}
 function backendChanged() {
   const backend = selectedBackend();
   const rtl = selectedBackend()?.simulation === true;
@@ -59,6 +75,7 @@ function renderBackendDetails() {
     : 'llama.cpp runs Qwen3-0.6B on CPU with native prefix caching. This comparison backend does not use SystemVerilog. GPU support is disabled in the build.';
 }
 $('backend').addEventListener('change', backendChanged);
+$('backend').addEventListener('blur', () => queueMicrotask(refreshBackendOptions));
 $('workers').addEventListener('change', backendChanged);
 
 function showError(message) {
@@ -70,7 +87,8 @@ function controls() {
   $('prompt').disabled = !ready || busy;
   $('new-chat').disabled = busy;
   $('suffix').disabled = !ready || busy || !selectedBackend()?.suffix_supported;
-  $('backend').disabled = busy || !ready;
+  const backendDisabled = busy || !ready;
+  if ($('backend').disabled !== backendDisabled) $('backend').disabled = backendDisabled;
   $('workers').disabled = busy || !ready || Boolean(selectedBackend()?.fixed_workers);
   $('reply-limit').disabled = busy;
   $('decoding').disabled = busy;
@@ -147,13 +165,7 @@ async function checkStatus() {
       // suffix selection, worker controls, or the currently displayed metrics.
       const current = new Map(status.backends.map(backend => [backend.id, backend]));
       backends = backends.map(backend => current.get(backend.id) ?? backend);
-      for (const option of $('backend').options) {
-        const backend = current.get(option.value);
-        if (backend) {
-          option.textContent = backend.label + (backend.available ? '' : ' (not installed)');
-          option.disabled = !backend.available;
-        }
-      }
+      refreshBackendOptions();
       if (!selectedBackend()?.suffix_supported) $('suffix').checked = false;
       renderBackendDetails();
     }
