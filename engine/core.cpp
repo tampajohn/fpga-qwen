@@ -160,6 +160,7 @@ struct Model::Impl {
     // Retain allocation capacity across prefill chunks and decode steps. Every
     // logical element is overwritten before use; reset only invalidates KV/logits.
     std::vector<float> x,h,q,k,v,attended,residual,gate,up,attention_scores;
+    std::vector<float> half_gate,tanh_gate;
     std::array<float,H> last_hidden{};
     int pos=0;
     Impl(const std::string& path,Options opt):options(opt),mapping(path) {
@@ -208,6 +209,7 @@ struct Model::Impl {
         attention_scores.resize(size_t(std::max(opt.decode_threads,opt.prefill_threads))*opt.context);
         x.reserve(prefill_chunk*H);h.reserve(prefill_chunk*H);q.reserve(prefill_chunk*Q*D);k.reserve(prefill_chunk*K*D);v.reserve(prefill_chunk*K*D);
         attended.reserve(prefill_chunk*Q*D);residual.reserve(prefill_chunk*H);gate.reserve(prefill_chunk*F);up.reserve(prefill_chunk*F);
+        half_gate.reserve(prefill_chunk*F);tanh_gate.reserve(prefill_chunk*F);
         output.reserve(vocabulary);
         cosines.resize(size_t(opt.context)*64);sines.resize(cosines.size());
         for(int p=0;p<opt.context;++p)for(int j=0;j<64;++j){double angle=p/std::pow(1000000.0,2.0*j/D);cosines[p*64+j]=std::cos(angle);sines[p*64+j]=std::sin(angle);}
@@ -253,6 +255,7 @@ struct Model::Impl {
     void chunk(const int* ids,int batch,Pool& pool) {
         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
         attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
+        half_gate.resize(gate.size());tanh_gate.resize(gate.size());
         const Half* embeddings=tensor("model.embed_tokens.weight").half;
         for(int b=0;b<batch;++b)for(int j=0;j<H;++j)x[b*H+j]=embeddings[size_t(ids[b])*H+j];
         for(int layer=0;layer<L;++layer){std::string p="model.layers."+std::to_string(layer)+".";
@@ -292,7 +295,13 @@ struct Model::Impl {
             } else {
                 project(tensor(p+"mlp.gate_proj.weight"),h.data(),gate.data(),batch,pool);project(tensor(p+"mlp.up_proj.weight"),h.data(),up.data(),batch,pool);
             }
-            for(size_t j=0;j<gate.size();++j)gate[j]=gate[j]*(0.5f+0.5f*std::tanh(gate[j]*0.5f))*up[j];
+            // vForce is an explicit CPU vector-libm path, including batch one.
+            // Apple vForce.h permits denormal flushing and OS/architecture-dependent
+            // results; this change requires the full numerical gate, not bit equality.
+            for(size_t j=0;j<gate.size();++j)half_gate[j]=gate[j]*0.5f;
+            const int gate_count=static_cast<int>(gate.size());
+            vvtanhf(tanh_gate.data(),half_gate.data(),&gate_count);
+            for(size_t j=0;j<gate.size();++j)gate[j]=gate[j]*(0.5f+0.5f*tanh_gate[j])*up[j];
             project(tensor(p+"mlp.down_proj.weight"),gate.data(),residual.data(),batch,pool);
             for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
         }
