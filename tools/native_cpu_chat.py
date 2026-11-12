@@ -37,6 +37,8 @@ class NativeCPUChat:
             gpu_inference=False, pytorch_loaded=False, cpu_threads=self.threads,
             prefill_workers=self.prefill_threads, decode_workers=self.threads,
             context_limit=4096, rtl=None, inference='Original native CPU engine (experimental)',
+            accelerate_thread_request=self.prefill_threads,
+            thread_placement='No hard pinning; Accelerate thread count requested, not independently verified',
             cached_tokens=0, prefix_reuse_enabled=False, suffix_supported=False,
             max_verified_draft=0, prefill_block_size=None, precision_profile=None,
             precision_verified=False, reduction_lanes=None, prefill_reduction_lanes=None)
@@ -113,8 +115,9 @@ class NativeCPUChat:
         command = [str(self.binary), '--weights', str(self.weights), '--threads', str(self.threads),
                    '--prefill-threads', str(self.prefill_threads), '--context', '4096']
         try:
+            environment = dict(os.environ, VECLIB_MAXIMUM_THREADS=str(self.prefill_threads))
             self.process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                            stderr=self.log, bufsize=0)
+                                            stderr=self.log, bufsize=0, env=environment)
             self.ready = self._read(cancel)
             if (self.ready.get('ready') is not True or self.ready.get('protocol') != 1
                     or self.ready.get('gpu') is not False or self.ready.get('pytorch') is not False
