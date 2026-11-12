@@ -898,3 +898,34 @@ numerical trajectory, but it does not repair both failing positions or isolate
 one kernel: layer projections and attention execution differ, and the first
 3584 tokens still share the original prefilled KV. This diagnostic is not a
 whole-prompt B1 oracle, a speed result, or a release change. The gap remains open.
+
+
+### Isolated norm-accumulation diagnostic: near-4K sample passes
+
+An isolated source copy changes only the shared norm helper: square products
+remain FP32, the sum accumulates in FP64, then rounds back to FP32 before the
+unchanged scale and output expressions. The [reproducible patch](../tools/experiments/native-norm-f64-diagnostic.patch),
+[experiment metadata](../reports/native-cpu-norm-f64-experiment.json), and
+[build manifest](../reports/native-cpu-norm-f64-diagnostic-manifest.json) identify
+both source hashes. Apply the patch only to a copy of the recorded baseline;
+it is not a committed production engine change.
+
+The [saved-oracle comparison](../reports/native-cpu-norm-f64-context3968-saved-oracle.json)
+passed the unchanged limits at both tested positions:
+
+| Context | Maximum absolute error | RMS error | Fixed gate |
+|---|---:|---:|---|
+| 3968 | 0.007285118 | 0.001512432 | Pass |
+| 3969 | 0.007415295 | 0.001223014 | Pass |
+
+Both greedy predictions matched the oracle and two native capture repetitions
+were bit-identical. This supports sensitivity to norm accumulation on the saved
+trajectory; it does not establish a general root cause, universal accuracy, or
+a speed improvement. The helper affects layer, Q/K and final normalization,
+and later FP16 KV rounding can amplify changes. FP64 accumulation is a disclosed
+mixed-precision diagnostic, not evidence that an unchanged all-FP32 engine now
+passes. Shorter held-out numerical/quality checks remain pending.
+
+The candidate is **not released or promoted**. Live build12 and its original
+near-4K failures remain unchanged, and the follow-on goal remains open. There
+is no timing claim or tolerance relaxation from this diagnostic result.

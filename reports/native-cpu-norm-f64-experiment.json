@@ -1,0 +1,17 @@
+{
+  "diagnostic_only": true,
+  "promotion_allowed": false,
+  "change": "Norm sum only: FP32 square products, FP64 accumulation, round sum to FP32 before unchanged scale/output",
+  "baseline_core_sha256": "e4d2a029f6f9e169f85483e4eecb1fb5a425bc796e4422d63a4857a32244ebdc",
+  "candidate_core_sha256": "6e424a0b74c61e11ed5a83b5de97dae92443ca40a110384129c641b5e35be75b",
+  "gates": {
+    "max_absolute_error": 0.01,
+    "rms_error": 0.002,
+    "rtol": 0
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/norm-f64-diagnostic-source/experiment.json",
+    "source_sha256": "c324b72b0cce39eab526467760f2a0c3be9fdec845a73d1a73791659c0e8ef48",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted. Original artifact hashes preserved."
+  }
+}
