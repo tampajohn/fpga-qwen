@@ -35,6 +35,8 @@ def main():
     parser.add_argument('--weights', type=Path, default=ROOT/'build/native-cpu/weights.bin')
     parser.add_argument('--directory', type=Path, required=True)
     parser.add_argument('--smoke', action='store_true')
+    parser.add_argument('--source-directory', type=Path, default=ROOT/'engine',
+                        help='Core source directory to freeze and test; defaults to engine')
     parser.add_argument('--guard-state-dir', type=Path, default=ROOT/'build/benchmark-status')
     args = parser.parse_args()
     guarded = guard(args.guard_state_dir)
@@ -63,7 +65,11 @@ def main():
         require(manifest.get('completed') is True and manifest.get('format') == 'QWCPU01'
                 and manifest['binary']['sha256'] == report['inputs'][str(weights)]
                 and manifest['index']['sha256'] == report['inputs'][str(paths[1])], 'Weight manifest mismatch')
-        files = [ROOT/'engine/core.cpp', ROOT/'engine/core.hpp', ROOT/'tools/native_verify_check.cpp']
+        source_directory = args.source_directory.resolve()
+        files = [source_directory/'core.cpp', source_directory/'core.hpp', ROOT/'tools/native_verify_check.cpp']
+        require(all(path.is_file() for path in files), 'Missing selected core source or API test harness')
+        report['source_directory'] = str(source_directory)
+        report['source_scope'] = 'Selected core.cpp/core.hpp frozen beside the unchanged API test harness; this gate builds its own executable, not the chat binary.'
         helpers = [Path(__file__).resolve(), ROOT/'tools/benchmark_native_phase0.py',
                    ROOT/'tools/benchmark_guard.py']
         report['source_hashes'] = {str(path): sha(path) for path in files+helpers}
