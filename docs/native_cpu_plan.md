@@ -708,3 +708,17 @@ A separate [completed ten-pair control](../reports/native-cpu-build-12-vs10-stan
 All intervals include 1. This control establishes neither a direct gain nor a direct regression, and the broad bounds do not establish equivalence or a within-10% noninferiority guarantee. For descriptive context only, median decode rates were 131.04/134.61 tokens/s for build 10/12 at the short prompt and 131.02/123.95 at the long prompt; these independent medians are not the paired ratios above.
 
 The result does not explain or erase the preceding unfavorable build-12 versus llama run. Background contention remains a possible uncontrolled influence, not a demonstrated cause. Nor can the historical build-10 versus llama measurement be combined transitively with this control to claim current build-12 versus llama parity. The original reports, including all slow rounds, remain archived. This analysis performs no inference, compilation, or change to the live browser release.
+
+### Experimental build 14: initial BLAS-attention numerical checks
+
+Build 14 experiments with SGEMM for batched attention QK and probability–V products, retaining causal masking and the existing nonlinear normalization path. Its source change has been reverted from the current engine, its immutable binary has never been exposed as the live browser release, and no timing result is claimed here.
+
+The initial independent NumPy comparisons passed the unchanged maximum-absolute-error ≤0.01 and per-position RMS ≤0.002 limits, with finite full-vocabulary logits and no greedy mismatches:
+
+| Checked contexts | Positions | Largest absolute error | Largest per-position RMS | Evidence |
+|---|---|---|---|---|
+| 1–4 | 4 | 0.002643 | 0.000531 | [tiny gate](../reports/native-cpu-build-14-tiny-gate.json) |
+| 85–92 | 8 | 0.006717 | 0.001465 | [short gate](../reports/native-cpu-build-14-short-gate.json) |
+| 452–455 | 4 | 0.004979 | 0.001206 | [long gate](../reports/native-cpu-build-14-long-gate.json) |
+
+These 16 positions are initial numerical evidence only. The altered BLAS reduction order is not claimed bit-identical to the existing engine. The candidate still needs 512-token chunk-boundary checks, longer-context numerical checks, conversation-quality and exact cache-equivalence gates, and any performance comparison before a release decision. Passing these base cases does not establish correctness across all supported contexts or retained-prefix execution.
