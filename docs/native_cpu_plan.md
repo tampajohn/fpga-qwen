@@ -1113,3 +1113,31 @@ provenance instead of rewriting the saved report as though it used new code.
 A new direct candidate18-versus-llama run has started separately. Its timing
 and selection results remain pending; no partial results or samples from the
 failed preflight are represented as performance evidence here.
+
+
+### Candidate18 direct standard scoreboard completed
+
+The [ten-pair standard confirmation](../reports/native-cpu-build-18-final-standard-confirmation.json)
+and [analysis](../reports/native-cpu-build-18-final-standard-analysis.json) directly
+compare rebuilt candidate18 with tuned ON/ON FP16 llama, 12 decode / 6 prefill
+threads, uncached 85/452-token prompts and 32 outputs. Every round and outlier is
+retained. Ratios above 1 favor the original engine; intervals are 95% paired
+bootstrap intervals, not adjusted across metrics/workloads.
+
+| Prompt tokens | Decode ratio | TTFT speedup | Request speedup |
+|---|---:|---:|---:|
+| 85 | 0.94446 (0.91524–0.97905) | 1.39493 (1.33250–1.53963) | 1.10206 (1.05808–1.13202) |
+| 452 | 0.94914 (0.85192–0.99713) | 1.07987 (1.00789–1.17921) | 1.02921 (0.96283–1.09051) |
+
+Both decode intervals lie below 1: the candidate decodes more slowly on these
+standard workloads. The 452-token lower bound is below 0.9, so this run does not
+establish a within-10% decode guarantee at that context. TTFT intervals favor
+the candidate at both contexts; the 85-token whole-request interval also favors
+it. The 452-token request interval includes 1. These mixed outcomes are not a
+general inference win and do not justify hiding the decode regression behind
+first-token latency.
+
+Extended direct timing remains pending in its separate run; no partial
+selection or extended results are published here. Candidate18 is still
+unpromoted, with FP64 norm accumulation disclosed and the original failures
+retained. This standard comparison does not itself complete the follow-on goal.
