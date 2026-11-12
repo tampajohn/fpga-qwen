@@ -587,3 +587,28 @@ Evidence: [build manifest](../reports/native-cpu-build-11-build.json),
 [nine-case quality](../reports/native-cpu-build-11-quality.json),
 [28-case prefix and lifecycle checks](../reports/native-cpu-build-11-prefix-check.json),
 and [failed counting preflight](../reports/native-cpu-build-11-extended-counting-preflight-failed.json).
+
+## Extended tutorial discovery completed
+
+The revised tutorial workload passed fixed-128-token exact-ID/EOS preflight at
+1024, 2048, and 3968 prompt tokens, followed by two alternating exploratory
+rounds. Full prepared messages and token IDs are archived separately. The failed
+counting preflight remains retained; it was not silently converted into a pass.
+
+Observed medians, for planning only:
+
+| Prompt tokens | Native decode tokens/s | Llama decode tokens/s | Native TTFT seconds | Llama TTFT seconds | Native request seconds | Llama request seconds |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1024 | 115.81 | 88.28 | 1.445 | 1.494 | 2.542 | 2.935 |
+| 2048 | 90.45 | 65.05 | 4.153 | 3.576 | 5.559 | 5.768 |
+| 3968 | 60.85 | 57.08 | 13.660 | 8.612 | 15.752 | 10.837 |
+
+Two pairs do not establish statistical significance or a performance win.
+These observations motivate investigating longer-context prefill: at 3968
+prompt tokens the native request was slower despite a somewhat higher observed
+decode median. They are not a substitute for a predeclared paired confirmation
+or independent numerical coverage of every position in these long prompts.
+No new deployment or browser claim follows from this discovery.
+
+Evidence: [exploratory report](../reports/native-cpu-build-11-extended-tutorial-discovery.json)
+and [immutable prompt IDs/messages](../reports/native-cpu-build-11-extended-tutorial-fixtures.json).
