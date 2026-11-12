@@ -26,6 +26,15 @@ function backendChanged() {
   if (backend?.fixed_workers) $('workers').value = String(backend.fixed_workers);
   if (Number($('workers').value) < (backend?.min_workers ?? 0)) $('workers').value = '8';
   $('suffix').checked = false;
+  renderBackendDetails();
+  $('connection').textContent = connectionLabel();
+  ['rate', 'first-token', 'reused', 'accepted', 'rounds'].forEach(id => $(id).textContent = '—');
+  $('context').textContent = '0 / 4,096 context tokens';
+  controls();
+}
+function renderBackendDetails() {
+  const backend = selectedBackend();
+  const rtl = backend?.simulation === true;
   $('suffix-note').textContent = backend?.suffix_supported
     ? ($('backend').value.startsWith('rtl-fp32')
       ? `Optional · up to ${backend.max_draft} verified tokens; helps repeated text, little benefit on prose`
@@ -34,7 +43,11 @@ function backendChanged() {
   $('backend-tag').textContent = rtl ? 'Full SV simulation'
     : backend?.id === 'native-cpu-f16' ? `Native CPU · ${backend.build_id ?? 'experimental'}` : 'llama.cpp · CPU only';
   $('backend-about').textContent = backend?.id === 'native-cpu-f16'
-    ? 'Original C++ CPU engine with FP16 matrix weights, FP32 norms and arithmetic, and FP16 KV storage. Layer weights also have a widened FP32 cache for prefill. Uses 12 decode / 6 prefill threads; no GPU or PyTorch. Each message processes the full conversation: prefix reuse and suffix drafting are unavailable.'
+    ? `Original C++ CPU engine with FP16 matrix weights, FP32 norms and arithmetic, and FP16 KV storage. Layer weights also have a widened FP32 cache for prefill. Uses ${backend.cpu_threads} decode / ${backend.prefill_workers} prefill threads; no GPU or PyTorch. ${backend.prefix_reuse_enabled
+      ? 'Reuses completed 512-token prefill blocks in the same conversation; partial tails are recomputed.'
+      : backend.prefix_reuse_supported
+      ? 'This engine supports completed 512-token prefill blocks, but prefix reuse is disabled.'
+      : 'Prefix reuse is not enabled for the current engine; messages are fully recomputed. Supporting engines reuse completed 512-token prefill blocks and recompute partial tails.'} Suffix drafting is unavailable.`
     : $('backend').value === 'rtl-fp32-fused-phase'
     ? 'Experimental fused FP32 prefill with 12 workers; separate FP32 decode and verification with 8 workers. Attention and KV remain FP64. Reuses only complete fused prefill blocks. Both pools stay resident; only one runs at a time. Optional suffix drafting is off by default. CPU only; not cycle-accurate FPGA timing.'
     : backend?.fixed_workers
@@ -44,10 +57,6 @@ function backendChanged() {
     : rtl
     ? 'All model math and KV data run in a behavioral SystemVerilog model via Verilator. It uses floating-point real arithmetic and is not synthesizable or cycle-accurate. Python handles tokenization, suffix proposals, sampling random numbers, and HTTP; the model verifies every proposed token.'
     : 'llama.cpp runs Qwen3-0.6B on CPU with native prefix caching. This comparison backend does not use SystemVerilog. GPU support is disabled in the build.';
-  $('connection').textContent = connectionLabel();
-  ['rate', 'first-token', 'reused', 'accepted', 'rounds'].forEach(id => $(id).textContent = '—');
-  $('context').textContent = '0 / 4,096 context tokens';
-  controls();
 }
 $('backend').addEventListener('change', backendChanged);
 $('workers').addEventListener('change', backendChanged);
@@ -133,6 +142,20 @@ async function checkStatus() {
       const latest = backends.find(b => b.available && b.default_eligible !== false);
       if (latest) $('backend').value = latest.id;
       backendChanged();
+    } else if (status.backends) {
+      // Refresh capabilities after startup without changing the user's engine,
+      // suffix selection, worker controls, or the currently displayed metrics.
+      const current = new Map(status.backends.map(backend => [backend.id, backend]));
+      backends = backends.map(backend => current.get(backend.id) ?? backend);
+      for (const option of $('backend').options) {
+        const backend = current.get(option.value);
+        if (backend) {
+          option.textContent = backend.label + (backend.available ? '' : ' (not installed)');
+          option.disabled = !backend.available;
+        }
+      }
+      if (!selectedBackend()?.suffix_supported) $('suffix').checked = false;
+      renderBackendDetails();
     }
     $('connection').textContent = connectionLabel();
     $('connection-dot').classList.remove('offline');

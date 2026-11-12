@@ -76,11 +76,16 @@ class BackendRouter:
             simulations.append(dict(id='rtl-fp32-fused-phase',label='SystemVerilog · Fused FP32 prefill · 12 prefill / 8 decode',
                                     available=False,simulation=True,min_workers=1,fixed_workers=8,suffix_supported=False))
         native_build = self.native_cpu.binary.resolve().parent.name if self.native_cpu.binary.is_file() else 'not installed'
+        native_status = self.native_cpu.status()
         return [dict(id='native-cpu-f16',
             label=f'Native CPU · FP16 · {native_build} · {self.native_cpu.threads}/{self.native_cpu.prefill_threads} threads',
             build_id=native_build, available=self.native_cpu.available(),
             cpu_threads=self.native_cpu.threads, prefill_workers=self.native_cpu.prefill_threads,
-            simulation=False, prefix_reuse_supported=False, suffix_supported=False,
+            simulation=False, prefix_reuse_supported=native_status['prefix_reuse_supported'],
+            prefix_reuse_enabled=native_status['prefix_reuse_enabled'],
+            canonical_prefix_policy=native_status['canonical_prefix_policy'],
+            canonical_reusable_tokens=native_status['canonical_reusable_tokens'],
+            suffix_supported=False,
             max_draft=0, default_eligible=True)] + simulations + [
             dict(id=key, label=label, available=self.binary.is_file() and self.models[key].is_file(),
                  cpu_threads=6, suffix_supported=False)
