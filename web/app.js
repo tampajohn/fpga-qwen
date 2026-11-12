@@ -127,7 +127,7 @@ async function checkStatus() {
         option.disabled = !b.available;
         return option;
       }));
-      const latest = backends.find(b => b.available);
+      const latest = backends.find(b => b.available && b.default_eligible !== false);
       if (latest) $('backend').value = latest.id;
       backendChanged();
     }

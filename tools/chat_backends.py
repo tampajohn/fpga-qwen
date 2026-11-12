@@ -6,12 +6,20 @@ import socket
 import subprocess
 import time
 
+try:
+    from .native_cpu_chat import NativeCPUChat
+    from .chat_protocol import ChatProtocol
+except ImportError:
+    from native_cpu_chat import NativeCPUChat
+    from chat_protocol import ChatProtocol
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class BackendRouter:
     def __init__(self, simulation, hybrid=None, phase=None, fused_phase=None):
         self.simulation = simulation
+        self.native_cpu = NativeCPUChat(simulation)
         self.simulations = {"rtl": simulation}
         if hybrid is not None:
             self.simulations["rtl-fp32"] = hybrid
@@ -52,14 +60,20 @@ class BackendRouter:
         if 'rtl-fp32-fused-phase' not in self.simulations:
             simulations.append(dict(id='rtl-fp32-fused-phase',label='SystemVerilog · Fused FP32 prefill · 12 prefill / 8 decode',
                                     available=False,simulation=True,min_workers=1,fixed_workers=8,suffix_supported=False))
-        return simulations + [
+        return simulations + [dict(id='native-cpu-f16',
+            label='Native CPU · FP16 · experimental', available=self.native_cpu.available(),
+            cpu_threads=self.native_cpu.threads, prefill_workers=self.native_cpu.prefill_threads,
+            simulation=False, prefix_reuse_supported=False, suffix_supported=False,
+            max_draft=0, default_eligible=False)] + [
             dict(id=key, label=label, available=self.binary.is_file() and self.models[key].is_file(),
                  cpu_threads=6, suffix_supported=False)
             for key, label in [('llama-q4', 'llama.cpp · Q4_K_M'), ('llama-f16', 'llama.cpp · FP16'), ('llama-f32', 'llama.cpp · FP32')]]
 
     def status(self):
         status = self.simulations.get(self.active,self.simulation).status()
-        if self.active not in self.simulations:
+        if self.active == 'native-cpu-f16':
+            status = self.native_cpu.status()
+        elif self.active not in self.simulations:
             status.update(precision={'llama-q4': 'Q4_K_M', 'llama-f16': 'FP16', 'llama-f32': 'FP32'}[self.active],
                           cpu_threads=6, rtl=None, inference='llama.cpp CPU', cached_tokens=None,
                           precision_profile=None,precision_verified=False,prefix_reuse_enabled=True,
@@ -73,7 +87,8 @@ class BackendRouter:
         if not entry or not entry['available']:
             raise ValueError('Unknown or unavailable backend')
         simulation = self.simulations.get(backend,self.simulation)
-        request = simulation.prepare(dict(payload, max_draft=payload.get('max_draft', 0)))
+        request = (ChatProtocol.prepare(simulation, payload) if backend == 'native-cpu-f16' else
+                   simulation.prepare(dict(payload, max_draft=payload.get('max_draft', 0))))
         if request.max_draft and not entry['suffix_supported']:
             raise ValueError('Suffix drafting is unavailable for the selected backend')
         if backend in self.simulations:
@@ -93,6 +108,7 @@ class BackendRouter:
         self.close_native()
 
     def close_native(self):
+        self.native_cpu.close()
         if self.process:
             self.process.terminate()
             try:
@@ -148,6 +164,14 @@ class BackendRouter:
     def stream(self, prepared, cancel):
         backend, request = prepared
         self.active = backend
+        if backend == 'native-cpu-f16':
+            if self.process is not None:
+                self.close_native()
+            for simulation in self.simulations.values():
+                simulation.close()
+            yield from self.native_cpu.stream(request, cancel)
+            return
+        self.native_cpu.close()
         if backend in self.simulations:
             self.close_native()
             for key,simulation in self.simulations.items():
