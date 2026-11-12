@@ -33,3 +33,30 @@ The [matched comparison](../reports/combined-attention-native.json) uses the sam
 The combined backend remains behind both native baselines. Native inference uses FP16 KV and mixed arithmetic; the SV hybrid retains FP64 attention/KV and its declared FP32 projection routes. The native build enables Apple CPU BLAS, while Metal/CUDA/Vulkan/OpenCL are disabled and runtime GPU offload is zero. The SV backend uses no host neural kernels. This comparison does not imply identical arithmetic, memory precision, or CPU instruction selection.
 
 The [installed-artifact record](../reports/combined-attention-install.json) verifies that main received the exact tested executable without recompilation. Its [isolated browser check](../reports/combined-attention-browser.json) passed backend switching, 136 reused prefix tokens, suffix on/off text parity, cancellation/restart and no JavaScript errors. The localhost server was restarted with that artifact after the full-context gate passed; the deployment record includes its healthy backend catalog and zero-GPU/no-PyTorch status.
+
+## Paired-query value loads: experimental follow-up
+
+The optional `--attention-query-value-pairs` flag shares value loads between the
+two queries already paired by QK2. Each query retains its existing global
+softmax, division and ascending-position value accumulation. The second query's
+extra causal position is accumulated last; an odd final query ignores its unused
+partner. Scalar paired-head attention is unchanged in source. This is not online
+softmax or a FlashAttention integration.
+
+Frozen candidate `5153c95534e5aae1689c426f81925d270fcb2d47c2568dcc258dbf0fdd244bf4`
+passed 60 exact full-vocabulary comparisons against deployed `6c9ab44b`: all eight
+prefill tails at prefixes 0/63/451, sampled verification, no-logit verification
+and subsequent scalar continuation. The linked value loop uses FP64 SIMD on
+independent outputs, including shared value loads; no horizontal reduction is
+introduced. Build, gates and assembly evidence are in the `query-value-pairs-*`
+reports. Actual maximum capacity and canonical/suffix lifecycle remain pending
+for this candidate.
+
+The [guarded full-model comparison](../reports/query-value-pairs-timing.json) used
+three alternating pairs of 85/452-token prompts with 32 greedy outputs. Every
+pair reproduced its own full logits and matched the deployed reference exactly.
+Long-prompt median prefill speedup was 1.078x and total speedup 1.074x; all three
+long totals improved (1.050–1.101x). Short prefill improved 1.029x, but total
+speedup was 0.983x (0.861–0.991x), with slower decode in all three short pairs.
+These are per-pair ratio medians, not multiplied component gains. The cause of
+the decode regression is unproven. No default or UI promotion is made.
