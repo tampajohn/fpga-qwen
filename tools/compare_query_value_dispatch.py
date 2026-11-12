@@ -34,12 +34,12 @@ def guard(directory):
 def padded_prompt(protocol, count):
     base = make_prompt(protocol, 'short')
     instruction = 'Explain memory bandwidth and caching in four concise sentences.'
-    instruction_ids = protocol.tokenizer.encode(instruction, add_special_tokens=False)
+    instruction_ids = protocol.tokenizer.encode(instruction, add_special_tokens=False).ids
     matches = [i for i in range(len(base)) if base[i:i + len(instruction_ids)] == instruction_ids]
     if len(matches) != 1 or count < len(base):
         raise ValueError(f'Need an unambiguous instruction and context at least {len(base)}')
     filler = protocol.tokenizer.encode('Memory bandwidth measures data transfer. Caches retain recently accessed information. ',
-                                       add_special_tokens=False)
+                                       add_special_tokens=False).ids
     extra = count - len(base)
     padding = (filler * ((extra + len(filler) - 1) // len(filler)))[:extra]
     split = matches[0]
