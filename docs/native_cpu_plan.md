@@ -165,3 +165,43 @@ KleidiAI-ON is excluded from this comparison. The scope is a matched
 KleidiAI-OFF Q4 baseline, not the globally fastest Q4 backend, nor equivalence
 between Q4 and FP16 model quality. Confirmation and conversation-quality results
 must be reported separately from this failed discovery.
+
+## FP16 server CPU sampling diagnostic
+
+Time Profiler attached to the warmed, exact ON/ON 12/6 FP16 server for a
+25.95-second trace during thirty uncached 452-token requests, each generating
+32 tokens. The export contains 186,335 running-thread samples from the target
+PID; 29 complete decode windows fit inside the recording. Filtering by recorded
+HTTP first-token/last-token windows and trimming two milliseconds at each edge
+leaves 86,958 decode samples, with no missing user stacks.
+
+| Decode stack category | CPU sample-weight share |
+| --- | ---: |
+| Matrix multiplication / packing path | 62.03% |
+| Unresolved graph-worker loop | 24.11% |
+| Attention / softmax / RoPE | 13.21% |
+| Other unclassified | 0.39% |
+| Other neural / tensor operations | 0.19% |
+| Sampling | 0.07% |
+
+These are sampled CPU-work shares across threads, **not fractions of request
+wall time**. Shared matrix symbols do not distinguish vocabulary projection
+from layer projections; attention ancestors are classified separately when
+visible. Worker-loop leaf frames may contain inlined work, polling or
+coordination, so their share is not a measured removable overhead.
+
+The trimmed prefill interval contains 96,493 samples: 65.05% unresolved worker
+loop, 15.25% attention/softmax/RoPE and 13.80% matrix/packing. It has 188 missing
+user stacks (0.195%). The FP16-to-FP32 conversion leaf alone accounts for
+3.82% of prefill samples. Its observed 3,625 unique operating-system thread IDs
+are **not simultaneous workers** (decode observes thirty). The BLAS backend
+source launches asynchronous weight-conversion tasks, a possible explanation
+for churn that this analysis has not yet established by grouping TIDs/stacks.
+
+Clock alignment uses the trace start timestamp and request UTC/performance-clock
+anchors; HTTP boundaries and millisecond trace-start precision limit phase
+accuracy. The report retains untrimmed results for comparison. This single
+profile is diagnostic evidence, not another scored throughput confirmation.
+See the [sanitized sample report](../reports/native-phase0-f16-profile-samples.json)
+and [reusable parser](../tools/analyze_native_profile_samples.py). Raw profiler
+artifacts stay local because their TOC can contain inherited environment values.

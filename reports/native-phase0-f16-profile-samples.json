@@ -1,0 +1,1943 @@
+{
+  "completed": true,
+  "diagnostic_only": true,
+  "source_sha256": "e7d8809ce3932d69b43e32c9584103b57ea29622f4d0f92461a25998c2affdde",
+  "sample_export_sha256": "ae30db3299f0b75f824a5d292a1a8457067509e97dcb5d4ea861697a665377f8",
+  "target_pid": 74658,
+  "trace_start": "2026-11-12T00:12:53.311-05:00",
+  "trace_duration_seconds": 25.951545,
+  "sample_time_range_seconds": [
+    0.944965583,
+    25.950965791
+  ],
+  "sample_pids": {
+    "74658": 186335
+  },
+  "target_thread_states": {
+    "Running": 186335
+  },
+  "request_count": 30,
+  "interpretation": "CPU sample-weight shares, not wall-time fractions. Only target PID. No head attribution. Matrix-multiply/packing path may include attention matmuls where shared symbols hide tensor identity. Worker graph-loop samples are unresolved loop/inlined-work/polling, not proven removable overhead.",
+  "timestamp_limits": "Trace start-date is printed to milliseconds; HTTP arrival phase boundaries are approximate. Report both raw windows and conservative2ms trimming at each phase edge.",
+  "phases": {
+    "edge_trim_0ms": {
+      "prefill": {
+        "samples": 97384,
+        "sample_weight_seconds": 97.384,
+        "unique_threads": 3657,
+        "missing_user_stack_samples": 190,
+        "missing_user_stack_weight_seconds": 0.19,
+        "missing_user_stack_share_percent": 0.19510391850817382,
+        "categories": {
+          "worker_graph_loop_unresolved": {
+            "sample_weight_seconds": 63.239,
+            "share_percent": 64.93777211862319
+          },
+          "attention_softmax_rope": {
+            "sample_weight_seconds": 14.752,
+            "share_percent": 15.148278978066212
+          },
+          "matrix_multiply_pack_path": {
+            "sample_weight_seconds": 13.629,
+            "share_percent": 13.995112133410005
+          },
+          "other_unclassified": {
+            "sample_weight_seconds": 4.335,
+            "share_percent": 4.451449930173334
+          },
+          "other_neural_or_tensor_ops": {
+            "sample_weight_seconds": 1.42,
+            "share_percent": 1.4581450751663518
+          },
+          "graph_scheduling_allocation": {
+            "sample_weight_seconds": 0.006,
+            "share_percent": 0.006161176373942331
+          },
+          "sampling": {
+            "sample_weight_seconds": 0.003,
+            "share_percent": 0.0030805881869711655
+          }
+        },
+        "hot_leaf_symbols": [
+          {
+            "symbol": "ggml_graph_compute_secondary_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 60.397,
+            "share_percent": 62.0194282428325
+          },
+          {
+            "symbol": "ggml_compute_forward_flash_attn_ext",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 13.268,
+            "share_percent": 13.624414688244476
+          },
+          {
+            "symbol": "0x1832b2fac",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 8.47,
+            "share_percent": 8.69752731454859
+          },
+          {
+            "symbol": "ggml_fp16_to_fp32_row",
+            "binary": "libggml-base.0.29.0.dylib",
+            "sample_weight_seconds": 3.707,
+            "share_percent": 3.8065801363673706
+          },
+          {
+            "symbol": "ggml_graph_compute_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 2.842,
+            "share_percent": 2.918343875790684
+          },
+          {
+            "symbol": "0x1831c5924",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 2.011,
+            "share_percent": 2.0650209479996713
+          },
+          {
+            "symbol": "0x1832b2d04",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 1.377,
+            "share_percent": 1.413989977819765
+          },
+          {
+            "symbol": "ggml_compute_forward_rms_norm_mul_fused",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 1.318,
+            "share_percent": 1.3534050768093322
+          },
+          {
+            "symbol": "ggml_compute_forward_glu",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.52,
+            "share_percent": 0.533968619075002
+          },
+          {
+            "symbol": "void ggml_compute_forward_rope_flt<float>(ggml_compute_params const*, ggml_tensor*, bool)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.456,
+            "share_percent": 0.4682494044196172
+          },
+          {
+            "symbol": "0x1832bc238",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 0.41,
+            "share_percent": 0.4210137188860593
+          },
+          {
+            "symbol": "ggml_vec_dot_f16_f32",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.396,
+            "share_percent": 0.40663764068019387
+          },
+          {
+            "symbol": "_platform_memmove",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.306,
+            "share_percent": 0.3142199950710589
+          },
+          {
+            "symbol": "_platform_memset",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.227,
+            "share_percent": 0.2330978394808182
+          },
+          {
+            "symbol": "0x190e8d170",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.195,
+            "share_percent": 0.20023823215312578
+          },
+          {
+            "symbol": "(no user backtrace)",
+            "binary": "unknown",
+            "sample_weight_seconds": 0.19,
+            "share_percent": 0.19510391850817382
+          },
+          {
+            "symbol": "__bsdthread_create",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.157,
+            "share_percent": 0.161217448451491
+          },
+          {
+            "symbol": "__bzero",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.134,
+            "share_percent": 0.13759960568471208
+          },
+          {
+            "symbol": "__sincosf_stret",
+            "binary": "libsystem_m.dylib",
+            "sample_weight_seconds": 0.129,
+            "share_percent": 0.13246529203976012
+          },
+          {
+            "symbol": "0x190e7c480",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.097,
+            "share_percent": 0.0996056847120677
+          },
+          {
+            "symbol": "0x1832bb91c",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 0.079,
+            "share_percent": 0.08112215559024069
+          },
+          {
+            "symbol": "vDSP_maxv",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.068,
+            "share_percent": 0.06982666557134642
+          },
+          {
+            "symbol": "ggml_cpu_fp32_to_fp16",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.063,
+            "share_percent": 0.06469235192639448
+          },
+          {
+            "symbol": "__psynch_cvwait",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.05,
+            "share_percent": 0.051343136449519426
+          },
+          {
+            "symbol": "_pthread_create",
+            "binary": "libsystem_pthread.dylib",
+            "sample_weight_seconds": 0.049,
+            "share_percent": 0.05031627372052904
+          },
+          {
+            "symbol": "thread_start",
+            "binary": "libsystem_pthread.dylib",
+            "sample_weight_seconds": 0.042,
+            "share_percent": 0.04312823461759632
+          },
+          {
+            "symbol": "_pthread_tsd_cleanup",
+            "binary": "libsystem_pthread.dylib",
+            "sample_weight_seconds": 0.037,
+            "share_percent": 0.037993920972644375
+          },
+          {
+            "symbol": "_kernelrpc_mach_vm_map_trap",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.034,
+            "share_percent": 0.03491333278567321
+          },
+          {
+            "symbol": "__psynch_cvbroad",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.03,
+            "share_percent": 0.030805881869711657
+          },
+          {
+            "symbol": "_kernelrpc_mach_vm_protect_trap",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.026,
+            "share_percent": 0.026698430953750102
+          }
+        ]
+      },
+      "decode": {
+        "samples": 88309,
+        "sample_weight_seconds": 88.309,
+        "unique_threads": 31,
+        "missing_user_stack_samples": 0,
+        "missing_user_stack_weight_seconds": 0.0,
+        "missing_user_stack_share_percent": 0.0,
+        "categories": {
+          "matrix_multiply_pack_path": {
+            "sample_weight_seconds": 54.708,
+            "share_percent": 61.95065055656841
+          },
+          "worker_graph_loop_unresolved": {
+            "sample_weight_seconds": 21.395,
+            "share_percent": 24.227428687902705
+          },
+          "attention_softmax_rope": {
+            "sample_weight_seconds": 11.627,
+            "share_percent": 13.166268443759979
+          },
+          "other_unclassified": {
+            "sample_weight_seconds": 0.345,
+            "share_percent": 0.3906736572716258
+          },
+          "other_neural_or_tensor_ops": {
+            "sample_weight_seconds": 0.171,
+            "share_percent": 0.1936382475172406
+          },
+          "sampling": {
+            "sample_weight_seconds": 0.063,
+            "share_percent": 0.071340406980036
+          }
+        },
+        "hot_leaf_symbols": [
+          {
+            "symbol": "ggml_vec_dot_f16_f32",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 53.401,
+            "share_percent": 60.470620208585764
+          },
+          {
+            "symbol": "ggml_graph_compute_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 19.113,
+            "share_percent": 21.64332061284807
+          },
+          {
+            "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 4.687,
+            "share_percent": 5.307499801832203
+          },
+          {
+            "symbol": "ggml_compute_forward_flash_attn_ext",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 3.58,
+            "share_percent": 4.053946936325856
+          },
+          {
+            "symbol": "ggml_compute_forward_mul_mat",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 3.507,
+            "share_percent": 3.9712826552220046
+          },
+          {
+            "symbol": "ggml_graph_compute_secondary_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 2.282,
+            "share_percent": 2.5841080750546377
+          },
+          {
+            "symbol": "expf",
+            "binary": "libsystem_m.dylib",
+            "sample_weight_seconds": 0.244,
+            "share_percent": 0.27630252862109184
+          },
+          {
+            "symbol": "_platform_memmove",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.223,
+            "share_percent": 0.25252239296107987
+          },
+          {
+            "symbol": "0x190e8d170",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.202,
+            "share_percent": 0.22874225730106784
+          },
+          {
+            "symbol": "ggml_compute_forward_rms_norm_mul_fused",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.146,
+            "share_percent": 0.1653285622077025
+          },
+          {
+            "symbol": "void ggml_compute_forward_rope_flt<float>(ggml_compute_params const*, ggml_tensor*, bool)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.143,
+            "share_percent": 0.16193139997055792
+          },
+          {
+            "symbol": "_platform_memset",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.11,
+            "share_percent": 0.12456261536196764
+          },
+          {
+            "symbol": "DYLD-STUB$$expf",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.07,
+            "share_percent": 0.07926711886670668
+          },
+          {
+            "symbol": "__sincosf_stret",
+            "binary": "libsystem_m.dylib",
+            "sample_weight_seconds": 0.054,
+            "share_percent": 0.061148920268602296
+          },
+          {
+            "symbol": "ggml::cpu::kleidiai::extra_buffer_type::get_tensor_traits(ggml_tensor const*)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.047,
+            "share_percent": 0.053222208381931625
+          },
+          {
+            "symbol": "llama_token_data_array_partial_sort_inplace(llama_token_data_array*, int)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.042,
+            "share_percent": 0.04756027132002401
+          },
+          {
+            "symbol": "ggml_compute_forward_glu",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.034,
+            "share_percent": 0.038501172020971815
+          },
+          {
+            "symbol": "DYLD-STUB$$vDSP_vsmul",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.026,
+            "share_percent": 0.029442072721919624
+          },
+          {
+            "symbol": "__sendto",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.024,
+            "share_percent": 0.027177297897156574
+          },
+          {
+            "symbol": "poll",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.024,
+            "share_percent": 0.027177297897156574
+          },
+          {
+            "symbol": "DYLD-STUB$$memcpy",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.02,
+            "share_percent": 0.02264774824763048
+          },
+          {
+            "symbol": "__bzero",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.017,
+            "share_percent": 0.019250586010485907
+          },
+          {
+            "symbol": "common_sampler::set_logits(llama_context*, int)",
+            "binary": "libllama-common.0.9.0.dylib",
+            "sample_weight_seconds": 0.017,
+            "share_percent": 0.019250586010485907
+          },
+          {
+            "symbol": "0x190e7c480",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.015,
+            "share_percent": 0.01698581118572286
+          },
+          {
+            "symbol": "DYLD-STUB$$ggml_row_size",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.014,
+            "share_percent": 0.015853423773341334
+          },
+          {
+            "symbol": "ggml_kleidiai_select_kernels(cpu_feature, ggml_tensor const*)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.012,
+            "share_percent": 0.013588648948578287
+          },
+          {
+            "symbol": "ggml_cpu_fp32_to_fp16",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.012,
+            "share_percent": 0.013588648948578287
+          },
+          {
+            "symbol": "logf",
+            "binary": "libsystem_m.dylib",
+            "sample_weight_seconds": 0.011,
+            "share_percent": 0.012456261536196764
+          },
+          {
+            "symbol": "ggml_type_size",
+            "binary": "libggml-base.0.29.0.dylib",
+            "sample_weight_seconds": 0.01,
+            "share_percent": 0.01132387412381524
+          },
+          {
+            "symbol": "0x190f1135c",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.01,
+            "share_percent": 0.01132387412381524
+          }
+        ]
+      },
+      "outside_requests": {
+        "samples": 642,
+        "sample_weight_seconds": 0.642,
+        "unique_threads": 17,
+        "missing_user_stack_samples": 0,
+        "missing_user_stack_weight_seconds": 0.0,
+        "missing_user_stack_share_percent": 0.0,
+        "categories": {
+          "worker_graph_loop_unresolved": {
+            "sample_weight_seconds": 0.624,
+            "share_percent": 97.19626168224299
+          },
+          "other_unclassified": {
+            "sample_weight_seconds": 0.018,
+            "share_percent": 2.803738317757009
+          }
+        },
+        "hot_leaf_symbols": [
+          {
+            "symbol": "ggml_graph_compute_secondary_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.624,
+            "share_percent": 97.19626168224299
+          },
+          {
+            "symbol": "void set_input_attn_mask_impl<unsigned short>(args_set_input_attn_mask const&, unsigned short*, bool)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.003,
+            "share_percent": 0.4672897196261682
+          },
+          {
+            "symbol": "_xzm_free",
+            "binary": "libsystem_malloc.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.3115264797507788
+          },
+          {
+            "symbol": "__write_nocancel",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.3115264797507788
+          },
+          {
+            "symbol": "<deduplicated_symbol>",
+            "binary": "libsystem_malloc.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.3115264797507788
+          },
+          {
+            "symbol": "server_task::server_task(server_task&&)",
+            "binary": "libllama-server-impl.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "_platform_memmove",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "bool common_json::get<bool>() const",
+            "binary": "libllama-common.0.9.0.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "_platform_memset",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "nlohmann::json_abi_v3_12_0::basic_json<nlohmann::json_abi_v3_12_0::ordered_map, std::__1::vector, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, bool, long long, unsigned long long, double, std::__1::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__1::vector<unsigned char, std::__1::allocator<unsigned char>>, void>::~basic_json()",
+            "binary": "libllama-common.0.9.0.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "void std::__1::__tree_remove[abi:nqe210106]<std::__1::__tree_node_base<void*>*>(std::__1::__tree_node_base<void*>*, std::__1::__tree_node_base<void*>*)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "server_context_impl::pre_decode()::'lambda3'(server_slot&)::operator()(server_slot&) const",
+            "binary": "libllama-server-impl.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "__psynch_cvbroad",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "llama_kv_cache::prepare(std::__1::vector<llama_ubatch, std::__1::allocator<llama_ubatch>> const&)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          }
+        ]
+      }
+    },
+    "edge_trim_2ms": {
+      "boundary": {
+        "samples": 2242,
+        "sample_weight_seconds": 2.242,
+        "unique_threads": 43,
+        "missing_user_stack_samples": 2,
+        "missing_user_stack_weight_seconds": 0.002,
+        "missing_user_stack_share_percent": 0.08920606601248884,
+        "categories": {
+          "matrix_multiply_pack_path": {
+            "sample_weight_seconds": 1.078,
+            "share_percent": 48.08206958073149
+          },
+          "worker_graph_loop_unresolved": {
+            "sample_weight_seconds": 0.905,
+            "share_percent": 40.365744870651206
+          },
+          "attention_softmax_rope": {
+            "sample_weight_seconds": 0.171,
+            "share_percent": 7.627118644067797
+          },
+          "other_unclassified": {
+            "sample_weight_seconds": 0.055,
+            "share_percent": 2.4531668153434434
+          },
+          "other_neural_or_tensor_ops": {
+            "sample_weight_seconds": 0.021,
+            "share_percent": 0.936663693131133
+          },
+          "graph_scheduling_allocation": {
+            "sample_weight_seconds": 0.006,
+            "share_percent": 0.26761819803746656
+          },
+          "sampling": {
+            "sample_weight_seconds": 0.006,
+            "share_percent": 0.26761819803746656
+          }
+        },
+        "hot_leaf_symbols": [
+          {
+            "symbol": "ggml_vec_dot_f16_f32",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.975,
+            "share_percent": 43.48795718108831
+          },
+          {
+            "symbol": "ggml_graph_compute_secondary_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.736,
+            "share_percent": 32.82783229259589
+          },
+          {
+            "symbol": "ggml_graph_compute_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.169,
+            "share_percent": 7.537912578055308
+          },
+          {
+            "symbol": "ggml_compute_forward_mul_mat",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.087,
+            "share_percent": 3.880463871543265
+          },
+          {
+            "symbol": "ggml_compute_forward_flash_attn_ext",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.069,
+            "share_percent": 3.077609277430865
+          },
+          {
+            "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.055,
+            "share_percent": 2.4531668153434434
+          },
+          {
+            "symbol": "0x1832b2fac",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 0.03,
+            "share_percent": 1.3380909901873328
+          },
+          {
+            "symbol": "ggml_compute_forward_rms_norm_mul_fused",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.021,
+            "share_percent": 0.936663693131133
+          },
+          {
+            "symbol": "ggml_fp16_to_fp32_row",
+            "binary": "libggml-base.0.29.0.dylib",
+            "sample_weight_seconds": 0.018,
+            "share_percent": 0.8028545941123997
+          },
+          {
+            "symbol": "void ggml_compute_forward_rope_flt<float>(ggml_compute_params const*, ggml_tensor*, bool)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.01,
+            "share_percent": 0.44603033006244425
+          },
+          {
+            "symbol": "__psynch_cvwait",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.006,
+            "share_percent": 0.26761819803746656
+          },
+          {
+            "symbol": "0x1831c5924",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 0.005,
+            "share_percent": 0.22301516503122212
+          },
+          {
+            "symbol": "void set_input_attn_mask_impl<unsigned short>(args_set_input_attn_mask const&, unsigned short*, bool)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.005,
+            "share_percent": 0.22301516503122212
+          },
+          {
+            "symbol": "_platform_memmove",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.005,
+            "share_percent": 0.22301516503122212
+          },
+          {
+            "symbol": "0x190e8d170",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.004,
+            "share_percent": 0.1784121320249777
+          },
+          {
+            "symbol": "__vfprintf",
+            "binary": "libsystem_c.dylib",
+            "sample_weight_seconds": 0.003,
+            "share_percent": 0.13380909901873328
+          },
+          {
+            "symbol": "common_sampler::set_logits(llama_context*, int)",
+            "binary": "libllama-common.0.9.0.dylib",
+            "sample_weight_seconds": 0.003,
+            "share_percent": 0.13380909901873328
+          },
+          {
+            "symbol": "_platform_memset",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.003,
+            "share_percent": 0.13380909901873328
+          },
+          {
+            "symbol": "ggml_gallocr_alloc_graph",
+            "binary": "libggml-base.0.29.0.dylib",
+            "sample_weight_seconds": 0.003,
+            "share_percent": 0.13380909901873328
+          },
+          {
+            "symbol": "poll",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.08920606601248884
+          },
+          {
+            "symbol": "ggml_backend_sched_split_graph",
+            "binary": "libggml-base.0.29.0.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.08920606601248884
+          },
+          {
+            "symbol": "_xzm_xzone_malloc_tiny",
+            "binary": "libsystem_malloc.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.08920606601248884
+          },
+          {
+            "symbol": "llama_token_data_array_partial_sort_inplace(llama_token_data_array*, int)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.08920606601248884
+          },
+          {
+            "symbol": "_xzm_free",
+            "binary": "libsystem_malloc.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.08920606601248884
+          },
+          {
+            "symbol": "__psynch_mutexwait",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.08920606601248884
+          },
+          {
+            "symbol": "DYLD-STUB$$expf",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.08920606601248884
+          },
+          {
+            "symbol": "(no user backtrace)",
+            "binary": "unknown",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.08920606601248884
+          },
+          {
+            "symbol": "ggml_backend_sched_backend_from_buffer(ggml_backend_sched*, ggml_tensor const*, ggml_tensor const*)",
+            "binary": "libggml-base.0.29.0.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.04460303300624442
+          },
+          {
+            "symbol": "llama_kv_cache::apply_ubatch(llama_kv_cache::slot_info const&, llama_ubatch const&)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.04460303300624442
+          },
+          {
+            "symbol": "__findenv_locked",
+            "binary": "libsystem_c.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.04460303300624442
+          }
+        ]
+      },
+      "prefill": {
+        "samples": 96493,
+        "sample_weight_seconds": 96.493,
+        "unique_threads": 3625,
+        "missing_user_stack_samples": 188,
+        "missing_user_stack_weight_seconds": 0.188,
+        "missing_user_stack_share_percent": 0.19483278579793353,
+        "categories": {
+          "worker_graph_loop_unresolved": {
+            "sample_weight_seconds": 62.765,
+            "share_percent": 65.04616915216648
+          },
+          "attention_softmax_rope": {
+            "sample_weight_seconds": 14.718,
+            "share_percent": 15.252919900925455
+          },
+          "matrix_multiply_pack_path": {
+            "sample_weight_seconds": 13.32,
+            "share_percent": 13.804110142704651
+          },
+          "other_unclassified": {
+            "sample_weight_seconds": 4.288,
+            "share_percent": 4.443845667561377
+          },
+          "other_neural_or_tensor_ops": {
+            "sample_weight_seconds": 1.402,
+            "share_percent": 1.4529551366420361
+          }
+        },
+        "hot_leaf_symbols": [
+          {
+            "symbol": "ggml_graph_compute_secondary_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 60.0,
+            "share_percent": 62.180676318489425
+          },
+          {
+            "symbol": "ggml_compute_forward_flash_attn_ext",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 13.259,
+            "share_percent": 13.740893121780855
+          },
+          {
+            "symbol": "0x1832b2fac",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 8.44,
+            "share_percent": 8.746748468800845
+          },
+          {
+            "symbol": "ggml_fp16_to_fp32_row",
+            "binary": "libggml-base.0.29.0.dylib",
+            "sample_weight_seconds": 3.689,
+            "share_percent": 3.8230752489817914
+          },
+          {
+            "symbol": "ggml_graph_compute_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 2.765,
+            "share_percent": 2.865492833677054
+          },
+          {
+            "symbol": "0x1831c5924",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 2.006,
+            "share_percent": 2.0789072782481632
+          },
+          {
+            "symbol": "0x1832b2d04",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 1.377,
+            "share_percent": 1.4270465215093322
+          },
+          {
+            "symbol": "ggml_compute_forward_rms_norm_mul_fused",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 1.3,
+            "share_percent": 1.3472479869006042
+          },
+          {
+            "symbol": "ggml_compute_forward_glu",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.52,
+            "share_percent": 0.5388991947602417
+          },
+          {
+            "symbol": "void ggml_compute_forward_rope_flt<float>(ggml_compute_params const*, ggml_tensor*, bool)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.446,
+            "share_percent": 0.46220969396743805
+          },
+          {
+            "symbol": "0x1832bc238",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 0.41,
+            "share_percent": 0.42490128817634437
+          },
+          {
+            "symbol": "_platform_memmove",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.303,
+            "share_percent": 0.3140124154083716
+          },
+          {
+            "symbol": "_platform_memset",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.226,
+            "share_percent": 0.2342138807996435
+          },
+          {
+            "symbol": "0x190e8d170",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.194,
+            "share_percent": 0.20105085342978246
+          },
+          {
+            "symbol": "(no user backtrace)",
+            "binary": "unknown",
+            "sample_weight_seconds": 0.188,
+            "share_percent": 0.19483278579793353
+          },
+          {
+            "symbol": "__bsdthread_create",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.157,
+            "share_percent": 0.16270610303338065
+          },
+          {
+            "symbol": "ggml_vec_dot_f16_f32",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.142,
+            "share_percent": 0.14716093395375832
+          },
+          {
+            "symbol": "__bzero",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.133,
+            "share_percent": 0.13783383250598488
+          },
+          {
+            "symbol": "__sincosf_stret",
+            "binary": "libsystem_m.dylib",
+            "sample_weight_seconds": 0.129,
+            "share_percent": 0.13368845408475227
+          },
+          {
+            "symbol": "0x190e7c480",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.097,
+            "share_percent": 0.10052542671489123
+          },
+          {
+            "symbol": "0x1832bb91c",
+            "binary": "libBLAS.dylib",
+            "sample_weight_seconds": 0.079,
+            "share_percent": 0.0818712238193444
+          },
+          {
+            "symbol": "vDSP_maxv",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.068,
+            "share_percent": 0.07047143316095468
+          },
+          {
+            "symbol": "ggml_cpu_fp32_to_fp16",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.063,
+            "share_percent": 0.0652897101344139
+          },
+          {
+            "symbol": "_pthread_create",
+            "binary": "libsystem_pthread.dylib",
+            "sample_weight_seconds": 0.049,
+            "share_percent": 0.050780885660099695
+          },
+          {
+            "symbol": "__psynch_cvwait",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.044,
+            "share_percent": 0.04559916263355891
+          },
+          {
+            "symbol": "thread_start",
+            "binary": "libsystem_pthread.dylib",
+            "sample_weight_seconds": 0.042,
+            "share_percent": 0.043526473422942594
+          },
+          {
+            "symbol": "_pthread_tsd_cleanup",
+            "binary": "libsystem_pthread.dylib",
+            "sample_weight_seconds": 0.037,
+            "share_percent": 0.03834475039640181
+          },
+          {
+            "symbol": "_kernelrpc_mach_vm_map_trap",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.034,
+            "share_percent": 0.03523571658047734
+          },
+          {
+            "symbol": "__psynch_cvbroad",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.029,
+            "share_percent": 0.030053993553936554
+          },
+          {
+            "symbol": "_kernelrpc_mach_vm_protect_trap",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.025,
+            "share_percent": 0.025908615132703927
+          }
+        ]
+      },
+      "decode": {
+        "samples": 86958,
+        "sample_weight_seconds": 86.958,
+        "unique_threads": 30,
+        "missing_user_stack_samples": 0,
+        "missing_user_stack_weight_seconds": 0.0,
+        "missing_user_stack_share_percent": 0.0,
+        "categories": {
+          "matrix_multiply_pack_path": {
+            "sample_weight_seconds": 53.939,
+            "share_percent": 62.02879551047632
+          },
+          "worker_graph_loop_unresolved": {
+            "sample_weight_seconds": 20.964,
+            "share_percent": 24.10819016076727
+          },
+          "attention_softmax_rope": {
+            "sample_weight_seconds": 11.49,
+            "share_percent": 13.213275374318636
+          },
+          "other_unclassified": {
+            "sample_weight_seconds": 0.337,
+            "share_percent": 0.387543411762
+          },
+          "other_neural_or_tensor_ops": {
+            "sample_weight_seconds": 0.168,
+            "share_percent": 0.19319671565583385
+          },
+          "sampling": {
+            "sample_weight_seconds": 0.06,
+            "share_percent": 0.06899882701994066
+          }
+        },
+        "hot_leaf_symbols": [
+          {
+            "symbol": "ggml_vec_dot_f16_f32",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 52.68,
+            "share_percent": 60.5809701235079
+          },
+          {
+            "symbol": "ggml_graph_compute_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 19.021,
+            "share_percent": 21.87377814577152
+          },
+          {
+            "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 4.641,
+            "share_percent": 5.33705926999241
+          },
+          {
+            "symbol": "ggml_compute_forward_flash_attn_ext",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 3.52,
+            "share_percent": 4.047931185169852
+          },
+          {
+            "symbol": "ggml_compute_forward_mul_mat",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 3.438,
+            "share_percent": 3.9536327882426
+          },
+          {
+            "symbol": "ggml_graph_compute_secondary_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 1.943,
+            "share_percent": 2.234412014995745
+          },
+          {
+            "symbol": "expf",
+            "binary": "libsystem_m.dylib",
+            "sample_weight_seconds": 0.244,
+            "share_percent": 0.28059522988109203
+          },
+          {
+            "symbol": "_platform_memmove",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.221,
+            "share_percent": 0.2541456795234481
+          },
+          {
+            "symbol": "0x190e8d170",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.199,
+            "share_percent": 0.22884610961613652
+          },
+          {
+            "symbol": "void ggml_compute_forward_rope_flt<float>(ggml_compute_params const*, ggml_tensor*, bool)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.143,
+            "share_percent": 0.16444720439752525
+          },
+          {
+            "symbol": "ggml_compute_forward_rms_norm_mul_fused",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.143,
+            "share_percent": 0.16444720439752525
+          },
+          {
+            "symbol": "_platform_memset",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.108,
+            "share_percent": 0.12419788863589319
+          },
+          {
+            "symbol": "DYLD-STUB$$expf",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.068,
+            "share_percent": 0.07819867062259941
+          },
+          {
+            "symbol": "__sincosf_stret",
+            "binary": "libsystem_m.dylib",
+            "sample_weight_seconds": 0.054,
+            "share_percent": 0.062098944317946596
+          },
+          {
+            "symbol": "ggml::cpu::kleidiai::extra_buffer_type::get_tensor_traits(ggml_tensor const*)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.046,
+            "share_percent": 0.05289910071528784
+          },
+          {
+            "symbol": "llama_token_data_array_partial_sort_inplace(llama_token_data_array*, int)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.04,
+            "share_percent": 0.04599921801329378
+          },
+          {
+            "symbol": "ggml_compute_forward_glu",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.034,
+            "share_percent": 0.03909933531129971
+          },
+          {
+            "symbol": "DYLD-STUB$$vDSP_vsmul",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.026,
+            "share_percent": 0.029899491708640952
+          },
+          {
+            "symbol": "__sendto",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.023,
+            "share_percent": 0.02644955035764392
+          },
+          {
+            "symbol": "poll",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.023,
+            "share_percent": 0.02644955035764392
+          },
+          {
+            "symbol": "DYLD-STUB$$memcpy",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.02,
+            "share_percent": 0.02299960900664689
+          },
+          {
+            "symbol": "__bzero",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.017,
+            "share_percent": 0.019549667655649854
+          },
+          {
+            "symbol": "common_sampler::set_logits(llama_context*, int)",
+            "binary": "libllama-common.0.9.0.dylib",
+            "sample_weight_seconds": 0.016,
+            "share_percent": 0.01839968720531751
+          },
+          {
+            "symbol": "0x190e7c480",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.015,
+            "share_percent": 0.017249706754985165
+          },
+          {
+            "symbol": "DYLD-STUB$$ggml_row_size",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.014,
+            "share_percent": 0.016099726304652822
+          },
+          {
+            "symbol": "ggml_kleidiai_select_kernels(cpu_feature, ggml_tensor const*)",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.012,
+            "share_percent": 0.013799765403988131
+          },
+          {
+            "symbol": "ggml_cpu_fp32_to_fp16",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.012,
+            "share_percent": 0.013799765403988131
+          },
+          {
+            "symbol": "logf",
+            "binary": "libsystem_m.dylib",
+            "sample_weight_seconds": 0.011,
+            "share_percent": 0.012649784953655787
+          },
+          {
+            "symbol": "0x190f1135c",
+            "binary": "libvDSP.dylib",
+            "sample_weight_seconds": 0.01,
+            "share_percent": 0.011499804503323444
+          },
+          {
+            "symbol": "__psynch_cvbroad",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.009,
+            "share_percent": 0.0103498240529911
+          }
+        ]
+      },
+      "outside_requests": {
+        "samples": 642,
+        "sample_weight_seconds": 0.642,
+        "unique_threads": 17,
+        "missing_user_stack_samples": 0,
+        "missing_user_stack_weight_seconds": 0.0,
+        "missing_user_stack_share_percent": 0.0,
+        "categories": {
+          "worker_graph_loop_unresolved": {
+            "sample_weight_seconds": 0.624,
+            "share_percent": 97.19626168224299
+          },
+          "other_unclassified": {
+            "sample_weight_seconds": 0.018,
+            "share_percent": 2.803738317757009
+          }
+        },
+        "hot_leaf_symbols": [
+          {
+            "symbol": "ggml_graph_compute_secondary_thread",
+            "binary": "libggml-cpu.0.29.0.dylib",
+            "sample_weight_seconds": 0.624,
+            "share_percent": 97.19626168224299
+          },
+          {
+            "symbol": "void set_input_attn_mask_impl<unsigned short>(args_set_input_attn_mask const&, unsigned short*, bool)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.003,
+            "share_percent": 0.4672897196261682
+          },
+          {
+            "symbol": "_xzm_free",
+            "binary": "libsystem_malloc.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.3115264797507788
+          },
+          {
+            "symbol": "__write_nocancel",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.3115264797507788
+          },
+          {
+            "symbol": "<deduplicated_symbol>",
+            "binary": "libsystem_malloc.dylib",
+            "sample_weight_seconds": 0.002,
+            "share_percent": 0.3115264797507788
+          },
+          {
+            "symbol": "server_task::server_task(server_task&&)",
+            "binary": "libllama-server-impl.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "_platform_memmove",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "bool common_json::get<bool>() const",
+            "binary": "libllama-common.0.9.0.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "_platform_memset",
+            "binary": "libsystem_platform.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "nlohmann::json_abi_v3_12_0::basic_json<nlohmann::json_abi_v3_12_0::ordered_map, std::__1::vector, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, bool, long long, unsigned long long, double, std::__1::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__1::vector<unsigned char, std::__1::allocator<unsigned char>>, void>::~basic_json()",
+            "binary": "libllama-common.0.9.0.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "void std::__1::__tree_remove[abi:nqe210106]<std::__1::__tree_node_base<void*>*>(std::__1::__tree_node_base<void*>*, std::__1::__tree_node_base<void*>*)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "server_context_impl::pre_decode()::'lambda3'(server_slot&)::operator()(server_slot&) const",
+            "binary": "libllama-server-impl.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "__psynch_cvbroad",
+            "binary": "libsystem_kernel.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          },
+          {
+            "symbol": "llama_kv_cache::prepare(std::__1::vector<llama_ubatch, std::__1::allocator<llama_ubatch>> const&)",
+            "binary": "libllama.0.9.0.dylib",
+            "sample_weight_seconds": 0.001,
+            "share_percent": 0.1557632398753894
+          }
+        ]
+      }
+    }
+  },
+  "decode_top_stacks_2ms": [
+    {
+      "frames": [
+        {
+          "symbol": "ggml_vec_dot_f16_f32",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_mul_mat",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 46.228
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        },
+        {
+          "symbol": "thread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 17.562
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 4.228
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_vec_dot_f16_f32",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_mul_mat",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_backend_cpu_graph_compute(ggml_backend*, ggml_cgraph*)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 4.12
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 3.241
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_compute_forward_mul_mat",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        },
+        {
+          "symbol": "thread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 3.115
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_vec_dot_f16_f32",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 1.975
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        },
+        {
+          "symbol": "thread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 1.943
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_backend_cpu_graph_compute(ggml_backend*, ggml_cgraph*)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_backend_sched_graph_compute_async",
+          "binary": "libggml-base.0.29.0.dylib"
+        },
+        {
+          "symbol": "llama_context::graph_compute(ggml_cgraph*, bool)",
+          "binary": "libllama.0.9.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 1.459
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.374
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_compute_forward_mul_mat",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_backend_cpu_graph_compute(ggml_backend*, ggml_cgraph*)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_backend_sched_graph_compute_async",
+          "binary": "libggml-base.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.322
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_backend_cpu_graph_compute(ggml_backend*, ggml_cgraph*)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.278
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_vec_dot_f16_f32",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.225
+    },
+    {
+      "frames": [
+        {
+          "symbol": "0x190e8d170",
+          "binary": "libvDSP.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.187
+    },
+    {
+      "frames": [
+        {
+          "symbol": "_platform_memmove",
+          "binary": "libsystem_platform.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.141
+    },
+    {
+      "frames": [
+        {
+          "symbol": "expf",
+          "binary": "libsystem_m.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.122
+    },
+    {
+      "frames": [
+        {
+          "symbol": "void ggml_compute_forward_rope_flt<float>(ggml_compute_params const*, ggml_tensor*, bool)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        },
+        {
+          "symbol": "thread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.112
+    },
+    {
+      "frames": [
+        {
+          "symbol": "_platform_memset",
+          "binary": "libsystem_platform.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.095
+    },
+    {
+      "frames": [
+        {
+          "symbol": "expf",
+          "binary": "libsystem_m.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.089
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_compute_forward_rms_norm_mul_fused",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        },
+        {
+          "symbol": "thread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.075
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_vec_dot_f16_f32",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        },
+        {
+          "symbol": "thread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.073
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_compute_forward_rms_norm_mul_fused",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_backend_cpu_graph_compute(ggml_backend*, ggml_cgraph*)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_backend_sched_graph_compute_async",
+          "binary": "libggml-base.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.067
+    },
+    {
+      "frames": [
+        {
+          "symbol": "DYLD-STUB$$expf",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long long, long long, float*, long long)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.055
+    },
+    {
+      "frames": [
+        {
+          "symbol": "ggml_vec_dot_f16_f32",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_compute_forward_flash_attn_ext",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.051
+    },
+    {
+      "frames": [
+        {
+          "symbol": "__sincosf_stret",
+          "binary": "libsystem_m.dylib"
+        },
+        {
+          "symbol": "void ggml_compute_forward_rope_flt<float>(ggml_compute_params const*, ggml_tensor*, bool)",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "ggml_graph_compute_secondary_thread",
+          "binary": "libggml-cpu.0.29.0.dylib"
+        },
+        {
+          "symbol": "_pthread_start",
+          "binary": "libsystem_pthread.dylib"
+        }
+      ],
+      "sample_weight_seconds": 0.045
+    }
+  ],
+  "phase_wall_windows_seconds": {
+    "prefill": 17.330701399,
+    "decode": 7.615238584
+  },
+  "fully_recorded_decode_windows": 29,
+  "clock_offset_range_ns": 695605,
+  "thread_count_limits": "Unique observed operating-system TIDs, not simultaneous workers. Thread churn attribution requires separate evidence.",
+  "publication_note": "Sanitized statistical report only. Raw trace and TOC stay local because the TOC may include inherited environment values. source_sha256 identifies the original local parser used for this run; reusable CLI was added afterward."
+}
