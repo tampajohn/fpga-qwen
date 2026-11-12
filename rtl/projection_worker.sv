@@ -180,10 +180,16 @@ module projection_worker (
 `ifdef BATCH_ATTENTION
 `ifdef ATTENTION_QK2
     real pair_scores[4096][2];
+`ifdef ATTENTION_QUERY_VALUE_PAIRS
+    real query_pair_values[128][2];
+`endif
     // Independent queries share each key load. Each query keeps ascending-j
     // accumulation and ascending-t softmax/value order; no horizontal reduction.
     task automatic attend_block_heads_qk2;
         real sums[2], maximum[2], denom, scale, key;
+`ifdef ATTENTION_QUERY_VALUE_PAIRS
+        real denoms[2], scales[2], value;
+`endif
         int index, kvhead;
         for (int head=first_row;head<end_row;head++) begin
             kvhead=head/2;
@@ -211,12 +217,18 @@ module projection_worker (
                     pair_scores[attention_position+query+1][1]=sums[1]/$sqrt(128.0);
                     if (pair_scores[attention_position+query+1][1]>maximum[1]) maximum[1]=pair_scores[attention_position+query+1][1];
                 end
+`ifdef ATTENTION_QUERY_VALUE_PAIRS
+                denoms[0]=1.0;denoms[1]=1.0;
+`endif
                 for (int lane=0;lane<2 && query+lane<batch_count;lane++) begin
                     denom=0.0;
                     for (int t=0;t<=attention_position+query+lane;t++) begin
                         pair_scores[t][lane]=$exp(pair_scores[t][lane]-maximum[lane]);
                         denom+=pair_scores[t][lane];
                     end
+`ifdef ATTENTION_QUERY_VALUE_PAIRS
+                    denoms[lane]=denom;
+`else
                     for (int j=0;j<128;j++) result[head*128+j]=0.0;
                     for (int t=0;t<=attention_position+query+lane;t++) begin
                         scale=pair_scores[t][lane]/denom;
@@ -224,7 +236,34 @@ module projection_worker (
                         for (int j=0;j<128;j++) result[head*128+j]+=scale*attention_value_value(index+j);
                     end
                     for (int j=0;j<128;j++) wide_result[(head*128+j)*8+query+lane]=result[head*128+j];
+`endif
                 end
+`ifdef ATTENTION_QUERY_VALUE_PAIRS
+                // Each query keeps its original ascending-t accumulation order.
+                // Only independent queries share V loads and adjacent storage.
+                for (int j=0;j<128;j++) begin
+                    query_pair_values[j][0]=0.0;query_pair_values[j][1]=0.0;
+                end
+                for (int t=0;t<=attention_position+query;t++) begin
+                    scales[0]=pair_scores[t][0]/denoms[0];
+                    scales[1]=query+1<batch_count ? pair_scores[t][1]/denoms[1] : 0.0;
+                    index=(attention_layer*4096+t)*1024+kvhead*128;
+                    for (int j=0;j<128;j++) begin
+                        value=attention_value_value(index+j);
+                        query_pair_values[j][0]+=scales[0]*value;
+                        query_pair_values[j][1]+=scales[1]*value;
+                    end
+                end
+                if (query+1<batch_count) begin
+                    scale=pair_scores[attention_position+query+1][1]/denoms[1];
+                    index=(attention_layer*4096+attention_position+query+1)*1024+kvhead*128;
+                    for (int j=0;j<128;j++)
+                        query_pair_values[j][1]+=scale*attention_value_value(index+j);
+                end
+                for (int lane=0;lane<2 && query+lane<batch_count;lane++)
+                    for (int j=0;j<128;j++)
+                        wide_result[(head*128+j)*8+query+lane]=query_pair_values[j][lane];
+`endif
             end
         end
     endtask

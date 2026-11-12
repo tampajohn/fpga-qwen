@@ -25,6 +25,7 @@ def main():
     parser.add_argument('--fast-attention', action='store_true')
     parser.add_argument('--parallel-attention', action='store_true')
     parser.add_argument('--attention-qk2', action='store_true', help='Experimental paired-query FP64 QK with original reduction order')
+    parser.add_argument('--attention-query-value-pairs', action='store_true', help='Share V loads across paired prefill queries with unchanged per-query accumulation order')
     parser.add_argument('--attention-value-pairs', action='store_true', help='Experimental shared-V paired-head accumulation with unchanged per-output order')
     parser.add_argument('--attention-head-pairs', action='store_true', help='Experimental exact paired-head QK for eligible scalar attention worker counts')
     parser.add_argument('--batch-attention', action='store_true', help='Experimental exact per-query batched attention dispatch')
@@ -61,6 +62,7 @@ def main():
     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
     if args.attention_qk2 and (not args.batch_attention or args.attention_dot_lanes8):parser.error('--attention-qk2 requires --batch-attention and excludes --attention-dot-lanes8')
+    if args.attention_query_value_pairs and not args.attention_qk2:parser.error('--attention-query-value-pairs requires --attention-qk2')
     if args.phase_pools_experiment and (not args.fp32_verification_b4 or not args.batch_attention):parser.error('Phase pools require hybrid B4 and batched attention')
     if args.fp32_kv and (not args.fp32_verification_b4 or not args.batch_attention or args.static_kv or args.fp32_prefill_b8):parser.error('--fp32-kv requires verification B4 and batch attention, excludes static KV and FP32 prefill')
     if args.attention_value_pairs and not args.attention_head_pairs:parser.error('--attention-value-pairs requires --attention-head-pairs')
@@ -103,6 +105,7 @@ def main():
     if args.fp32_fma_canonical_prefix: tag += '-fma-canonical-prefix'
     if args.batch_attention: tag += '-batch-attention'
     if args.attention_qk2: tag += '-qk2'
+    if args.attention_query_value_pairs: tag += '-query-values'
     if args.attention_head_pairs: tag += '-head-pairs'
     if args.attention_value_pairs: tag += '-value-pairs'
     if args.fp32_kv: tag += '-fp32-kv'
@@ -146,6 +149,7 @@ def main():
     if args.prefill_b8: flags += ' -DPREFILL_B8 -DWIDE_BATCH=8 -DWIDE_FOUR_LANES'
     defines = {'scalar': [], 'row': ['+define+BULK_ROW_WEIGHTS']}[args.storage]
     if args.attention_qk2: defines += ['+define+ATTENTION_QK2']
+    if args.attention_query_value_pairs: defines += ['+define+ATTENTION_QUERY_VALUE_PAIRS']
     if args.attention_value_pairs: defines += ['+define+ATTENTION_VALUE_PAIRS']
     if args.attention_head_pairs: defines += ['+define+ATTENTION_HEAD_PAIRS']
     if args.attention_dot_lanes8: defines += ['+define+ATTENTION_DOT_LANES8']
