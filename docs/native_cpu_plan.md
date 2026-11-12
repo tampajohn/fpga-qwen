@@ -1073,6 +1073,23 @@ passed the greeting fixture's accept/reject/EOS/rollback behavior. These checks
 validate the candidate's greedy-only B2 integration; they are not a suffix
 speed benchmark and do not change the off-by-default policy.
 
-The isolated browser check remains pending. Candidate18 is not promoted by
-these reports, live build12 remains unchanged, and its original near-4K
+The isolated browser check subsequently passed as recorded below. Candidate18
+is not promoted by these reports, live build12 remains unchanged, and its original near-4K
 numerical failures remain preserved. No timing claim follows from acceptance.
+
+
+### Candidate18 isolated browser acceptance
+
+The [isolated browser report](../reports/native-cpu-build-18-browser-isolated.json)
+completed without error, with the test's assertions satisfied. Its schema uses
+`completed` and individual checks rather than a top-level `passed` flag.
+The native status, catalog and rendered description exposed the advertised
+FP64 norm accumulator; older-binary compatibility is not inferred from build
+names. Browser coverage includes release selection/reload, polling controls,
+prefix reuse, cancellation, backend switching, benchmark lock and the opt-in
+greedy suffix workflow exercised by the test.
+
+This is interface correctness evidence, not a timing benchmark or deployment.
+The owned isolated server was stopped after the test; live build12 was not
+replaced. Candidate18's direct comparison against tuned llama remains a
+separate pending measurement, and no broad speed or completion claim follows.
