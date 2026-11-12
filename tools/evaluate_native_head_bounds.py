@@ -30,6 +30,78 @@ def sha(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
+def validate_capture(path, hidden_path, logits_path, weights, frozen):
+    capture = json.loads(path.read_text())
+    require(capture.get('completed') is True and capture.get('passed', True) is True
+            and capture.get('coupled_dumps') is True and 'error' not in capture
+            and 'cleanup_error' not in capture and capture.get('gpu') is False
+            and capture.get('pytorch') is False, 'Capture did not complete/pass coupled CPU dumps')
+    configuration = capture.get('configuration', {})
+    require(all(configuration.get(key) == value for key, value in dict(
+        hidden=COLS, vocabulary=ROWS, weight_format='QWCPU01', weight_precision='f16',
+        activation_precision='f32', norm_precision='f32').items()), 'Capture precision/shape mismatch')
+    for artifact in (weights, Path(str(weights)+'.index'), Path(str(weights)+'.manifest.json')):
+        require(capture.get('inputs', {}).get(str(artifact)) == frozen[str(artifact)],
+                'Capture weight-pack mismatch: '+str(artifact))
+    runs = capture.get('runs', [])
+    require(len(runs) >= 2 and len({run.get('index') for run in runs}) == len(runs),
+            'Capture requires distinct repeated runs')
+    matches = []
+    for run in runs:
+        require(all(run.get(key) is True for key in ('fixed_work_valid', 'own_repeat_ids_equal',
+            'own_repeat_logits_bit_identical', 'own_repeat_hidden_bit_identical')),
+            'Capture repeat checks did not pass')
+        require(len(run.get('hidden_dumps', [])) == capture.get('requested_steps')
+                and len(run.get('logit_dumps', [])) == capture.get('requested_steps'), 'Incomplete dump trajectory')
+        hidden = [row for row in run['hidden_dumps'] if Path(row['path']).resolve() == hidden_path]
+        logits = [row for row in run['logit_dumps'] if Path(row['path']).resolve() == logits_path]
+        if hidden or logits:
+            require(len(hidden) == len(logits) == 1, 'Selected arrays come from different capture runs')
+            matches.append((run, hidden[0], logits[0]))
+    require(len(matches) == 1, 'Selected arrays must identify one coupled capture run')
+    selected_run, selected_hidden, selected_logits = matches[0]
+    step = selected_hidden.get('step')
+    require(type(step) is int and 0 <= step < capture['requested_steps']
+            and selected_logits.get('step') == step, 'Selected arrays are from different steps')
+    position = len(capture.get('prompt_ids', [])) + step
+    added = []
+    for run in runs:
+        for kind, count, selected in (('hidden_dumps', COLS, selected_hidden),
+                                      ('logit_dumps', ROWS, selected_logits)):
+            rows = [row for row in run[kind] if row.get('step') == step]
+            require(len(rows) == 1, 'Repeated capture position is missing or duplicated')
+            row = rows[0]
+            artifact = Path(row['path']).resolve()
+            require(row.get('context_tokens') == position and row.get('dtype') == 'float32'
+                    and row.get('byte_order') == 'little' and row.get('shape') == [count]
+                    and row.get('bytes') == count*4 and artifact.stat().st_size == count*4,
+                    'Invalid coupled dump position, dtype, shape or size')
+            digest = sha(artifact)
+            selected_path = hidden_path if kind == 'hidden_dumps' else logits_path
+            require(digest == row.get('sha256') == selected.get('sha256') == frozen[str(selected_path)],
+                    'Selected or repeated dump differs from capture hash')
+            added.append(artifact)
+    linked_build = None
+    if 'build_manifest' in capture:
+        build = capture['build_manifest']
+        require(build.get('completed') is True and build.get('gpu') is False
+                and build.get('pytorch') is False, 'Capture build manifest is incomplete')
+        binary = Path(build['binary']).resolve()
+        build_path = binary.parent/'manifest.json'
+        require(sha(binary) == build.get('binary_sha256') == capture['inputs'].get(str(binary)),
+                'Capture binary differs from its build manifest')
+        require(sha(build_path) == capture['inputs'].get(str(build_path))
+                and json.loads(build_path.read_text()) == build, 'Embedded build manifest differs from frozen artifact')
+        added.extend((binary, build_path))
+        linked_build = dict(binary=str(binary), binary_sha256=build['binary_sha256'],
+                            manifest=str(build_path), manifest_sha256=sha(build_path))
+    return dict(verified=True, path=str(path), sha256=sha(path), run=selected_run['index'],
+                step=step, context_tokens=position, verified_repeats=len(runs),
+                build=linked_build,
+                scope='Coupled capture metadata, repeated array bytes, pack hashes and listed binary/build linkage checked. '
+                      'Floating-point control-register assumptions are not measured by this capture.'), added
+
+
 def up(value):
     return np.nextafter(value, np.float64(np.inf))
 
@@ -221,7 +293,7 @@ def main():
     parser.add_argument('--weights', type=Path, required=True)
     parser.add_argument('--hidden', type=Path, required=True, help='Exactly1024 little-endian FP32 values')
     parser.add_argument('--logits', type=Path, required=True, help='Exactly151936 little-endian dense FP32 values')
-    parser.add_argument('--capture-manifest', type=Path, help='Optional provenance artifact, hashed but not interpreted')
+    parser.add_argument('--capture-manifest', type=Path, help='Optional completed coupled capture report; verify arrays, repeats, pack and listed build linkage')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--rows-per-chunk', type=int, default=256)
     parser.add_argument('--guard-state-dir', type=Path, default=ROOT/'build/benchmark-status')
@@ -240,6 +312,7 @@ def main():
         assumptions=[
             'Saved dense logits use exactly this hidden state and canonical FP16 output matrix.',
             'Reference head uses eight FP32 accumulation lanes:128FMA steps per lane followed by three addition levels.',
+            'FP16-to-FP32 conversion preserves half subnormals (FZ16 disabled). The FP32-tiny allowance does not cover flushed FP16 weights.',
             'FP32 arithmetic is round-to-nearest, with correct FMA; no reassociation, reduced-precision products or hidden extra transforms.',
             'FP64 NumPy scalar/elementwise operations are correctly rounded; every interval accumulation is explicitly outward-rounded.',
             'Additive underflow allowance covers flushing FP32 subnormal inputs/results; possible intermediate overflow forces unbounded fallback.',
@@ -263,6 +336,15 @@ def main():
         require(manifest.get('completed') is True and manifest.get('format') == 'QWCPU01'
                 and manifest['binary']['sha256'] == report['inputs'][str(weights)]
                 and manifest['index']['sha256'] == report['inputs'][str(weights)+'.index'], 'Weight manifest/hash mismatch')
+        if args.capture_manifest:
+            provenance, added = validate_capture(args.capture_manifest.resolve(), hidden_path, logits_path,
+                                                 weights, report['inputs'])
+            report['capture_provenance'] = provenance
+            for path in added:
+                report['inputs'][str(path)] = sha(path)
+        else:
+            report['capture_provenance'] = dict(verified=False,
+                limitation='No coupled capture report supplied; same-position and build provenance remain assumptions.')
         require(hidden_path.stat().st_size == COLS*4 and logits_path.stat().st_size == ROWS*4, 'Wrong saved-array size')
         hidden, dense = np.fromfile(hidden_path, dtype='<f4'), np.fromfile(logits_path, dtype='<f4')
         if not np.all(np.isfinite(hidden)) or not np.all(np.isfinite(dense)):
