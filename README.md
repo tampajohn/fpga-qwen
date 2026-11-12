@@ -14,55 +14,56 @@ timing does not predict FPGA performance. Current work lives in [`engine/`](engi
 
 ## Current result
 
-The first original-engine build, **build-02**, passed full-vocabulary numerical
-gates at 16 teacher-forced positions: contexts 1–4, 85–92, and 452–455. All greedy
-IDs matched the independent NumPy oracle. The predeclared limits are maximum
-absolute error ≤0.01 and RMS error ≤0.002, with finite logits and greedy identity.
-It also matched tuned llama.cpp's exact token trajectories, EOS behavior, text,
-and grades on the existing nine-case conversation suite. Both scored **4/9**:
-matching baseline mistakes is not a model-quality improvement.
+**Build-12 is the current local browser release**, with 12 decode / 6 prefill
+threads. It adds exact-safe prefix reuse of completed canonical 512-token prefill
+blocks and shares K/V conversion between paired query heads during batched
+prefill. Partial tails are recomputed; decoded KV is never reused as a canonical
+prefill block. Suffix drafting remains unavailable.
 
-**Build-10 is the selected native candidate.** It combines persistent workers,
-grouped/four-row projection dispatch, larger prefill chunks, vector-library
-nonlinear functions, and balanced causal-attention work during prefill. Its
-full logits are bit-identical to build-08 at all 22 checked positions, including
-511/512/513-token chunk boundaries; build-08 passed the unchanged NumPy gates
-there. The nine-case exact-trajectory suite still matches llama.cpp (both 4/9).
-
-Thirty alternating paired rounds used 85/452-token uncached prompts and 32
-identical greedy output tokens, with three warmups before each measured profile:
-
-| Engine, 12 decode / 6 prefill threads | 85-token prompt decode | 452-token prompt decode | First token, short / long |
-| --- | ---: | ---: | ---: |
-| Tuned llama.cpp FP16, KleidiAI + LTO | 134.42 tokens/s | 129.18 tokens/s | 0.216 / 0.628 s |
-| Original CPU engine, build-10 | 135.32 tokens/s | 129.50 tokens/s | 0.124 / 0.532 s |
-
-Median **paired** native/llama decode ratios were **1.028x** (95% paired-bootstrap
-interval 0.954–1.079) and **0.980x** (0.905–1.022). This meets the Phase 1
-within-10% competitive target on these workloads; **no decode win is established**.
-Paired first-token speedups were 1.647x (1.563–1.911) and 1.143x (1.099–1.241).
-Paired ratios are not quotients of the table's independent medians.
-
-See [confirmation](reports/native-cpu-build-10-confirmation.json),
-[paired uncertainty](reports/native-cpu-build-10-confirmation-analysis.json),
-[conversation quality](reports/native-cpu-build-10-quality.json), and
-[exact-logit comparison](reports/native-cpu-build-10-exact-gate.json).
-Underlying NumPy coverage includes [511](reports/native-cpu-boundary-511-oracle-gate.json),
+Its [56-array comparison](reports/native-cpu-build-12-exact-gate.json) matches
+prior canonical full logits exactly. The [nine-case quality suite](reports/native-cpu-build-12-quality.json)
+retains exact tuned-llama token trajectories and stopping behavior, with both
+engines scoring **4/9**. The [28-case prefix check](reports/native-cpu-build-12-prefix-check.json)
+covers greedy/seeded chat, edited and shorter prompts, session changes and
+cancellation. Baseline agreement is not improved answer accuracy. Earlier
+independent NumPy gates use fixed maximum absolute error ≤0.01 and RMS ≤0.002,
+including [511](reports/native-cpu-boundary-511-oracle-gate.json),
 [512](reports/native-cpu-boundary-512-oracle-gate.json), and
-[513-token boundary gates](reports/native-cpu-boundary-513-oracle-gate.json).
-Earlier and negative results remain in the [current plan](docs/native_cpu_plan.md).
-Candidate-09's auxiliary cache was rejected: it added 1.19 GB and regressed short
-context decode without an established long-context gain.
+[513-token chunk boundaries](reports/native-cpu-boundary-513-oracle-gate.json).
 
-These are single-stream measurements on this Apple M5 Max. Native subprocess
+In [ten paired cache-on/off rounds](reports/native-cpu-build-12-prefix-confirmation.json),
+primed prompts with an edited tail showed the following TTFT results. Priming is
+outside the measured request; these are not fresh-prompt speedups.
+
+| Prompt tokens | Median TTFT fresh → reused | Median paired speedup (95% interval) |
+| --- | ---: | ---: |
+| 1,024 | 1.335 → 0.803 s | 1.632× (1.575–1.730) |
+| 2,048 | 3.728 → 1.397 s | 2.672× (2.557–2.819) |
+| 3,968 | 11.719 → 1.974 s | 5.744× (5.512–6.512) |
+
+All decode-speed intervals in that cache comparison include 1: no decode gain
+is established. A separate [ten-pair uncached comparison against tuned llama](reports/native-cpu-build-12-standard-confirmation.json)
+was slower: median paired native/llama decode ratios were **0.687×** at 85
+prompt tokens and **0.772×** at 452, with [95% intervals](reports/native-cpu-build-12-standard-confirmation-analysis.json)
+**0.487–0.914** and **0.658–0.923**. The user reported heavy concurrent machine
+activity. That is a possible confound, not an established explanation; the
+cause remains unresolved, and the result does not isolate a build-change effect.
+There is no fresh-request speed-win claim for build-12.
+
+Build-10's earlier [30-pair confirmation](reports/native-cpu-build-10-confirmation.json)
+met the Phase 1 within-10% decode target, with paired native/llama ratios 1.028×
+(0.954–1.079) and 0.980× (0.905–1.022). This is historical evidence for build-10,
+not build-12 performance. The immutable build-10 artifact remains available.
+Earlier and negative results are retained in the [current plan](docs/native_cpu_plan.md).
+
+These are single-stream measurements on an Apple M5 Max. Native subprocess
 transport differs from llama.cpp HTTP streaming; native prefill retains a
-1.76 GB widened FP32 layer cache; background scheduling remains uncontrolled.
-The numerical suite does not establish accuracy at every supported context or
-answer quality beyond the stated tests. Build-10 is deployed locally and passed
-[actual live-browser checks](reports/native-cpu-build-10-browser-live.json):
-latest-first/default selection, multi-turn chat, cancellation, backend switching,
-and the browser-polled benchmark lock. Runtime checks cover worker counts 1/64,
-idle/reset cycles, malformed packs, and context-limit handling.
+1.76 GB widened FP32 layer cache; background activity is uncontrolled. Numerical
+and conversation checks cover their declared fixtures, not every context or
+all model behavior. Build-12 is exposed locally at the user's request; its
+[live browser checks](reports/native-cpu-build-12-browser-live.json) passed: default/reload,
+dropdown interaction across status polls, cached-prefix replies to changed
+questions, cancellation/new chat, backend switching and the benchmark lock.
 
 The primary target remains the tuned **FP16** baseline. FP32 and constrained
 KleidiAI-OFF Q4 measurements are separate precision classes, not interchangeable
@@ -86,15 +87,16 @@ make setup
 ```
 
 Open **http://127.0.0.1:8765**. The installed native release appears first and
-is selected automatically. The local deployment uses **build-10**, with 12
+is selected automatically. The local deployment uses **build-12**, with 12
 decode / 6 prefill threads; simulator worker controls do not apply. The
 `--native-only` launcher needs no simulator binary or simulator imports. Omit
 that flag to include any installed legacy simulator choices. Starting the
 server does not build the engine, export weights, or download a model.
 
-Native prefix reuse and suffix drafting are unsupported: every message processes
-the full conversation again. Stop terminates the active native process, and the
-next request starts with fresh KV state. Benchmark jobs block generation and
+Native prefix reuse is enabled for completed canonical 512-token prefill blocks
+in the same conversation; partial tails are recomputed. Prefixes shorter than a
+complete block are processed fresh. Suffix drafting is unavailable. Stop
+terminates the active native process, and the next request starts with fresh KV state. Benchmark jobs block generation and
 show a banner through browser polling.
 
 Installed llama.cpp choices remain available; the default launcher also offers
@@ -142,7 +144,7 @@ ln -s my-build/qwen_cpu build/native-cpu/qwen_cpu
 ```
 
 This command expects no existing stable path. On the development machine the
-verified stable link already points to `build-10/qwen_cpu`; preserve immutable
+stable link currently points to `build-12/qwen_cpu`; preserve immutable
 build directories when changing releases.
 
 ## Validation and development
@@ -164,7 +166,7 @@ IDs, natural EOS, declared precision, and immutable build artifacts:
   server or build assets automatically.
 
 Reports distinguish numerical agreement, token identity, answer accuracy, and
-performance. Passing one does not establish the others. Phase 1 met its
-within-10% decode target before the four-hour deadline. This result permits
+performance. Passing one does not establish the others. Build-10 met the Phase 1
+within-10% decode target before the four-hour deadline. That historical result permits
 further specialization; it does not establish a decode win or a general result
 for other models, machines, context lengths, or precision classes.
