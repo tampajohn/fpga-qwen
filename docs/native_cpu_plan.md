@@ -10,7 +10,14 @@ fixes. Existing experimental code and artifacts are preserved; no pending
 simulator experiment is a new release. Native implementation will live in
 `engine/`, with existing tools, quality gates, server and browser reused.
 
-## Current experimental decision: BLAS attention rejected
+## Current release: build18
+
+Build18 is live on localhost, CPU-only, with the sampled numerical fix and all
+release acceptance checks passed. The [current follow-on audit](#current-follow-on-acceptance-audit--build18)
+records completion evidence and limits; the final scoreboard shows mixed
+performance rather than a general win over llama.cpp.
+
+## Historical decision: BLAS attention rejected
 
 Build 14's batched BLAS-attention experiment failed the unchanged independent
 NumPy RMS gate at context 1024: **0.002495521 > 0.002**. Frozen build 12 passed
@@ -775,13 +782,13 @@ Selection addresses the sampled numerical failure; it is not an overall speed wi
 | Certified vocabulary-head experiment | [Saved-state correctness and six ten-pair comparisons](../reports/native-head-probe-short-v1.json) delivered. The prototype was slower; dense head retained. Eight-state tests are not a universal proof. |
 | Measured suffix drafting | [Ten-pair experiment](../reports/native-cpu-build-15-suffix-confirmation-v2.json) found no established benefit. Build18's [API](../reports/native-cpu-build-18-verify-api.json), [lifecycle](../reports/native-cpu-build-18-suffix-trajectories.json), and live browser checks passed. Greedy-only drafting remains opt-in and off by default. |
 | Expanded conversation quality | Build18 [nine-case](../reports/native-cpu-build-18-quality.json) and [18-case](../reports/native-cpu-build-18-extended-quality.json) trajectories match baseline, both 4/9 and 10/18 respectively. No improved-answer claim. |
-| Browser and repository publication | Actual live18 default/reload, precision disclosure, suffix-on, prefix 512, cancellation, backend switching and benchmark lock passed. Final repository review/push remains the root's publication step. |
+| Browser and repository publication | Actual live18 default/reload, precision disclosure, suffix-on, prefix 512, cancellation, backend switching and benchmark lock passed. Final release evidence and current documentation are included in the main-branch publication. |
 
 The original build12 near4K failure remains historical evidence. Build18 closes
 that gap on the sampled 28-position matrix with a disclosed arithmetic change;
-it does not prove all contexts or outputs accurate. The approved experimental
-work and live acceptance are now evidenced; final repository verification and
-goal-status closure remain separate orchestration steps.
+it does not prove all contexts or outputs accurate. The approved experimental work, live acceptance and repository deliverables
+are complete at the stated scope. Original failures and uncertainty remain
+part of the published result.
 
 The sections below preserve the chronological investigation. Their intermediate
 "pending", "unpromoted" and "gap open" statements describe the state when those
@@ -1201,5 +1208,7 @@ and no running benchmark. Build12 is preserved as rollback/history.
 This release is selected for the tested numerical correction and passed
 acceptance, not universal performance superiority. All final paired scoreboard
 results and unfavorable experiments remain visible. Qwen3.5 and Metal are
-still parked. Final repository publication/verification remains to be performed
-by the root orchestration before the goal is marked complete.
+still parked. Final review verified all local evidence links, both ten-pair
+scoreboards, unchanged compiled sources, the selected binary and the idle
+CPU-only live service. This closes the approved follow-on work at its stated
+experimental scope.
