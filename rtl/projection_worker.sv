@@ -100,6 +100,57 @@ module projection_worker (
             end
         end
     endtask
+`ifdef BATCH_ATTENTION
+    task automatic attend_block_heads;
+        real sum, maximum, denom, scale;
+        int index, kvhead;
+`ifdef ATTENTION_DOT_LANES8
+        real dot_partial[8];
+`endif
+        for (int head=first_row;head<end_row;head++) begin
+          for (int query=0;query<batch_count;query++) begin
+            kvhead=head/2;
+            maximum=-1.0e300;
+            for (int t=0;t<=attention_position+query;t++) begin
+                sum=0.0;
+                index=(attention_layer*4096+t)*1024+kvhead*128;
+`ifdef ATTENTION_DOT_LANES8
+                for (int lane=0;lane<8;lane++) dot_partial[lane]=0.0;
+                for (int unsigned j=0;j<128;j+=8) begin
+                    dot_partial[0]+=wide_activation[((head*128+j+0)*8+query)&32767]*attention_key_value(index+j+0);
+                    dot_partial[1]+=wide_activation[((head*128+j+1)*8+query)&32767]*attention_key_value(index+j+1);
+                    dot_partial[2]+=wide_activation[((head*128+j+2)*8+query)&32767]*attention_key_value(index+j+2);
+                    dot_partial[3]+=wide_activation[((head*128+j+3)*8+query)&32767]*attention_key_value(index+j+3);
+                    dot_partial[4]+=wide_activation[((head*128+j+4)*8+query)&32767]*attention_key_value(index+j+4);
+                    dot_partial[5]+=wide_activation[((head*128+j+5)*8+query)&32767]*attention_key_value(index+j+5);
+                    dot_partial[6]+=wide_activation[((head*128+j+6)*8+query)&32767]*attention_key_value(index+j+6);
+                    dot_partial[7]+=wide_activation[((head*128+j+7)*8+query)&32767]*attention_key_value(index+j+7);
+                end
+                for (int lane=0;lane<8;lane++) sum+=dot_partial[lane];
+`else
+                for (int j=0;j<128;j++)
+                    sum+=wide_activation[((head*128+j)*8+query)&32767]*attention_key_value(index+j);
+`endif
+                attention_scores[t]=sum/$sqrt(128.0);
+                if (attention_scores[t]>maximum) maximum=attention_scores[t];
+            end
+            denom=0.0;
+            for (int t=0;t<=attention_position+query;t++) begin
+                attention_scores[t]=$exp(attention_scores[t]-maximum);
+                denom+=attention_scores[t];
+            end
+            for (int j=0;j<128;j++) result[head*128+j]=0.0;
+            for (int t=0;t<=attention_position+query;t++) begin
+                scale=attention_scores[t]/denom;
+                index=(attention_layer*4096+t)*1024+kvhead*128;
+                for (int j=0;j<128;j++)
+                    result[head*128+j]+=scale*attention_value_value(index+j);
+            end
+            for (int j=0;j<128;j++) wide_result[(head*128+j)*8+query]=result[head*128+j];
+          end
+        end
+    endtask
+`endif
 `endif
 // Host validation guarantees nonnegative rows and columns. Unsigned loop
 // variables keep index widening free of signed-extension bookkeeping.
@@ -242,6 +293,10 @@ module projection_worker (
             else
 `endif
             if (operation==2) project_block();
+            else
+`endif
+`ifdef BATCH_ATTENTION
+            if (operation==5) attend_block_heads();
             else
 `endif
             if (operation==1) attend_heads();

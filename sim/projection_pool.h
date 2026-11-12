@@ -1,3 +1,6 @@
+#if defined(BATCH_ATTENTION) && (!defined(PARALLEL_ATTENTION) || !defined(PREFILL_B8))
+#error "Batched attention requires parallel attention and B8 ports"
+#endif
 #if defined(FP32_PREFILL_B8) && (!defined(FP32_VERIFICATION_B4) || !defined(FP32_PROJECTION_B1))
 #error "FP32 B8 prefill requires FP32 B1 and B4 modules"
 #endif
@@ -127,6 +130,9 @@ class ProjectionPool {
                 model->operation=operation;
                 model->attention_layer=attention_layer;model->attention_position=attention_position;
                 int copy_scale=operation==1?128:1;
+#ifdef BATCH_ATTENTION
+                if(operation==5)copy_scale=128*8;
+#endif
 #ifdef BATCH_PREFILL
                 model->batch_count=batch_count;
                 if(operation==2) copy_scale=4;
@@ -160,7 +166,11 @@ class ProjectionPool {
 #endif
 #ifdef BATCH_PREFILL
                 #ifdef PREFILL_B8
-                if(operation==3) std::memcpy(model->wide_activation.data(),input,width*8*sizeof(double));
+                if(operation==3
+#ifdef BATCH_ATTENTION
+                   || operation==5
+#endif
+                ) std::memcpy(model->wide_activation.data(),input,width*8*sizeof(double));
                 else if(operation==2) {
                     for(int j=0;j<width;++j) for(int t=0;t<4;++t)
                         model->batch_activation[j*4+t]=t<batch_count?input[j*8+t]:0.0;
@@ -223,7 +233,11 @@ class ProjectionPool {
 #ifdef BATCH_PREFILL
                 if(operation==2) source=model->batch_result.data();
 #ifdef PREFILL_B8
-                if(operation==3) source=model->wide_result.data();
+                if(operation==3
+#ifdef BATCH_ATTENTION
+                   || operation==5
+#endif
+                ) source=model->wide_result.data();
 #endif
 #endif
                 #ifdef PREFILL_B8
@@ -303,6 +317,13 @@ public:
 #endif
              ) {
 #ifdef PARALLEL_ATTENTION
+#ifdef BATCH_ATTENTION
+        if(requested_operation==5) {
+            if(layer<0 || layer>=28 || requested_batch_count<1 || requested_batch_count>8 ||
+               position<0 || position>4096-requested_batch_count || matrix_rows!=16 || matrix_width!=2048)
+                throw std::runtime_error("Invalid block attention job");
+        } else
+#endif
         if(requested_operation==1) {
             if(layer<0 || layer>=28 || position<0 || position>=4096 || matrix_rows!=16 || matrix_width!=2048)
                 throw std::runtime_error("Invalid attention job");
@@ -330,7 +351,11 @@ public:
         if(matrix_rows<1 || matrix_rows>151936 || matrix_width<1 || matrix_width>3072)
             throw std::runtime_error("Invalid projection shape");
 #ifdef PARALLEL_ATTENTION
-        if(requested_operation!=1)
+        if(requested_operation!=1
+#ifdef BATCH_ATTENTION
+           && requested_operation!=5
+#endif
+        )
 #endif
         validate_weight_span(matrix_base,int64_t(matrix_rows)*matrix_width);
 #ifdef FP32_PROJECTION_B1

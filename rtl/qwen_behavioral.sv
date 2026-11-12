@@ -34,6 +34,11 @@ module qwen_behavioral (
     import "DPI-C" function void dispatch_attention(input int layer, position,
         input real query[], output real attention_result[]);
     real attention_output[2048];
+`ifdef BATCH_ATTENTION
+    import "DPI-C" function void dispatch_block_attention(input int layer, position, count,
+        input real query[], output real attention_result[]);
+    real block_attention_input[2048*8], block_attention_output[2048*8];
+`endif
 `endif
 `ifdef BATCH_PREFILL
     import "DPI-C" function void dispatch_block_projection(input longint base,
@@ -151,6 +156,42 @@ module qwen_behavioral (
         end
 `endif
     endtask
+
+`ifdef BATCH_ATTENTION
+    task automatic prepare_block_attention(input int layer);
+        real sum, scale, left_value, right_value, maximum, denom;
+        longint base;
+        int index, kvhead;
+        base=tensor_base(3+layer*11+5);
+        for (int head=0;head<16;head++) begin
+            sum=0.0;
+            for (int j=0;j<D;j++) sum+=q[head*D+j]*q[head*D+j];
+            scale=1.0/$sqrt(sum/D+1.0e-6);
+            for (int j=0;j<D;j++) q[head*D+j]*=scale*weight_value(base+longint'(j));
+            for (int j=0;j<64;j++) begin
+                left_value=q[head*D+j]; right_value=q[head*D+j+64];
+                q[head*D+j]=left_value*cosine[j]-right_value*sine[j];
+                q[head*D+j+64]=right_value*cosine[j]+left_value*sine[j];
+            end
+        end
+        base=tensor_base(3+layer*11+6);
+        for (int head=0;head<8;head++) begin
+            sum=0.0;
+            for (int j=0;j<D;j++) sum+=k[head*D+j]*k[head*D+j];
+            scale=1.0/$sqrt(sum/D+1.0e-6);
+            for (int j=0;j<D;j++) k[head*D+j]*=scale*weight_value(base+longint'(j));
+            for (int j=0;j<64;j++) begin
+                left_value=k[head*D+j]; right_value=k[head*D+j+64];
+                k[head*D+j]=left_value*cosine[j]-right_value*sine[j];
+                k[head*D+j+64]=right_value*cosine[j]+left_value*sine[j];
+            end
+        end
+        index=(layer*C+position)*H;
+        for (int j=0;j<H;j++) begin
+            keys[index+j]=k[j]; values[index+j]=v[j];
+        end
+    endtask
+`endif
 
     task automatic attention(input int layer, input bit project_result);
         real sum, scale, left_value, right_value, maximum, denom;
@@ -424,10 +465,27 @@ module qwen_behavioral (
                     angle=real'(position)/(1000000.0**(real'(2*j)/128.0));
                     cosine[j]=$cos(angle);sine[j]=$sin(angle);
                 end
+`ifdef BATCH_ATTENTION
+                if (parallel_workers>0) begin
+                    // Publish every KV, but queries later retain their own causal end.
+                    prepare_block_attention(layer);
+                    for (int j=0;j<Q;j++) block_attention_input[j*8+t]=q[j];
+                end else begin
+`endif
                 // Writes this token's KV, then reads only <=position.
                 attention(layer,0);
                 for (int j=0;j<Q;j++) block_a[j][t]=a[j];
+`ifdef BATCH_ATTENTION
+                end
+`endif
             end
+`ifdef BATCH_ATTENTION
+            if (parallel_workers>0) begin
+                for (int j=0;j<Q;j++) for (int t=block_count;t<8;t++) block_attention_input[j*8+t]=0.0;
+                dispatch_block_attention(layer,initial_position,block_count,block_attention_input,block_attention_output);
+                for (int j=0;j<Q;j++) for (int t=0;t<block_count;t++) block_a[j][t]=block_attention_output[j*8+t];
+            end
+`endif
             for (int j=0;j<Q;j++) for (int t=0;t<block_count;t++) block_input[j*`BLOCK_CAPACITY+t]=block_a[j][t];
             block_project(3+layer*11+4,H,Q);
             for (int j=0;j<H;j++) for (int t=0;t<block_count;t++) block_x[j][t]+=block_output[j*`BLOCK_CAPACITY+t];

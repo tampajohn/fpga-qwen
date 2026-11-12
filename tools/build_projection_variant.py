@@ -24,6 +24,7 @@ def main():
     parser.add_argument('--cpu', choices=['generic', 'native'], default='generic')
     parser.add_argument('--fast-attention', action='store_true')
     parser.add_argument('--parallel-attention', action='store_true')
+    parser.add_argument('--batch-attention', action='store_true', help='Experimental exact per-query batched attention dispatch')
     parser.add_argument('--attention-dot-lanes8', action='store_true')
     parser.add_argument('--batched-prefill', action='store_true')
     parser.add_argument('--block-unroll', action='store_true')
@@ -50,6 +51,7 @@ def main():
     if args.scalar_group and not args.group_projections:parser.error('--scalar-group requires --group-projections')
     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
+    if args.batch_attention and not (args.parallel_attention and args.prefill_b8):parser.error('--batch-attention requires parallel attention and B8 prefill')
     if args.attention_dot_lanes8 and not args.parallel_attention:
         parser.error('--attention-dot-lanes8 requires --parallel-attention')
     if args.prefill_b8 and not args.batched_prefill:
@@ -83,6 +85,7 @@ def main():
     if args.fp32_projection_b1: tag += '-fp32-b1'
     if args.fp32_verification_b4: tag += '-verify-b4'
     if args.fp32_prefill_b8: tag += '-fp32-prefill-b8'
+    if args.batch_attention: tag += '-batch-attention'
     if args.tag: tag += '-'+args.tag
     directory = ROOT / 'build/variants' / tag
     projection, full = directory / 'projection', directory / 'full'
@@ -105,6 +108,7 @@ def main():
     if args.fp_contract != 'on': flags += ' -ffp-contract='+args.fp_contract
     if args.unroll: flags += ' -funroll-loops'
     if args.pool == 'hybrid': flags += ' -DPROJECTION_HYBRID_WAIT'
+    if args.batch_attention: flags += ' -DBATCH_ATTENTION'
     if args.parallel_attention: flags += ' -DPARALLEL_ATTENTION'
     if args.batched_prefill: flags += ' -DBATCH_PREFILL'
     if args.group_projections: flags += ' -DGROUP_PROJECTIONS'
@@ -117,6 +121,9 @@ def main():
     if args.block_unroll: defines += ['+define+BLOCK_UNROLL']
     if args.unsigned_indices: defines += ['+define+UNSIGNED_PROJECTION_INDEX']
     main_defines = []
+    if args.batch_attention:
+        defines += ['+define+BATCH_ATTENTION']
+        main_defines += ['+define+BATCH_ATTENTION']
     if args.scalar_group: main_defines += ['+define+SCALAR_GROUP']
     if args.parallel_attention:
         defines += ['+define+PARALLEL_ATTENTION']

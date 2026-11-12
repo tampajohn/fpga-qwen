@@ -85,6 +85,17 @@ extern "C" void dispatch_attention(int layer,int position,const svOpenArrayHandl
     if(!pool || !q || !a || !attention_root) throw std::runtime_error("Invalid attention dispatch");
     pool->run(0,16,2048,q,a,1,layer,position);
 }
+#ifdef BATCH_ATTENTION
+extern "C" void dispatch_block_attention(int layer,int position,int count,
+        const svOpenArrayHandle query,const svOpenArrayHandle output) {
+    if(svSize(query,1)!=2048*8 || svSize(output,1)!=2048*8)
+        throw std::runtime_error("Invalid block attention shape");
+    const auto* q=static_cast<const double*>(svGetArrayPtr(query));
+    auto* a=static_cast<double*>(svGetArrayPtr(output));
+    if(!pool || !q || !a || !attention_root)throw std::runtime_error("Invalid block attention dispatch");
+    pool->run(0,16,2048,q,a,5,layer,position,count);
+}
+#endif
 // This guard is destroyed before the main model, including exception unwinding.
 struct AttentionLifetime {
     ~AttentionLifetime() {pool.reset();attention_root=nullptr;}
