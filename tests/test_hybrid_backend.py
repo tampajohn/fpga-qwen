@@ -113,6 +113,25 @@ class HybridBackendTests(unittest.TestCase):
         candidate.sim.command=Mock(return_value=json.dumps(expected))
         with self.assertRaises(RuntimeError):candidate.verify_precision(None)
 
+    def test_b4_catalog_and_draft_routing(self):
+        from tools.canonical_prefix import CanonicalPrefix, POLICY
+        candidate=hybrid()
+        candidate.sim.block_size=4
+        candidate.canonical_prefix=CanonicalPrefix()
+        original=candidate.sim.command
+        candidate.sim.command=lambda command,cancel=None: (json.dumps(dict(EXPECTED,max_verification_block=4,
+            verification_projection='fp32',canonical_prefix_policy=POLICY)) if command=='precision' else original(command,cancel))
+        candidate.prepare=lambda payload: ChatRequest('draft-ui',[1,2,3]*3,8,payload.get('max_draft',0))
+        router=BackendRouter(engine(cycle),candidate)
+        self.addCleanup(router.close)
+        entry=next(item for item in router.catalog() if item['id']=='rtl-fp32')
+        self.assertTrue(entry['suffix_supported'])
+        self.assertEqual(entry['max_draft'],3)
+        result=list(router.stream(router.prepare(dict(backend='rtl-fp32',max_draft=3)),threading.Event()))[-1]
+        self.assertEqual(result['type'],'done')
+        self.assertEqual(result['metrics']['effective_max_draft'],3)
+        self.assertTrue(router.status()['precision_verified'])
+
     def test_uninstalled_hybrid_is_unavailable(self):
         router=BackendRouter(engine(cycle))
         self.addCleanup(router.close)

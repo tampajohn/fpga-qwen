@@ -185,7 +185,7 @@ def main():
         8 if args.simulator == 'fast' and args.sv_binary is None and block_size == 4 else block_size)
     print('Preparing full SystemVerilog chat; no PyTorch or GPU inference...', flush=True)
     hybrid = (RTLChatEngine(args.model,workers=max(1,args.workers),binary=HYBRID_BINARY,
-              lanes=8,block_size=1,prefill_size=8,reuse_prefix=False,
+              lanes=8,block_size=4,prefill_size=8,reuse_prefix=False,
               precision_profile='fp32_b1_fp64_prefill',canonical_prefix_reuse=True) if HYBRID_BINARY.is_file() else None)
     engine = BackendRouter(RTLChatEngine(args.model, workers=args.workers, binary=binary,
                                          lanes=8 if args.simulator == 'fast' else 1, block_size=block_size,

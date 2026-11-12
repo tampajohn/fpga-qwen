@@ -22,11 +22,13 @@ function backendChanged() {
   if (Number($('workers').value) < (backend?.min_workers ?? 0)) $('workers').value = '8';
   $('suffix').checked = false;
   $('suffix-note').textContent = backend?.suffix_supported
-    ? `Verified n-gram drafts · up to ${backend.max_draft} tokens; sampled and greedy`
+    ? ($('backend').value === 'rtl-fp32'
+      ? `Optional · up to ${backend.max_draft} verified tokens; helps repeated text, little benefit on prose`
+      : `Verified n-gram drafts · up to ${backend.max_draft} tokens; sampled and greedy`)
     : 'Unavailable in this backend';
   $('backend-tag').textContent = rtl ? 'Full SV simulation' : 'llama.cpp · CPU only';
   $('backend-about').textContent = $('backend').value === 'rtl-fp32'
-    ? 'SystemVerilog uses FP32 scalar projections for decoding and FP64 for prefill, attention and KV storage. It reuses complete FP64 prefill blocks; suffix drafting remains disabled. CPU only; not cycle-accurate FPGA timing.'
+    ? 'SystemVerilog uses FP32 scalar projections for decoding and FP64 for prefill, attention and KV storage. It reuses complete FP64 prefill blocks. Optional FP32 suffix verification helped repeated code in testing; ordinary prose was essentially unchanged. Drafting is off by default. CPU only; not cycle-accurate FPGA timing.'
     : rtl
     ? 'All model math and KV data run in a behavioral SystemVerilog model via Verilator. It uses floating-point real arithmetic and is not synthesizable or cycle-accurate. Python handles tokenization, suffix proposals, sampling random numbers, and HTTP; the model verifies every proposed token.'
     : 'llama.cpp runs Qwen3-0.6B on CPU with native prefix caching. This comparison backend does not use SystemVerilog. GPU support is disabled in the build.';
@@ -138,7 +140,7 @@ async function send(event) {
     const response = await fetch('/api/chat', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ request_id: requestId, session, backend: $('backend').value, simulation_workers: Number($('workers').value), decoding: $('decoding').value, messages: submitted,
-        max_new_tokens: Number($('reply-limit').value), max_draft: $('suffix').checked ? 7 : 0 })
+        max_new_tokens: Number($('reply-limit').value), max_draft: $('suffix').checked ? (selectedBackend()?.max_draft ?? 0) : 0 })
     });
     if (!response.ok) {
       const detail = await response.json();

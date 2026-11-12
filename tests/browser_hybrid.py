@@ -34,7 +34,9 @@ def main():
             page.locator('#backend').select_option('rtl-fp32')
             expect(page.locator('#workers')).to_have_value('8')
             expect(page.locator('#workers option[value="0"]')).to_be_disabled()
-            expect(page.locator('#suffix')).to_be_disabled()
+            expect(page.locator('#suffix')).to_be_enabled()
+            expect(page.locator('#suffix')).not_to_be_checked()
+            assert 'up to 3' in page.locator('#suffix-note').inner_text()
             replies.append(send('What word did you just say? Answer with that word only.'))
             expect(page.locator('#reused')).to_have_text('0')
             assert 'FP32 hybrid' in page.locator('.assistant .reply-meta').last.inner_text()
@@ -62,9 +64,25 @@ def main():
             assert 'Stopped' in page.locator('.assistant .reply-meta').last.inner_text()
             replies.append(send('Answer with the single word blue.'))
             expect(page.locator('#reused')).to_have_text('0')
+            # Explicitly enable drafting only for this repetition comparison.
+            pattern='Repeat this code exactly three times, without an introduction:\ndef add(a, b):\n    return a + b'
+            page.locator('#new-chat').click()
+            expect(page.locator('#suffix')).not_to_be_checked()
+            off=send(pattern)
+            page.locator('#new-chat').click()
+            page.locator('#suffix').check()
+            on=send(pattern)
+            assert on==off
+            accepted=page.locator('#accepted').inner_text()
+            assert int(accepted.split('/')[0].strip())>0
+            assert 'drafts accepted' in page.locator('.assistant .reply-meta').last.inner_text()
+            page.screenshot(path=str(output/'hybrid-suffix.png'))
+            page.locator('#backend').select_option('rtl')
+            expect(page.locator('#suffix')).not_to_be_checked()
             assert not errors,errors
             report=dict(replies=replies,default_backend='rtl',hybrid_precision_verified=True,
-                        hybrid_second_turn_reused_tokens=reused,canonical_prefix_policy=first_status["canonical_prefix_policy"],suffix_disabled=True,serial_disabled=True,
+                        hybrid_second_turn_reused_tokens=reused,canonical_prefix_policy=first_status["canonical_prefix_policy"],suffix_enabled=True,suffix_default_off=True,suffix_limit=3,serial_disabled=True,
+                        suffix_on_off_text_equal=True,suffix_acceptance=accepted,
                         worker_change=True,switch_back=True,cancel_restart=True,console_errors=errors)
             (output/'report.json').write_text(json.dumps(report,indent=2)+'\n')
             print(json.dumps(report,indent=2))
