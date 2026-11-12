@@ -59,8 +59,12 @@ def load_capture(path, run_index, inputs):
         raise RuntimeError('Expected CPU-only diagnostic capture')
     config = client['configuration']
     expected = dict(architecture='qwen3', layers=28, hidden=1024, query_heads=16,
-                    kv_heads=8, vocabulary=VOCABULARY, n_gpu_layers=0,
-                    offload_kqv=False, op_offload=False)
+                    kv_heads=8, vocabulary=VOCABULARY)
+    if config.get('weight_format') == 'QWCPU01':
+        expected.update(weight_precision='f16', norm_precision='f32', activation_precision='f32',
+                        kv_type='f16', gpu=False, pytorch=False)
+    else:
+        expected.update(n_gpu_layers=0, offload_kqv=False, op_offload=False)
     if any(type(config.get(k)) is not type(v) or config[k] != v for k, v in expected.items()):
         raise RuntimeError('Unexpected native model or offload configuration')
     prompt = ids(client['prompt_ids'], 'prompt')
@@ -94,10 +98,12 @@ def load_capture(path, run_index, inputs):
                 or item['context_tokens'] != len(prompt) + step or dump.stat().st_size != VOCABULARY * 4):
             raise RuntimeError('Invalid dump position, shape or type')
         digest = sha(dump)
+        if item.get('sha256') is not None and item['sha256'] != digest:
+            raise RuntimeError('Logit dump changed since capture')
         if wrapped and supplied['logit_dumps'].get(str(dump)) != digest:
             raise RuntimeError('Native dump changed since profiling wrapper verified it')
         inputs[str(dump)] = digest
-    if wrapped:
+    if wrapped or config.get('weight_format') == 'QWCPU01':
         for source, digest in supplied['inputs'].items():
             if source not in inputs:
                 inputs[source] = sha(source)
@@ -186,8 +192,11 @@ def main():
         if not steps or steps[0] < 0 or steps[-1] >= len(first['predictions']):
             parser.error('Selected steps are outside the captured trajectory')
     for capture in captures:
-        capture['precision_matched'] = (int(capture['configuration']['model_file_type']) == FILE_TYPES[args.weight_precision]
-                                        and capture['configuration']['kv_type'] == args.kv_precision)
+        configuration = capture['configuration']
+        matched_weight = (configuration['weight_precision'] == args.weight_precision
+                          if configuration.get('weight_format') == 'QWCPU01' else
+                          int(configuration['model_file_type']) == FILE_TYPES[args.weight_precision])
+        capture['precision_matched'] = (matched_weight and configuration['kv_type'] == args.kv_precision)
         if args.atol is not None and not capture['precision_matched']:
             raise RuntimeError('A validation gate requires matched weight and KV precision classes')
     checkpoint = locate_model(args.checkpoint)
