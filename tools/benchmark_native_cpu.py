@@ -25,8 +25,9 @@ def extended_prompts(protocol, count):
         padding = 0
         for attempt in range(10):
             messages = [dict(role='user', content='Background notes:' + ' x' * padding +
-                '\nIgnore the background notes. Write every integer from 1 to 200 in order, '
-                'one integer per line. Do not skip numbers or abbreviate the list.')]
+                '\nIgnore the background notes. Write a detailed tutorial of at least 600 words '
+                'explaining CPU memory bandwidth, cache levels, cache locality, and matrix multiplication. '
+                'Use ten numbered paragraphs with concrete examples. Begin with paragraph 1.')]
             ids = protocol.prepare(dict(session='extended-context', messages=messages,
                 max_new_tokens=1, decoding='greedy')).ids
             if len(ids) == length:
