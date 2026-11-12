@@ -76,6 +76,7 @@ public:
         catch(...) {shutdown();throw;}
     }
     ~Pool(){shutdown();}
+    int worker_count()const{return n_;}
     void shutdown() {
         {std::lock_guard lock(mutex_);stop_.store(true,std::memory_order_release);}
         start_.notify_all();for(auto& t:threads_)if(t.joinable())t.join();
@@ -258,6 +259,30 @@ struct Model::Impl {
         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
         attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
         half_gate.resize(gate.size());tanh_gate.resize(gate.size());
+        // Token-major attention has increasing causal lengths. A thin prefix-
+        // cost map balances those lengths while preserving contiguous, disjoint
+        // query ownership and each query's arithmetic/reduction order.
+        std::array<size_t,65> attention_ranges{};
+        if(batch>1) {
+            const size_t items=size_t(batch)*Q;
+            const int workers=pool.worker_count();
+            auto prefix_cost=[&](size_t item)->uint64_t {
+                const uint64_t b=item/Q,head=item%Q;
+                const uint64_t preceding=b*(uint64_t(2)*pos+b+1)/2;
+                return Q*preceding+head*(pos+b+1);
+            };
+            const uint64_t total=prefix_cost(items);
+            attention_ranges[0]=0;attention_ranges[workers]=items;
+            for(int worker=1;worker<workers;++worker) {
+                const uint64_t target=total*worker/workers;
+                size_t lo=0,hi=items;
+                while(lo<hi) {
+                    const size_t mid=lo+(hi-lo)/2;
+                    if(prefix_cost(mid)<target)lo=mid+1;else hi=mid;
+                }
+                attention_ranges[worker]=lo;
+            }
+        }
         const Half* embeddings=tensor("model.embed_tokens.weight").half;
         for(int b=0;b<batch;++b)for(int j=0;j<H;++j)x[b*H+j]=embeddings[size_t(ids[b])*H+j];
         for(int layer=0;layer<L;++layer){std::string p="model.layers."+std::to_string(layer)+".";
@@ -278,6 +303,7 @@ struct Model::Impl {
                 size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
             }
             pool.run(size_t(batch)*Q,[&](size_t begin,size_t end,int worker){
+                if(batch>1){begin=attention_ranges[worker];end=attention_ranges[worker+1];}
                 float* scores=attention_scores.data()+size_t(worker)*options.context;
                 float* shifted=shifted_scores.data()+size_t(worker)*options.context;
                 float* probs=probabilities.data()+size_t(worker)*options.context;
