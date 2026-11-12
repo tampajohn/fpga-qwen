@@ -1,0 +1,170 @@
+{
+  "completed": true,
+  "diagnostic_only": true,
+  "inference_run": false,
+  "performance_claim_eligible": false,
+  "numpy_version": "2.5.4",
+  "scope": "FP64 arithmetic over saved FP32 arrays only; candidate14 minus baseline12, not either engine minus independent oracle.",
+  "source_review": {
+    "commit": "0880a9965bc2a512cb977b99c5ef2a4dcb362fad",
+    "core_sha256": "86f84760e759e7a3b0b9e3b6115118b5e85c5bb1da42f4d9c37c160358067281",
+    "findings": "QK and PV SGEMMs change reduction association. Packing, causal lengths, masking and scatter look consistent. Changed layer outputs can cross later FP16 KV rounding thresholds; final-logit differences do not localize their origin."
+  },
+  "comparisons": [
+    {
+      "context_tokens": 1024,
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_difference": 0.008083105087280273,
+      "rms_difference": 0.0019131756328555586,
+      "greedy_build12": 31615,
+      "greedy_build14": 31615,
+      "worst_tokens": [
+        {
+          "id": 94958,
+          "build12": 0.08459627628326416,
+          "build14": 0.07651317119598389,
+          "signed_build14_minus_build12": -0.008083105087280273
+        },
+        {
+          "id": 81803,
+          "build12": -7.04241418838501,
+          "build14": -7.049893379211426,
+          "signed_build14_minus_build12": -0.007479190826416016
+        },
+        {
+          "id": 14377,
+          "build12": -0.32120370864868164,
+          "build14": -0.3285064697265625,
+          "signed_build14_minus_build12": -0.007302761077880859
+        },
+        {
+          "id": 36621,
+          "build12": -2.040696620941162,
+          "build14": -2.047987699508667,
+          "signed_build14_minus_build12": -0.007291078567504883
+        },
+        {
+          "id": 6172,
+          "build12": 8.16585922241211,
+          "build14": 8.158811569213867,
+          "signed_build14_minus_build12": -0.0070476531982421875
+        },
+        {
+          "id": 61653,
+          "build12": -2.2598955631256104,
+          "build14": -2.2669310569763184,
+          "signed_build14_minus_build12": -0.007035493850708008
+        },
+        {
+          "id": 88483,
+          "build12": -7.703612804412842,
+          "build14": -7.710544586181641,
+          "signed_build14_minus_build12": -0.006931781768798828
+        },
+        {
+          "id": 58373,
+          "build12": -4.545497417449951,
+          "build14": -4.552364349365234,
+          "signed_build14_minus_build12": -0.006866931915283203
+        },
+        {
+          "id": 96197,
+          "build12": -10.520617485046387,
+          "build14": -10.527441024780273,
+          "signed_build14_minus_build12": -0.006823539733886719
+        },
+        {
+          "id": 57645,
+          "build12": -4.837061882019043,
+          "build14": -4.843874931335449,
+          "signed_build14_minus_build12": -0.00681304931640625
+        }
+      ],
+      "inputs": {
+        "build/native-cpu/build-12-context1024-logits/run0-step0.f32": "1c13ca5579cd96a1e2aa532631427c193c6bf6301acd8318aa60550e84ed752b",
+        "build/native-cpu/build-14-context1024-logits/run0-step0.f32": "61ca3e9937733c00c14e1411b3d9a144c07d030a05a59bf193750d727556c820"
+      }
+    },
+    {
+      "context_tokens": 1025,
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_difference": 0.005522251129150391,
+      "rms_difference": 0.001061052888426182,
+      "greedy_build12": 4938,
+      "greedy_build14": 4938,
+      "worst_tokens": [
+        {
+          "id": 52753,
+          "build12": -7.700397968292236,
+          "build14": -7.705920219421387,
+          "signed_build14_minus_build12": -0.005522251129150391
+        },
+        {
+          "id": 25024,
+          "build12": -3.940603494644165,
+          "build14": -3.945798873901367,
+          "signed_build14_minus_build12": -0.0051953792572021484
+        },
+        {
+          "id": 46831,
+          "build12": -0.0798499584197998,
+          "build14": -0.08488893508911133,
+          "signed_build14_minus_build12": -0.0050389766693115234
+        },
+        {
+          "id": 66120,
+          "build12": -10.13142204284668,
+          "build14": -10.136460304260254,
+          "signed_build14_minus_build12": -0.005038261413574219
+        },
+        {
+          "id": 7123,
+          "build12": -0.20441842079162598,
+          "build14": -0.20945394039154053,
+          "signed_build14_minus_build12": -0.005035519599914551
+        },
+        {
+          "id": 77941,
+          "build12": -6.777499675750732,
+          "build14": -6.782352924346924,
+          "signed_build14_minus_build12": -0.004853248596191406
+        },
+        {
+          "id": 72576,
+          "build12": -10.331801414489746,
+          "build14": -10.336654663085938,
+          "signed_build14_minus_build12": -0.004853248596191406
+        },
+        {
+          "id": 75199,
+          "build12": -11.186555862426758,
+          "build14": -11.191383361816406,
+          "signed_build14_minus_build12": -0.0048274993896484375
+        },
+        {
+          "id": 65475,
+          "build12": 7.432329177856445,
+          "build14": 7.427517890930176,
+          "signed_build14_minus_build12": -0.004811286926269531
+        },
+        {
+          "id": 12490,
+          "build12": -1.0735204219818115,
+          "build14": -1.0783114433288574,
+          "signed_build14_minus_build12": -0.0047910213470458984
+        }
+      ],
+      "inputs": {
+        "build/native-cpu/build-12-context1024-logits/run0-step1.f32": "8a713305e21c717ae53f55adcc72f47b889d44781c738dbcb7d4a0fc57b33ab2",
+        "build/native-cpu/build-14-context1024-logits/run0-step1.f32": "5f6e4841f351e9a38e74f059fd06eb345776ae9de443ab3f497aee49ba6175ec"
+      }
+    }
+  ],
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/build-14-vs12-context1024-array-diff.json",
+    "raw_source_sha256": "614b1e22769686958175eb7116279caf39cfbb62a3e42779da8266dcdbefe87c",
+    "sanitization": "Home/repository paths and process IDs removed. Numerical values and original artifact hashes preserved."
+  }
+}

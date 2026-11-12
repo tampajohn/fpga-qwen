@@ -10,6 +10,17 @@ fixes. Existing experimental code and artifacts are preserved; no pending
 simulator experiment is a new release. Native implementation will live in
 `engine/`, with existing tools, quality gates, server and browser reused.
 
+## Current experimental decision: BLAS attention rejected
+
+Build 14's batched BLAS-attention experiment failed the unchanged independent
+NumPy RMS gate at context 1024: **0.002495521 > 0.002**. Frozen build 12 passed
+that same oracle control (**0.001595303**). Equal greedy IDs do not override
+the full-logit gate. The experimental source is reverted; binary 14 was never
+live, receives no speed test or promotion, and its 2048/3968 gates were not run.
+The earlier 16 base positions and six boundary positions passed and remain
+archived alongside the failure. Details and source-level interpretation appear
+in the final build14 entry below; no numerical limits were relaxed.
+
 ## Phase 0
 
 Keep llama.cpp source pinned to the clean local commit cb44fdb while comparing
@@ -724,3 +735,25 @@ The initial independent NumPy comparisons passed the unchanged maximum-absolute-
 | 452–455 | 4 | 0.004979 | 0.001206 | [long gate](../reports/native-cpu-build-14-long-gate.json) |
 
 These 16 positions are initial numerical evidence only. The altered BLAS reduction order is not claimed bit-identical to the existing engine. The candidate still needs 512-token chunk-boundary checks, longer-context numerical checks, conversation-quality and exact cache-equivalence gates, and any performance comparison before a release decision. Passing these base cases does not establish correctness across all supported contexts or retained-prefix execution.
+
+
+### Build 14 rejected after extended numerical gate
+
+The frozen BLAS-attention candidate passed two positions for each initial prompt length [511](../reports/native-cpu-build-14-boundary511-gate.json), [512](../reports/native-cpu-build-14-boundary512-gate.json), and [513](../reports/native-cpu-build-14-boundary513-gate.json), with largest per-position RMS errors 0.000834035, 0.001153074, and 0.001184802 respectively. These six boundary checks supplement the earlier 16 base-position passes; they do not conceal the subsequent failure.
+
+At the 1024-token prompt, the [candidate gate](../reports/native-cpu-build-14-context1024-gate.json) failed RMS while remaining below the maximum-absolute limit. The [frozen build 12 oracle control](../reports/native-cpu-build-12-context1024-oracle-control.json), using the identical prompt and teacher-forced continuation, passed:
+
+| Engine / context | Maximum absolute error | RMS error | Unchanged .01 / .002 gate |
+|---|---|---|---|
+| Build 14 / 1024 | 0.009214878 | **0.002495521** | Fail |
+| Build 12 / 1024 | 0.007140636 | 0.001595303 | Pass |
+| Build 14 / 1025 | 0.005125046 | 0.001020239 | Pass |
+| Build 12 / 1025 | 0.006333351 | 0.001213760 | Pass |
+
+All four rows were finite and retained the same oracle greedy token, but token agreement does not satisfy the failed full-vocabulary RMS requirement. The control shows this is a candidate 14 gate failure on a fixture where the retained baseline passes; it is not a newly discovered baseline failure at this fixture.
+
+A [saved-array comparison](../reports/native-cpu-build-14-vs12-context1024-array-diff.json), involving no inference, found candidate 14-versus-build 12 maximum/RMS differences of 0.008083105/0.001913176 at context 1024 and 0.005522251/0.001061053 at 1025. Worst-difference token IDs were 94958 and 52753 respectively; the archive preserves the top ten IDs and signed values at both positions. These pairwise differences are not oracle errors and do not replace the table above.
+
+Source review of commit 0880a99, whose core hash matches binary 14's build manifest, found that QK SGEMM changes the original 128-term dot reduction order and PV SGEMM changes the ascending causal-time accumulation into a library reduction over the full packed column extent. Causal lengths, zeroed future probabilities, packing and scatter appear consistent. Reassociation can change later FP16 KV rounding and propagate through layers/chunks; this is a plausible mechanism, not a localization proved by final logits alone. No obvious masking or stride defect was identified in the source review.
+
+The experiment is rejected under the predeclared numerical contract. Its source remains reverted, binary 14 was never live, and no timing or promotion follows. The serialized script stopped at the failed 1024 gate; **2048 and 3968 captures/gates were not run**. Earlier passes and the favorable 1025 row remain published together with the failure; no tolerance change or selective performance claim is made.
