@@ -13,6 +13,8 @@ from tools.evaluate_projection_quality import read_dump_logits
 
 BINARY=os.environ.get('SV_CANONICAL_BINARY')
 BLOCK_SIZE=int(os.environ.get('SV_CANONICAL_BLOCK_SIZE','1'))
+FIXED_WORKERS=os.environ.get('SV_CANONICAL_FIXED_WORKERS')
+if FIXED_WORKERS not in (None,'8'):raise ValueError('Fixed canonical worker fixture supports only8')
 
 @unittest.skipUnless(BINARY and Path(BINARY).is_file(),'Set SV_CANONICAL_BINARY to policy-capable experimental hybrid')
 class RealCanonicalPrefixTests(unittest.TestCase):
@@ -94,7 +96,7 @@ class RealCanonicalPrefixTests(unittest.TestCase):
             compare('shorten_inside_first_block',base[:8],max_new=1,decoding='greedy')
             compare('one_token_prompt',base[:1],max_new=1,decoding='greedy')
             compare('new_session',base[:49],session='new')
-            for workers in (1,3,17):compare(f'worker_change_{workers}',base[:49],session='new',workers=workers)
+            for workers in ((8,) if FIXED_WORKERS else (1,3,17)):compare(f'worker_change_{workers}',base[:49],session='new',workers=workers)
             cached.sim.close() # Simulate process loss without clearing engine metadata.
             compare('process_restart',base[:49],session='new')
             cached.close()
@@ -108,6 +110,7 @@ class RealCanonicalPrefixTests(unittest.TestCase):
                 if event['type']=='prefill':break
             stream.close();self.assertEqual(cached.canonical_prefix.end,0);self.assertIsNone(cached.sim.process)
             compare('after_generator_close',base[:41])
+        report['worker_change_scope']='fixed8; incompatible changes tested separately' if FIXED_WORKERS else '1/3/17 worker changes'
         report['completed']=True
         report['total_reused_tokens']=sum(c['actual_reused'] for c in report['cases'])
         report_path.write_text(json.dumps(report,indent=2)+'\n')

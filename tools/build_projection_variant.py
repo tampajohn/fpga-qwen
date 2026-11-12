@@ -39,6 +39,7 @@ def main():
     parser.add_argument('--scalar-group', action='store_true')
     parser.add_argument('--fp32-projection-b1', action='store_true', help='Experimental FP32 scalar projections with FP64 prefill/attention; no prefix reuse or block verification')
     parser.add_argument('--fp32-verification-b4', action='store_true', help='Experimental explicit FP32 B4 verification; FP64 prefill unchanged')
+    parser.add_argument('--phase-pools-experiment',action='store_true',help='Persistent12 prefill /8 scalar pools selected by trusted environment')
     parser.add_argument('--fp32-kv', action='store_true', help='Experimental single SV FP32 KV store; distinct no-cache profile')
     parser.add_argument('--fp32-prefill-b8', action='store_true', help='Experimental FP32 B8 prefill and B4 tails; distinct precision profile')
     parser.add_argument('--shortreal-compiler', default='', help='Reviewed patched Verilator root for isolated FP32 archive')
@@ -56,6 +57,7 @@ def main():
     if args.tag and not re.fullmatch(r'[A-Za-z0-9_-]+', args.tag):
         parser.error('--tag accepts only letters, numbers, underscores, and dashes')
     if args.attention_qk2 and (not args.batch_attention or args.attention_dot_lanes8):parser.error('--attention-qk2 requires --batch-attention and excludes --attention-dot-lanes8')
+    if args.phase_pools_experiment and (not args.fp32_verification_b4 or not args.batch_attention):parser.error('Phase pools require hybrid B4 and batched attention')
     if args.fp32_kv and (not args.fp32_verification_b4 or not args.batch_attention or args.static_kv or args.fp32_prefill_b8):parser.error('--fp32-kv requires verification B4 and batch attention, excludes static KV and FP32 prefill')
     if args.attention_value_pairs and not args.attention_head_pairs:parser.error('--attention-value-pairs requires --attention-head-pairs')
     if args.attention_head_pairs and (not args.parallel_attention or args.attention_dot_lanes8):parser.error('--attention-head-pairs requires parallel attention and excludes attention-dot-lanes8')
@@ -98,6 +100,7 @@ def main():
     if args.attention_head_pairs: tag += '-head-pairs'
     if args.attention_value_pairs: tag += '-value-pairs'
     if args.fp32_kv: tag += '-fp32-kv'
+    if args.phase_pools_experiment: tag = 'phase-pools-'+hashlib.sha256(tag.encode()).hexdigest()[:16]
     if args.tag: tag += '-'+args.tag
     directory = ROOT / 'build/variants' / tag
     projection, full = directory / 'projection', directory / 'full'
@@ -112,6 +115,7 @@ def main():
     projection.mkdir(parents=True, exist_ok=True)
     full.mkdir(parents=True, exist_ok=True)
     flags = '-std=c++17 -' + args.opt + (' -flto=thin' if args.lto else '')
+    if args.phase_pools_experiment: flags += ' -DPHASE_POOLS_EXPERIMENT'
     if args.fp32_kv: flags += ' -DFP32_KV -I'+str(kv_module)
     if args.scalar_group: flags += ' -DSCALAR_GROUP'
     if args.fp32_projection_b1: flags += ' -DFP32_PROJECTION_B1 -I'+str(fp32)
@@ -218,6 +222,7 @@ def main():
             policy='FP32 archives only use strict flags; stock worker/main/runtime retain original O3 ThinLTO/contraction. B1 FP32; attention FP64, KV storage specified by manifest kv_storage. Prefill precision and verification capacity are specified by the adjacent manifest fields.', kv_storage='fp32' if args.fp32_kv else 'fp64', kv_payload_bytes=28*4096*1024*2*(4 if args.fp32_kv else 8), verification_batch=4 if args.fp32_verification_b4 else 1, prefill_projection='fp32' if args.fp32_prefill_b8 else 'fp64', prefill_unroll_count=1 if args.fp32_prefill_b8 else None)
     sources = ['rtl/projection_worker.sv', 'rtl/qwen_behavioral.sv', 'rtl/sampling.svh',
                'sim/full_model.cpp', 'sim/projection_pool.h', 'sim/projection_descriptors.h', 'tools/build_projection_variant.py']
+    if args.phase_pools_experiment:sources.append('sim/phase_pool_policy.h')
     if args.fp32_kv:sources.append('rtl/fp32_kv_store.sv')
     if args.fp32_projection_b1:sources.append('rtl/fp32_projection_kernel.sv')
     def source_hashes():

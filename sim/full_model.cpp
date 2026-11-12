@@ -18,6 +18,10 @@ static constexpr int block_capacity=4;
 #include "Vfp32_kv_store___024root.h"
 #endif
 #include "projection_pool.h"
+#ifdef PHASE_POOLS_EXPERIMENT
+#include "phase_pool_policy.h"
+#include <cstdlib>
+#endif
 #include <chrono>
 #include <iomanip>
 #include <sys/mman.h>
@@ -61,8 +65,36 @@ extern "C" void weight_row(int64_t index,int count,const svOpenArrayHandle outpu
 }
 extern "C" int64_t tensor_base(int slot) { return offsets.at(slot); }
 static std::unique_ptr<ProjectionPool> pool;
-// Only the coordinator changes command purpose; run() waits for all readers.
+#ifdef PHASE_POOLS_EXPERIMENT
+#if !defined(FP32_VERIFICATION_B4) || !defined(BATCH_ATTENTION) || !defined(PREFILL_B8)
+#error "Phase pools require hybrid B4 verification and B8 batched attention"
+#endif
+static std::unique_ptr<ProjectionPool> prefill_pool;
+static uint64_t phase_pool_constructions=0;
+static std::unique_ptr<phase_pool::Policy> phase_policy;
+#endif
+static void shutdown_pools() {
+#ifdef PHASE_POOLS_EXPERIMENT
+    prefill_pool.reset();
+#endif
+    pool.reset();
+}
+struct PoolLifetime {~PoolLifetime(){shutdown_pools();}};
 static bool verification_command=false;
+static ProjectionPool* selected_pool() {
+#ifdef PHASE_POOLS_EXPERIMENT
+    if(verification_command!=(phase_policy->purpose==phase_pool::Purpose::verification))throw std::runtime_error("Inconsistent verification command purpose");
+    return phase_policy->prefill_pool()?prefill_pool.get():pool.get();
+#else
+    return pool.get();
+#endif
+}
+static void record_dispatch() {
+#ifdef PHASE_POOLS_EXPERIMENT
+    phase_policy->record();
+#endif
+}
+// Only the coordinator changes command purpose; run() waits for all readers.
 struct VerificationCommand {
     VerificationCommand() {verification_command=true;}
     ~VerificationCommand() {verification_command=false;}
@@ -111,55 +143,64 @@ extern "C" double attention_value_value(int index) {
 }
 extern "C" void dispatch_attention(int layer,int position,const svOpenArrayHandle query,
                                     const svOpenArrayHandle output) {
+    auto* active_pool=selected_pool();
     const auto* q=static_cast<const double*>(svGetArrayPtr(query));
     auto* a=static_cast<double*>(svGetArrayPtr(output));
-    if(!pool || !q || !a || !attention_root) throw std::runtime_error("Invalid attention dispatch");
+    if(!active_pool || !q || !a || !attention_root) throw std::runtime_error("Invalid attention dispatch");
+    record_dispatch();
 #ifdef ATTENTION_HEAD_PAIRS
     if(svSize(query,1)!=2048 || svSize(output,1)!=2048)
         throw std::runtime_error("Invalid paired-head attention storage");
-    if(pool->head_pair_eligible())pool->run(0,8,2048,q,a,6,layer,position);
+    if(active_pool->head_pair_eligible())active_pool->run(0,8,2048,q,a,6,layer,position);
     else
 #endif
-    pool->run(0,16,2048,q,a,1,layer,position);
+    active_pool->run(0,16,2048,q,a,1,layer,position);
 }
 #ifdef BATCH_ATTENTION
 extern "C" void dispatch_block_attention(int layer,int position,int count,
         const svOpenArrayHandle query,const svOpenArrayHandle output) {
+    auto* active_pool=selected_pool();
     if(svSize(query,1)!=2048*8 || svSize(output,1)!=2048*8)
         throw std::runtime_error("Invalid block attention shape");
     const auto* q=static_cast<const double*>(svGetArrayPtr(query));
     auto* a=static_cast<double*>(svGetArrayPtr(output));
-    if(!pool || !q || !a || !attention_root)throw std::runtime_error("Invalid block attention dispatch");
-    pool->run(0,16,2048,q,a,5,layer,position,count);
+    if(!active_pool || !q || !a || !attention_root)throw std::runtime_error("Invalid block attention dispatch");
+    record_dispatch();
+    active_pool->run(0,16,2048,q,a,5,layer,position,count);
 }
 #endif
 // This guard is destroyed before the main model, including exception unwinding.
 struct AttentionLifetime {
-    ~AttentionLifetime() {pool.reset();attention_root=nullptr;}
+    ~AttentionLifetime() {shutdown_pools();attention_root=nullptr;}
 };
 #endif
 
 extern "C" void dispatch_projection(int64_t base,int rows,int width,
                                     const svOpenArrayHandle input,const svOpenArrayHandle output) {
+    auto* active_pool=selected_pool();
     const auto* x=static_cast<const double*>(svGetArrayPtr(input));
     auto* y=static_cast<double*>(svGetArrayPtr(output));
-    if(!pool || !x || !y) throw std::runtime_error("Invalid projection dispatch");
-    pool->run(base,rows,width,x,y);
+    if(!active_pool || !x || !y) throw std::runtime_error("Invalid projection dispatch");
+    record_dispatch();
+    active_pool->run(base,rows,width,x,y);
 }
 #ifdef BATCH_PREFILL
 extern "C" void dispatch_block_projection(int64_t base,int rows,int width,int count,
                                           const svOpenArrayHandle input,const svOpenArrayHandle output) {
+    auto* active_pool=selected_pool();
     const auto* x=static_cast<const double*>(svGetArrayPtr(input));
     auto* y=static_cast<double*>(svGetArrayPtr(output));
-    if(!pool || !x || !y) throw std::runtime_error("Invalid block projection dispatch");
-    pool->run(base,rows,width,x,y,verification_command?4:(count>4?3:2),0,0,count);
+    if(!active_pool || !x || !y) throw std::runtime_error("Invalid block projection dispatch");
+    record_dispatch();
+    active_pool->run(base,rows,width,x,y,verification_command?4:(count>4?3:2),0,0,count);
 }
 #endif
 #ifdef SCALAR_GROUP
 extern "C" void dispatch_scalar_group(const svOpenArrayHandle bases,
         const svOpenArrayHandle rows,const svOpenArrayHandle output_offsets,int count,
         const svOpenArrayHandle input,const svOpenArrayHandle output) {
-    if(!pool || svSize(bases,1)!=3 || svSize(rows,1)!=3 || svSize(output_offsets,1)!=3 ||
+    auto* active_pool=selected_pool();
+    if(!active_pool || svSize(bases,1)!=3 || svSize(rows,1)!=3 || svSize(output_offsets,1)!=3 ||
        svSize(input,1)!=1024 || svSize(output,1)!=6144)
         throw std::runtime_error("Invalid scalar group array shape");
     const auto* b=static_cast<const int64_t*>(svGetArrayPtr(bases));
@@ -171,7 +212,8 @@ extern "C" void dispatch_scalar_group(const svOpenArrayHandle bases,
         throw std::runtime_error("Invalid scalar group storage/count");
     std::array<ProjectionDescriptor,3> jobs{};
     for(int i=0;i<count;++i)jobs[i]={b[i],r[i],1024,o[i]};
-    pool->run_group(jobs,count,1,x,y,true);
+    record_dispatch();
+    active_pool->run_group(jobs,count,1,x,y,true);
 }
 #endif
 
@@ -179,7 +221,8 @@ extern "C" void dispatch_scalar_group(const svOpenArrayHandle bases,
 extern "C" void dispatch_projection_group(const svOpenArrayHandle bases,
         const svOpenArrayHandle rows,const svOpenArrayHandle output_offsets,int count,int tokens,
         const svOpenArrayHandle input,const svOpenArrayHandle output) {
-    if(!pool || svSize(bases,1)!=3 || svSize(rows,1)!=3 || svSize(output_offsets,1)!=3 ||
+    auto* active_pool=selected_pool();
+    if(!active_pool || svSize(bases,1)!=3 || svSize(rows,1)!=3 || svSize(output_offsets,1)!=3 ||
        svSize(input,1)<1024*block_capacity || svSize(output,1)!=6144*block_capacity)
         throw std::runtime_error("Invalid group array shape");
     const auto* b=static_cast<const int64_t*>(svGetArrayPtr(bases));
@@ -191,12 +234,14 @@ extern "C" void dispatch_projection_group(const svOpenArrayHandle bases,
     if(count<2 || count>3) throw std::runtime_error("Invalid projection group count");
     std::array<ProjectionDescriptor,3> jobs{};
     for(int i=0;i<count;++i) jobs[i]={b[i],r[i],1024,o[i]};
-    pool->run_group(jobs,count,tokens,x,y,false,verification_command);
+    record_dispatch();
+    active_pool->run_group(jobs,count,tokens,x,y,false,verification_command);
 }
 #endif
 
 int main(int argc,char** argv) {
     try {
+        PoolLifetime early_pool_lifetime;
         if(argc!=3 && argc!=4) throw std::runtime_error("usage: Vqwen_behavioral checkpoint.safetensors offsets.txt [workers: 0=serial]");
         int fd=open(argv[1],O_RDONLY);
         struct stat info{};
@@ -216,7 +261,16 @@ int main(int argc,char** argv) {
 #else
         int reduction_lanes=1;
 #endif
+#ifdef PHASE_POOLS_EXPERIMENT
+        phase_policy=std::make_unique<phase_pool::Policy>(std::getenv("QWEN_EXPERIMENTAL_PHASE_POOLS"));
+        phase_policy->validate_config(count,reduction_lanes);
+#endif
         if(count) pool=std::make_unique<ProjectionPool>(count,reduction_lanes);
+#ifdef PHASE_POOLS_EXPERIMENT
+        ++phase_pool_constructions;
+        prefill_pool=std::make_unique<ProjectionPool>(12,reduction_lanes);
+        ++phase_pool_constructions;
+#endif
         auto context=std::make_unique<VerilatedContext>();
 #ifdef FP32_KV
         kv_context=std::make_unique<VerilatedContext>();kv_context->threads(1);
@@ -254,8 +308,12 @@ int main(int argc,char** argv) {
 #ifdef FP32_PROJECTION_B1
                 if(requested!=8) throw std::runtime_error("FP32 scalar projections require eight reduction lanes");
 #endif
+#ifdef PHASE_POOLS_EXPERIMENT
+                phase_policy->validate_config(count,requested);
+#else
                 pool.reset();reduction_lanes=requested;
                 if(count) pool=std::make_unique<ProjectionPool>(count,reduction_lanes);
+#endif
                 std::cout<<"configured\n"<<std::flush;
             } else if(command=="workers") {
                 int requested;
@@ -264,9 +322,13 @@ int main(int argc,char** argv) {
 #ifdef FP32_PROJECTION_B1
                 if(requested==0) throw std::runtime_error("FP32 scalar projections require workers");
 #endif
+#ifdef PHASE_POOLS_EXPERIMENT
+                phase_policy->validate_config(requested,reduction_lanes);
+#else
                 pool.reset();
                 if(requested) pool=std::make_unique<ProjectionPool>(requested,reduction_lanes);
                 count=requested;d->parallel_workers=count;
+#endif
                 std::cout<<"configured\n"<<std::flush;
 #ifdef BATCH_PREFILL
 #ifdef PREFILL_B8
@@ -278,6 +340,9 @@ int main(int argc,char** argv) {
                 for(int t=0;t<count;++t)
                     if(!(std::cin>>tokens[t]) || tokens[t]<0 || tokens[t]>=151936)
                         throw std::runtime_error("Invalid prefill token");
+#ifdef PHASE_POOLS_EXPERIMENT
+                phase_pool::Policy::Scope prefill_scope(*phase_policy,phase_pool::Purpose::prefill);
+#endif
                 for(int t=0;t<8;++t) {d->block_tokens[t]=tokens[t];d->block_uniforms[t]=0.0;}
                 d->block_count=count;d->do_logits=0;d->sample_enabled=0;
                 d->start=0;d->block_start=1;tick();d->block_start=0;
@@ -309,6 +374,9 @@ int main(int argc,char** argv) {
                 d->block_count=count;d->do_logits=logits;d->sample_enabled=sampled;
 #ifdef FP32_VERIFICATION_B4
                 VerificationCommand verification_scope;
+#ifdef PHASE_POOLS_EXPERIMENT
+                phase_pool::Policy::Scope phase_verification_scope(*phase_policy,phase_pool::Purpose::verification);
+#endif
 #endif
                 d->presence_penalty=penalty;d->start=0;d->block_start=1;tick();d->block_start=0;
                 if(!d->done) throw std::runtime_error("Block simulation did not finish");
@@ -334,10 +402,23 @@ int main(int argc,char** argv) {
 #ifdef GROUP_PROJECTIONS
             } else if(command=="groupstats") {
                 if(!pool) throw std::runtime_error("Group statistics require workers");
-                const auto values=pool->group_stats();
+                auto values=pool->group_stats();
+#ifdef PHASE_POOLS_EXPERIMENT
+                const auto extra=prefill_pool->group_stats();
+                for(int i=0;i<4;i++)values[i]+=extra[i];
+#endif
                 std::cout<<values[0]<<' '<<values[1]<<' '<<values[2]<<' '<<values[3]<<'\n'<<std::flush;
 #endif
 #ifdef FP32_PROJECTION_B1
+#ifdef PHASE_POOLS_EXPERIMENT
+            } else if(command=="phase_pools") {
+                std::cout<<"{\"selector\":\""<<(phase_policy->enabled?"PREFILL_12":"OFF")<<"\",\"resident_decode_workers\":8,\"resident_prefill_workers\":12,\"prefill_workers\":"<<(phase_policy->enabled?12:8)<<",\"decode_workers\":8,\"pool_constructions\":"<<phase_pool_constructions<<",\"dispatch_counts\":[";
+                for(int p=0;p<2;p++){if(p)std::cout<<',';std::cout<<'[';for(int k=0;k<3;k++){if(k)std::cout<<',';std::cout<<phase_policy->dispatches[p][k];}std::cout<<']';}
+                std::cout<<"],\"group_counters\":[";
+                const std::array<std::array<uint64_t,4>,2> groups{pool->group_stats(),prefill_pool->group_stats()};
+                for(int p=0;p<2;p++){if(p)std::cout<<',';std::cout<<'[';for(int k=0;k<4;k++){if(k)std::cout<<',';std::cout<<groups[p][k];}std::cout<<']';}
+                std::cout<<"]}"<<'\n'<<std::flush;
+#endif
             } else if(command=="precision") {
 #ifdef FP32_KV
                 std::cout<<R"({"precision_profile":"fp32_b1_fp64_prefill_fp32_kv","scalar_projection":"fp32","prefill_projection":"fp64","verification_projection":"fp32","attention_arithmetic":"fp64","kv_storage":"fp32","max_verification_block":4,"prefix_reuse_supported":false,"canonical_prefix_policy":"none"})"<<'\n'<<std::flush;
@@ -390,6 +471,6 @@ int main(int argc,char** argv) {
                 std::cout<<"dumped\n"<<std::flush;
             } else throw std::runtime_error("Unknown command");
         }
-        d->final();pool.reset();munmap(mapped,info.st_size);
+        d->final();shutdown_pools();munmap(mapped,info.st_size);
     } catch(const std::exception& error) {std::cerr<<error.what()<<'\n';return 1;}
 }

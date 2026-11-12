@@ -1,6 +1,6 @@
 # Proposed persistent pools by command purpose
 
-Status: design only, no runtime changes/builds/timing. Worktree base `4abf9cd`; deployed combined artifact f17 remains immutable. The measured worker sweep motivates testing twelve prefill workers while keeping eight scalar/verification workers. A gain is a hypothesis, not a multiplied estimate from separate sweep results.
+Status: optional implementation and correctness gates complete; timing pending. Worktree base `4abf9cd`; deployed combined artifact f17 remains immutable. The measured worker sweep motivates testing twelve prefill workers while keeping eight scalar/verification workers. A gain is a hypothesis, not a multiplied estimate from separate sweep results.
 
 ## Bounded first implementation
 
@@ -40,3 +40,11 @@ A single twelve-thread pool could use eight active workers for scalar work, savi
 First require byte-identical full logits/IDs to frozen f17 after short85/long452 contexts, all prefill/verification tails and sampled uniforms, plus existing canonical-prefix, suffix rollback, cancel/restart and truncation gates. Include reused prefixes that turn into one-token tails, since routing is purpose-based. Sharing the same SV/KV means no precision-policy change is intended; still demonstrate it, rather than infer it from source.
 
 Only after gates and independent source review, compare OFF versus PREFILL_12 in the same frozen binary with three or more alternating short/long pairs, B8 prefill and32 fixed greedy outputs. Direct dumps preserve warm pools. Record startup separately, prefill/TTFT/decode/total wall time and exact consumed positions. Validate telemetry around requests outside timed intervals. Compare with deployed f17 as a separate check if the idle extra pool changes baseline performance. Success requires a measured useful prefill/total improvement without a reproducible decode regression; no default/UI change follows from the worker sweep alone.
+
+## Implemented artifact and bounded gates
+
+Frozen artifact `162bed6577d91b19a57ea0f83d244d3fbb2666e329e90733f56f347267e8580d` implements the design above. The verification flag retained for existing arithmetic operation selection is checked against the purpose enum at every pool selection. An early owner guard covers partial startup; the late attention lifetime guard joins both pools before shared model/root destruction. Construction telemetry increments after actual successful constructions; matching configuration commands leave it at2.
+
+[Gate evidence](../reports/phase-pools-gates.json) includes exact full-vocabulary/ID comparisons against f17 for all8prefill tails, sampled verification1..4,85/452contexts and no-logits verification1..4 followed by scalar continuation. Logical counters prove12pool receives only prefill and OFF never dispatches it; aggregate groupstats equals the sum of per-pool counters. Policy mocks cover scopes/configuration/exception restoration. Existing canonical-prefix, matching-decode-token exclusion and seeded suffix/rejection/cancellation/restart checks passed in enabled mode.
+
+The first generic canonical run stopped at an intentionally unsupported workers1 reconfiguration, not a numerical mismatch. An explicit `SV_CANONICAL_FIXED_WORKERS=8` test mode then passed the full supported lifecycle path; default fixture1/3/17 behavior remains unchanged. Second-pool startup-failure cleanup was source-reviewed but not independently fault-injected; do not describe it as a tested failure path. Actual maximum4096 capacity and same-binary/deployed timing remain separate gates. No default or UI change is included.
