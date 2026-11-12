@@ -1,0 +1,245 @@
+{
+  "completed": true,
+  "diagnostic_only": true,
+  "gpu": false,
+  "pytorch": false,
+  "pairs": [
+    {
+      "pair": 0,
+      "off": {
+        "source": "build/native-phase0/head-pair-0-off/client.json",
+        "sha256": "ba47be79a48c55ae5fdc699eed159709defe58f2384abe30543b205e5fd3033f",
+        "decode_seconds": 0.21117654400000002,
+        "prefill_seconds": 0.623888125,
+        "head_decode_window_seconds": null
+      },
+      "on": {
+        "source": "build/native-phase0/head-pair-0-on/client.json",
+        "sha256": "e8b59decc4c06bd9c8852b255dcbf6ed764216cf3c77034dbcf929c4d674fbc2",
+        "decode_seconds": 0.22134704100000002,
+        "prefill_seconds": 0.637987833,
+        "head_decode_window_seconds": 0.038554499999999936
+      },
+      "callback_on_over_off_decode": 1.0481611111127949,
+      "head_fraction_instrumented": 0.17418123064044003
+    },
+    {
+      "pair": 1,
+      "off": {
+        "source": "build/native-phase0/head-pair-1-off/client.json",
+        "sha256": "f243b49be66fbf8ba11af8a1ebfbc277349346f0df055f6920e933ed213601d0",
+        "decode_seconds": 0.214713457,
+        "prefill_seconds": 0.502603833,
+        "head_decode_window_seconds": null
+      },
+      "on": {
+        "source": "build/native-phase0/head-pair-1-on/client.json",
+        "sha256": "437a70b9050e1f1e2b7153ab07eb51151450e6f67911f36ae28afb75ff97e29d",
+        "decode_seconds": 0.21204446,
+        "prefill_seconds": 0.491593208,
+        "head_decode_window_seconds": 0.03891116799999966
+      },
+      "callback_on_over_off_decode": 0.9875694936065418,
+      "head_fraction_instrumented": 0.18350476121847117
+    },
+    {
+      "pair": 2,
+      "off": {
+        "source": "build/native-phase0/head-pair-2-off/client.json",
+        "sha256": "24b0bfb4fc073b03ee8aeeb61be9c27cb289be350e0191b2b4edd3776378da0b",
+        "decode_seconds": 0.25032687600000003,
+        "prefill_seconds": 0.523464333,
+        "head_decode_window_seconds": null
+      },
+      "on": {
+        "source": "build/native-phase0/head-pair-2-on/client.json",
+        "sha256": "56d4e083f2275a27b989eda192d542aaa88e209bb5759875b8f64a91cf0e49c9",
+        "decode_seconds": 0.22606237100000004,
+        "prefill_seconds": 0.551064375,
+        "head_decode_window_seconds": 0.04077437500000025
+      },
+      "callback_on_over_off_decode": 0.9030687180388893,
+      "head_fraction_instrumented": 0.18036781097018684
+    },
+    {
+      "pair": 3,
+      "off": {
+        "source": "build/native-phase0/head-pair-3-off/client.json",
+        "sha256": "55d1931a597c8d6c0a6734f1bf3dbffcf2073f346f14a57d91bdbc148604af6b",
+        "decode_seconds": 0.22091579000000006,
+        "prefill_seconds": 0.50551575,
+        "head_decode_window_seconds": null
+      },
+      "on": {
+        "source": "build/native-phase0/head-pair-3-on/client.json",
+        "sha256": "8733298f77a4bce0e4ffd67110cad342e04f4ca2fb35355c6b10b62a3277b13f",
+        "decode_seconds": 0.22538633500000002,
+        "prefill_seconds": 0.580493125,
+        "head_decode_window_seconds": 0.03870703999999958
+      },
+      "callback_on_over_off_decode": 1.0202364213078656,
+      "head_fraction_instrumented": 0.17173640984046162
+    },
+    {
+      "pair": 4,
+      "off": {
+        "source": "build/native-phase0/head-pair-4-off/client.json",
+        "sha256": "c1dd19470022d7cc1bd7b8e50eccffff9908040d6f7250e4379e6ae4d7fc81ce",
+        "decode_seconds": 0.211547543,
+        "prefill_seconds": 0.53492825,
+        "head_decode_window_seconds": null
+      },
+      "on": {
+        "source": "build/native-phase0/head-pair-4-on/client.json",
+        "sha256": "f07cdff06f0a8e356d3508a3c7335028d75a07131a61670d11a4f3ceea5a2a02",
+        "decode_seconds": 0.277029917,
+        "prefill_seconds": 0.482572333,
+        "head_decode_window_seconds": 0.04585854200000028
+      },
+      "callback_on_over_off_decode": 1.3095397520168788,
+      "head_fraction_instrumented": 0.16553642471762456
+    },
+    {
+      "pair": 5,
+      "off": {
+        "source": "build/native-phase0/head-pair-5-off/client.json",
+        "sha256": "09d53a0b35cb049f9a49dc53c80da83feb672d1db383ab9c7256ab1278ba2ccd",
+        "decode_seconds": 0.235785999,
+        "prefill_seconds": 0.535318,
+        "head_decode_window_seconds": null
+      },
+      "on": {
+        "source": "build/native-phase0/head-pair-5-on/client.json",
+        "sha256": "d1d6ab108a63d7727cffbdd4c570cf07fb3398bb5f934bece0668eef359dd9ea",
+        "decode_seconds": 0.21937070700000005,
+        "prefill_seconds": 0.467130167,
+        "head_decode_window_seconds": 0.03927454100000022
+      },
+      "callback_on_over_off_decode": 0.9303805481681721,
+      "head_fraction_instrumented": 0.1790327502568527
+    },
+    {
+      "pair": 6,
+      "off": {
+        "source": "build/native-phase0/head-pair-6-off/client.json",
+        "sha256": "312ba0aaaa331312ed86727468eae8c154cdb76db4c1dc6f846a7b5b48f2a1e9",
+        "decode_seconds": 0.25760941600000004,
+        "prefill_seconds": 0.537425833,
+        "head_decode_window_seconds": null
+      },
+      "on": {
+        "source": "build/native-phase0/head-pair-6-on/client.json",
+        "sha256": "dca3bfe0282f8ca436b91fa5df1aa87266a967f85b0805bcc4d530a112642a50",
+        "decode_seconds": 0.24107387600000002,
+        "prefill_seconds": 0.589357417,
+        "head_decode_window_seconds": 0.042450125999999755
+      },
+      "callback_on_over_off_decode": 0.9358115853963971,
+      "head_fraction_instrumented": 0.17608762386182297
+    },
+    {
+      "pair": 7,
+      "off": {
+        "source": "build/native-phase0/head-pair-7-off/client.json",
+        "sha256": "4a7d3158c7f4597afbd05bcd50f16071f797cf8ffaea9fc06ad45ec670aa99b3",
+        "decode_seconds": 0.223940627,
+        "prefill_seconds": 0.55047725,
+        "head_decode_window_seconds": null
+      },
+      "on": {
+        "source": "build/native-phase0/head-pair-7-on/client.json",
+        "sha256": "14657a8ee51cd7e9618f59f5ee61a6182ff459f836b911d35aba1b310d052405",
+        "decode_seconds": 0.21952583399999998,
+        "prefill_seconds": 0.556735375,
+        "head_decode_window_seconds": 0.03916429499999974
+      },
+      "callback_on_over_off_decode": 0.9802858772919305,
+      "head_fraction_instrumented": 0.1784040369481058
+    },
+    {
+      "pair": 8,
+      "off": {
+        "source": "build/native-phase0/head-pair-8-off/client.json",
+        "sha256": "44b00de14c8f74becb08de75dffa651564120cd12d25be016d3e3903eb9dc994",
+        "decode_seconds": 0.276385042,
+        "prefill_seconds": 0.675032875,
+        "head_decode_window_seconds": null
+      },
+      "on": {
+        "source": "build/native-phase0/head-pair-8-on/client.json",
+        "sha256": "631c46cd3c3076d052bc5f3202a22b443a42515f356879c64d2886bb94a14108",
+        "decode_seconds": 0.24041562900000002,
+        "prefill_seconds": 0.652859834,
+        "head_decode_window_seconds": 0.04050891899999998
+      },
+      "callback_on_over_off_decode": 0.8698575988783068,
+      "head_fraction_instrumented": 0.1684953643342379
+    },
+    {
+      "pair": 9,
+      "off": {
+        "source": "build/native-phase0/head-pair-9-off/client.json",
+        "sha256": "60d64895ee1ba88b65248770f4e1ad02334f1a19ed4affb6a8aec7062beaa712",
+        "decode_seconds": 0.291127375,
+        "prefill_seconds": 0.65967725,
+        "head_decode_window_seconds": null
+      },
+      "on": {
+        "source": "build/native-phase0/head-pair-9-on/client.json",
+        "sha256": "c5341bfe2b6aa114f349da64154055db91e581ded4824ac2f7ef8d429a56b551",
+        "decode_seconds": 0.24998529200000003,
+        "prefill_seconds": 0.600087875,
+        "head_decode_window_seconds": 0.04035074999999977
+      },
+      "callback_on_over_off_decode": 0.858680129273312,
+      "head_fraction_instrumented": 0.16141249621997666
+    }
+  ],
+  "output_ids_identical": true,
+  "predicted_token_ids": [
+    10642,
+    33394,
+    19257,
+    311,
+    279,
+    4379,
+    518,
+    892,
+    821,
+    374,
+    22409,
+    1948,
+    264,
+    17654,
+    323,
+    4938,
+    11,
+    1393,
+    47430,
+    374,
+    264,
+    943,
+    315,
+    4938,
+    6240,
+    429,
+    10533,
+    13814,
+    1483,
+    821,
+    304,
+    264
+  ],
+  "summary": {
+    "median_head_fraction_instrumented": 0.17513442725113149,
+    "median_callback_on_over_off_decode": 0.9580487313441638,
+    "min_callback_ratio": 0.858680129273312,
+    "max_callback_ratio": 1.3095397520168788
+  },
+  "limitations": [
+    "Sparse callback head windows include synchronization and dispatch, not pure kernel time.",
+    "Public API diagnostic uses persistent CPU pools; it is not the exact HTTP server throughput measurement.",
+    "Alternating on/off observations quantify perturbation in this run but cannot remove scheduling confounds.",
+    "No full-logit dump during timing; exact greedy output identity is checked across all runs."
+  ]
+}

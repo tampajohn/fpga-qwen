@@ -205,3 +205,18 @@ profile is diagnostic evidence, not another scored throughput confirmation.
 See the [sanitized sample report](../reports/native-phase0-f16-profile-samples.json)
 and [reusable parser](../tools/analyze_native_profile_samples.py). Raw profiler
 artifacts stay local because their TOC can contain inherited environment values.
+
+## Vocabulary-head boundary diagnostic
+
+Ten alternating callback-off/on pairs used the persistent-pool public-API
+client at twelve decode / six prefill threads, 452 prompt tokens and 32 greedy
+outputs. All runs kept identical output IDs. The measured final-normalization
+to-output interval was a median 17.51% of instrumented decode time (range
+16.14–18.35%). It includes dispatch/synchronization around the vocabulary
+projection; it is not a pure kernel duration or a direct server wall-time share.
+
+Callback-on/off decode duration ratios had median 0.958 and range 0.859–1.310.
+That variation prevents treating callback overhead as a known constant. The
+measurement suggests prioritizing the whole projection pipeline and persistent
+worker execution over vocabulary-only approximations; it does not certify a
+speedup ceiling. Evidence: [paired diagnostic](../reports/native-phase0-f16-head-diagnostic.json).
