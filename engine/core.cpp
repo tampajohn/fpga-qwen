@@ -161,6 +161,7 @@ struct Model::Impl {
     // logical element is overwritten before use; reset only invalidates KV/logits.
     std::vector<float> x,h,q,k,v,attended,residual,gate,up,attention_scores;
     std::vector<float> half_gate,tanh_gate;
+    std::vector<float> shifted_scores,probabilities;
     std::array<float,H> last_hidden{};
     int pos=0;
     Impl(const std::string& path,Options opt):options(opt),mapping(path) {
@@ -207,6 +208,7 @@ struct Model::Impl {
         std::sort(ranges.begin(),ranges.end());for(size_t i=1;i<ranges.size();++i)require(ranges[i].first>=ranges[i-1].second,"Overlapping tensors");
         keys.resize(size_t(L)*opt.context*K*D);values.resize(keys.size());
         attention_scores.resize(size_t(std::max(opt.decode_threads,opt.prefill_threads))*opt.context);
+        shifted_scores.resize(attention_scores.size());probabilities.resize(attention_scores.size());
         x.reserve(prefill_chunk*H);h.reserve(prefill_chunk*H);q.reserve(prefill_chunk*Q*D);k.reserve(prefill_chunk*K*D);v.reserve(prefill_chunk*K*D);
         attended.reserve(prefill_chunk*Q*D);residual.reserve(prefill_chunk*H);gate.reserve(prefill_chunk*F);up.reserve(prefill_chunk*F);
         half_gate.reserve(prefill_chunk*F);tanh_gate.reserve(prefill_chunk*F);
@@ -277,12 +279,19 @@ struct Model::Impl {
             }
             pool.run(size_t(batch)*Q,[&](size_t begin,size_t end,int worker){
                 float* scores=attention_scores.data()+size_t(worker)*options.context;
+                float* shifted=shifted_scores.data()+size_t(worker)*options.context;
+                float* probs=probabilities.data()+size_t(worker)*options.context;
                 for(size_t item=begin;item<end;++item){int b=item/Q,head=item%Q,kh=head/2,n=pos+b+1;
                     const float* query=q.data()+item*D;float maximum=-std::numeric_limits<float>::infinity();
                     for(int t=0;t<n;++t){float s=dot(query,keys.data()+cache_offset(layer,t,kh),D)*(1.0f/std::sqrt(float(D)));scores[t]=s;maximum=std::max(maximum,s);}
-                    float sum=0;for(int t=0;t<n;++t){scores[t]=std::exp(scores[t]-maximum);sum+=scores[t];}
+                    // Keep causal length, maximum subtraction, and sequential
+                    // normalization sum; only scalar libm becomes vector libm.
+                    // vForce.h allows denormal/result differences, requiring gates.
+                    for(int t=0;t<n;++t)shifted[t]=scores[t]-maximum;
+                    vvexpf(probs,shifted,&n);
+                    float sum=0;for(int t=0;t<n;++t)sum+=probs[t];
                     float* dest=attended.data()+item*D;std::fill(dest,dest+D,0.0f);
-                    for(int t=0;t<n;++t){float prob=scores[t]/sum;const Half* val=values.data()+cache_offset(layer,t,kh);
+                    for(int t=0;t<n;++t){float prob=probs[t]/sum;const Half* val=values.data()+cache_offset(layer,t,kh);
                         for(int j=0;j<D;j+=8){float16x8_t vv=vld1q_f16(val+j);vst1q_f32(dest+j,vfmaq_n_f32(vld1q_f32(dest+j),vcvt_f32_f16(vget_low_f16(vv)),prob));vst1q_f32(dest+j+4,vfmaq_n_f32(vld1q_f32(dest+j+4),vcvt_f32_f16(vget_high_f16(vv)),prob));}
                     }
                 }
