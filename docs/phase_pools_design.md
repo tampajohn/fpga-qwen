@@ -1,0 +1,42 @@
+# Proposed persistent pools by command purpose
+
+Status: design only, no runtime changes/builds/timing. Worktree base `4abf9cd`; deployed combined artifact f17 remains immutable. The measured worker sweep motivates testing twelve prefill workers while keeping eight scalar/verification workers. A gain is a hypothesis, not a multiplied estimate from separate sweep results.
+
+## Bounded first implementation
+
+Add an opt-in `--phase-pools-experiment` C++ build flag. Keep one eight-worker decode/verification pool and one twelve-worker prefill pool alive for the entire process. Both use unchanged `ProjectionPool` scheduling, immutable checkpoint mapping, and the same single coordinator-owned main SV model/KV arrays. No second model or KV store is allocated. Only one pool executes at any instant: every `run`/`run_group` is synchronous before the coordinator can dispatch another job. Extra workers retain only existing worker-model/scratch allocations. Measure actual startup/RSS separately; do not claim that twenty resident threads run concurrently.
+
+For a fair same-executable comparison, the experimental binary creates both pools once and reads a trusted startup-only environment selector `QWEN_EXPERIMENTAL_PHASE_POOLS=OFF|PREFILL_12` (unset means OFF). OFF routes every job through the eight-worker pool while the other pool sleeps. PREFILL_12 routes only explicit wire `prefill` commands to the twelve-worker pool. This controls code layout and resident allocation across the two timing modes. Normal builds do not inspect this variable or construct an extra pool. No arbitrary HTTP scheduler control is added.
+
+Use coordinator-owned `CommandPurpose { scalar, prefill, verification }` and an exception-safe scope guard around a **fully validated** command's tick. Replace the separate verification boolean with an equivalent predicate on this enum, or retain it with an assertion that both match; prefer one enum to avoid contradictory state. Pool selection is based only on purpose, never count or `do_logits`:
+
+| Wire operation | Purpose / pool | Existing neural operation retained |
+|---|---|---|
+| `prefill count tokens` for count1..8 | prefill /12 when enabled | Hidden op2 for tails1..4, op3 for5..8; attention op5 |
+| `block count logits sample ...` for count1..4 | verification /8 | Hidden op4; vocab op0; attention op5 |
+| `token` or `sample`, including logits0 | scalar /8 | Hidden/vocab op0; paired-head attention op6 |
+| `reset`, `truncate`, `dump`, diagnostics | no inference purpose change | No pool reconstruction; scalar diagnostic dispatch uses8 |
+
+All DPI dispatch sites obtain the selected pool, including scalar projection, scalar group, grouped block projection, ordinary attention and batched attention. Thus even an unexpected scalar fallback inside an explicit prefill remains assigned to its purpose consistently. Head-pair eligibility is checked on that selected pool. Existing validators, strides, FP32 operation selection and group descriptors are unchanged. Block verification must never drift onto the12-worker pool just because it contains multiple tokens.
+
+Preserve `groupstats`' existing four-field aggregate contract by summing both pools' cumulative counters. Add read-only `phase_pools` JSON with selector, resident counts, selected prefill/decode counts, command-purpose dispatch counters and per-pool group counters. Capture initial process setup once; no warmup or request creates a pool. Metadata must distinguish12 prefill /8 decode from a blanket CPU-thread count and state no affinity guarantee.
+
+For this bounded artifact require startup workers8 and lanes8. Matching `workers 8`/`lanes 8` commands are acknowledged without rebuilding either pool (the Python adapter already sends a lanes command on startup). Reject other values explicitly rather than silently mutating half the configuration. Normal builds retain existing reconfiguration behavior. Invalid selector is rejected before threads spawn. Lifetime management must join **both** pools before the attention root/main SV model or checkpoint mapping becomes invalid, including partial second-pool construction, failed commands and cancellation/process termination. Allocate pools under one ownership guard so exception unwinding cannot leave a reader alive.
+
+## Why not an active subset initially
+
+A single twelve-thread pool could use eight active workers for scalar work, saving four idle worker models. However, `ProjectionPool` currently partitions by the captured constructor count, increments readiness for all threads and uses full-pool completion counters/generation epochs. Active-subset execution would change partition denominators, participant counts and dormant-worker wakeup semantics in both CV and hybrid-wait modes. A stale generation or incorrectly decremented pending count could return before writes complete or deadlock. Two unchanged pools have a larger idle footprint but a much smaller synchronization change. Defer active subsets until this composition proves worthwhile.
+
+## Targeted transport mock plan
+
+1. Inject minimal stub pool objects recording constructor count, run operation, descriptor metadata and lifetime events. Replay explicit prefill1/2/3/4/5/6/7/8, verification1..4 with logits0/1 and scalar token/sample logits0/1. Assert12 only for prefill when enabled;8 everywhere else; OFF always8. Assert op2/3/4/0 and group byte counters remain correct.
+2. Reject malformed counts/tokens/context/sample uniforms before command-purpose entry or dispatch. Test the scope restores scalar purpose after a tick exception. Distinguish prefill count1 from scalar and verification count4 from prefill count4.
+3. Assert one construction of each pool across repeated commands/reset/truncate/unchanged configuration, no request-time recreation. Changed worker/lane requests fail without partially mutating state.
+4. Inject second-pool startup failure and run failures from both pools. Assert all started workers joined before the shared model/root/weight lifetime ends. Exercise existing CV/hybrid scheduler fixtures unchanged to confirm each underlying pool still owns its original synchronization.
+5. Assert aggregate `groupstats` equals the sum of per-pool counters and read-only telemetry reports exact counts/selector. Reject unknown environment values and prevent protocol/HTTP mutation.
+
+## Real gates and measurement
+
+First require byte-identical full logits/IDs to frozen f17 after short85/long452 contexts, all prefill/verification tails and sampled uniforms, plus existing canonical-prefix, suffix rollback, cancel/restart and truncation gates. Include reused prefixes that turn into one-token tails, since routing is purpose-based. Sharing the same SV/KV means no precision-policy change is intended; still demonstrate it, rather than infer it from source.
+
+Only after gates and independent source review, compare OFF versus PREFILL_12 in the same frozen binary with three or more alternating short/long pairs, B8 prefill and32 fixed greedy outputs. Direct dumps preserve warm pools. Record startup separately, prefill/TTFT/decode/total wall time and exact consumed positions. Validate telemetry around requests outside timed intervals. Compare with deployed f17 as a separate check if the idle extra pool changes baseline performance. Success requires a measured useful prefill/total improvement without a reproducible decode regression; no default/UI change follows from the worker sweep alone.
