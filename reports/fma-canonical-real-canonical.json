@@ -1,0 +1,533 @@
+{
+  "completed": true,
+  "binary_sha256": "6c9ab44bf49b9f35ebf1a86897c284640041fb2a1a811f38184bff306f9e1b89",
+  "precision_profile": "fp32_b1_fp32_fma_prefill",
+  "policy": "fp32_fma_b8_aligned_v1",
+  "timing_claim": false,
+  "cases": [
+    {
+      "name": "initial",
+      "prompt_tokens": 65,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 0,
+      "actual_reused": 0,
+      "canonical_end": 64,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "b16e571fd4b06fc8b485c33936f8b5129601e420af117830dc958379abc1b302"
+    },
+    {
+      "name": "same_after_fp32_decode",
+      "prompt_tokens": 65,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 64,
+      "actual_reused": 64,
+      "canonical_end": 64,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "b16e571fd4b06fc8b485c33936f8b5129601e420af117830dc958379abc1b302"
+    },
+    {
+      "name": "shrink_grow_tail_0",
+      "prompt_tokens": 25,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 24,
+      "actual_reused": 24,
+      "canonical_end": 24,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "b8e1f2fa71c0ef543ca2eb9fed030cc7c26d4ea9dfbac132239dc88c0c53b8b6"
+    },
+    {
+      "name": "shrink_grow_tail_1",
+      "prompt_tokens": 26,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 24,
+      "actual_reused": 24,
+      "canonical_end": 24,
+      "output_ids": [
+        1917,
+        0,
+        358,
+        11
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "f1871b0d61730690d07f37bfafe53df0451a0f498dee13860b2ed90a020f6fec"
+    },
+    {
+      "name": "shrink_grow_tail_2",
+      "prompt_tokens": 27,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 24,
+      "actual_reused": 24,
+      "canonical_end": 24,
+      "output_ids": [
+        0,
+        358,
+        11,
+        9707
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "0594c8b9160aae6ea923001215d442793b6a614ec9ab585a11172ec7d5d74a78"
+    },
+    {
+      "name": "shrink_grow_tail_3",
+      "prompt_tokens": 28,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 24,
+      "actual_reused": 24,
+      "canonical_end": 24,
+      "output_ids": [
+        358,
+        11,
+        9707,
+        1917
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "01ab99df090ba2b28d30f0be37782937ad7e0cc09912cca24dcd7afa59148492"
+    },
+    {
+      "name": "shrink_grow_tail_4",
+      "prompt_tokens": 29,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 24,
+      "actual_reused": 24,
+      "canonical_end": 24,
+      "output_ids": [
+        11,
+        9707,
+        1917,
+        9707
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "4f7f3345d552b649bcb142d457ecc50f17f532615809196c54f317aebce5572c"
+    },
+    {
+      "name": "shrink_grow_tail_5",
+      "prompt_tokens": 30,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 24,
+      "actual_reused": 24,
+      "canonical_end": 24,
+      "output_ids": [
+        9707,
+        1917,
+        9707,
+        11
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "020ee1c702dd46df58938af92604311a4c1f856684d9b22aba2d4862c07d2f59"
+    },
+    {
+      "name": "shrink_grow_tail_6",
+      "prompt_tokens": 31,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 24,
+      "actual_reused": 24,
+      "canonical_end": 24,
+      "output_ids": [
+        1917,
+        9707,
+        11,
+        1917
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "ec31d446e5e2a7f75da942df14b4a5b76741940d316f2d233fa5a8b21d708040"
+    },
+    {
+      "name": "shrink_grow_tail_7",
+      "prompt_tokens": 32,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 24,
+      "actual_reused": 24,
+      "canonical_end": 24,
+      "output_ids": [
+        9707,
+        11,
+        1917,
+        0
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "aa2e998550c4dc4d13197ea20541625d5e56207561180557e2db8657bd69df26"
+    },
+    {
+      "name": "tail_becomes_full_block",
+      "prompt_tokens": 33,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 24,
+      "actual_reused": 24,
+      "canonical_end": 32,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "6847d0ea8292db4461c2edce166bad27dd1a35609ec41ebc9b517a368cab5564"
+    },
+    {
+      "name": "restore_before_change_7",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 32,
+      "actual_reused": 32,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "0e8858b64586e057720132799e77d49e03684396713e57652fd1296b1bf01a06"
+    },
+    {
+      "name": "change_7",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 0,
+      "actual_reused": 0,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "ab9309d751f75e5121959382fa5e7c967187f672369be19df51bf58feeecab8a"
+    },
+    {
+      "name": "restore_before_change_8",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 0,
+      "actual_reused": 0,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "0e8858b64586e057720132799e77d49e03684396713e57652fd1296b1bf01a06"
+    },
+    {
+      "name": "change_8",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 8,
+      "actual_reused": 8,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "e7bdbbf21bb44994869e2297e9ecbfcb9917061e7d353809cc7d949bd4cd11a8"
+    },
+    {
+      "name": "restore_before_change_9",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 8,
+      "actual_reused": 8,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "0e8858b64586e057720132799e77d49e03684396713e57652fd1296b1bf01a06"
+    },
+    {
+      "name": "change_9",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 8,
+      "actual_reused": 8,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "f76a007e0d43dd10b10790991f88aa1aaec8a63baf2a106e6662535b9548092c"
+    },
+    {
+      "name": "restore_before_change_15",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 8,
+      "actual_reused": 8,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "0e8858b64586e057720132799e77d49e03684396713e57652fd1296b1bf01a06"
+    },
+    {
+      "name": "change_15",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 8,
+      "actual_reused": 8,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "c39dc76f8e79e12130def2d1b52947da08fe55b4ee01d8705fda064671165dc3"
+    },
+    {
+      "name": "restore_before_change_16",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 8,
+      "actual_reused": 8,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "0e8858b64586e057720132799e77d49e03684396713e57652fd1296b1bf01a06"
+    },
+    {
+      "name": "change_16",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 16,
+      "actual_reused": 16,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "4633c5126fd3aed33bada9a3ca9840d2bf29f502b94bfcae7b89ae00241cfeab"
+    },
+    {
+      "name": "restore_before_change_17",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 16,
+      "actual_reused": 16,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "0e8858b64586e057720132799e77d49e03684396713e57652fd1296b1bf01a06"
+    },
+    {
+      "name": "change_17",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 16,
+      "actual_reused": 16,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "b9d0fdae6132ab5e58ebc88f63f82b473e1f719e12f8ec8897ac24143b5e017f"
+    },
+    {
+      "name": "new_turn_reprocess_generated",
+      "prompt_tokens": 54,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 16,
+      "actual_reused": 16,
+      "canonical_end": 48,
+      "output_ids": [
+        9707,
+        1917,
+        9707,
+        11
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "d589db0171de479e621266a2b8aaaecce3222aabd7dd6f8a9b77f41ab851c3c2"
+    },
+    {
+      "name": "shorten_inside_first_block",
+      "prompt_tokens": 8,
+      "workers": 8,
+      "decoding": "greedy",
+      "expected_reused": 0,
+      "actual_reused": 0,
+      "canonical_end": 0,
+      "output_ids": [
+        0
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "7de92247a59769882e8ade11489735da7f21a05a749f4c7d302042ec15b465a2"
+    },
+    {
+      "name": "one_token_prompt",
+      "prompt_tokens": 1,
+      "workers": 8,
+      "decoding": "greedy",
+      "expected_reused": 0,
+      "actual_reused": 0,
+      "canonical_end": 0,
+      "output_ids": [
+        21806
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "edcc4319a812518560d21202ab11d75276f8d6f5836d3925c924ae7d55c04b60"
+    },
+    {
+      "name": "new_session",
+      "prompt_tokens": 49,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 0,
+      "actual_reused": 0,
+      "canonical_end": 48,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "b03a91b5aa30043fc9ddb84d34e9bdc4e8d03a668d137e861f28b257875bd817"
+    },
+    {
+      "name": "worker_change_8",
+      "prompt_tokens": 49,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 48,
+      "actual_reused": 48,
+      "canonical_end": 48,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "b03a91b5aa30043fc9ddb84d34e9bdc4e8d03a668d137e861f28b257875bd817"
+    },
+    {
+      "name": "process_restart",
+      "prompt_tokens": 49,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 0,
+      "actual_reused": 0,
+      "canonical_end": 48,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "b03a91b5aa30043fc9ddb84d34e9bdc4e8d03a668d137e861f28b257875bd817"
+    },
+    {
+      "name": "after_cancel",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 0,
+      "actual_reused": 0,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "0e8858b64586e057720132799e77d49e03684396713e57652fd1296b1bf01a06"
+    },
+    {
+      "name": "after_generator_close",
+      "prompt_tokens": 41,
+      "workers": 8,
+      "decoding": "chat",
+      "expected_reused": 0,
+      "actual_reused": 0,
+      "canonical_end": 40,
+      "output_ids": [
+        11,
+        1917,
+        0,
+        358
+      ],
+      "full_logits_bit_identical": true,
+      "logits_sha256": "0e8858b64586e057720132799e77d49e03684396713e57652fd1296b1bf01a06"
+    }
+  ],
+  "phase_pool_selector": "PREFILL_12",
+  "worker_change_scope": "fixed8; incompatible changes tested separately",
+  "total_reused_tokens": 472
+}

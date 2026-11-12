@@ -1,0 +1,24 @@
+{
+  "completed": true,
+  "passed": true,
+  "binary": "$WORKSPACE/fpga-qwen-fma-canonical-cache/build/variants/fma-prefill-752d43807904a35f/full/Vqwen_behavioral",
+  "binary_sha256": "6c9ab44bf49b9f35ebf1a86897c284640041fb2a1a811f38184bff306f9e1b89",
+  "artifacts_unchanged": true,
+  "source_hashes": {
+    "tools/check_fma_canonical_real.py": "471cf1d9ff94a885f89aca3313d8fe04e5bbb1261ce3453222cbf27a1cd12b8f",
+    "tests/test_canonical_prefix_real.py": "61c8898d8f3608507e5a26fd923134ec27823a8ec58f2ac84b4e67f344b9e3ca",
+    "tests/test_suffix_real.py": "d5200b5f841bb5483f180dce4a665103e6acb28a512bd83a00a015f27cfbc239",
+    "tools/rtl_chat.py": "f72a09e43acaee0978fa59228ac4472cac08a2b330c6b66373eed085ba75ccaa",
+    "tools/canonical_prefix.py": "1c7c9f633446122f0ed26161a56aad467bd5a08e55d6df614593b5d4050d1791"
+  },
+  "precision_profile": "fp32_b1_fp32_fma_prefill",
+  "policy": "fp32_fma_b8_aligned_v1",
+  "phase_pool_selector": "PREFILL_12",
+  "worker_scope": "fixed8 scalar/verification; phase-selected prefill",
+  "tests_run": 3,
+  "failures": 0,
+  "errors": 0,
+  "skipped": [],
+  "log": "test_fresh_cached_exact_logits_outputs_and_lifecycle (tests.test_canonical_prefix_real.RealCanonicalPrefixTests.test_fresh_cached_exact_logits_outputs_and_lifecycle) ... ok\ntest_matching_fp32_decode_tokens_are_recomputed (tests.test_canonical_prefix_real.RealCanonicalPrefixTests.test_matching_fp32_decode_tokens_are_recomputed) ... ok\ntest_seeded_greedy_cache_rejection_and_cancel_replay (tests.test_suffix_real.RealFP32SuffixTests.test_seeded_greedy_cache_rejection_and_cancel_replay) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 38.864s\n\nOK\n",
+  "timing_claim": false
+}

@@ -1,0 +1,19 @@
+{
+  "completed": true,
+  "binary_sha256": "6c9ab44bf49b9f35ebf1a86897c284640041fb2a1a811f38184bff306f9e1b89",
+  "phase_pool_selector": "PREFILL_12",
+  "precision_profile": "fp32_b1_fp32_fma_prefill",
+  "policy": "fp32_fma_b8_aligned_v1",
+  "shared_prefix_tokens": 36,
+  "prior_canonical_end": 32,
+  "reused_tokens": 32,
+  "recomputed_matching_fp32_tokens": 4,
+  "output_ids": [
+    2776,
+    264,
+    2632,
+    1112
+  ],
+  "full_logits_bit_identical": true,
+  "timing_claim": false
+}
