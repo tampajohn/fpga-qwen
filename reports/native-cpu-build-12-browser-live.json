@@ -1,0 +1,72 @@
+{
+  "completed": true,
+  "gpu_inference": false,
+  "inference_interface": "Actual localhost browser chat",
+  "url": "http://127.0.0.1:8765",
+  "live_deployment_check": true,
+  "checks": {
+    "latest_release_first_and_default_after_reload": true,
+    "focused_backend_stable_during_status_polling": true,
+    "catalog_and_controls": true,
+    "fresh_context_status": true,
+    "canonical_prefix_reuse_and_changed_question": {
+      "reused_tokens": 512
+    },
+    "guard_visible_and_server_blocks": true,
+    "cancel_then_fresh_request": true,
+    "backend_switch_roundtrip": true
+  },
+  "replies": [
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.48 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "What word did you just say? Answer with that word only.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.17 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Background notes:\nThis is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. This is filler. \nAnswer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 1.01 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Now answer with the single word green.",
+      "text": "green",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.52 s \u00b7 512 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word green.",
+      "text": "green",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.45 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "llama.cpp \u00b7 FP16 \u00b7 Greedy \u00b7 Complete \u00b7 2 tokens \u00b7 0.34 s \u00b7 0 prefix tokens reused"
+    },
+    {
+      "prompt": "Answer with the single word blue.",
+      "text": "blue",
+      "metadata": "Native CPU \u00b7 FP16 \u00b7 build-12 \u00b7 12/6 threads \u00b7 Greedy \u00b7 Complete \u00b7 1 tokens \u00b7 0.44 s \u00b7 0 prefix tokens reused"
+    }
+  ],
+  "console_errors": [],
+  "initial_selection": "native-cpu-f16",
+  "release": {
+    "build": "build-12",
+    "binary_sha256": "bada457a466db58a0ac8908c4d9fa59846d4f5c6a4773d812498a1ee38569059",
+    "stable_target": "build-12/qwen_cpu",
+    "launcher": "tools/chat_server.py --native-only --port 8765",
+    "sources": {
+      "tests/browser_native_cpu.py": "f05d48265dc04c2383d8fb4351d7defc9ccf76c313a035ea904d7a1bcf9868d5",
+      "tools/chat_server.py": "1c5c18e8177838cdbeefe8d658457c98360c197bb287794062549fe341217c35",
+      "tools/chat_backends.py": "0a83cb01053341b65b7c5fc2f523d7820bb274f1a152656b10ad90a5a749f911",
+      "tools/native_cpu_chat.py": "f7dbd3f2b186691e7ffe9fcddeb3317c085326e4b3ebb8e56e1eba2098d48108",
+      "web/app.js": "5052b3763c1749fe0f11dbb95c1b37c38e86a230e33f61997516e3a71018ea24"
+    }
+  },
+  "scope": "Actual live localhost deployment interface and cache behavior; not a performance or broad answer-quality benchmark."
+}
