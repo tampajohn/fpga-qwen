@@ -45,6 +45,8 @@ def main():
             assert first_status['prefix_reuse_enabled'] is True
             assert first_status['canonical_prefix_policy']=='fp64_b8_aligned_v1'
             assert first_status['precision_profile']=='fp32_b1_fp64_prefill'
+            assert first_status['verification_projection']=='fp32'
+            assert first_status['max_verified_draft']==3
             page.locator('#workers').select_option('2')
             replies.append(send('Repeat that word once.'))
             reused=int(page.locator('#reused').inner_text().replace(',',''))

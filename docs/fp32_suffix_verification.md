@@ -5,8 +5,9 @@ existing FP64 B8 prefill and FP64 attention/KV. The host accepts B4 for the hybr
 profile only with canonical prefix reuse enabled and general prefix reuse
 explicitly disabled. It checks runtime `max_verification_block: 4`,
 `verification_projection: fp32` and the canonical policy before model work.
-The B1 runtime contract remains separate and unchanged. No UI/server selection
-is changed by this experiment.
+The B1 runtime contract remains separate and unchanged. The opt-in browser hybrid selects this B4 artifact through a fixed local path;
+FP64 remains the default backend. Suffix drafting is available but starts off,
+with a maximum of three verified proposed tokens per round.
 
 `tests.test_suffix_real.RealFP32SuffixTests` exercises greedy and seeded chat
 (seeds 42 and 43), draft limits one and three, fresh and reused canonical
@@ -30,9 +31,8 @@ measures the same binary with suffix drafting off/on and fresh logical KV per
 request. It requires identical input/output IDs, finish reason, retained cache
 and full continuation logits; continuation probes and binary dumps occur after
 timing. Prefill, first-token, decode and total latency are separate. No native
-backend equivalence is claimed. Timing results will determine whether exposing
-this suffix option is worthwhile; it remains unavailable in the deployed hybrid
-until integration is separately authorized and tested.
+backend equivalence is claimed. The measured benefit is limited to repetitive output. The UI presents drafting
+as optional, with no claim of a general speedup.
 
 
 The six paired runs completed with every equality gate passing. On repeated
@@ -45,3 +45,11 @@ and separate timing components are in `reports/fp32-suffix-paired.json`; startup
 and continuation probes are excluded and all requests began with empty logical
 KV. The benchmark used seed-42 sampled decoding, three alternating pairs per
 workload, and respected EOS rather than forcing the 64-token budget.
+
+
+The isolated browser integration passed: suffix-off/on repeated-code responses
+were identical, 23 of 27 proposed tokens were accepted, and the default-off
+control and three-token limit were verified. Canonical prefix reuse retained
+136 tokens across a hybrid turn; worker changes, return to the default FP64
+backend and cancellation/restart also passed. Evidence is recorded in
+`reports/fp32-suffix-browser.json`; this browser test is not a timing benchmark.

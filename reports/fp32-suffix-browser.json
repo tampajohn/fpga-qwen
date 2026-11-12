@@ -1,0 +1,35 @@
+{
+  "replies": [
+    "blue",
+    "blue",
+    "blue",
+    "blue",
+    "blue"
+  ],
+  "default_backend": "rtl",
+  "hybrid_precision_verified": true,
+  "hybrid_second_turn_reused_tokens": 136,
+  "canonical_prefix_policy": "fp64_b8_aligned_v1",
+  "suffix_enabled": true,
+  "suffix_default_off": true,
+  "suffix_limit": 3,
+  "serial_disabled": true,
+  "suffix_on_off_text_equal": true,
+  "suffix_acceptance": "23 / 27",
+  "worker_change": true,
+  "switch_back": true,
+  "cancel_restart": true,
+  "console_errors": [],
+  "binary_sha256": "91e3e161d6e08c83e435ab093d8d15ff2132e1275b842c323423f4780e577cc2",
+  "browser_session": 11573,
+  "browser_exit_code": 0,
+  "isolated_server_session": 88722,
+  "isolated_server_exit_code": 0,
+  "scope": "Isolated localhost8766 correctness; no performance claim or live deployment",
+  "source_sha256": {
+    "tools/chat_server.py": "9b697373de9360783c67833152f7e4cbd0eaa5fc1238e9c0205fe7392efdcbc8",
+    "tools/rtl_model.py": "630f865c73cee45661ca3879d7836a2f783b7982245b2bd9ec29e92d2055c882",
+    "web/app.js": "7901cc810d6c8023d083574db770a0c339da5778d117779b463f3bd06bad33b4",
+    "tests/browser_hybrid.py": "d7f783d222902a824aa54dd20b3848d96463ecade6eac8c72eebc3ee9f06112e"
+  }
+}
