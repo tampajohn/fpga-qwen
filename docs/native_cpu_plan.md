@@ -937,8 +937,9 @@ The subsequent held-out checks also completed under the unchanged limits:
 
 Together with the short and near-4K checks, this is finite-fixture numerical
 evidence for the disclosed FP64 norm accumulator. It does not cover every
-intermediate position or establish a general error bound. Tiny and chunk-boundary
-numerical checks, conversation quality and performance remain pending. The
+intermediate position or establish a general error bound. Tiny/chunk-boundary
+numerical checks and conversation quality subsequently passed as recorded below;
+performance and release acceptance remain pending. The
 [28-case prefix checker](../reports/native-cpu-norm-f64-prefix-check.json) has now
 completed and passed for this diagnostic candidate, covering its restricted
 canonical-prefix behavior. This is candidate-specific correctness evidence,
@@ -948,3 +949,28 @@ from these passes.
 The candidate is **not released or promoted**. Live build12 and its original
 near-4K failures remain unchanged, and the follow-on goal remains open. There
 is no timing claim or tolerance relaxation from this diagnostic result.
+
+
+### Norm diagnostic: numerical matrix and quality checks completed
+
+The remaining [tiny](../reports/native-cpu-norm-f64-tiny-oracle.json),
+[511-token boundary](../reports/native-cpu-norm-f64-boundary511-oracle.json),
+[512-token boundary](../reports/native-cpu-norm-f64-boundary512-oracle.json), and
+[513-token boundary](../reports/native-cpu-norm-f64-boundary513-oracle.json)
+independent oracle checks all passed the unchanged absolute ≤0.01 / RMS ≤0.002
+limits and greedy identity. The diagnostic's numerical matrix now covers
+**28 evaluated positions** across tiny, short, long, chunk boundaries,
+1024/2048 and near-4K fixtures. It remains sampled coverage, not a proof for
+all supported trajectories.
+
+The [nine-case conversation gate](../reports/native-cpu-norm-f64-quality.json)
+passed exact native/llama trajectories, stopping behavior and grades; both
+scored **4/9**. The [expanded 18-case gate](../reports/native-cpu-norm-f64-extended-quality.json)
+also passed exact comparisons, with both scoring **10/18**. Matching baseline
+answers includes matching its failures and is not improved answer accuracy.
+
+Together with the 28-case prefix pass, these results support further candidate
+acceptance work. **Performance, browser and suffix validation remain required
+before any promotion.** No speed claim or deployment follows, and the currently
+live build12's near-4K failure is not repaired by this separate candidate's
+results. The FP64 norm accumulation remains explicitly disclosed.
