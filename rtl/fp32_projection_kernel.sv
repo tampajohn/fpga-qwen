@@ -17,10 +17,18 @@ module fp32_projection_kernel(
     shortreal partial[8][B];
     shortreal totals[B];
     shortreal weight;
+`ifdef FP32_EXPLICIT_FMA
+// Nonportable experimental primitive: one binary32 rounding per update.
+// Independent token layout, column lanes and final lane sum stay unchanged.
+`define ACCUM(lane, t) \
+    partial[lane][t]=$verilator_fma32(converted[((column+lane)*B+t)&(4096*B-1)],weight,partial[lane][t]);
+`else
+`define ACCUM(lane, t) \
+    partial[lane][t]=shortreal'(partial[lane][t]+shortreal'(converted[((column+lane)*B+t)&(4096*B-1)]*weight));
+`endif
 `define STEP(lane) \
     weight=shortreal'(weight_value_unchecked(base+longint'(row)*width+longint'(column+lane))); \
-    for(int t=0;t<B;t++) \
-        partial[lane][t]=shortreal'(partial[lane][t]+shortreal'(converted[((column+lane)*B+t)&(4096*B-1)]*weight));
+    for(int t=0;t<B;t++) `ACCUM(lane,t)
     always @(posedge clk) begin
         if(start) begin
             for(int unsigned column=0;column<width;column++)
@@ -49,4 +57,5 @@ module fp32_projection_kernel(
         end
     end
 `undef STEP
+`undef ACCUM
 endmodule
