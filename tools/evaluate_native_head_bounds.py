@@ -17,7 +17,7 @@ import numpy as np
 from benchmark_guard import BenchmarkGate
 
 ROOT = Path(__file__).resolve().parents[1]
-ROWS, COLS, BLOCK = 151936, 1024, 64
+ROWS, COLS = 151936, 1024
 
 
 def require(condition, message):
@@ -211,8 +211,9 @@ def presence_report(dense, upper):
                       'Three masks checked empirically; not exhaustive enumeration or formal verification.')
 
 
-def evaluate(matrix, hidden, dense, rows_per_chunk):
-    x = hidden.astype(np.float64).reshape(COLS//BLOCK, BLOCK)
+def evaluate(matrix, hidden, dense, rows_per_chunk, block_size=64):
+    require(block_size in (64, 1024), 'Quantization block must be64 or1024')
+    x = hidden.astype(np.float64).reshape(COLS//block_size, block_size)
     qx, sx, ax, ex = quantize(x)
     sum_x = positive_sum_up(np.abs(x))
     max_x = np.max(np.abs(x), axis=-1)
@@ -226,7 +227,7 @@ def evaluate(matrix, hidden, dense, rows_per_chunk):
     invalid_weight_rows = np.zeros(ROWS, dtype=bool)
     for begin in range(0, ROWS, rows_per_chunk):
         end = min(begin+rows_per_chunk, ROWS)
-        w = np.asarray(matrix[begin:end], dtype=np.float64).reshape(-1, COLS//BLOCK, BLOCK)
+        w = np.asarray(matrix[begin:end], dtype=np.float64).reshape(-1, COLS//block_size, block_size)
         valid = np.all(np.isfinite(w), axis=(1, 2))
         invalid_weight_rows[begin:end] = ~valid
         w = np.where(np.isfinite(w), w, 0)
@@ -239,19 +240,20 @@ def evaluate(matrix, hidden, dense, rows_per_chunk):
                 and np.all(sum_a.astype(np.float32).astype(np.float64) == sum_a),
                 'Weight metadata is not exactly representable as planned FP32 fields')
         integer_dot = np.sum(qw.astype(np.int32)*qx.astype(np.int32), axis=-1, dtype=np.int64)
-        require(np.all(np.abs(integer_dot) <= BLOCK*127*127), 'Integer accumulation exceeded exact int32 range')
-        # Each term is an <=21-bit integer times two power-of-two scales. For
-        # F16 weights/F32 activations it is exactly representable in FP64.
+        require(np.all(np.abs(integer_dot) <= block_size*127*127), 'Integer accumulation exceeded exact int32 range')
+        # Integer magnitude is below2**24 even for the whole1024-element row,
+        # safely within signedint32. Multiplication by two power-of-two scales
+        # remains exactly representable in FP64 for F16 weights/F32 activations.
         terms = integer_dot.astype(np.float64)*(sw*sx)
         approximate_lo = np.zeros(end-begin, dtype=np.float64)
         approximate_hi = approximate_lo.copy()
-        for block in range(COLS//BLOCK):
+        for block in range(COLS//block_size):
             approximate_lo = down(approximate_lo + terms[:, block])
             approximate_hi = up(approximate_hi + terms[:, block])
         # wx-ab = (w-a)x + a(x-b). Every positive operation rounds outward.
         quant = positive_sum_up(up(up(ew*sum_x) + up(ex*sum_a)))
-        sum_w = positive_sum_up(up(sum_a + up(BLOCK*ew)))
-        absolute_products = positive_sum_up(up(up(sum_a + up(BLOCK*ew))*max_x))
+        sum_w = positive_sum_up(up(sum_a + up(block_size*ew)))
+        absolute_products = positive_sum_up(up(up(sum_a + up(block_size*ew))*max_x))
         # 1024 FMAs plus seven reduction additions. Three tiny allowances per
         # operation conservatively cover subnormal intermediate/result flushing;
         # hidden-input flushing additionally contributes tiny*sum|w|. Inflate
@@ -272,6 +274,9 @@ def evaluate(matrix, hidden, dense, rows_per_chunk):
     presence = presence_report(dense, upper)
     return dict(passed=not failures.size and all(row['true_top_retained'] for row in top)
                        and all(row['true_top_retained'] for row in presence['observed_mask_checks']),
+        quantization_block=block_size, blocks_per_row=COLS//block_size,
+        maximum_absolute_integer_block_dot=block_size*127*127,
+        integer_accumulation='int32-safe; offline reduction uses int64 for explicit checking',
         gamma131=float(gamma), fp32_unit_roundoff=float(unit_roundoff),
         observed_coverage=dict(total_rows=ROWS, bounded_rows=int(np.count_nonzero(~fallback)),
             fallback_rows=int(np.count_nonzero(fallback)), invalid_weight_rows=int(np.count_nonzero(invalid_weight_rows)),
@@ -296,6 +301,8 @@ def main():
     parser.add_argument('--capture-manifest', type=Path, help='Optional completed coupled capture report; verify arrays, repeats, pack and listed build linkage')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--rows-per-chunk', type=int, default=256)
+    parser.add_argument('--block-size', type=int, choices=(64, 1024), default=64,
+                        help='Auxiliary quantization block;1024 uses one scale/residual/L1 record per whole row')
     parser.add_argument('--guard-state-dir', type=Path, default=ROOT/'build/benchmark-status')
     args = parser.parse_args()
     if not 1 <= args.rows_per_chunk <= 4096:
@@ -308,7 +315,7 @@ def main():
     weights, hidden_path, logits_path = args.weights.resolve(), args.hidden.resolve(), args.logits.resolve()
     report = dict(completed=False, passed=False, offline_only=True, inference_run=False,
         performance_claim_eligible=False, formal_proof=False, gpu=False, pytorch=False,
-        model_shape=dict(vocabulary=ROWS, hidden=COLS, quantization_block=BLOCK), numpy_version=np.__version__,
+        model_shape=dict(vocabulary=ROWS, hidden=COLS, quantization_block=args.block_size), numpy_version=np.__version__,
         assumptions=[
             'Saved dense logits use exactly this hidden state and canonical FP16 output matrix.',
             'Reference head uses eight FP32 accumulation lanes:128FMA steps per lane followed by three addition levels.',
@@ -353,12 +360,12 @@ def main():
         matrix, offset = matrix_view(weights)
         report['output_matrix_offset'] = offset
         report['memory'] = dict(canonical_fp16_head_bytes=ROWS*COLS*2,
-            proposed_int8_head_bytes=ROWS*COLS, proposed_three_fp32_metadata_bytes=ROWS*(COLS//BLOCK)*12,
-            proposed_total_auxiliary_bytes=ROWS*COLS+ROWS*(COLS//BLOCK)*12,
+            proposed_int8_head_bytes=ROWS*COLS, proposed_three_fp32_metadata_bytes=ROWS*(COLS//args.block_size)*12,
+            proposed_total_auxiliary_bytes=ROWS*COLS+ROWS*(COLS//args.block_size)*12,
             offline_rows_per_chunk=args.rows_per_chunk,
             note='Proposed persistent cache sizes, not measured RSS. Offline quantization uses temporary row chunks.')
         save()
-        report['evaluation'] = evaluate(matrix, hidden, dense, args.rows_per_chunk)
+        report['evaluation'] = evaluate(matrix, hidden, dense, args.rows_per_chunk, args.block_size)
         require(all(sha(Path(path)) == digest for path, digest in report['inputs'].items()), 'Immutable inputs changed')
         report.update(completed=True, passed=report['evaluation']['passed'])
     except BaseException as error:
