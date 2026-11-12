@@ -93,14 +93,20 @@ def main():
             page.locator('#reply-limit').select_option('128')
             def send(text):
                 page.locator('#prompt').fill(text)
-                with page.expect_request(lambda request: request.method == 'POST' and urlparse(request.url).path == '/api/chat') as sent:
+                with page.expect_response(lambda response: response.request.method == 'POST' and urlparse(response.url).path == '/api/chat') as received, page.expect_request(lambda request: request.method == 'POST' and urlparse(request.url).path == '/api/chat') as sent:
                     page.locator('#send').click()
                 payload = sent.value.post_data_json
                 expect(page.locator('#prompt')).to_be_enabled(timeout=180000)
                 expect(page.locator('#error')).to_be_hidden()
                 reply = page.locator('.assistant .content').last.inner_text()
                 assert reply.strip()
+                events = [json.loads(line) for line in received.value.body().decode().splitlines() if line.strip()]
+                completed = [event for event in events if event.get('type') == 'done']
+                assert len(completed) == 1
+                done = completed[0]
                 report['replies'].append(dict(prompt=text,text=reply,
+                    requested_max_new_tokens=payload.get('max_new_tokens'),
+                    token_ids=done.get('token_ids'), finish_reason=done.get('finish_reason'), metrics=done.get('metrics'),
                     request=dict(backend=payload.get('backend'), decoding=payload.get('decoding'), max_draft=payload.get('max_draft')),
                     metadata=page.locator('.assistant .reply-meta').last.inner_text()))
                 save()
@@ -137,6 +143,39 @@ def main():
                 page.wait_for_timeout(2200)
                 expect(page.locator('#suffix')).not_to_be_checked()
                 report['checks']['greedy_suffix_mode_gating_and_chat_payload'] = True
+                page.locator('#reply-limit').select_option('128')
+                counting_prompt = 'Count from 1 to 40, separated by commas, without commentary.'
+                page.locator('#new-chat').click()
+                page.locator('#suffix').uncheck()
+                send(counting_prompt)
+                baseline = report['replies'][-1]
+                assert baseline['request']['max_draft'] == 0
+                assert baseline['requested_max_new_tokens'] == 128
+                assert baseline['metrics']['reused_prefix_tokens'] == 0
+                page.locator('#new-chat').click()
+                page.locator('#suffix').check()
+                send(counting_prompt)
+                candidate = report['replies'][-1]
+                assert candidate['request'] == dict(backend='native-cpu-f16', decoding='greedy', max_draft=1)
+                assert candidate['requested_max_new_tokens'] == 128
+                assert candidate['metrics']['reused_prefix_tokens'] == 0
+                assert candidate['metrics']['suffix_enabled'] is True
+                assert candidate['metrics']['proposed_tokens'] > 0
+                assert candidate['metrics']['accepted_tokens'] > 0
+                for field in ('text', 'token_ids', 'finish_reason'):
+                    assert candidate[field] == baseline[field], field
+                assert candidate['token_ids'] and len(candidate['token_ids']) <= 128
+                assert candidate['finish_reason'] in ('eos', 'length')
+                if candidate['finish_reason'] == 'length':
+                    assert len(candidate['token_ids']) == 128
+                report['checks']['greedy_suffix_on_browser_request'] = dict(
+                    reply_cap=128, cap_control='production UI selection',
+                    proposed_tokens=candidate['metrics']['proposed_tokens'],
+                    accepted_tokens=candidate['metrics']['accepted_tokens'],
+                    exact_visible_ids_text_and_stop=True, fresh_sessions=True,
+                    timing_claim=False)
+                page.locator('#suffix').uncheck()
+                page.locator('#reply-limit').select_option('128')
             else:
                 expect(page.locator('#suffix')).to_be_disabled()
                 report['checks']['old_binary_suffix_unavailable'] = True
