@@ -1,0 +1,441 @@
+{
+  "completed": true,
+  "cases": [
+    {
+      "label": [
+        "sample",
+        8,
+        0,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        0,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        0,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        8,
+        0
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        1,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        1,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        1,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        8,
+        1
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        7,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        7,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        7,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        8,
+        7
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        8,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        8,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        8,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        8,
+        8
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        63,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        63,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        63,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        8,
+        63
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        452,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        452,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        8,
+        452,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        8,
+        452
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        1,
+        17,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        1,
+        17,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        1,
+        17,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        1,
+        17
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        2,
+        17,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        2,
+        17,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        2,
+        17,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        2,
+        17
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        3,
+        17,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        3,
+        17,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        3,
+        17,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        3,
+        17
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        4,
+        17,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        4,
+        17,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        4,
+        17,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        4,
+        17
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        7,
+        17,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        7,
+        17,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        7,
+        17,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        7,
+        17
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        17,
+        17,
+        40
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        17,
+        17,
+        1097
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "sample",
+        17,
+        17,
+        264
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "overwrite",
+        17,
+        17
+      ],
+      "bit_identical": true
+    },
+    {
+      "label": [
+        "restart"
+      ],
+      "bit_identical": true
+    }
+  ],
+  "binaries": [
+    {
+      "path": "$WORKSPACE/fpga-qwen-batched-attention/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-batch-attention/full/Vqwen_behavioral",
+      "sha256": "07e22976b2c72325e9ff2a62ca7e12e733762a1b8ac957d8987fb1cd511bbed7"
+    },
+    {
+      "path": "$WORKSPACE/fpga-qwen-attention-value-pairs/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-batch-attention-head-pairs-value-pairs/full/Vqwen_behavioral",
+      "sha256": "43c108188228587ae994d2598ae45d81614c2e36299713dbf6e310f11bfca165"
+    }
+  ]
+}

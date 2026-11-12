@@ -1,3 +1,6 @@
+#if defined(ATTENTION_HEAD_PAIRS) && !defined(PARALLEL_ATTENTION)
+#error "Paired-head attention requires parallel attention"
+#endif
 #if defined(BATCH_ATTENTION) && (!defined(PARALLEL_ATTENTION) || !defined(PREFILL_B8))
 #error "Batched attention requires parallel attention and B8 ports"
 #endif
@@ -130,6 +133,9 @@ class ProjectionPool {
                 model->operation=operation;
                 model->attention_layer=attention_layer;model->attention_position=attention_position;
                 int copy_scale=operation==1?128:1;
+#ifdef ATTENTION_HEAD_PAIRS
+                if(operation==6)copy_scale=256;
+#endif
 #ifdef BATCH_ATTENTION
                 if(operation==5)copy_scale=128*8;
 #endif
@@ -308,6 +314,12 @@ public:
         for(auto& thread:threads) if(thread.joinable()) thread.join();
     }
     ~ProjectionPool() {shutdown();}
+#ifdef ATTENTION_HEAD_PAIRS
+    bool head_pair_eligible() const {
+        const auto count=threads.size();
+        return count==1 || count==2 || count==4 || count==8;
+    }
+#endif
     void run(int64_t matrix_base,int matrix_rows,int matrix_width,const double* x,double* y
 #ifdef PARALLEL_ATTENTION
              ,int requested_operation=0,int layer=0,int position=0
@@ -322,6 +334,13 @@ public:
             if(layer<0 || layer>=28 || requested_batch_count<1 || requested_batch_count>8 ||
                position<0 || position>4096-requested_batch_count || matrix_rows!=16 || matrix_width!=2048)
                 throw std::runtime_error("Invalid block attention job");
+        } else
+#endif
+#ifdef ATTENTION_HEAD_PAIRS
+        if(requested_operation==6) {
+            if(!head_pair_eligible() || layer<0 || layer>=28 || position<0 || position>=4096 ||
+               matrix_rows!=8 || matrix_width!=2048)
+                throw std::runtime_error("Invalid paired-head attention job");
         } else
 #endif
         if(requested_operation==1) {
@@ -352,6 +371,9 @@ public:
             throw std::runtime_error("Invalid projection shape");
 #ifdef PARALLEL_ATTENTION
         if(requested_operation!=1
+#ifdef ATTENTION_HEAD_PAIRS
+           && requested_operation!=6
+#endif
 #ifdef BATCH_ATTENTION
            && requested_operation!=5
 #endif

@@ -29,7 +29,7 @@ Ratios are baseline time divided by candidate time, so values above one favor th
 
 ## Archived reproduction
 
-Implementation commit `d9120db` is preserved on the isolated `codex/attention-head-pairs` branch, based on `e508193`. This archive deliberately does not change active SV, scheduler, transport, builder, UI or defaults.
+Implementation commit `d9120db` is preserved on the isolated `codex/attention-head-pairs` branch, based on `e508193`. The original archive commit did not change active SV, scheduler, transport, builder, UI or defaults. The later combined experiment restores its opt-in runtime implementation as a prerequisite for paired value accumulation; the original QK-only timing result and reproduction remain unchanged. Defaults are still unchanged.
 
 To reproduce, create a separate worktree at `e508193`, apply [attention-head-pairs.patch](../tools/experiments/attention-head-pairs.patch), and copy `tools/check_attention_head_pairs.py`, `tools/compare_attention_head_pairs.py`, and the archived `tools/experiments/test_attention_head_pairs_scheduler.py` into that worktree (placing the scheduler fixture under `tests/`). Build with the reviewed [shortreal compiler](shortreal_compiler_milestone.md), substituting its local path below:
 

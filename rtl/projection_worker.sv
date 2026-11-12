@@ -54,6 +54,83 @@ module projection_worker (
     import "DPI-C" function real attention_key_value(input int index);
     import "DPI-C" function real attention_value_value(input int index);
     real attention_scores[4096];
+`ifdef ATTENTION_HEAD_PAIRS
+`ifdef ATTENTION_DOT_LANES8
+    initial $fatal(1,"Paired-head attention requires the original serial QK reduction");
+`endif
+    // Persistent scratch; no per-dispatch clearing of the context-sized array.
+    real head_pair_queries[128][2], head_pair_scores[4096][2];
+`ifdef ATTENTION_VALUE_PAIRS
+    real head_pair_accum[128][2];
+`endif
+    task automatic attend_head_pairs;
+        real sums[2], maximum[2], key, denom;
+`ifdef ATTENTION_VALUE_PAIRS
+        real denoms[2], scales[2], value;
+`else
+        real scale;
+`endif
+        int index;
+        for (int pair=first_row;pair<end_row;pair++) begin
+            for (int j=0;j<128;j++) begin
+                head_pair_queries[j][0]=`ACTIVATION_AT(pair*256+j);
+                head_pair_queries[j][1]=`ACTIVATION_AT(pair*256+128+j);
+            end
+            maximum[0]=-1.0e300;maximum[1]=-1.0e300;
+            for (int t=0;t<=attention_position;t++) begin
+                sums[0]=0.0;sums[1]=0.0;
+                index=(attention_layer*4096+t)*1024+pair*128;
+                for (int j=0;j<128;j++) begin
+                    key=attention_key_value(index+j);
+                    sums[0]+=head_pair_queries[j][0]*key;
+                    sums[1]+=head_pair_queries[j][1]*key;
+                end
+                head_pair_scores[t][0]=sums[0]/$sqrt(128.0);
+                head_pair_scores[t][1]=sums[1]/$sqrt(128.0);
+                if(head_pair_scores[t][0]>maximum[0])maximum[0]=head_pair_scores[t][0];
+                if(head_pair_scores[t][1]>maximum[1])maximum[1]=head_pair_scores[t][1];
+            end
+            for (int lane=0;lane<2;lane++) begin
+                denom=0.0;
+                for (int t=0;t<=attention_position;t++) begin
+                    head_pair_scores[t][lane]=$exp(head_pair_scores[t][lane]-maximum[lane]);
+                    denom+=head_pair_scores[t][lane];
+                end
+`ifdef ATTENTION_VALUE_PAIRS
+                denoms[lane]=denom;
+`else
+                for (int j=0;j<128;j++)result[pair*256+lane*128+j]=0.0;
+                for (int t=0;t<=attention_position;t++) begin
+                    scale=head_pair_scores[t][lane]/denom;
+                    index=(attention_layer*4096+t)*1024+pair*128;
+                    for (int j=0;j<128;j++)
+                        result[pair*256+lane*128+j]+=scale*attention_value_value(index+j);
+                end
+`endif
+            end
+`ifdef ATTENTION_VALUE_PAIRS
+            for (int j=0;j<128;j++) begin
+                head_pair_accum[j][0]=0.0;head_pair_accum[j][1]=0.0;
+            end
+            // Each output retains its original ascending-t FMA order.
+            for (int t=0;t<=attention_position;t++) begin
+                scales[0]=head_pair_scores[t][0]/denoms[0];
+                scales[1]=head_pair_scores[t][1]/denoms[1];
+                index=(attention_layer*4096+t)*1024+pair*128;
+                for (int unsigned j=0;j<128;j++) begin
+                    value=attention_value_value(index+int'(j));
+                    head_pair_accum[j][0]+=scales[0]*value;
+                    head_pair_accum[j][1]+=scales[1]*value;
+                end
+            end
+            for (int j=0;j<128;j++) begin
+                result[pair*256+j]=head_pair_accum[j][0];
+                result[pair*256+128+j]=head_pair_accum[j][1];
+            end
+`endif
+        end
+    endtask
+`endif
     task automatic attend_heads;
         real sum, maximum, denom, scale;
         int index, kvhead;
@@ -354,6 +431,10 @@ module projection_worker (
                 attend_block_heads();
 `endif
             end
+            else
+`endif
+`ifdef ATTENTION_HEAD_PAIRS
+            if (operation==6) attend_head_pairs();
             else
 `endif
             if (operation==1) attend_heads();

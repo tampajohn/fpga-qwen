@@ -83,6 +83,12 @@ extern "C" void dispatch_attention(int layer,int position,const svOpenArrayHandl
     const auto* q=static_cast<const double*>(svGetArrayPtr(query));
     auto* a=static_cast<double*>(svGetArrayPtr(output));
     if(!pool || !q || !a || !attention_root) throw std::runtime_error("Invalid attention dispatch");
+#ifdef ATTENTION_HEAD_PAIRS
+    if(svSize(query,1)!=2048 || svSize(output,1)!=2048)
+        throw std::runtime_error("Invalid paired-head attention storage");
+    if(pool->head_pair_eligible())pool->run(0,8,2048,q,a,6,layer,position);
+    else
+#endif
     pool->run(0,16,2048,q,a,1,layer,position);
 }
 #ifdef BATCH_ATTENTION

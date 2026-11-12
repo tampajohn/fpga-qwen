@@ -1,0 +1,74 @@
+{
+  "completed": true,
+  "all_reported_cases_checked_true": true,
+  "session": 37228,
+  "exit_code": 0,
+  "cases": [
+    {
+      "workers": 3,
+      "token": 40,
+      "position": 452,
+      "ids_positions_equal": true,
+      "exact": true,
+      "max_error": 0.0,
+      "different_values": 0
+    },
+    {
+      "workers": 3,
+      "token": 198,
+      "position": 453,
+      "ids_positions_equal": true,
+      "exact": true,
+      "max_error": 0.0,
+      "different_values": 0
+    },
+    {
+      "workers": 7,
+      "token": 40,
+      "position": 452,
+      "ids_positions_equal": true,
+      "exact": true,
+      "max_error": 0.0,
+      "different_values": 0
+    },
+    {
+      "workers": 7,
+      "token": 198,
+      "position": 453,
+      "ids_positions_equal": true,
+      "exact": true,
+      "max_error": 0.0,
+      "different_values": 0
+    },
+    {
+      "workers": 17,
+      "token": 40,
+      "position": 452,
+      "ids_positions_equal": true,
+      "exact": true,
+      "max_error": 0.0,
+      "different_values": 0
+    },
+    {
+      "workers": 17,
+      "token": 198,
+      "position": 453,
+      "ids_positions_equal": true,
+      "exact": true,
+      "max_error": 0.0,
+      "different_values": 0
+    }
+  ],
+  "binaries": [
+    {
+      "path": "$WORKSPACE/fpga-qwen-attention-combined/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-static-kv-prefill-b8-scalar-group-fp32-b1-verify-b4-batch-attention-qk2-head-pairs-value-pairs/full/Vqwen_behavioral",
+      "sha256": "f17ae654f0c64ac47b63225a3406edc8bcd114cc86e67d56610090bf5d7c075d"
+    },
+    {
+      "path": "$WORKSPACE/fpga-qwen/build/variants/scalar-O3-lto-unchecked-masked-activation-unsigned-indices-fast-attention-parallel-attention-batched-prefill-block-unroll-compact-projection-group-projections-prefill-b8-scalar-group-fp32-b1-verify-b4-batch-attention/full/Vqwen_behavioral",
+      "sha256": "4d45e071a8a8aec353b638356c90dd42f9c90e69aaee929725e17e20dec7ebc3"
+    }
+  ],
+  "script_sha256": "9e429c65221bc3e5db26a929330afc26d5c361934b8d37f867c4b42190a4af27",
+  "limitation": "Executed script reports diagnostic booleans rather than asserting them. All six cases were subsequently explicitly asserted true. This demonstrates tested final outputs, not equality of every intermediate FP64 operation."
+}
