@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local-only chat server; full behavioral SystemVerilog inference via Verilator."""
+"""Local-only browser chat with selectable CPU inference backends."""
 import argparse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
@@ -195,7 +195,7 @@ def main():
     block_size = args.block_size if args.block_size is not None else (4 if args.simulator == 'fast' and args.sv_binary is None else 1)
     prefill_size = args.prefill_size if args.prefill_size is not None else (
         8 if args.simulator == 'fast' and args.sv_binary is None and block_size == 4 else block_size)
-    print('Preparing full SystemVerilog chat; no PyTorch or GPU inference...', flush=True)
+    print('Preparing local browser chat backends; no PyTorch or GPU inference...', flush=True)
     hybrid = (RTLChatEngine(args.model,workers=max(1,args.workers),binary=HYBRID_BINARY,
               lanes=8,block_size=4,prefill_size=8,reuse_prefix=False,
               precision_profile='fp32_b1_fp64_prefill',canonical_prefix_reuse=True) if HYBRID_BINARY.is_file() else None)
@@ -206,7 +206,9 @@ def main():
                                          prefill_size=prefill_size),hybrid=hybrid,phase=phase,fused_phase=fused_phase)
     server = make_server(engine, args.port)
     print(f'Local chat ready: http://127.0.0.1:{server.server_port}', flush=True)
-    print('Default: full behavioral SystemVerilog simulation; not synthesizable or cycle-accurate.', flush=True)
+    default = next(entry for entry in engine.catalog() if entry['id'] == engine.default_backend())
+    print(f"Default: {default['label']}", flush=True)
+    print('Legacy SystemVerilog choices are behavioral simulation, not cycle-accurate FPGA timing.', flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

@@ -31,10 +31,16 @@ class BackendRouter:
         self.loaded = None
         self.port = None
         self.log = None
-        self.active = 'rtl'
         self.binary = ROOT / 'build/llama-cpu/bin/llama-server'
         self.models = {key: ROOT / f'build/bench/qwen3-0.6b-{kind}.gguf'
                        for key, kind in [('llama-q4', 'q4_k_m'), ('llama-f32', 'f32'), ('llama-f16', 'f16')]}
+        self.active = self.default_backend()
+
+    def default_backend(self):
+        available = {entry['id'] for entry in self.catalog() if entry['available']}
+        return next(key for key in ('native-cpu-f16', 'rtl-fp32-fused-phase',
+                    'rtl-fp32-phase', 'rtl-fp32', 'rtl', 'llama-f16', 'llama-q4', 'llama-f32')
+                    if key in available)
 
     def catalog(self):
         simulations = [dict(id=key,
@@ -60,11 +66,13 @@ class BackendRouter:
         if 'rtl-fp32-fused-phase' not in self.simulations:
             simulations.append(dict(id='rtl-fp32-fused-phase',label='SystemVerilog · Fused FP32 prefill · 12 prefill / 8 decode',
                                     available=False,simulation=True,min_workers=1,fixed_workers=8,suffix_supported=False))
-        return simulations + [dict(id='native-cpu-f16',
-            label='Native CPU · FP16 · experimental', available=self.native_cpu.available(),
+        native_build = self.native_cpu.binary.resolve().parent.name if self.native_cpu.binary.is_file() else 'not installed'
+        return [dict(id='native-cpu-f16',
+            label=f'Native CPU · FP16 · {native_build} · {self.native_cpu.threads}/{self.native_cpu.prefill_threads} threads',
+            build_id=native_build, available=self.native_cpu.available(),
             cpu_threads=self.native_cpu.threads, prefill_workers=self.native_cpu.prefill_threads,
             simulation=False, prefix_reuse_supported=False, suffix_supported=False,
-            max_draft=0, default_eligible=False)] + [
+            max_draft=0, default_eligible=True)] + simulations + [
             dict(id=key, label=label, available=self.binary.is_file() and self.models[key].is_file(),
                  cpu_threads=6, suffix_supported=False)
             for key, label in [('llama-q4', 'llama.cpp · Q4_K_M'), ('llama-f16', 'llama.cpp · FP16'), ('llama-f32', 'llama.cpp · FP32')]]
@@ -73,16 +81,17 @@ class BackendRouter:
         status = self.simulations.get(self.active,self.simulation).status()
         if self.active == 'native-cpu-f16':
             status = self.native_cpu.status()
+            status['build_id'] = self.native_cpu.binary.resolve().parent.name
         elif self.active not in self.simulations:
             status.update(precision={'llama-q4': 'Q4_K_M', 'llama-f16': 'FP16', 'llama-f32': 'FP32'}[self.active],
                           cpu_threads=6, rtl=None, inference='llama.cpp CPU', cached_tokens=None,
                           precision_profile=None,precision_verified=False,prefix_reuse_enabled=True,
                           suffix_supported=False, max_verified_draft=0, prefill_block_size=None,
                           reduction_lanes=None, prefill_reduction_lanes=None)
-        return dict(status, backends=self.catalog(), active_backend=self.active)
+        return dict(status, backends=self.catalog(), active_backend=self.active, default_backend=self.default_backend())
 
     def prepare(self, payload):
-        backend = payload.get('backend', 'rtl')
+        backend = payload.get('backend', self.default_backend())
         entry = next((b for b in self.catalog() if b['id'] == backend), None)
         if not entry or not entry['available']:
             raise ValueError('Unknown or unavailable backend')

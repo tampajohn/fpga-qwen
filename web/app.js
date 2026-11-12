@@ -32,7 +32,7 @@ function backendChanged() {
       : `Verified n-gram drafts · up to ${backend.max_draft} tokens; sampled and greedy`)
     : 'Unavailable in this backend';
   $('backend-tag').textContent = rtl ? 'Full SV simulation'
-    : backend?.id === 'native-cpu-f16' ? 'Native CPU · experimental' : 'llama.cpp · CPU only';
+    : backend?.id === 'native-cpu-f16' ? `Native CPU · ${backend.build_id ?? 'experimental'}` : 'llama.cpp · CPU only';
   $('backend-about').textContent = backend?.id === 'native-cpu-f16'
     ? 'Original C++ CPU engine with FP16 matrix weights, FP32 norms and arithmetic, and FP16 KV storage. Layer weights also have a widened FP32 cache for prefill. Uses 12 decode / 6 prefill threads; no GPU or PyTorch. Each message processes the full conversation: prefix reuse and suffix drafting are unavailable.'
     : $('backend').value === 'rtl-fp32-fused-phase'
@@ -119,7 +119,7 @@ async function checkStatus() {
       ? `Last benchmark: ${lastRun.name || 'CPU benchmark'} · ${lastRun.finished_at
         ? `ended ${new Date(lastRun.finished_at).toLocaleTimeString()}` : 'no longer running'}` : '';
     if (!backends.length && status.backends) {
-      const releases = ['rtl-fp32-fused-phase', 'rtl-fp32-phase', 'rtl-fp32', 'rtl'];
+      const releases = ['native-cpu-f16', 'rtl-fp32-fused-phase', 'rtl-fp32-phase', 'rtl-fp32', 'rtl'];
       const rank = b => releases.includes(b.id) ? releases.indexOf(b.id) : releases.length;
       backends = [...status.backends].sort((a, b) =>
         Number(b.available) - Number(a.available) || rank(a) - rank(b));
