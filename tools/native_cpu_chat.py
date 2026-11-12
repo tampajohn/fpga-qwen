@@ -59,7 +59,9 @@ class NativeCPUChat:
                 and Path(str(self.weights) + '.manifest.json').is_file())
 
     def status(self):
-        return dict(model='Qwen3-0.6B', device='cpu', precision='FP16 matrices / FP32 norms / FP16 KV',
+        return dict(model='Qwen3-0.6B', device='cpu', precision='FP16 matrices / FP32 norm weights / FP16 KV',
+            norm_accumulator_precision=((self.ready or {}).get('norm_accumulator_precision')
+                if (self.ready or {}).get('norm_accumulator_precision') in ('f32', 'f64') else None),
             gpu_inference=False, pytorch_loaded=False, cpu_threads=self.threads,
             prefill_workers=self.prefill_threads, decode_workers=self.threads,
             context_limit=4096, rtl=None, inference='Original native CPU engine (experimental)',

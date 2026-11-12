@@ -65,7 +65,7 @@ function renderBackendDetails() {
   $('backend-tag').textContent = rtl ? 'Full SV simulation'
     : backend?.id === 'native-cpu-f16' ? `Native CPU · ${backend.build_id ?? 'experimental'}` : 'llama.cpp · CPU only';
   $('backend-about').textContent = backend?.id === 'native-cpu-f16'
-    ? `Original C++ CPU engine with FP16 matrix weights, FP32 activations and normalization weights, and FP16 KV storage. Layer weights also have a widened FP32 cache for prefill. Uses ${backend.cpu_threads} decode / ${backend.prefill_workers} prefill threads; no GPU or PyTorch. ${backend.prefix_reuse_enabled
+    ? `Original C++ CPU engine with FP16 matrix weights, FP32 activations and normalization weights, and FP16 KV storage.${backend.norm_accumulator_precision === 'f64' ? ' Normalization sums accumulate in FP64.' : ''} Layer weights also have a widened FP32 cache for prefill. Uses ${backend.cpu_threads} decode / ${backend.prefill_workers} prefill threads; no GPU or PyTorch. ${backend.prefix_reuse_enabled
       ? 'Reuses completed 512-token prefill blocks in the same conversation; partial tails are recomputed.'
       : backend.prefix_reuse_supported
       ? 'This engine supports completed 512-token prefill blocks, but prefix reuse is disabled.'

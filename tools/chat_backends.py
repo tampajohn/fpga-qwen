@@ -81,6 +81,7 @@ class BackendRouter:
             label=f'Native CPU · FP16 · {native_build} · {self.native_cpu.threads}/{self.native_cpu.prefill_threads} threads',
             build_id=native_build, available=self.native_cpu.available(),
             cpu_threads=self.native_cpu.threads, prefill_workers=self.native_cpu.prefill_threads,
+            norm_accumulator_precision=native_status['norm_accumulator_precision'],
             simulation=False, prefix_reuse_supported=native_status['prefix_reuse_supported'],
             prefix_reuse_enabled=native_status['prefix_reuse_enabled'],
             canonical_prefix_policy=native_status['canonical_prefix_policy'],
