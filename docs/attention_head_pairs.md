@@ -31,6 +31,18 @@ Ratios are baseline time divided by candidate time, so values above one favor th
 
 Implementation commit `d9120db` is preserved on the isolated `codex/attention-head-pairs` branch, based on `e508193`. This archive deliberately does not change active SV, scheduler, transport, builder, UI or defaults.
 
-To reproduce, create a separate worktree at `e508193`, apply [attention-head-pairs.patch](../tools/experiments/attention-head-pairs.patch), and copy `tools/check_attention_head_pairs.py`, `tools/compare_attention_head_pairs.py`, and the archived `tools/experiments/test_attention_head_pairs_scheduler.py` into that worktree (placing the scheduler fixture under `tests/`). Build the existing hybrid FP32 B1/B4 + FP64 B8/batched-attention profile with the additional `--attention-head-pairs` flag. The exact selected commands and immutable artifact hashes remain in the original worktree's ignored build manifest. Run the scheduler test and real checker before the paired comparator. Independent review validated the original artifact; a rebuild must repeat exactness gates before reusing its speed measurements.
+To reproduce, create a separate worktree at `e508193`, apply [attention-head-pairs.patch](../tools/experiments/attention-head-pairs.patch), and copy `tools/check_attention_head_pairs.py`, `tools/compare_attention_head_pairs.py`, and the archived `tools/experiments/test_attention_head_pairs_scheduler.py` into that worktree (placing the scheduler fixture under `tests/`). Build with the reviewed [shortreal compiler](shortreal_compiler_milestone.md), substituting its local path below:
+
+```sh
+python3 tools/build_projection_variant.py --storage scalar --opt O3 \
+  --lto --unchecked --masked-activation --unsigned-indices \
+  --fast-attention --parallel-attention --batched-prefill --block-unroll \
+  --compact-projection --group-projections --prefill-b8 --scalar-group \
+  --fp32-projection-b1 --fp32-verification-b4 --batch-attention \
+  --shortreal-compiler /path/to/verilator-shortreal --attention-head-pairs
+python3 -m unittest tests.test_attention_head_pairs_scheduler -v
+```
+
+Build the reference with the same options except `--attention-head-pairs`. Run the real checker before the paired comparator, passing the two resulting binaries through their `--reference` and `--candidate` options. Independent review validated the original artifact; a rebuild must repeat exactness gates before reusing its speed measurements.
 
 Patch SHA256: `22f3cf01fe711e459d8f7e4c5529c28132d51a938eeb5cf2303c1ded064fc6d1`. Reverse application was checked against the preserved candidate runtime, confirming its correspondence to the stated base diff. Applying this patch to newer main revisions may require conflict resolution; use the stated base for reproduction.
