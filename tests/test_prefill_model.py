@@ -91,6 +91,7 @@ class PrefillModelTests(unittest.TestCase):
         models=[model,self.model(True)] if exact else [model]
         for start in range(0,4088,8):
             for current in models:self.assertEqual(current.prefill([9707]*8)[-1][1],start+8)
+            if (start+8)%512==0:print(f"Capacity progress: {start+8}/4096 tokens acknowledged by {len(models)} artifact(s)",flush=True)
         for current in models:self.assertEqual(current.prefill([9707]*8)[-1][1],4096)
         report=dict(completed=False,fp64_b8_prefill_reached=4096,reference_checked=exact,
                     timing_claim=False,max_causal_position=4095)
