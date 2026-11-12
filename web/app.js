@@ -5,6 +5,8 @@ let ready = false;
 let busy = false;
 let requestId = null;
 let backends = [];
+let benchmarkRunning = false;
+let checkingStatus = false;
 
 function connectionLabel() {
   if (selectedBackend()?.simulation === true) {
@@ -52,7 +54,7 @@ function showError(message) {
   $('error').hidden = !message;
 }
 function controls() {
-  $('send').disabled = !ready || busy || !$('prompt').value.trim();
+  $('send').disabled = !ready || busy || benchmarkRunning || !$('prompt').value.trim();
   $('prompt').disabled = !ready || busy;
   $('new-chat').disabled = busy;
   $('suffix').disabled = !ready || busy || !selectedBackend()?.suffix_supported;
@@ -96,12 +98,18 @@ function updateMetrics(m) {
 }
 
 async function checkStatus() {
+  if (checkingStatus) return;
+  checkingStatus = true;
   try {
     const response = await fetch('/api/status');
     if (!response.ok) throw new Error('Local engine is unavailable');
     const status = await response.json();
     if (status.device !== 'cpu' || status.gpu_inference !== false) throw new Error('CPU-only backend check failed');
     ready = status.ready;
+    benchmarkRunning = status.benchmark?.running === true;
+    $('benchmark-banner').hidden = !benchmarkRunning;
+    $('benchmark-banner').textContent = benchmarkRunning
+      ? `Benchmark running: ${status.benchmark.name || 'CPU benchmark'}. Sending is paused; your draft is kept.` : '';
     if (!backends.length && status.backends) {
       const releases = ['rtl-fp32-fused-phase', 'rtl-fp32-phase', 'rtl-fp32', 'rtl'];
       const rank = b => releases.includes(b.id) ? releases.indexOf(b.id) : releases.length;
@@ -120,20 +128,22 @@ async function checkStatus() {
     }
     $('connection').textContent = connectionLabel();
     $('connection-dot').classList.remove('offline');
-    if (!busy) $('activity').textContent = status.busy ? 'Another reply is running' : 'Ready · CPU only';
+    if (!busy) $('activity').textContent = benchmarkRunning ? 'Benchmark running · waiting to send'
+      : status.busy ? 'Another reply is running' : 'Ready · CPU only';
   } catch (error) {
     ready = false;
     $('connection').textContent = 'Local engine disconnected';
     $('connection-dot').classList.add('offline');
     if (!busy) $('activity').textContent = 'Engine offline — start it with make chat';
   }
+  checkingStatus = false;
   controls();
 }
 
 async function send(event) {
   event.preventDefault();
   const prompt = $('prompt').value.trim();
-  if (!prompt || busy || !ready) return;
+  if (!prompt || busy || !ready || benchmarkRunning) return;
   showError('');
   busy = true;
   requestId = crypto.randomUUID();
@@ -260,4 +270,4 @@ document.querySelectorAll('[data-prompt]').forEach((button) => button.addEventLi
 }));
 controls();
 checkStatus();
-setInterval(checkStatus, 10000);
+setInterval(checkStatus, 1000);

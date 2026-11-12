@@ -12,19 +12,22 @@ try:
     from .chat_backends import BackendRouter
     from .rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY, FMA_PHASE_BINARY
     from .phase_chat import PhasePoolChatEngine, FusedPhasePoolChatEngine
+    from .benchmark_guard import BenchmarkGate
 except ImportError:
     from rtl_chat import RTLChatEngine
     from chat_backends import BackendRouter
     from rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY, FMA_PHASE_BINARY
     from phase_chat import PhasePoolChatEngine, FusedPhasePoolChatEngine
+    from benchmark_guard import BenchmarkGate
 
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / 'web'
 
 
 class ChatService:
-    def __init__(self, engine):
+    def __init__(self, engine, benchmark_directory=None):
         self.engine = engine
+        self.benchmarks = BenchmarkGate(benchmark_directory)
         self.generation_lock = threading.Lock()
         self.state_lock = threading.Lock()
         self.active_id = None
@@ -62,7 +65,8 @@ class ChatHandler(BaseHTTPRequestHandler):
         if path == '/api/status':
             with self.service.state_lock:
                 busy = self.service.active_id is not None
-            self.reply(200, dict(ready=True, busy=busy, **self.service.engine.status()))
+            self.reply(200, dict(ready=True, busy=busy, **self.service.engine.status(),
+                                 benchmark=self.service.benchmarks.status()))
             return
         files = {'/': ('index.html', 'text/html; charset=utf-8'),
                  '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
@@ -116,6 +120,11 @@ class ChatHandler(BaseHTTPRequestHandler):
         if not self.service.generation_lock.acquire(blocking=False):
             self.reply(409, {'error': 'Another reply is running. Stop it or wait for it to finish.'})
             return
+        benchmark_access = self.service.benchmarks.acquire()
+        if benchmark_access is None:
+            self.service.generation_lock.release()
+            self.reply(409, {'error': 'A CPU benchmark is running. Your message can be sent when it finishes.'})
+            return
         stream = None
         started = False
         cancel = threading.Event()
@@ -156,12 +165,13 @@ class ChatHandler(BaseHTTPRequestHandler):
                 self.service.active_id = None
                 self.service.cancel = None
             self.service.generation_lock.release()
+            benchmark_access.close()
 
 
-def make_server(engine, port=8765):
+def make_server(engine, port=8765, benchmark_directory=None):
     server = ThreadingHTTPServer(('127.0.0.1', port), ChatHandler)
     server.daemon_threads = True
-    server.service = ChatService(engine)
+    server.service = ChatService(engine, benchmark_directory)
     return server
 
 

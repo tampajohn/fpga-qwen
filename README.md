@@ -434,6 +434,20 @@ The GGUF files were converted from the same local Hugging Face checkpoint.
 
 ## Coordinated performance and quality experiments
 
+Run scored jobs through the serving checkout's benchmark guard:
+
+```sh
+.venv/bin/python tools/benchmark_guard.py --name "CPU inference comparison" -- COMMAND ARGUMENTS
+```
+
+The browser polls `/api/status` every second and shows the run name while the
+guard is held. Drafts are preserved, but new chat requests receive HTTP 409 until
+the run finishes. The guard also refuses to start during an existing reply.
+Its lock is released by the OS when the wrapper and inherited child exit, so a
+stale status file cannot leave chat disabled. Use the guard from the checkout
+serving the browser, even when `COMMAND` benchmarks a different worktree.
+Unwrapped external processes are not detected by this flag.
+
 See [the matched benchmark protocol](docs/BENCHMARK_PROTOCOL.md) for identical
 prompt/token workloads, separate TTFT and decode rates, precision disclosures,
 and measured comparisons with llama.cpp. [Projection experiments](docs/projection_optimization.md)
