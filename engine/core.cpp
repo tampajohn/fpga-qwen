@@ -145,13 +145,13 @@ void dot4(const float* x,const Half* w,int n,float* y) {
     y[0]=vaddvq_f32(vaddq_f32(a0,b0));y[1]=vaddvq_f32(vaddq_f32(a1,b1));
     y[2]=vaddvq_f32(vaddq_f32(a2,b2));y[3]=vaddvq_f32(vaddq_f32(a3,b3));
 }
-// Canonical FP16 K was widened once into shared prefill scratch. Loading those
-// exact FP32 values preserves both queries' original two accumulators,
-// increasing-j FMA sequence, operand order and final reduction.
-void dot_query_pair_wide(const float* q0,const float* q1,const float* key,float& out0,float& out1) {
+// Two GQA queries share K conversion; each keeps the original dot's two
+// accumulators and identical per-lane FMA and final reduction order.
+void dot_query_pair(const float* q0,const float* q1,const Half* key,float& out0,float& out1) {
     float32x4_t a0=vdupq_n_f32(0),b0=a0,a1=a0,b1=a0;
     for(int j=0;j<D;j+=8) {
-        const float32x4_t lo=vld1q_f32(key+j),hi=vld1q_f32(key+j+4);
+        const float16x8_t packed=vld1q_f16(key+j);
+        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
         a0=vfmaq_f32(a0,vld1q_f32(q0+j),lo);b0=vfmaq_f32(b0,vld1q_f32(q0+j+4),hi);
         a1=vfmaq_f32(a1,vld1q_f32(q1+j),lo);b1=vfmaq_f32(b1,vld1q_f32(q1+j+4),hi);
     }
@@ -203,10 +203,6 @@ struct Model::Impl {
     std::vector<float> half_gate,tanh_gate;
     std::vector<float> shifted_scores,probabilities;
     std::vector<float> pair_scores,pair_shifted,pair_probabilities;
-    // Head-major [K, context, D], reused across all layers/chunks. These are
-    // temporary widenings of canonical FP16 KV, not another persistent cache.
-    // Both arrays together use at most 2*8*4096*128*4 = 32 MiB.
-    std::vector<float> prefill_keys,prefill_values;
     std::array<float,H> last_hidden{};
     int pos=0;
     bool verification_pending=false;
@@ -257,7 +253,6 @@ struct Model::Impl {
         attention_scores.resize(size_t(std::max(opt.decode_threads,opt.prefill_threads))*opt.context);
         shifted_scores.resize(attention_scores.size());probabilities.resize(attention_scores.size());
         pair_scores.resize(attention_scores.size());pair_shifted.resize(attention_scores.size());pair_probabilities.resize(attention_scores.size());
-        prefill_keys.resize(size_t(K)*opt.context*D);prefill_values.resize(prefill_keys.size());
         x.reserve(prefill_chunk*H);h.reserve(prefill_chunk*H);q.reserve(prefill_chunk*Q*D);k.reserve(prefill_chunk*K*D);v.reserve(prefill_chunk*K*D);
         attended.reserve(prefill_chunk*Q*D);residual.reserve(prefill_chunk*H);gate.reserve(prefill_chunk*F);up.reserve(prefill_chunk*F);
         half_gate.reserve(prefill_chunk*F);tanh_gate.reserve(prefill_chunk*F);
@@ -326,32 +321,6 @@ struct Model::Impl {
         });
     }
     size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*options.context+position)*K+head)*D;}
-    size_t prefill_cache_offset(int position,int head)const {return (size_t(head)*options.context+position)*D;}
-    void widen_prefill_kv(int layer,int visible,Pool& pool) {
-        // All current-chunk KV has already been rounded/stored to Half. Read
-        // that canonical storage, never the pre-rounding k/v projection buffers.
-        // Disjoint head/time slices write every element later attention may
-        // read. Pool completion publishes them before the attention dispatch.
-        pool.run(size_t(K)*visible,[&](size_t begin,size_t end,int){
-            for(int kh=0;kh<K;++kh) {
-                const size_t head_begin=size_t(kh)*visible;
-                const size_t first=std::max(begin,head_begin),last=std::min(end,head_begin+visible);
-                for(size_t item=first;item<last;++item) {
-                    const int t=int(item-head_begin);
-                    const size_t source=cache_offset(layer,t,kh),destination=prefill_cache_offset(t,kh);
-                    const Half* key=keys.data()+source;const Half* value=values.data()+source;
-                    float* wide_key=prefill_keys.data()+destination;float* wide_value=prefill_values.data()+destination;
-                    for(int j=0;j<D;j+=8) {
-                        const float16x8_t packed_key=vld1q_f16(key+j),packed_value=vld1q_f16(value+j);
-                        vst1q_f32(wide_key+j,vcvt_f32_f16(vget_low_f16(packed_key)));
-                        vst1q_f32(wide_key+j+4,vcvt_f32_f16(vget_high_f16(packed_key)));
-                        vst1q_f32(wide_value+j,vcvt_f32_f16(vget_low_f16(packed_value)));
-                        vst1q_f32(wide_value+j+4,vcvt_f32_f16(vget_high_f16(packed_value)));
-                    }
-                }
-            }
-        });
-    }
     void chunk(const int* ids,int batch,Pool& pool) {
         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
         attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
@@ -400,10 +369,6 @@ struct Model::Impl {
                 size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
             }
             if(batch>1) {
-                // One shared conversion per KV head/time for this layer/chunk.
-                // Copying the visible extent does not change any query's causal
-                // n below. B1 decode and the separate B2 verifier do not use it.
-                widen_prefill_kv(layer,pos+batch,pool);
                 // One item owns both query heads for one KV head. The factor
                 // two cancels in the cumulative-cost scheduling targets.
                 pool.run(size_t(batch)*K,[&](size_t,size_t,int worker){
@@ -419,7 +384,7 @@ struct Model::Impl {
                         float maximum0=-std::numeric_limits<float>::infinity(),maximum1=maximum0;
                         for(int t=0;t<n;++t) {
                             float score0,score1;
-                            dot_query_pair_wide(query0,query1,prefill_keys.data()+prefill_cache_offset(t,kh),score0,score1);
+                            dot_query_pair(query0,query1,keys.data()+cache_offset(layer,t,kh),score0,score1);
                             score0*=1.0f/std::sqrt(float(D));score1*=1.0f/std::sqrt(float(D));
                             scores0[t]=score0;scores1[t]=score1;
                             maximum0=std::max(maximum0,score0);maximum1=std::max(maximum1,score1);
@@ -435,9 +400,10 @@ struct Model::Impl {
                         std::fill(dest0,dest0+D,0.0f);std::fill(dest1,dest1+D,0.0f);
                         for(int t=0;t<n;++t) {
                             const float prob0=probs0[t]/sum0,prob1=probs1[t]/sum1;
-                            const float* val=prefill_values.data()+prefill_cache_offset(t,kh);
+                            const Half* val=values.data()+cache_offset(layer,t,kh);
                             for(int j=0;j<D;j+=8) {
-                                const float32x4_t lo=vld1q_f32(val+j),hi=vld1q_f32(val+j+4);
+                                const float16x8_t packed=vld1q_f16(val+j);
+                                const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
                                 vst1q_f32(dest0+j,vfmaq_n_f32(vld1q_f32(dest0+j),lo,prob0));
                                 vst1q_f32(dest0+j+4,vfmaq_n_f32(vld1q_f32(dest0+j+4),hi,prob0));
                                 vst1q_f32(dest1+j,vfmaq_n_f32(vld1q_f32(dest1+j),lo,prob1));
