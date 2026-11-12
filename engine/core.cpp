@@ -176,6 +176,9 @@ struct Model::Impl {
     std::vector<float> half_gate,tanh_gate;
     std::vector<float> shifted_scores,probabilities;
     std::vector<float> pair_scores,pair_shifted,pair_probabilities;
+    // Experimental prefill attention: reuse one KV-head's packed matrices.
+    // At B512/context4096 these buffers total ~21 MiB, not eight copies.
+    std::vector<float> blas_q,blas_k,blas_v,blas_scores,blas_attended;
     std::array<float,H> last_hidden{};
     int pos=0;
     Impl(const std::string& path,Options opt):options(opt),mapping(path) {
@@ -269,6 +272,55 @@ struct Model::Impl {
         });
     }
     size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*options.context+position)*K+head)*D;}
+    bool blas_attention(int layer,int batch,Pool& pool) {
+        const int rows=2*batch,columns=pos+batch;
+        blas_q.resize(size_t(rows)*D);blas_attended.resize(size_t(rows)*D);
+        blas_k.resize(size_t(columns)*D);blas_v.resize(size_t(columns)*D);
+        blas_scores.resize(size_t(rows)*columns);
+        for(int kh=0;kh<K;++kh) {
+            for(int b=0;b<batch;++b)for(int head=0;head<2;++head)
+                std::copy_n(q.data()+(size_t(b)*Q+2*kh+head)*D,D,blas_q.data()+(2*b+head)*D);
+            for(int t=0;t<columns;++t) {
+                const size_t offset=cache_offset(layer,t,kh);
+                for(int j=0;j<D;++j) {
+                    const float key=keys[offset+j],value=values[offset+j];
+                    // Zero masked probability times a future Inf/NaN would
+                    // contaminate PV. Fall back to strictly causal paired loops.
+                    // Any earlier head's output is overwritten by that fallback.
+                    if(!std::isfinite(key)||!std::isfinite(value))return false;
+                    blas_k[size_t(t)*D+j]=key;blas_v[size_t(t)*D+j]=value;
+                }
+            }
+            // Coordinator-only BLAS; no custom worker runs a nested GEMM.
+            // Both products change association versus the exact paired path:
+            // require unchanged numerical/quality gates before timing this build.
+            cblas_sgemm(CblasRowMajor,CblasNoTrans,CblasTrans,rows,columns,D,
+                        1.0f,blas_q.data(),D,blas_k.data(),D,0.0f,blas_scores.data(),columns);
+            pool.run(rows,[&](size_t begin,size_t end,int worker){
+                float* shifted=shifted_scores.data()+size_t(worker)*options.context;
+                float* probs=probabilities.data()+size_t(worker)*options.context;
+                for(size_t row=begin;row<end;++row) {
+                    const int n=pos+int(row/2)+1;
+                    float* scores=blas_scores.data()+row*columns;
+                    float maximum=-std::numeric_limits<float>::infinity();
+                    for(int t=0;t<n;++t) {
+                        scores[t]*=1.0f/std::sqrt(float(D));
+                        maximum=std::max(maximum,scores[t]);
+                    }
+                    for(int t=0;t<n;++t)shifted[t]=scores[t]-maximum;
+                    vvexpf(probs,shifted,&n);
+                    float sum=0;for(int t=0;t<n;++t)sum+=probs[t];
+                    for(int t=0;t<n;++t)scores[t]=probs[t]/sum;
+                    std::fill(scores+n,scores+columns,0.0f);
+                }
+            });
+            cblas_sgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,rows,D,columns,
+                        1.0f,blas_scores.data(),columns,blas_v.data(),D,0.0f,blas_attended.data(),D);
+            for(int b=0;b<batch;++b)for(int head=0;head<2;++head)
+                std::copy_n(blas_attended.data()+(2*b+head)*D,D,attended.data()+(size_t(b)*Q+2*kh+head)*D);
+        }
+        return true;
+    }
     void chunk(const int* ids,int batch,Pool& pool) {
         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
         attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
@@ -316,7 +368,10 @@ struct Model::Impl {
                 for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
                 size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
             }
-            if(batch>1) {
+            if(batch>1 && blas_attention(layer,batch,pool)) {
+                // Experimental default for this candidate; immutable stable
+                // binaries retain paired attention until acceptance gates pass.
+            } else if(batch>1) {
                 // One item owns both query heads for one KV head. The factor
                 // two cancels in the cumulative-cost scheduling targets.
                 pool.run(size_t(batch)*K,[&](size_t,size_t,int worker){
