@@ -166,3 +166,17 @@ The [concurrent browser restart](../reports/native-cpu-browser-build18-restart-n
 Root selected this candidate for release19 based on the complete direct-build18 evidence. It is not promoted by this publication: source/binary staging, browser gates and release operations remain separate. A fresh direct comparison with tuned llama is pending; no multiplication of historical ratios substitutes for it.
 
 The [explicit selection record](../reports/native-cpu-kv-head-major-time32-selection.json) binds both complete confirmations/analyses and acceptance reports by SHA. It records `selected_for_release19=true` and `promoted=false`; decode is the primary priority, with long-context latency benefits and unresolved short-context uncertainty retained.
+
+
+## Fresh direct tuned-llama standard comparison
+
+The terminal [standard32 report](../reports/native-cpu-kv-head-major-time32-vs-llama-standard-confirmation.json) and [analysis](../reports/native-cpu-kv-head-major-time32-vs-llama-standard-analysis.json) compare the same combined candidate directly with tuned KleidiAI ON/LTO ON llama at commitcb44fdb, both12 decode/6 prefill threads. Ten alternating pairs, one warmup, natural EOS handling and exact output-trajectory gates were retained. All20 visits and all outliers are published. Ratios above1 favor native; intervals are95% paired bootstrap intervals, unadjusted across metrics.
+
+| Prompt tokens | Decode ratio | TTFT speedup | Request speedup |
+|---|---:|---:|---:|
+| 85 | 1.01934 (0.92776–1.12671) | 1.59311 (1.43337–1.85090) | 1.19467 (1.15530–1.29519) |
+| 452 | 0.98177 (0.78595–1.09905) | 1.12225 (1.05293–1.19559) | 1.07208 (0.97886–1.14759) |
+
+Both decode intervals include1. In particular, the452-token interval extends down to0.78595: this does not establish a within10% decode guarantee or equivalence. TTFT intervals favor native at both contexts. Whole-request latency favors native at85 tokens, while the452-token request interval includes1. There is no general winner. Pipe versus HTTP transport remains part of the measured serving setups.
+
+The timed binary matches the candidate's68-array exact gates and lifecycle/quality evidence; numerical qualification remains sampled, and grades remain4/9 and10/18. This fresh comparison uses no multiplied historical ratios. The earlier browser-restart caveat belongs to the separate against18 run and is not asserted to have overlapped this run; shared-host background activity remains uncontrolled. Extended direct timing is still running and no partial results are published. Release19 has not been staged or promoted at this entry.

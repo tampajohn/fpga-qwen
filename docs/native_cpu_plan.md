@@ -1338,3 +1338,8 @@ The [browser restart record](../reports/native-cpu-browser-build18-restart-nov13
 The [complete direct-build18 whole-request table](native_kv_layout.md#combined-candidate-complete-whole-request-comparison-against-build18) now includes terminal standard32 and extended128 ten-pair runs. At1024/2048/3968, paired decode medians are1.11244/1.13528/1.26812 and TTFT speedups1.10507/1.14151/1.16738, with their intervals above1. Standard85 results and452 decode remain uncertain; all negative/outlier observations are retained. This supports selection for release19 evaluation, not a universal speed or llama claim.
 
 Artifact-bound68-array exactness and lifecycle/quality gates accompany the results. The server-restart host-activity caveat remains attached without causal attribution or discarded samples. Live promotion/browser acceptance and a fresh direct tuned-llama scoreboard remain separate pending work.
+
+
+### Fresh combined-versus-llama standard result
+
+The [complete standard table](native_kv_layout.md#fresh-direct-tuned-llama-standard-comparison) retains all20 visits. Both decode intervals include1; the452-token interval0.78595–1.09905 does not establish equivalence or a within10% guarantee. TTFT favors native at85/452; request latency favors native at85 but remains uncertain at452. These are direct tuned-llama measurements, not chained ratios or a broad win. Extended timing and release staging remain pending; no partial extended results are published.
