@@ -31,6 +31,70 @@ about an earlier hold or partial suite describe that stage, not current blanket
 prohibitions. Detailed numerical traces and rejected experiments are retained in
 [the numerical diagnostic record](native_prefix_numerical_diagnostics.md).
 
+## Explicit release-policy revision: baseline nonregression
+
+The coordinator has explicitly revised the earlier self-imposed requirement
+that every newly declared absolute NumPy gate pass before any release. The
+user's objective is faster inference while maintaining quality. For strictly
+arithmetic-preserving optimizations only, a release may instead qualify through
+complete, binary-bound baseline-nonregression evidence, with the known absolute
+accuracy failures disclosed and tracked separately. This decision is made within
+the authorized optimization work; it is not an inference that failed oracle
+checks passed.
+
+**The absolute limits remain unchanged:** maximum error 0.01, RMS 0.002, rtol 0,
+and greedy identity. The 63/64 failures remain failures for both baseline19 and
+any byte-identical candidate. No release under this policy may claim to repair
+them or be labelled independently numerically qualified. Arithmetic-changing
+canonical 64/128 and B1-projection experiments remain subject to absolute gates;
+they cannot use this narrower baseline-equivalence path.
+
+Eligibility requires a source-level account of each output's unchanged operands,
+FMA/reduction order, causal bounds and state ownership, plus compiled inspection
+and measured full-vector identity. Source reasoning alone cannot establish
+compiled equivalence. Finite regression coverage also does not prove equivalence
+for every possible prompt; this residual risk and the independent oracle gap
+must remain visible in release notes.
+
+### Release-readiness checklist — regression scope only
+
+These are required evidence categories, **not a claim that all are complete**.
+At this revision, the original 68-array identity and source/assembly reviews are
+complete for query-row pairing; the coordinator is collecting the remaining
+final-candidate evidence. Any subsequent composition requires evidence tied to
+that composed executable rather than transitive assumptions.
+
+- [ ] Freeze the exact release executable, build manifest, sources, weight pack,
+  runtime helper configuration and declared defaults; verify hashes before and
+  after checks. Bind every report to that final binary.
+- [ ] Preserve independent source/compiled review of per-output arithmetic,
+  causal extra-row bounds, odd-row fallback and worker scratch ownership.
+- [ ] Pass original 68-array exact regression coverage and the **actual newly
+  failing 63/64 fixtures**, both teacher positions and repeats. Equal context
+  lengths on other prompts do not substitute for these fixtures.
+- [ ] Complete API, prefix cache and suffix verification checks, including reset,
+  reuse, edits, rewind, cancellation, session changes, odd tails, multiple chunks
+  and near-capacity contexts. Pass the frozen 9-case and extended 18-case quality
+  gates; retain every failure or partial result.
+- [ ] Compare complete sampled streams against build19 with identical seeds at
+  multiple contexts, including 20-token streams. Require IDs, termination and
+  all captured full logits to agree; a single sampled prediction is insufficient.
+- [ ] Complete ten alternating pairs of matched **whole requests**, retain all
+  samples and report uncertainty plus short/long-context tradeoffs. Shape-only
+  gains do not satisfy this requirement or establish a llama comparison.
+- [ ] Validate localhost browser selection/defaults and benchmark locking against
+  the final release, preserve selectable build19 rollback, and publish precise
+  release notes distinguishing regression qualification from unresolved absolute
+  accuracy failures.
+
+The additional seeded-stream checker is prepared locally at
+`build/native-cpu/check-seeded-stream-regression-v1.py`; no result is asserted
+here. It compares baseline and candidate through the actual chat sampler at
+three fixed contexts, two seeds and two repeats, with 20 requested output tokens,
+full-logit recording and identical EOS behavior. Separate lifecycle and quality
+gates remain necessary. A regression, missing prerequisite or incomplete final
+binary binding blocks release under this policy.
+
 ## Deliverables
 
 1. Evaluate finer canonical prefix reuse (64/128 versus 512 tokens) on real
