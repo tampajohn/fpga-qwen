@@ -1324,3 +1324,10 @@ are archived; no nonexistent aggregate checker output is claimed. This extends
 the 68-array exactness evidence with runtime/quality coverage. Shape timing is
 next and no partial measurements are published. The candidate remains isolated,
 with live build18 unchanged and no answer-quality or speed claim from acceptance.
+
+
+### Combined head-major/time32 shape screen completed
+
+The [complete eight-shape table](native_kv_layout.md#combined-candidate-completed-original-shape-comparison) and [all 80 pairs](../reports/native-cpu-kv-head-major-time32-original-shapes.json) are archived. Exact preflight passed; the two smallest fresh batches have intervals including1, while six other sampled append shapes favor the candidate. These are command-level observations against build18, not whole-request or llama claims. No component ratios are multiplied and no partial extended timing is published.
+
+The [browser restart record](../reports/native-cpu-browser-build18-restart-nov13.json) records overlapping router/tokenizer initialization during the later whole-request comparison. No browser inference was requested; the cause of the old server's empty responses remains undiagnosed. All timing samples must remain included, with no unsupported attribution of outliers. Build18 remains live pending complete results and release checks.

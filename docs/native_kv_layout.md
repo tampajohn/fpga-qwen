@@ -119,6 +119,25 @@ their original binary/input/source bindings and passed statuses:
 
 The checker printed successful prerequisite completion but does not produce an
 aggregate acceptance JSON; these terminal individual reports are the evidence.
-Exact baseline agreement does not improve model answer accuracy. Shape timing
-is the next separate measurement. No timing result or browser deployment is
+Exact baseline agreement does not improve model answer accuracy. The completed shape timing is recorded below as a separate measurement. No timing result or browser deployment is
 inferred from acceptance, and live build18 remains unchanged.
+
+
+## Combined candidate: completed original-shape comparison
+
+The [full combined shape report](../reports/native-cpu-kv-head-major-time32-original-shapes.json) contains all eight predeclared shapes and all ten alternating pairs per shape against immutable build18. Exact full-array preflight preceded every timed shape; two warmups were outside scoring. Values below are median paired wall-time speedups (reference/candidate) with 95% paired bootstrap intervals. These are append-command timings, including the final head and sampling; retained-prefix priming is outside the measurement.
+
+| Retained prefix | Appended batch | Wall-time speedup (95% interval) |
+|---|---:|---:|
+| 0 | 2 | 0.99989 (0.99509–1.01032) |
+| 0 | 16 | 1.00255 (0.99357–1.00933) |
+| 0 | 85 | 1.05722 (1.04433–1.08535) |
+| 0 | 452 | 1.11124 (1.09194–1.12775) |
+| 3584 | 2 | 1.05255 (1.04438–1.06784) |
+| 3584 | 16 | 1.22053 (1.21235–1.24372) |
+| 3584 | 64 | 1.24673 (1.18322–1.26967) |
+| 3584 | 384 | 1.21741 (1.18976–1.26581) |
+
+All 80 pairs and outliers remain archived. The two smallest fresh batches have intervals including1; the other six sampled shapes favor the combined candidate. These observations do not establish general throughput, a direct llama advantage, or isolated causality for either component. No component ratios were multiplied. Whole-request results and release selection remain separate; no partial extended timing is published here.
+
+A [host-activity record](../reports/native-cpu-browser-build18-restart-nov13.json) documents a later build18 browser-server restart overlapping the ongoing whole-request comparison. The server accepted connections but returned empty responses; the cause was not diagnosed. Only the owned server was restarted, its stable build18 link stayed unchanged, and no browser model inference was requested. Router/tokenizer initialization still constitutes concurrent host activity. Preserve every timing sample and carry this caveat into whole-request reporting; do not attribute any outlier to the restart without evidence. This event is not retroactively attributed to the completed shape measurements.
