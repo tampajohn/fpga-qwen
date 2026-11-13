@@ -4,6 +4,33 @@ User-authorized timebox: **17:47:31–21:47:31 UTC, November 13, 2026**
 (12:47–16:47 America/New_York). Baseline is live build19 at commit
 `f1b30beec15ff484c81d524d20728b7532a5f701`.
 
+## Current status
+
+**The pass is active; no new release has been accepted or deployed. Live build19
+remains unchanged.** The numerical contract still requires maximum absolute
+error ≤0.01, RMS ≤0.002, relative tolerance zero and greedy identity. A newly
+covered 63-token prompt fails those limits in build19 and the original 64/128
+chunk candidates. That absolute numerical gap remains unresolved.
+
+| Workstream | Current evidence and disposition |
+|---|---|
+| Original 64/128 canonical chunks | Near-4K checks pass; both inherit the identical 63 failure. Remaining numerical inventory and cached/fresh qualification are pending. Smaller compute batches still require their own evidence. |
+| Direct norm/QK division | Short boundaries pass, but 512/128/64 each independently fail the 2048 absolute gate. Rejected; no performance qualification. |
+| Split-K128 projections | Both 63/64 positions fail unchanged limits. Rejected before broader gates or timing. |
+| Original-arithmetic QK key pairing | 68 repeated full-logit arrays match build19 exactly. Completed shape timing shows selected long-prefix gains, with the inherited absolute gap explicitly retained. No release or whole-request/llama claim. |
+| Adjacent query-row pairing | 68 repeated arrays match build19 exactly; source and assembly reviews completed. Its separate shape comparison is pending at this document revision. No performance result asserted yet. |
+
+Arithmetic-changing experiments are not advanced to timing after failed gates.
+Separately authorized shape measurements of candidates with sampled byte identity
+to build19 are **conditional diagnostics**, not absolute numerical qualification.
+They may characterize performance without claiming to fix the inherited failure
+or creating a release exception. All negative results remain in the record.
+
+The sections below preserve the evidence in investigation order. Statements
+about an earlier hold or partial suite describe that stage, not current blanket
+prohibitions. Detailed numerical traces and rejected experiments are retained in
+[the numerical diagnostic record](native_prefix_numerical_diagnostics.md).
+
 ## Deliverables
 
 1. Evaluate finer canonical prefix reuse (64/128 versus 512 tokens) on real
@@ -46,8 +73,6 @@ or by multiplying separately measured ratios. Build19 remains the fallback.
 - Attention source review: one evidence-driven candidate for long prefill.
 - Root: numerical gates, serialized measurements, selection, merge and release.
 
-Status: active; no post-build19 candidate has been accepted or deployed.
-
 
 ## First numerical results: new boundary failure also affects baseline19
 
@@ -79,13 +104,15 @@ failed full-logit contract, and the later passing position does not erase the
 failure. The control establishes that this fixture also exposes a baseline19
 gap; it does not establish the cause or make either candidate acceptable.
 
-Performance claims and new optimization designs are held while numerical
-investigation proceeds. No tolerance change, candidate promotion or broad gate
-pass is claimed. Remaining boundary-suite outputs are not aggregated or published
-as complete. The prior 28-position baseline evidence remains valid within its
-own fixtures; this newly tested prompt extends coverage and reveals its limit.
+This discovery initially paused new optimization designs and performance work
+while numerical investigation proceeded. Later, separately authorized shape
+measurements resumed only for original-arithmetic candidates with sampled
+byte identity to build19, as recorded below. No tolerance change, candidate
+promotion or broad numerical pass followed. The original 64/128 remaining
+boundary suite is still incomplete. The prior 28-position baseline evidence
+remains valid within its own fixtures; the new prompt reveals its coverage limit.
 
-## Isolated QK key-pair candidate: exactness only, performance held
+## Isolated QK key-pair candidate: exactness and assembly evidence
 
 The [original source patch](../tools/experiments/native-prefill-qk-keypair.patch)
 processes two causal key rows together for the existing pair of query heads in
@@ -113,11 +140,11 @@ FP16 key-vector loads, four widening conversions and eight independent vector
 FMAs per iteration. That loop has no stores, stack references or calls. The
 surrounding function does store pointer/state values on the stack, so this is
 not a whole-function spill-free claim. It establishes neither a measured load
-traffic reduction against baseline nor a performance gain. Timing and promotion
-remain held while the independent numerical gap is investigated; live build19
-is unchanged.
+traffic reduction against baseline nor a performance gain by itself. Timing
+was initially held; the later completed conditional shape comparison is recorded
+below. Promotion remains unapproved and live build19 is unchanged.
 
-## Direct division diagnostics: four selected positions pass only in combined variant
+## Direct division diagnostics: initial selected-position results
 
 Two isolated arithmetic diagnostics retain FP64 accumulation of FP32-rounded
 squares and unchanged tolerances. Neither is deployed or performance-qualified.
@@ -151,10 +178,11 @@ All listed greedy predictions match. The completed
 preserves its failure. The combined variant passes the same
 [boundary fixture](../reports/native-cpu-norm-attention-direct-div-v1-boundary63-oracle.json)
 and two [saved near-4K positions](../reports/native-cpu-norm-attention-direct-div-v1-context3968-oracle.json).
-These finite observations do not prove a general root cause, broad numerical
-qualification, better answers or speed. Broad numerical, B2, prefix/lifecycle,
-quality and performance acceptance remain required. Earlier build19 and
-norm-only failures remain part of the record; no tolerance was relaxed.
+These finite observations did not prove a general root cause, broad numerical
+qualification, better answers or speed. Subsequent broad testing rejected the
+combined variant at 2048, as summarized below and detailed in the numerical
+diagnostic record. Earlier build19 and norm-only failures remain part of the
+record; no tolerance was relaxed.
 
 ## Direct-division composition: short boundary matrix completed
 
@@ -190,9 +218,11 @@ All eight constituent numerical reports are retained:
 
 This qualifies only the listed boundary fixtures. The original v1 chunk
 candidates, baseline19 and norm-only failures remain unchanged above. Broad
-numerical and quality checks, cached/fresh lifecycle equivalence and performance
-remain separate requirements; no partial broad-suite outputs are archived here.
-No speed claim or promotion follows from this matrix. Live build19 is unchanged.
+numerical testing subsequently exposed a 2048 regression in all three division
+variants. The completed broad 512 reports and independent 64/128 controls are
+archived in the numerical diagnostic record; their failures are not superseded
+by this short-boundary matrix. No speed claim or promotion follows. Live build19
+is unchanged.
 
 ## Baseline19 sequential-prompt diagnostic
 
@@ -208,8 +238,13 @@ This narrows the observed difference to evaluation paths on this fixture; it
 **does not prove an SGEMM bug**. Sequential processing changes both projection
 execution and attention execution, along with intermediate rounding propagated
 through layers. It is not canonical prefill, a cache-conformance result, a
-proposed replacement, or performance evidence. Stagewise comparison is needed
-to isolate where the paths diverge.
+proposed replacement, or performance evidence. The subsequent
+[stagewise analysis](../reports/native-cpu-native63-stage-analysis-v1.json)
+verified that instrumentation preserved original final bytes and localized the
+first native batch/sequential difference to layer 0 Q/K/V projection outputs
+after identical normalized inputs. This is an observation of differing rounding,
+not proof of an implementation defect; the full trace and qualifications are
+in the numerical diagnostic record.
 
 The exact diagnostic [helper snapshot](../tools/experiments/native-sequential-prompt-capture.py.txt),
 [patch](../tools/experiments/native-sequential-prompt-capture.patch), and
@@ -224,7 +259,7 @@ shared capture helper was changed by this diagnostic publication.
 ## Matched-input projection roundoff diagnostic
 
 The completed [local projection study](../reports/native-cpu-matched-projection-roundoff-v1.json)
-evaluates every layer0 Q/K/V output row (4096 total), using the same captured
+evaluates every layer 0 Q/K/V output row (4096 total), using the same captured
 FP32 normalized input at zero-based position62 and the same stored FP16 weights.
 Its diagnostic reference forms each product in FP64 and reduces all1024 products
 with `math.fsum`. It is not a replacement network oracle, a changed acceptance
@@ -309,3 +344,48 @@ The baseline19 independent 63-token NumPy failure remains inherited and unresolv
 by byte identity. This is fixture-scoped arithmetic preservation, not absolute
 numerical qualification or promotion. Timing results are not included until the
 separate comparison completes; live build19 is unchanged.
+
+
+## Rejected arithmetic changes and the remaining numerical gap
+
+The combined direct-division 512 variant completed the original 28-position
+matrix with a failure at 2048: maximum absolute error 0.012651443 exceeds 0.01,
+although RMS 0.001877199 and greedy identity pass. Separate 128 and 64 controls
+reproduce that failure; their full broad matrices were not completed. Their
+passing short-boundary matrix does not qualify them. All eight additional 512
+reports and both finer controls are linked in the
+[numerical diagnostic record](native_prefix_numerical_diagnostics.md).
+
+The matched-input projection study motivated one fixed split-K128 experiment,
+retaining original norm and attention arithmetic. It also failed: at 63, maximum
+error 0.012241602 / RMS 0.002866313; at 64, maximum 0.010024786 / RMS 0.002008769.
+The [failed gate](../reports/native-cpu-prefill-splitk128-v1-boundary63-oracle.json)
+is preserved. Local projection accuracy did not predict a passing network gate.
+No broader qualification or timing followed, and no further arithmetic changes
+are justified solely by these measurements.
+
+## Next: original 64/128 qualification inventory
+
+A source-only, syntax-checked local runner is prepared at
+`build/native-cpu/run-original-prefix-qualification-v2.py`; it has **not been
+executed** at this revision. It targets only the original 64/128 sources whose
+sole change from build19 is the canonical chunk constant. It does not use the
+rejected direct-division arithmetic.
+
+The inventory covers the original 28 prediction positions plus two positions
+at each of 63/64/65/127/128/129: 40 positions per variant, 80 total. It reuses complete,
+hash-bound captures and gates, executes only missing outputs, and preserves
+all completed absolute failures rather than stopping at the inherited 63 miss.
+Incomplete or inconsistent evidence stops execution. The aggregate cannot be
+reported as passed if any absolute gate fails; completion and qualification are
+separate fields. The saved NumPy vectors from the division-boundary experiments
+remain unchanged independent reference values, not division-candidate logits.
+
+The separate isolated real-history harness can then evaluate original 512/128/64
+cached/fresh full-logit identity and cross-variant IDs/text/EOS. Its gates do not
+waive any absolute numerical failure. Newly failing positions require matched
+build19 controls to distinguish inherited gaps from new regressions; smaller
+chunks are not presumed arithmetic-preserving. Quality, cache lifecycle and
+complete-request measurements remain additional requirements before selection.
+No release, backend default change or browser performance claim is implied by
+preparing either runner.
