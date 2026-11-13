@@ -1,0 +1,231 @@
+{
+  "completed": true,
+  "inference_run": false,
+  "candidate_tag": "prefill-query-row-pair",
+  "phase": "worker",
+  "records": [
+    {
+      "source": "build/native-cpu/worker-count-v2-d8-standard-confirmation.json",
+      "source_sha256": "c3f51932cc585f74741f756c4d3b008877057fd9eab1aed972cde9b61feac644",
+      "archive": "reports/native-cpu-worker-count-v2-d8-standard-confirmation.json",
+      "archive_sha256": "3f2ece652da710494b8662a1cff07f3cdac487550f4287bb298975b1b5f1d40e"
+    },
+    {
+      "source": "build/native-cpu/worker-count-v2-d8-standard-analysis.json",
+      "source_sha256": "bad5a5fe0799ac4baf6e89b358ef3270611175df2b50cc17daa470b1a7967cd8",
+      "archive": "reports/native-cpu-worker-count-v2-d8-standard-analysis.json",
+      "archive_sha256": "c90fb3bf983439cf4466326cc12239f3b731ef0913505f197652a00eb18c89e9"
+    },
+    {
+      "source": "build/native-cpu/worker-count-v2-d8-extended-confirmation.json",
+      "source_sha256": "a8ed747b36a9ea37f6ebd6b886aa4dd3e0a6986293813840cf6350fa59f1e9ed",
+      "archive": "reports/native-cpu-worker-count-v2-d8-extended-confirmation.json",
+      "archive_sha256": "edfff860906441d8008025ecfba38d5457e5f0995f4d40aeb98a84dcb0009692"
+    },
+    {
+      "source": "build/native-cpu/worker-count-v2-d8-extended-analysis.json",
+      "source_sha256": "11fb7c19b608f1febe3346188d30288719b8c13fcb1158a5bb2e9ee25e23dcd8",
+      "archive": "reports/native-cpu-worker-count-v2-d8-extended-analysis.json",
+      "archive_sha256": "33df78130e5b2e2c7c388873e060b3917edc34bc835f3542d675ea72e6f97e68"
+    }
+  ],
+  "all_profiles": [
+    {
+      "suite": "standard",
+      "profile": "short",
+      "prompt_tokens": 85,
+      "metrics": {
+        "decode_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9368071657835314,
+          "percentile_95_ci": [
+            0.872625962968398,
+            1.181353156289366
+          ],
+          "minimum_observed_ratio": 0.8326620951641054,
+          "maximum_observed_ratio": 2.019549006523314
+        },
+        "ttft_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.999344702091728,
+          "percentile_95_ci": [
+            0.9752846253621951,
+            1.0284064428569435
+          ],
+          "minimum_observed_ratio": 0.943506549558368,
+          "maximum_observed_ratio": 1.04156260382071
+        },
+        "request_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9547831766032696,
+          "percentile_95_ci": [
+            0.9052322407727889,
+            1.1421856479191317
+          ],
+          "minimum_observed_ratio": 0.883385960810801,
+          "maximum_observed_ratio": 1.6856617696090135
+        }
+      }
+    },
+    {
+      "suite": "standard",
+      "profile": "long",
+      "prompt_tokens": 452,
+      "metrics": {
+        "decode_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.909295001260958,
+          "percentile_95_ci": [
+            0.8308939481917722,
+            1.007104696354636
+          ],
+          "minimum_observed_ratio": 0.7588689880767984,
+          "maximum_observed_ratio": 1.1338348839917507
+        },
+        "ttft_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9812640785231588,
+          "percentile_95_ci": [
+            0.9404772920642093,
+            1.0304770534856775
+          ],
+          "minimum_observed_ratio": 0.8689912346342441,
+          "maximum_observed_ratio": 1.100496009026366
+        },
+        "request_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9611469090888605,
+          "percentile_95_ci": [
+            0.9085939140183216,
+            0.9962501224509561
+          ],
+          "minimum_observed_ratio": 0.87085089538504,
+          "maximum_observed_ratio": 1.0378907140208922
+        }
+      }
+    },
+    {
+      "suite": "extended",
+      "profile": "context1024",
+      "prompt_tokens": 1024,
+      "metrics": {
+        "decode_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9203770585014243,
+          "percentile_95_ci": [
+            0.8277313259552799,
+            1.2552084413298399
+          ],
+          "minimum_observed_ratio": 0.7726240865321963,
+          "maximum_observed_ratio": 1.8828218016586502
+        },
+        "ttft_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 1.0136487788552921,
+          "percentile_95_ci": [
+            0.9732601010859488,
+            1.0559257066589642
+          ],
+          "minimum_observed_ratio": 0.9153355513031064,
+          "maximum_observed_ratio": 1.102894462960996
+        },
+        "request_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9537374307607005,
+          "percentile_95_ci": [
+            0.9130819699947372,
+            1.1511765389488724
+          ],
+          "minimum_observed_ratio": 0.8420835040711487,
+          "maximum_observed_ratio": 1.4768525820354617
+        }
+      }
+    },
+    {
+      "suite": "extended",
+      "profile": "context2048",
+      "prompt_tokens": 2048,
+      "metrics": {
+        "decode_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9795478907708393,
+          "percentile_95_ci": [
+            0.8476390627468393,
+            1.110617726905263
+          ],
+          "minimum_observed_ratio": 0.7628635456186224,
+          "maximum_observed_ratio": 1.404087953196089
+        },
+        "ttft_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9817755131222812,
+          "percentile_95_ci": [
+            0.9483701139755942,
+            1.0416553171039178
+          ],
+          "minimum_observed_ratio": 0.8719059907877128,
+          "maximum_observed_ratio": 1.0885903064131652
+        },
+        "request_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9871445379913064,
+          "percentile_95_ci": [
+            0.9244247826004302,
+            1.056653331005338
+          ],
+          "minimum_observed_ratio": 0.8370193112526176,
+          "maximum_observed_ratio": 1.164712605763903
+        }
+      }
+    },
+    {
+      "suite": "extended",
+      "profile": "context3968",
+      "prompt_tokens": 3968,
+      "metrics": {
+        "decode_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 1.1395002089463455,
+          "percentile_95_ci": [
+            1.0368038811010771,
+            1.2556300766226227
+          ],
+          "minimum_observed_ratio": 0.8840777120773038,
+          "maximum_observed_ratio": 1.677902118810112
+        },
+        "ttft_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 0.9990791807199804,
+          "percentile_95_ci": [
+            0.9585706433445351,
+            1.0506075347405766
+          ],
+          "minimum_observed_ratio": 0.9193316903702135,
+          "maximum_observed_ratio": 1.0780820374998936
+        },
+        "request_speedup": {
+          "paired_observations": 10,
+          "median_paired_speedup": 1.0338747616805866,
+          "percentile_95_ci": [
+            0.9832636064715743,
+            1.0672877828037568
+          ],
+          "minimum_observed_ratio": 0.9381235528836852,
+          "maximum_observed_ratio": 1.0874576591368705
+        }
+      }
+    }
+  ],
+  "archive_runner_sha256": "dd62782241fc06da6b5d00bcd4257edf2ab89640836ccffc093f52df2792df6a",
+  "absolute_numerical_qualified": false,
+  "performance_claim_eligible": false,
+  "release_eligible": false,
+  "automatic_selection": false,
+  "limitations": [
+    "Known baseline absolute63/64 oracle failures remain failures.",
+    "Intervals and every raw pair are retained regardless of sign. No pooling with prior or later runs.",
+    "Worker comparisons use samebinary12vs8; final kernel/reference comparisons use matched12/6. Worker choice is not inferred.",
+    "This is an archive integrity check, not a fresh rehash of model/binary payloads or a replacement for release gates.",
+    "No automatic win, noninferiority, quality improvement, release or deployment conclusion."
+  ]
+}

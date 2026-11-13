@@ -1,0 +1,28 @@
+#!/bin/bash
+# Root-run optional experiment only. Explicit immutable selected binary required.
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+[[ $# == 3 ]] || { echo 'usage: SCRIPT ABSOLUTE_BINARY OUTPUT_TAG 6|8|18|both6and8'; exit 2; }
+selected_binary="$1"; output_tag="$2"; choices="$3"
+[[ "$output_tag" =~ ^[a-z0-9][a-z0-9-]+$ ]] || exit 2
+[[ -f "$selected_binary" && ! -L "$selected_binary" ]] || exit 2
+case "$choices" in 6) counts=(6);; 8) counts=(8);; 18) counts=(18);; both6and8) counts=(6 8);; *) exit 2;; esac
+for workers in "${counts[@]}"; do
+ for suite in standard extended; do
+  for suffix in confirmation.json confirmation-logs analysis.json; do
+   [[ ! -e "build/native-cpu/${output_tag}-d${workers}-${suite}-${suffix}" ]] || exit 1
+  done
+ done
+done
+for workers in "${counts[@]}"; do
+ for suite in standard extended; do
+  tokens=32; [[ "$suite" == standard ]] || tokens=128
+  report="build/native-cpu/${output_tag}-d${workers}-${suite}-confirmation.json"
+  .venv/bin/python tools/benchmark_guard.py --name "Native workers12 versus${workers} ${suite} ten pairs" -- \
+   .venv/bin/python build/native-cpu/benchmark_native_workers_v2.py \
+   --binary "$selected_binary" --weights build/native-cpu/weights.bin --threads "$workers" --prefill-threads 6 \
+   --mode confirmation --rounds 10 --warmups 1 --context-suite "$suite" --tokens "$tokens" --output "$report"
+  .venv/bin/python tools/analyze_native_phase0.py --report "$report" --baseline native-workers-d12-p6 \
+   --output "build/native-cpu/${output_tag}-d${workers}-${suite}-analysis.json"
+ done
+done
