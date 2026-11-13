@@ -1262,3 +1262,15 @@ This is a separately preselected fixed loop design, not a general speed claim
 or promotion. Candidate prefix/lifecycle acceptance and further matched
 measurement are pending. Live build18 remains unchanged. A separately reviewed
 head-major KV source proposal has not been built or tested at this point.
+
+
+### Separate head-major KV candidate: exactness and verification gates passed
+
+The [head-major layout experiment](native_kv_layout.md) changes only physical
+KV addresses and both write paths, retaining the full 448 MiB FP16 KV allocation
+at 4096 context and every causal history position. It is a stride/locality
+experiment, not relevance filtering, eviction or a combination with time32.
+Its immutable build passed 56 complete-logit arrays against build18 and the
+full 36-case B2 API matrix with 1/12/64 workers. Prefix/suffix/quality checks are
+ongoing; no partial results or timing claims are published. Live build18 remains
+unchanged, and candidate promotion is not implied.

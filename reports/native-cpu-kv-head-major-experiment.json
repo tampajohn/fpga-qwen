@@ -1,0 +1,36 @@
+{
+  "diagnostic_only": true,
+  "promotion_allowed": false,
+  "build_run": false,
+  "inference_run": false,
+  "baseline_binary": "$REPO/build/native-cpu/build-18/qwen_cpu",
+  "baseline_binary_sha256": "3fd042ff0abd1925bec4c7b31946156ef14adf8bb82c5c4e945c3e752cb544fc",
+  "layout_before": "[layer][position][head][channel]",
+  "layout_after": "[layer][head][position][channel]",
+  "changed": "Central cache offset and both ordinary chunk / verify_chunk write loops; no PV tiling combination.",
+  "unchanged": "Full FP16 K/V capacity, canonical rounding, all attention read order/FMA/softmax, logical position/reset/rewind/commit. No eviction or staging copy.",
+  "capacity": {
+    "layers": 28,
+    "max_context": 4096,
+    "kv_heads": 8,
+    "head_dimension": 128,
+    "bytes_per_element": 2,
+    "combined_kv_bytes_at_max_context": 469762048
+  },
+  "hypothesis": "Contiguous per-head read stride 256 bytes rather than 2048; possible locality/prefetch/TLB gains, possible write-locality and multiworker regressions. No speed claim.",
+  "source_sha256": {
+    "$REPO/engine/core.cpp": "0f064ab13a276da455585de36610685a0cbe7419e0f5dd745fab775c222b54ba",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_sha256": {
+    "$REPO/build/native-cpu/kv-head-major-source/core.cpp": "52ecbe08587c2a618e53bbe53af6fc5e2b342a93a1a64ca19f99e960ec68d581",
+    "$REPO/build/native-cpu/kv-head-major-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/kv-head-major-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/kv-head-major-source/experiment.json",
+    "source_sha256": "1f4cd9cc9e66c82200c62f7fd63921d53d8084ca9bfded0c55cb6ec8e2346fc9",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted; original artifact hashes preserved."
+  }
+}

@@ -1,0 +1,43 @@
+--- a/engine/core.cpp
++++ b/engine/core.cpp
+@@ -324,7 +324,9 @@
+             }
+         });
+     }
+-    size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*options.context+position)*K+head)*D;}
++    // Full retained FP16 KV, laid out [layer][head][position][channel].
++    // Logical positions and visible context are unchanged; there is no eviction.
++    size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*K+head)*options.context+position)*D;}
+     void chunk(const int* ids,int batch,Pool& pool) {
+         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
+         attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
+@@ -370,7 +372,13 @@
+             for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
+                 for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
+                 for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
+-                size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
++                // Heads are no longer adjacent for a single token. Convert
++                // canonical K/V once at their original logical head/position.
++                for(int head=0;head<K;++head) {
++                    const size_t dst=cache_offset(layer,pos+b,head);
++                    const size_t src=(size_t(b)*K+head)*D;
++                    for(int j=0;j<D;++j){keys[dst+j]=Half(k[src+j]);values[dst+j]=Half(v[src+j]);}
++                }
+             }
+             if(batch>1) {
+                 // One item owns both query heads for one KV head. The factor
+@@ -473,7 +481,13 @@
+             for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
+                 for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
+                 for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
+-                size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
++                // Heads are no longer adjacent for a single token. Convert
++                // canonical K/V once at their original logical head/position.
++                for(int head=0;head<K;++head) {
++                    const size_t dst=cache_offset(layer,pos+b,head);
++                    const size_t src=(size_t(b)*K+head)*D;
++                    for(int j=0;j<D;++j){keys[dst+j]=Half(k[src+j]);values[dst+j]=Half(v[src+j]);}
++                }
+             }
+             pool.run(size_t(batch)*Q,[&](size_t begin,size_t end,int worker){
+                 float* scores=attention_scores.data()+size_t(worker)*options.context;
