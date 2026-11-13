@@ -1,0 +1,114 @@
+--- a/engine/core.cpp
++++ b/engine/core.cpp
+@@ -13,6 +13,8 @@
+ #include <cstring>
+ #include <fcntl.h>
+ #include <fstream>
++#include <iostream>
++#include <sstream>
+ #include <limits>
+ #include <map>
+ #include <mutex>
+@@ -325,7 +327,25 @@
+         });
+     }
+     size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*options.context+position)*K+head)*D;}
++    // Diagnostic coordinator-only wall boundaries; no worker-clock reads.
++    struct DiagChunk {int base=0,batch=0;long long ns[29][11]{};};
++    std::array<DiagChunk,8> diag_chunks{};
++    size_t diag_count=0;
++    void diag_emit(int base,int count,bool prefill,long long total,long long head) {
++        std::ostringstream os;
++        os << "{\"diagnostic\":\"prefill_phase_wall_v1\",\"base\":" << base
++           << ",\"tokens\":" << count << ",\"prefill\":" << (prefill?"true":"false")
++           << ",\"append_ns\":" << total << ",\"head_ns\":" << head << ",\"chunks\":[";
++        for(size_t c=0;c<diag_count;++c){if(c)os<<',';const auto& d=diag_chunks[c];
++            os<<"{\"base\":"<<d.base<<",\"batch\":"<<d.batch<<",\"layer_phase_ns\":[";
++            for(int l=0;l<29;++l){if(l)os<<',';os<<'[';for(int p=0;p<11;++p){if(p)os<<',';os<<d.ns[l][p];}os<<']';}os<<"]}";
++        }
++        os<<"]}\n";std::cerr<<os.str();
++    }
+     void chunk(const int* ids,int batch,Pool& pool) {
++        auto& dr=diag_chunks.at(diag_count++);dr.base=pos;dr.batch=batch;
++        auto dt=std::chrono::steady_clock::now();
++        auto mark=[&](int layer,int phase){auto now=std::chrono::steady_clock::now();dr.ns[layer][phase]+=std::chrono::duration_cast<std::chrono::nanoseconds>(now-dt).count();dt=now;};
+         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
+         attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
+         half_gate.resize(gate.size());tanh_gate.resize(gate.size());
+@@ -355,9 +375,11 @@
+         }
+         const Half* embeddings=tensor("model.embed_tokens.weight").half;
+         for(int b=0;b<batch;++b)for(int j=0;j<H;++j)x[b*H+j]=embeddings[size_t(ids[b])*H+j];
++        mark(28,0);
+         for(int layer=0;layer<L;++layer){std::string p="model.layers."+std::to_string(layer)+".";
+             const float* nw=tensor(p+"input_layernorm.weight").norm;
+             for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
++            mark(layer,1);
+             if(batch==1) {
+                 project_group<3>({&tensor(p+"self_attn.q_proj.weight"),&tensor(p+"self_attn.k_proj.weight"),&tensor(p+"self_attn.v_proj.weight")},
+                                  h.data(),{q.data(),k.data(),v.data()},pool);
+@@ -366,12 +388,14 @@
+                 project(tensor(p+"self_attn.k_proj.weight"),h.data(),k.data(),batch,pool);
+                 project(tensor(p+"self_attn.v_proj.weight"),h.data(),v.data(),batch,pool);
+             }
++            mark(layer,2);
+             const float* qn=tensor(p+"self_attn.q_norm.weight").norm;const float* kn=tensor(p+"self_attn.k_norm.weight").norm;
+             for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
+                 for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
+                 for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
+                 size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
+             }
++            mark(layer,3);
+             if(batch>1) {
+                 // One item owns both query heads for one KV head. The factor
+                 // two cancels in the cumulative-cost scheduling targets.
+@@ -435,14 +459,18 @@
+                     }
+                 }
+             });
++            mark(layer,4);
+             project(tensor(p+"self_attn.o_proj.weight"),attended.data(),residual.data(),batch,pool);
+             for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
++            mark(layer,5);
+             nw=tensor(p+"post_attention_layernorm.weight").norm;for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
++            mark(layer,6);
+             if(batch==1) {
+                 project_group<2>({&tensor(p+"mlp.gate_proj.weight"),&tensor(p+"mlp.up_proj.weight")},h.data(),{gate.data(),up.data()},pool);
+             } else {
+                 project(tensor(p+"mlp.gate_proj.weight"),h.data(),gate.data(),batch,pool);project(tensor(p+"mlp.up_proj.weight"),h.data(),up.data(),batch,pool);
+             }
++            mark(layer,7);
+             // vForce is an explicit CPU vector-libm path, including batch one.
+             // Apple vForce.h permits denormal flushing and OS/architecture-dependent
+             // results; this change requires the full numerical gate, not bit equality.
+@@ -450,12 +478,15 @@
+             const int gate_count=static_cast<int>(gate.size());
+             vvtanhf(tanh_gate.data(),half_gate.data(),&gate_count);
+             for(size_t j=0;j<gate.size();++j)gate[j]=gate[j]*(0.5f+0.5f*tanh_gate[j])*up[j];
++            mark(layer,8);
+             project(tensor(p+"mlp.down_proj.weight"),gate.data(),residual.data(),batch,pool);
+             for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
++            mark(layer,9);
+         }
+         pos+=batch;
+         // Keep only last hidden state; vocabulary is computed once per API call.
+         norm(x.data()+size_t(batch-1)*H,tensor("model.norm.weight").norm,last_hidden.data(),H);
++        mark(28,10);
+     }
+     void verify_chunk(const int* ids,Pool& pool) {
+         constexpr int batch=2;
+@@ -515,9 +546,14 @@
+         if(verification_pending)throw std::runtime_error("Commit or discard pending verification before inference");
+         require(!ids.empty(),"Empty token input");require(ids.size()<=size_t(options.context-pos),"Context capacity exceeded");
+         for(int id:ids)require(id>=0&&id<vocabulary,"Token ID out of range");
++        diag_chunks={};diag_count=0;const int diag_base=pos;
++        auto diag_start=std::chrono::steady_clock::now();
+         Pool& pool=prefill?*prefill_pool:*decode_pool;
+         for(size_t begin=0;begin<ids.size();begin+=prefill_chunk){int batch=std::min(prefill_chunk,ids.size()-begin);chunk(ids.data()+begin,batch,pool);}
++        auto diag_head=std::chrono::steady_clock::now();
+         output.resize(vocabulary);project(tensor("model.embed_tokens.weight"),last_hidden.data(),output.data(),1,pool);
++        auto diag_end=std::chrono::steady_clock::now();
++        diag_emit(diag_base,int(ids.size()),prefill,std::chrono::duration_cast<std::chrono::nanoseconds>(diag_end-diag_start).count(),std::chrono::duration_cast<std::chrono::nanoseconds>(diag_end-diag_head).count());
+     }
+ };
+ Model::Model(const std::string& path,Options options):impl_(std::make_unique<Impl>(path,options)){}
