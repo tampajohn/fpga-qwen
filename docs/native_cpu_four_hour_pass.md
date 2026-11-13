@@ -193,3 +193,29 @@ candidates, baseline19 and norm-only failures remain unchanged above. Broad
 numerical and quality checks, cached/fresh lifecycle equivalence and performance
 remain separate requirements; no partial broad-suite outputs are archived here.
 No speed claim or promotion follows from this matrix. Live build19 is unchanged.
+
+## Baseline19 sequential-prompt diagnostic
+
+The unchanged build19 binary also consumed the same 63 prompt IDs one at a time
+through `step`, ignoring intermediate predictions, followed by the same fixed
+teacher-forced continuation. The completed [capture](../reports/native-cpu-build19-sequential63-diagnostic.json)
+contains two bit-identical repeats. The [saved-oracle comparison](../reports/native-cpu-build19-sequential63-diagnostic-oracle.json)
+passes unchanged limits at positions63/64: maximum absolute errors
+0.007441878 / 0.008217812, RMS 0.001454748 / 0.001817284, and greedy identity.
+The corresponding ordinary batched-prefill control still fails at position63.
+
+This narrows the observed difference to evaluation paths on this fixture; it
+**does not prove an SGEMM bug**. Sequential processing changes both projection
+execution and attention execution, along with intermediate rounding propagated
+through layers. It is not canonical prefill, a cache-conformance result, a
+proposed replacement, or performance evidence. Stagewise comparison is needed
+to isolate where the paths diverge.
+
+The exact diagnostic [helper snapshot](../tools/experiments/native-sequential-prompt-capture.py.txt),
+[patch](../tools/experiments/native-sequential-prompt-capture.patch), and
+[provenance](../reports/native-cpu-build19-sequential63-helper-provenance.json)
+are retained. The snapshot is archived as text: its import-root calculation
+expects the original `build/native-cpu/numerical-diagnostics/` location, which
+must be restored when reproducing it. Source-only flags in helper provenance
+refer to preparation; the terminal reports establish execution. No engine or
+shared capture helper was changed by this diagnostic publication.

@@ -1,0 +1,49 @@
+--- tools/capture_native_cpu_logits.py
++++ build/native-cpu/numerical-diagnostics/capture_sequential_prompt.py
+@@ -6,11 +6,14 @@
+ import os
+ from pathlib import Path
+ import threading
++import sys
++
++ROOT = Path(__file__).resolve().parents[3]
++sys.path.insert(0, str(ROOT / "tools"))
+ 
+ from benchmark_guard import BenchmarkGate
+ from native_cpu_chat import NativeCPUChat, EOS
+ 
+-ROOT = Path(__file__).resolve().parents[1]
+ VOCABULARY = 151936
+ 
+ 
+@@ -65,14 +68,16 @@
+     directory.mkdir(parents=True, exist_ok=False)
+     report_path = directory / 'report.json'
+     binary, weights = args.binary.resolve(), args.weights.resolve()
+-    sources = [Path(__file__).resolve(), ROOT / 'tools/native_cpu_chat.py', ROOT / 'engine/INTERFACE.md']
++    sources = [Path(__file__).resolve(), ROOT / 'tools/capture_native_cpu_logits.py', ROOT / 'tools/native_cpu_chat.py', ROOT / 'engine/INTERFACE.md']
+     inputs = [binary, weights, Path(str(weights)+'.index'), Path(str(weights)+'.manifest.json'), args.prompt.resolve()]
+     if args.continuation: inputs.append(args.continuation.resolve())
+     report = dict(completed=False, diagnostic_only=True, timing_claim=False,
++        prompt_evaluation='sequential_step_diagnostic',
++        prompt_evaluation_note='Each fixed prompt ID is consumed by step; intermediate predictions are ignored. This is not canonical batched prefill or a prefix-reuse conformance claim.',
+         performance_claim_eligible=False, gpu=False, pytorch=False, guard_before=guarded,
+         prompt_ids=prompt, continuation_ids=continuation or [], requested_steps=args.tokens,
+         mode='teacher_forced' if continuation is not None else 'greedy', runs=[],
+-        configuration=dict(architecture='qwen3', layers=28, hidden=1024, query_heads=16,
++        configuration=dict(prompt_evaluation='sequential_step_diagnostic', architecture='qwen3', layers=28, hidden=1024, query_heads=16,
+             kv_heads=8, vocabulary=VOCABULARY, weight_format='QWCPU01', weight_precision='f16',
+             norm_precision='f32', activation_precision='f32', kv_type='f16', gpu=False,
+             pytorch=False, decode_threads=args.threads, prefill_threads=args.prefill_threads),
+@@ -103,7 +108,10 @@
+                 raise RuntimeError('Unexpected reset acknowledgement')
+             if engine.command('mode greedy', cancel).get('ok') is not True:
+                 raise RuntimeError('Greedy mode acknowledgement missing')
+-            response = engine.command('prefill ' + ' '.join(map(str, prompt)), cancel)
++            for position, prompt_token in enumerate(prompt, 1):
++                response = engine.command('step ' + str(prompt_token), cancel)
++                if response.get('position') != position:
++                    raise RuntimeError('Sequential prompt step position mismatch')
+             for step in range(args.tokens):
+                 token = response.get('token')
+                 if type(token) is not int or not 0 <= token < VOCABULARY or response.get('position') != len(prompt)+step:
