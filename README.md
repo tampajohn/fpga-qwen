@@ -14,75 +14,85 @@ timing does not predict FPGA performance. Current work lives in [`engine/`](engi
 
 ## Current result
 
-**Build-19 is the current localhost browser release**, listed first and selected
-by default at `http://127.0.0.1:8765`. Its [live browser check](reports/native-cpu-build-19-browser-live.json)
-and [deployment record](reports/native-cpu-build-19-deployment.json) bind the
-running executable. Build18 remains available as a rollback artifact. The engine
-uses 12 decode/6 prefill threads, no GPU and no PyTorch.
+**Build20 is the current localhost browser release**, listed first and selected
+by default at `http://127.0.0.1:8765`. The
+[live browser check](reports/native-cpu-build-20-browser-live.json),
+[promotion record](reports/native-cpu-build-20-promotion.json) and
+[release manifest](reports/native-cpu-build-20-manifest.json) bind the released
+artifact. It uses **12 decode / 6 prefill workers**, no GPU and no PyTorch.
+Build19 remains available for rollback.
 
-Build19 combines head-major physical KV storage with fixed time32/channel32
-attention value tiling. It retains the same 448 MiB FP16 KV allocation, full 4096-token
-history and tested per-output arithmetic: no token eviction, attention-window
-reduction or adaptive context threshold. FP16 matrices/KV, FP32 norm weights and
-stored activations, and FP64 normalization-square accumulation remain explicit.
-The [release manifest](reports/native-cpu-build-19-manifest.json) records a
-byte-identical copy of the tested candidate, **not a recompilation**.
+Build20 adds adjacent query-row pairing to ordinary batched prefill: two token
+rows and their GQA heads share FP16 key/value loads and conversions while each
+output retains its original reduction order. Odd final rows use the existing
+paired-head path; ordinary single-token decode and B2 verification remain
+unchanged. Extra attention scratch is **1.125 MiB** at the selected worker counts
+and 4096 context. Full causal history, the 448 MiB FP16 KV allocation, FP16 weights,
+FP32 stored activations and FP64 normalization-square accumulation are retained.
 
-The [56-array gate](reports/native-cpu-kv-head-major-time32-exact-gate.json) and
-[12-array time-boundary gate](reports/native-cpu-kv-head-major-time32-timeboundary-exact-gate.json)
-match build18. This transfers its unchanged-limit independent NumPy qualification
-(maximum absolute error≤0.01, RMS≤0.002) at 28 sampled positions, including
-511/512/513 boundaries and 1024/2048/3968 contexts. It is not a full-generation or
-universal numerical proof. The [nine-case](reports/native-cpu-kv-head-major-time32-quality.json)
-and [18-case](reports/native-cpu-kv-head-major-time32-extended-quality.json) suites
-retain identical baseline trajectories and scores 4/9 and 10/18; incorrect answers
-remain incorrect, not quality gains.
+Canonical **512-token prefix reuse** remains enabled; partial tails are
+recomputed and decoded/verified KV is not canonical reusable prefill. One-token
+n-gram suffix drafting remains opt-in, Greedy-only and **off by default**.
 
-Canonical 512-token prefix reuse remains enabled; partial tails are recomputed,
-and decoded/verified KV is not reused as canonical prefill. One-token n-gram
-suffix drafting is opt-in, Greedy-only and **off by default**: prior measurements
-established no request-speed gain. [Prefix28](reports/native-cpu-kv-head-major-time32-prefix-check.json),
-[B2 API36](reports/native-cpu-kv-head-major-time32-verify-api.json),
-[suffix lifecycle](reports/native-cpu-kv-head-major-time32-suffix-trajectories.json),
-[CLI](reports/native-cpu-kv-head-major-time32-suffix-cli.json) and actual browser
-checks passed, including cancellation, backend switching and benchmark locking.
+### Quality and numerical scope
 
-Against build18, the completed direct ten-pair runs improved long-context
-prefill and decode. At 1K/2K/3968 tokens, median paired TTFT speedups were
-1.105/1.142/1.167 and decode ratios 1.112/1.135/1.268, with corresponding intervals
-above 1. Short 85-token results and 452-token decode remain uncertain. The
-[complete table](docs/native_kv_layout.md#combined-candidate-complete-whole-request-comparison-against-build18)
-retains every pair, uncertainty interval and the concurrent server-restart caveat.
-Those measured improvements support release19 selection; they do not establish
-general superiority to llama.
+The [relative acceptance record](reports/native-cpu-prefill-query-row-pair-relative-acceptance.json)
+binds 76 exact full-vocabulary arrays (the original 68 plus 8 on the actual new
+63/64 fixtures), API/prefix/suffix lifecycle checks, and final candidate sources.
+[Complete seeded streams](reports/native-cpu-prefill-query-row-pair-seeded-stream.json)
+match build19. The [nine-case](reports/native-cpu-prefill-query-row-pair-quality.json)
+and [18-case](reports/native-cpu-prefill-query-row-pair-extended-quality.json)
+suites retain matching trajectories and strict scores **4/9 and 10/18**. Wrong
+answers remain wrong; passing nonregression checks does not imply all answers
+are correct.
 
-Fresh **direct** comparisons against tuned KleidiAI-ON/LTO-ON llama FP16 use the
-same requested 12 decode/6 prefill threads and identical prompt/output IDs.
-Each workload has ten alternating pairs and one unscored warmup per visit.
-The [standard run](reports/native-cpu-kv-head-major-time32-vs-llama-standard-confirmation.json)
-uses 32 outputs; the [extended run](reports/native-cpu-kv-head-major-time32-vs-llama-extended-confirmation.json)
-uses 128, with natural EOS enabled. All visits/outliers remain included.
-Ratios above 1 favor this engine; parentheses are 95% paired bootstrap intervals:
+**Known independent numerical failures remain unresolved.** The
+[63-token baseline control](reports/native-cpu-build19-newboundary63-control-oracle.json)
+fails max absolute 0.01 and RMS 0.002 limits; the
+[64-token control](reports/native-cpu-build19-original-prefix-control-boundary64-oracle.json)
+fails RMS. Build20 preserves these arrays exactly rather than fixing or
+reclassifying them. Prior 28-position oracle evidence remains fixture-scoped.
+The documented [release policy](docs/native_cpu_four_hour_pass.md#explicit-release-policy-revision-baseline-nonregression)
+distinguishes arithmetic-preserving baseline nonregression from absolute
+accuracy remediation. Limits are unchanged; arithmetic-changing finer prefix
+chunks remain held.
 
-| Prompt tokens | Decode throughput ratio | TTFT speedup | Request-time speedup |
-| --- | ---: | ---: | ---: |
-| 85 | 1.019× (0.928–1.127) | 1.593× (1.433–1.851) | 1.195× (1.155–1.295) |
-| 452 | 0.982× (0.786–1.099) | 1.122× (1.053–1.196) | 1.072× (0.979–1.148) |
-| 1,024 | 1.047× (0.948–1.154) | 1.063× (1.022–1.133) | 1.071× (1.024–1.092) |
-| 2,048 | 1.205× (1.056–1.400) | 0.990× (0.950–1.089) | 1.048× (0.991–1.162) |
-| 3,968 | 1.215× (0.953–1.420) | 0.886× (0.860–0.923) | 0.946× (0.898–0.979) |
+### Fresh performance comparisons
 
-**There is no overall performance win over llama.cpp.** At 2K, decode favors
-native; at 85/452/1K/3968 its interval includes 1. The 452-token lower bound 0.786
-does not establish a universal within 10% guarantee or equivalence. TTFT favors
-native at 85/452/1K; 2K is uncertain. Near4K, native TTFT is about 12.8% longer and
-the whole request about 5.7% slower, despite a positive but uncertain decode
-median. Request latency favors native at 85 and 1K, is uncertain at 452 and 2K,
-and favors llama near4K. [Standard](reports/native-cpu-kv-head-major-time32-vs-llama-standard-analysis.json)
-and [extended](reports/native-cpu-kv-head-major-time32-vs-llama-extended-analysis.json)
-analyses preserve all observations. Intervals are unadjusted across metrics;
-shared-host background activity and pipe-versus-HTTP transport remain part of
-the measurement. No historical ratios are multiplied or pooled.
+Against build19 at the same 12/6 settings, the fresh comparison supports TTFT
+improvements at 1K (median speedup 1.0610, 95% interval [1.0227,1.1828]) and 2K
+(1.1028,[1.0533,1.1608]). Near-4K TTFT is uncertain, and **all complete-request
+and decode intervals include 1**. No overall latency win, decode win or
+noninferiority is established against build19. Standard 85/452 contexts use 20
+alternating pairs; extended 1K/2K/3968 contexts use 10. See the
+[complete final-vs19 table](docs/native_query_row_final.md).
+
+The fresh direct comparison against tuned llama FP16 uses the same requested
+12 decode / 6 prefill workers, ten alternating pairs per context, one unscored
+warmup per visit, 32 outputs for standard contexts and 128 for extended contexts.
+All samples/outliers are retained. Ratios above 1 favor native; parentheses are
+95% paired bootstrap intervals:
+
+| Prompt tokens | Decode throughput ratio | TTFT speedup | Complete-request speedup |
+|---|---:|---:|---:|
+| 85 | 0.8561 (0.4897–1.0001) | 1.6957 (1.4536–2.1194) | 1.0277 (0.6928–1.3344) |
+| 452 | 0.9493 (0.7861–1.1613) | 1.1972 (1.0467–1.4381) | 1.0313 (0.9896–1.3142) |
+| 1,024 | 1.0068 (0.7869–1.2380) | 1.2260 (1.1363–1.4069) | 1.1901 (0.9761–1.2700) |
+| 2,048 | 1.1906 (1.0876–1.3003) | 1.1411 (1.0969–1.2506) | 1.1397 (1.0682–1.2756) |
+| 3,968 | 1.2426 (1.0852–1.4002) | 1.0433 (1.0052–1.1635) | 1.0770 (1.0335–1.1347) |
+
+TTFT favors native in all five sampled contexts; decode and complete requests
+favor native at 2K/3968 and remain uncertain at 85/452/1K. This is **not a universal
+win or a noninferiority guarantee**. Native subprocess and llama HTTP transport,
+shared-host activity and unadjusted multiple intervals limit interpretation.
+The [full direct comparison and reports](docs/native_query_row_final.md#fresh-matched-comparison-with-tuned-llama-fp16)
+preserve the measured scope. No historical or separate kernel/worker ratios are
+multiplied or pooled.
+
+Build19's deployment and its comparisons against build18/llama remain
+[historical evidence](docs/native_kv_layout.md). Rejected experiments and the
+remaining numerical work are documented in the
+[four-hour pass](docs/native_cpu_four_hour_pass.md).
 
 Historical failures remain part of the evidence. Build-12's
 [3968/3969 NumPy control](reports/native-cpu-build-12-context3968-oracle-control.json)
@@ -95,7 +105,7 @@ failure or establish correctness at every position. Build-12's
 [earlier unfavorable comparison](reports/native-cpu-build-12-standard-confirmation-analysis.json)
 remain archived. Its [cache-on/off comparison](reports/native-cpu-build-12-prefix-confirmation.json)
 showed scoped TTFT benefits after untimed priming, without an established decode
-benefit; those measurements are not new build19 results. Build-10's
+benefit; those measurements are historical, not current build20 results. Build-10's
 [30-pair confirmation](reports/native-cpu-build-10-confirmation.json) also remains
 historical evidence. The [vocabulary-routing prototype](docs/native_head_probe.md)
 was slower than the dense head, and [suffix timing](docs/native_suffix_b2.md)
@@ -127,7 +137,7 @@ make setup
 ```
 
 Open **http://127.0.0.1:8765**. The installed native release appears first and
-is selected automatically. The local deployment uses **build-19**, with 12
+is selected automatically. The local deployment uses **build-20**, with 12
 decode / 6 prefill threads; simulator worker controls do not apply. The
 `--native-only` launcher needs no simulator binary or simulator imports. Omit
 that flag to include any installed legacy simulator choices. Starting the
@@ -187,7 +197,7 @@ ln -s my-build/qwen_cpu build/native-cpu/qwen_cpu
 ```
 
 This command expects no existing stable path. On the development machine the
-stable link currently points to `build-19/qwen_cpu`; preserve immutable
+stable link currently points to `build-20/qwen_cpu`; preserve immutable
 build directories when changing releases.
 
 ## Validation and development
