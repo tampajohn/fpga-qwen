@@ -1,0 +1,245 @@
+#!/usr/bin/env python3
+"""Local-only browser chat with selectable CPU inference backends."""
+import argparse
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import json
+from pathlib import Path
+import threading
+from urllib.parse import urlsplit
+
+try:
+    from .chat_backends import BackendRouter
+    from .chat_protocol import ChatProtocol
+    from .experiment import locate_model
+    from .benchmark_guard import BenchmarkGate
+except ImportError:
+    from chat_backends import BackendRouter
+    from chat_protocol import ChatProtocol
+    from experiment import locate_model
+    from benchmark_guard import BenchmarkGate
+
+ROOT = Path(__file__).resolve().parents[1]
+WEB = ROOT / 'web'
+
+
+class ChatService:
+    def __init__(self, engine, benchmark_directory=None):
+        self.engine = engine
+        self.benchmarks = BenchmarkGate(benchmark_directory)
+        self.generation_lock = threading.Lock()
+        self.state_lock = threading.Lock()
+        self.active_id = None
+        self.cancel = None
+
+
+class ChatHandler(BaseHTTPRequestHandler):
+    protocol_version = 'HTTP/1.1'
+
+    @property
+    def service(self):
+        return self.server.service
+
+    def log_message(self, format, *args):
+        # Access metadata only; never log prompt bodies or model output.
+        super().log_message(format, *args)
+
+    def reply(self, status, data, content_type='application/json; charset=utf-8'):
+        if not isinstance(data, bytes):
+            data = json.dumps(data).encode()
+        self.send_response(status)
+        self.send_header('Content-Type', content_type)
+        self.send_header('Content-Length', str(len(data)))
+        if self.close_connection:
+            self.send_header('Connection', 'close')
+        self.send_header('Cache-Control', 'no-store')
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; "
+                         "connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'")
+        self.end_headers()
+        self.wfile.write(data)
+
+    def do_GET(self):
+        path = urlsplit(self.path).path
+        if path == '/api/status':
+            with self.service.state_lock:
+                busy = self.service.active_id is not None
+            self.reply(200, dict(ready=True, busy=busy, **self.service.engine.status(),
+                                 benchmark=self.service.benchmarks.status()))
+            return
+        files = {'/': ('index.html', 'text/html; charset=utf-8'),
+                 '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
+                 '/style.css': ('style.css', 'text/css; charset=utf-8')}
+        if path not in files:
+            self.reply(404, {'error': 'Not found'})
+            return
+        name, kind = files[path]
+        self.reply(200, (WEB / name).read_bytes(), kind)
+
+    def body(self):
+        origin = self.headers.get('Origin')
+        if origin and urlsplit(origin).netloc != self.headers.get('Host'):
+            raise PermissionError('Cross-origin requests are not allowed')
+        if self.headers.get_content_type() != 'application/json':
+            raise ValueError('Use application/json')
+        length = int(self.headers.get('Content-Length', '0'))
+        if not 0 < length <= 65536:
+            raise ValueError('Request body must be 1–65,536 bytes')
+        body = json.loads(self.rfile.read(length))
+        if not isinstance(body, dict):
+            raise ValueError('Expected a JSON object')
+        return body
+
+    def do_POST(self):
+        try:
+            payload = self.body()
+        except PermissionError as e:
+            self.close_connection = True
+            self.reply(403, {'error': str(e)})
+            return
+        except (ValueError, UnicodeError) as e:
+            self.close_connection = True
+            self.reply(400, {'error': str(e)})
+            return
+        path = urlsplit(self.path).path
+        if path == '/api/stop':
+            with self.service.state_lock:
+                matches = payload.get('request_id') == self.service.active_id and self.service.cancel is not None
+                if matches:
+                    self.service.cancel.set()
+            self.reply(200, {'stopping': bool(matches)})
+            return
+        if path != '/api/chat':
+            self.reply(404, {'error': 'Not found'})
+            return
+        request_id = payload.get('request_id')
+        if not isinstance(request_id, str) or not 1 <= len(request_id) <= 100:
+            self.reply(400, {'error': 'Missing or invalid request identifier'})
+            return
+        if not self.service.generation_lock.acquire(blocking=False):
+            self.reply(409, {'error': 'Another reply is running. Stop it or wait for it to finish.'})
+            return
+        benchmark_access = self.service.benchmarks.acquire()
+        if benchmark_access is None:
+            self.service.generation_lock.release()
+            self.reply(409, {'error': 'A CPU benchmark is running. Your message can be sent when it finishes.'})
+            return
+        stream = None
+        started = False
+        cancel = threading.Event()
+        try:
+            with self.service.state_lock:
+                self.service.active_id = request_id
+                self.service.cancel = cancel
+            request = self.service.engine.prepare(payload)
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/x-ndjson; charset=utf-8')
+            self.send_header('Cache-Control', 'no-store')
+            self.send_header('X-Accel-Buffering', 'no')
+            self.send_header('X-Content-Type-Options', 'nosniff')
+            self.send_header('Connection', 'close')
+            self.end_headers()
+            self.close_connection = True
+            started = True
+            stream = self.service.engine.stream(request, cancel)
+            for event in stream:
+                self.wfile.write((json.dumps(event)+'\n').encode())
+                self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError):
+            cancel.set()
+        except Exception as e:
+            if started:
+                try:
+                    self.wfile.write((json.dumps({'type': 'error', 'error': str(e)})+'\n').encode())
+                    self.wfile.flush()
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+            else:
+                self.reply(400 if isinstance(e, ValueError) else 500, {'error': str(e)})
+        finally:
+            cancel.set()
+            if stream:
+                stream.close()
+            with self.service.state_lock:
+                self.service.active_id = None
+                self.service.cancel = None
+            self.service.generation_lock.release()
+            benchmark_access.close()
+
+
+def make_server(engine, port=8765, benchmark_directory=None):
+    server = ThreadingHTTPServer(('127.0.0.1', port), ChatHandler)
+    server.daemon_threads = True
+    server.service = ChatService(engine, benchmark_directory)
+    return server
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--model')
+    parser.add_argument('--native-only', action='store_true',
+                        help='Load tokenization and native CPU backends without importing or constructing simulators')
+    parser.add_argument('--simulator', choices=['fast', 'reference'], default='fast')
+    parser.add_argument('--block-size', type=int, choices=[1, 4], default=None,
+                        help='Default: 4 for the fast profile, 1 for reference or a custom binary')
+    parser.add_argument('--prefill-size', type=int, choices=[1, 4, 8], default=None,
+                        help='Default: 8 for fast profile; otherwise verification block size. Custom B8 requires --block-size 4')
+    parser.add_argument('--sv-binary', type=Path, help='Trusted local simulator executable override')
+    parser.add_argument('--workers', type=int, choices=[0, 1, 2, 4, 8], default=8)
+    parser.add_argument('--port', type=int, default=8765)
+    args = parser.parse_args()
+    if not 1 <= args.port <= 65535:
+        raise ValueError('Invalid port')
+    if args.native_only and args.sv_binary is not None:
+        parser.error('--native-only cannot be combined with --sv-binary')
+    model = locate_model(args.model)
+    protocol = ChatProtocol(model)
+    simulation = hybrid = phase = fused_phase = None
+    print('Preparing local browser chat backends; no PyTorch or GPU inference...', flush=True)
+    if not args.native_only:
+        # Native-only launch must not import RTL code or prepare simulator offsets.
+        try:
+            from .rtl_chat import RTLChatEngine
+            from .rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY, FMA_PHASE_BINARY
+            from .phase_chat import PhasePoolChatEngine, FusedPhasePoolChatEngine
+        except ImportError:
+            from rtl_chat import RTLChatEngine
+            from rtl_model import FAST_BINARY, HYBRID_BINARY, PHASE_BINARY, FMA_PHASE_BINARY
+            from phase_chat import PhasePoolChatEngine, FusedPhasePoolChatEngine
+        binary = args.sv_binary or (FAST_BINARY if args.simulator == 'fast' else ROOT / 'build/full/Vqwen_behavioral')
+        if args.sv_binary is not None and not binary.is_file():
+            parser.error('Explicit --sv-binary does not exist')
+        block_size = args.block_size if args.block_size is not None else (4 if args.simulator == 'fast' and args.sv_binary is None else 1)
+        prefill_size = args.prefill_size if args.prefill_size is not None else (
+            8 if args.simulator == 'fast' and args.sv_binary is None and block_size == 4 else block_size)
+        if binary.is_file():
+            simulation = RTLChatEngine(model, workers=args.workers, binary=binary,
+                lanes=8 if args.simulator == 'fast' else 1, block_size=block_size, prefill_size=prefill_size)
+        if HYBRID_BINARY.is_file():
+            hybrid = RTLChatEngine(model,workers=max(1,args.workers),binary=HYBRID_BINARY,
+                lanes=8,block_size=4,prefill_size=8,reuse_prefix=False,
+                precision_profile='fp32_b1_fp64_prefill',canonical_prefix_reuse=True)
+        if FMA_PHASE_BINARY.is_file(): fused_phase = FusedPhasePoolChatEngine(model)
+        if PHASE_BINARY.is_file(): phase = PhasePoolChatEngine(model)
+    engine = BackendRouter(simulation, hybrid=hybrid, phase=phase, fused_phase=fused_phase, protocol=protocol)
+    server = make_server(engine, args.port)
+    print(f'Local chat ready: http://127.0.0.1:{server.server_port}', flush=True)
+    default = next(entry for entry in engine.catalog() if entry['id'] == engine.default_backend())
+    print(f"Default: {default['label']}", flush=True)
+    if engine.simulations:
+        print('Legacy SystemVerilog choices are behavioral simulation, not cycle-accurate FPGA timing.', flush=True)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        with server.service.state_lock:
+            if server.service.cancel:
+                server.service.cancel.set()
+        server.server_close()
+        # Let an active handler observe cancellation before destroying its engine.
+        with server.service.generation_lock:
+            engine.close()
+
+
+if __name__ == '__main__':
+    main()

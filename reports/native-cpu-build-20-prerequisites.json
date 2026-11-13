@@ -1,0 +1,228 @@
+{
+  "candidate_tag": "prefill-query-row-pair",
+  "authorize_selection": true,
+  "baseline_release": "build-19",
+  "policy": "exact_nonregression_with_inherited_baseline19_gap",
+  "known_absolute_failures": [
+    "boundary63",
+    "boundary64"
+  ],
+  "absolute_oracle_pass_claimed": false,
+  "selection_rationale": "User requested deployment. Select arithmetic-preserving query-row pairing with exact baseline nonregression, full lifecycle and seeded-stream checks. Fresh matched comparison establishes lower TTFT at 1024 and 2048 tokens versus build19; decode and request differences versus build19 remain uncertain. Direct tuned-llama results show scoped long-context gains, not universal superiority. Retain 12 decode and 6 prefill workers, 512-token prefix blocks and both inherited absolute boundary63/64 failures without waiving limits.",
+  "candidate_binary_sha256": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+  "candidate_manifest_sha256": "e0954d18b281fb2652421daacc85b8247d930744d846247a359df220face8dc9",
+  "runtime_defaults": null,
+  "evidence": {
+    "relative_exact": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-exact-gate.json",
+      "sha256": "528bfe077ed526da87c0592be6957c775ef14f912e8209067518cba983498bdb",
+      "required": {
+        "passed": true,
+        "compared_arrays": 56
+      }
+    },
+    "timeboundary_exact": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-timeboundary-exact-gate.json",
+      "sha256": "473e71735a44e85e779469694659736512d71da24c36799753a69ae3d2fd3770",
+      "required": {
+        "passed": true,
+        "compared_arrays": 12
+      }
+    },
+    "newboundary_relative_exact": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-newboundary-relative-exact-gate.json",
+      "sha256": "2bd5ad0847113da1152ad243802e41284a661f45877ef7e05c88b99613f2d0cc",
+      "required": {
+        "passed": true,
+        "compared_arrays": 8
+      }
+    },
+    "api": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-verify-api/report.json",
+      "sha256": "29203d5c9f6dddcd1ebeadc1d59992d864c6396f990d0e989b988baace545bc6",
+      "required": {
+        "passed": true,
+        "full_acceptance_matrix_passed": true,
+        "workers": [
+          1,
+          12,
+          64
+        ],
+        "prefixes": [
+          0,
+          1,
+          511,
+          512,
+          513,
+          3966
+        ],
+        "commits": [
+          1,
+          2
+        ]
+      }
+    },
+    "prefix": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-prefix-check/report.json",
+      "sha256": "eca07456eb5492e972c92fb9e28ce7e7f0311fda8bbc9a4d929e8b08ed4528ae",
+      "required": {
+        "passed": true
+      }
+    },
+    "suffix": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-suffix-trajectories.json",
+      "sha256": "f9e17a9b115032d97fdde3b299c3f12e23d65d8fde19d0cd226fe71ce8c72a0f",
+      "required": {
+        "passed": true,
+        "original35_passed": true,
+        "cancellation.passed": true,
+        "restart.passed": true
+      }
+    },
+    "suffix_cli": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-suffix-cli/report.json",
+      "sha256": "e7f402dc2ea329056c15107b535770bb4812f0d806ddc9e48f1be93dd49fbb2d",
+      "required": {
+        "passed": true,
+        "invalid_and_chat_commands_reset": true
+      }
+    },
+    "quality": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-quality.json",
+      "sha256": "a47fb8d8eb5215f5bb750962d476a2763906fe495038748cda4561aa15914950",
+      "required": {
+        "passed": true,
+        "exact_trajectory_gate_passed": true,
+        "no_new_regressions": true
+      }
+    },
+    "extended_quality": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-extended-quality.json",
+      "sha256": "9249ba2c19fa573098117b1acc10becdb7fc939ce72a0c153315a6d7170fe468",
+      "required": {
+        "passed": true,
+        "exact_trajectory_gate_passed": true,
+        "no_new_case_regressions": true,
+        "no_new_check_regressions": true
+      }
+    },
+    "seeded_stream": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-seeded-stream/report.json",
+      "sha256": "2fd1ba51cdcaae7ec98bcbc44f86706fe441580a708f638c7007f1e62a1faf48",
+      "required": {
+        "passed": true,
+        "seeds": [
+          42,
+          1337
+        ],
+        "repeats": 2,
+        "requested_tokens": 20
+      }
+    },
+    "standard_confirmation": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-final-vs19-standard-confirmation.json",
+      "sha256": "e2d0f5b1a0a147aae35c50ac3e2d5598826f333afc2e497541fac35bea33ef05",
+      "required": {
+        "completed": true,
+        "paired_sampling_complete": true,
+        "rounds": 20,
+        "context_suite": "standard"
+      },
+      "expected_rounds": 20
+    },
+    "standard_analysis": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-final-vs19-standard-analysis.json",
+      "sha256": "4582c48931471cd6eeeaa716e0811c27a6b9905655680ba9b32bbc712cdb8387",
+      "required": {
+        "completed": true,
+        "rounds": 20,
+        "baseline": "native-reference-build-19"
+      },
+      "expected_rounds": 20
+    },
+    "extended_confirmation": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-final-vs19-extended-confirmation.json",
+      "sha256": "ef133c37833a4f6450948df7a32697b9622f4fc0fd8033916e81d561502dd875",
+      "required": {
+        "completed": true,
+        "paired_sampling_complete": true,
+        "rounds": 10,
+        "context_suite": "extended"
+      },
+      "expected_rounds": 10
+    },
+    "extended_analysis": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-final-vs19-extended-analysis.json",
+      "sha256": "f220c4a6c8d9c09e255ce21034ca22d5dce8f9eae79c7e80b0773f197cc141b5",
+      "required": {
+        "completed": true,
+        "rounds": 10,
+        "baseline": "native-reference-build-19"
+      },
+      "expected_rounds": 10
+    }
+  },
+  "contextual_llama_evidence": {
+    "llama_standard_confirmation": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-final-vsllama-standard-confirmation.json",
+      "sha256": "15b213535744fe53cbe88a6414c5172994f02fa160003c00d8cecd0cab8ab0ae",
+      "required": {
+        "completed": true,
+        "paired_sampling_complete": true,
+        "rounds": 10,
+        "context_suite": "standard"
+      },
+      "expected_rounds": 10
+    },
+    "llama_standard_analysis": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-final-vsllama-standard-analysis.json",
+      "sha256": "82c49136da5ac6ce71bbd4baba7ed579e1966de6c8873da178f35d8ddf232edd",
+      "required": {
+        "completed": true,
+        "rounds": 10,
+        "baseline": "llama-f16-onon-d12-p6"
+      },
+      "expected_rounds": 10
+    },
+    "llama_extended_confirmation": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-final-vsllama-extended-confirmation.json",
+      "sha256": "333442165fa052f47c1c8e9ab61d83d6f8d75f6e89a9916a3b9c28e17edc2ef6",
+      "required": {
+        "completed": true,
+        "paired_sampling_complete": true,
+        "rounds": 10,
+        "context_suite": "extended"
+      },
+      "expected_rounds": 10
+    },
+    "llama_extended_analysis": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-final-vsllama-extended-analysis.json",
+      "sha256": "e425ee2fb374fb9bd4ba003d4fb1cf28bdcb264e28c61d864704fd24cddf7d2e",
+      "required": {
+        "completed": true,
+        "rounds": 10,
+        "baseline": "llama-f16-onon-d12-p6"
+      },
+      "expected_rounds": 10
+    }
+  },
+  "known_failure_evidence": {
+    "boundary63": {
+      "path": "$REPO/build/native-cpu/build19-newboundary63-control-oracle.json",
+      "sha256": "39eb0eff4496546fe6fbead06eacbc8822cb82341610decc59e09949eaac9cac",
+      "passed": false
+    },
+    "boundary64": {
+      "path": "$REPO/build/native-cpu/build19-original-prefix-control-boundary64-oracle.json",
+      "sha256": "91e9229e61a1805ca7fc827115f4ff3aec23dbb4d10b31b09669b2713cd463ec",
+      "passed": false
+    }
+  },
+  "builder_sha256": "4b4d21d4889ab596e46e892d6deb8db2f0156c5cbad872000bde7d76a68ffd00",
+  "serving_scope": "Base12decode/6prefill only; no conditional worker factory patch authorized.",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/build-20/prerequisites.json",
+    "source_sha256": "faa05797e6edc39e8378e128936b5a47b070c73c0b6ccd990fd543d05a54265b",
+    "sanitization": "Repository/home paths and process identifiers/names sanitized using final comparison archive helper. Full evidence retained."
+  }
+}

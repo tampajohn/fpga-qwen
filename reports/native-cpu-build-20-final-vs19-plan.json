@@ -1,0 +1,42 @@
+{
+  "completed": true,
+  "candidate_tag": "prefill-query-row-pair",
+  "phase": "vs19",
+  "decode_threads": 12,
+  "prefill_threads": 6,
+  "runtime_defaults_inferred": false,
+  "comparison_scope": "Same12/6 kernel comparison; not a serving8/6 worker result.",
+  "known_absolute_failures_retained": [
+    "boundary63",
+    "boundary64"
+  ],
+  "source_sha256": {
+    "$REPO/build/native-cpu/run-final-native-comparisons-v1.py": "87285f299cabdb7c9e2efb167a9411062e9318d540b4f9f03bea92e47b5e77ee",
+    "$REPO/build/native-cpu/check-queryrow-relative-prerequisites.py": "b9ef1f4ab182f84575b14535b170afedd6a973803913acb10be213eabc2fe867"
+  },
+  "suites": [
+    {
+      "suite": "standard",
+      "rounds": 20,
+      "tokens": 32,
+      "report": "$REPO/build/native-cpu/prefill-query-row-pair-final-vs19-standard-confirmation.json",
+      "report_sha256": "e2d0f5b1a0a147aae35c50ac3e2d5598826f333afc2e497541fac35bea33ef05",
+      "analysis": "$REPO/build/native-cpu/prefill-query-row-pair-final-vs19-standard-analysis.json",
+      "analysis_sha256": "4582c48931471cd6eeeaa716e0811c27a6b9905655680ba9b32bbc712cdb8387"
+    },
+    {
+      "suite": "extended",
+      "rounds": 10,
+      "tokens": 128,
+      "report": "$REPO/build/native-cpu/prefill-query-row-pair-final-vs19-extended-confirmation.json",
+      "report_sha256": "ef133c37833a4f6450948df7a32697b9622f4fc0fd8033916e81d561502dd875",
+      "analysis": "$REPO/build/native-cpu/prefill-query-row-pair-final-vs19-extended-analysis.json",
+      "analysis_sha256": "f220c4a6c8d9c09e255ce21034ca22d5dce8f9eae79c7e80b0773f197cc141b5"
+    }
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefill-query-row-pair-final-vs19-plan-v1.json",
+    "source_sha256": "e5ca778baccd88aaaa36d5379fa989634f6b17c2a9215f45d70f69205ba0cd9f",
+    "sanitization": "Repository/home paths and process identifiers/names sanitized using final comparison archive helper. Full evidence retained."
+  }
+}

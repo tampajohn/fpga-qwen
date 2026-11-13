@@ -1,0 +1,129 @@
+{
+  "completed": true,
+  "promotion_sha256": "97fd882a0452f8511693c05d1daece0ccab052df09c579a9f56653bca13be07f",
+  "browser_sha256": "17749863c7a105a72b7445dcc3dc69fd51c87c6e33577e3c9868a3c8c1a4c46a",
+  "binary_sha256": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+  "status": {
+    "ready": true,
+    "busy": false,
+    "model": "Qwen3-0.6B",
+    "device": "cpu",
+    "precision": "FP16 matrices / FP32 norm weights / FP16 KV",
+    "norm_accumulator_precision": "f64",
+    "gpu_inference": false,
+    "pytorch_loaded": false,
+    "cpu_threads": 12,
+    "prefill_workers": 6,
+    "decode_workers": 12,
+    "context_limit": 4096,
+    "rtl": null,
+    "inference": "Original native CPU engine (experimental)",
+    "accelerate_thread_request": 6,
+    "thread_placement": "No hard pinning; Accelerate thread count requested, not independently verified",
+    "cached_tokens": 82,
+    "prefix_reuse_supported": true,
+    "prefix_reuse_enabled": true,
+    "canonical_reusable_tokens": 0,
+    "canonical_prefix_policy": "native_f16_prefill512_v1",
+    "suffix_supported": true,
+    "suffix_greedy_only": true,
+    "max_verified_draft": 1,
+    "prefill_block_size": null,
+    "precision_profile": null,
+    "precision_verified": false,
+    "reduction_lanes": null,
+    "prefill_reduction_lanes": null,
+    "build_id": "build-20",
+    "backends": [
+      {
+        "id": "native-cpu-f16",
+        "label": "Native CPU \u00b7 FP16 \u00b7 build-20 \u00b7 12/6 threads",
+        "build_id": "build-20",
+        "available": true,
+        "cpu_threads": 12,
+        "prefill_workers": 6,
+        "norm_accumulator_precision": "f64",
+        "simulation": false,
+        "prefix_reuse_supported": true,
+        "prefix_reuse_enabled": true,
+        "canonical_prefix_policy": "native_f16_prefill512_v1",
+        "canonical_reusable_tokens": 0,
+        "suffix_supported": true,
+        "suffix_greedy_only": true,
+        "max_draft": 1,
+        "default_eligible": true
+      },
+      {
+        "id": "rtl",
+        "label": "SystemVerilog \u00b7 fast",
+        "available": false,
+        "simulation": true,
+        "min_workers": 0,
+        "suffix_supported": false
+      },
+      {
+        "id": "rtl-fp32",
+        "label": "SystemVerilog \u00b7 FP32 hybrid",
+        "available": false,
+        "simulation": true,
+        "min_workers": 1,
+        "suffix_supported": false
+      },
+      {
+        "id": "rtl-fp32-phase",
+        "label": "SystemVerilog \u00b7 FP32 hybrid \u00b7 12 prefill / 8 decode",
+        "available": false,
+        "simulation": true,
+        "min_workers": 1,
+        "fixed_workers": 8,
+        "suffix_supported": false
+      },
+      {
+        "id": "rtl-fp32-fused-phase",
+        "label": "SystemVerilog \u00b7 Fused FP32 prefill \u00b7 12 prefill / 8 decode",
+        "available": false,
+        "simulation": true,
+        "min_workers": 1,
+        "fixed_workers": 8,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-q4",
+        "label": "llama.cpp \u00b7 Q4_K_M",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-f16",
+        "label": "llama.cpp \u00b7 FP16",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-f32",
+        "label": "llama.cpp \u00b7 FP32",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      }
+    ],
+    "active_backend": "native-cpu-f16",
+    "default_backend": "native-cpu-f16",
+    "benchmark": {
+      "running": false,
+      "last_run": {
+        "name": "Browser native CPU guard visibility test",
+        "started_at": "2026-11-13T21:54:34.572890+00:00",
+        "finished_at": "2026-11-13T21:54:35.882992+00:00",
+        "exit_code": 0
+      }
+    }
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/build-20-live-browser-binding.json",
+    "source_sha256": "a8dd2fbfe48f765ee768b73ab5a43e78440a186a8e67195b5c2a8c2c1e72736c",
+    "sanitization": "Repository/home paths and process identifiers/names sanitized using final comparison archive helper. Full evidence retained."
+  }
+}

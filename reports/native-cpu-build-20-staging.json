@@ -1,0 +1,42 @@
+{
+  "completed": true,
+  "promoted": false,
+  "candidate_tag": "prefill-query-row-pair",
+  "prerequisites_path": "$REPO/build/native-cpu/release20-final-base12-prerequisites-v1.json",
+  "prerequisites_sha256": "faa05797e6edc39e8378e128936b5a47b070c73c0b6ccd990fd543d05a54265b",
+  "shared_source_before": {
+    "$REPO/engine/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "live_symlink_untouched": true,
+  "server_untouched": true,
+  "policy": "exact_nonregression_with_inherited_baseline19_gap",
+  "known_absolute_failures": [
+    "boundary63",
+    "boundary64"
+  ],
+  "helper_sha256": {
+    "$REPO/build/native-cpu/release20_common.py": "fd8e7e919f2fa8fa38a21a134a5203848bbfd1b0b2a7b763e8ebf38efd1f0a78",
+    "$REPO/build/native-cpu/stage-release20.py": "a836d01ff5eab29b8a340bc75f3640a97102788b746efa8653f61c4752f9bc4d",
+    "$REPO/build/native-cpu/promote-release20.py": "581641ab5a8b386c730faec89b3d83ecaf38a27739877968083fcd5819e1b71a",
+    "$REPO/build/native-cpu/run-release20-browser-isolated.py": "40d76ab78ad84e53db9d33a3a2cf6babec29fed22cf21d8bd20417567a9d5dc8",
+    "$REPO/build/native-cpu/run-release20-browser-live.py": "bbd038c881a4167867508782f1533f01e33c0680d81fbe7a4518d952291cfcb6",
+    "$REPO/tests/browser_native_cpu.py": "407c73851b4c0f882d25fdeb947721c2131c883fc511754fc89f105885e2209d",
+    "$REPO/tests/native_cpu_browser_server.py": "77f603a5befc7bbf13637f5245837a4b0d49404a3b789e7487321ec7d0c00c0c",
+    "$REPO/tools/benchmark_guard.py": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7",
+    "$REPO/tools/chat_server.py": "1c5c18e8177838cdbeefe8d658457c98360c197bb287794062549fe341217c35"
+  },
+  "binary_sha256": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+  "release_manifest_sha256": "d6329dc58d1e1a02b49189384db1fedbb64a3622082bf91ae8a9505a393e5bca",
+  "shared_source_after": {
+    "$REPO/engine/core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/build-20/staging.json",
+    "source_sha256": "4b595319a8402c305bd3fa767ae5c023a6486d4dcfdf4a229ffbf8fb8c6e8655",
+    "sanitization": "Repository/home paths and process identifiers/names sanitized using final comparison archive helper. Full evidence retained."
+  }
+}

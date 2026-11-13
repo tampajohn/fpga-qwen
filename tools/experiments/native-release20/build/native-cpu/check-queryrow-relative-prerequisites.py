@@ -1,0 +1,54 @@
+"""Local fail-closed preflight; root executes inside a serialized guard."""
+import hashlib,json,sys
+from pathlib import Path
+base=Path('build/native-cpu').resolve()
+candidate=base/'prefill-query-row-pair-build/qwen_cpu'
+reference=base/'build-19/qwen_cpu'
+gate_reference=base/'kv-head-major-time32-build/qwen_cpu'
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def load(name):
+ p=base/name;x=json.loads(p.read_text())
+ assert x.get('completed') is True and x.get('passed') is True and not x.get('error'),name
+ return p,x
+def frozen(x,field='inputs'):
+ for path,digest in x[field].items():assert sha(path)==digest,path
+for b in [candidate,reference]:
+ m=json.loads((b.parent/'manifest.json').read_text())
+ assert m['completed'] is True and sha(b)==m['binary_sha256']
+for name,count in [('prefill-query-row-pair-exact-gate.json',56),('prefill-query-row-pair-timeboundary-exact-gate.json',12)]:
+ _,x=load(name);assert x['compared_arrays']==count;frozen(x)
+ assert x['inputs'][str(candidate)]==sha(candidate)
+ assert x['inputs'][str(gate_reference)]==sha(reference)==sha(gate_reference)
+gap=json.loads((base/'build19-newboundary63-control-oracle.json').read_text())
+assert gap['completed'] is True and gap['passed'] is False
+assert gap['inputs'][str(reference)]==sha(reference)
+print('DIAGNOSTIC ONLY: inherited baseline63 absolute numerical failure remains unresolved; no release qualification.')
+m=json.loads((candidate.parent/'manifest.json').read_text())
+source=base/'prefill-query-row-pair-source'
+for name in ('core.cpp','core.hpp','main.cpp'):
+ p=(source/name).resolve()
+ assert sha(p)==m['source_sha256'][str(p)],name
+if sys.argv[1]=='final':
+ _,x=load('prefill-query-row-pair-prefix-check/report.json');frozen(x)
+ assert len(x['cases'])==28 and all(c['passed'] for c in x['cases'])
+ assert x['inputs'][str(candidate)]==sha(candidate)
+ _,x=load('prefill-query-row-pair-verify-api/report.json')
+ assert x['full_acceptance_matrix_passed'] is True
+ frozen(x);frozen(x,'source_hashes');frozen(x,'frozen_source_hashes')
+ for name in ('core.cpp','core.hpp'):
+  p=(source/name).resolve();assert x['source_hashes'][str(p)]==m['source_sha256'][str(p)]
+ for name in ['prefill-query-row-pair-suffix-trajectories.json','prefill-query-row-pair-suffix-cli/report.json','prefill-query-row-pair-quality.json','prefill-query-row-pair-extended-quality.json']:
+  _,x=load(name)
+  field='hashes' if 'hashes' in x else 'inputs'
+  frozen(x,field)
+  assert x[field][str(candidate)]==sha(candidate)
+  if name.endswith('suffix-trajectories.json'):
+   assert len(x['cases'])==35 and len(x['extended_cases'])==7
+  if name.endswith('suffix-cli/report.json'):assert len(x['cases'])==5
+  if name.endswith('extended-quality.json'):assert len(x['cases'])==18
+  if 'exact_trajectory_gate_passed' in x:assert x['exact_trajectory_gate_passed'] is True
+ print('Numerical, prefix, suffix and quality prerequisites passed; no source-change inference.')
+else:
+ assert sys.argv[1]=='numerical'
+ print('Numerical and source-binding prerequisites passed.')

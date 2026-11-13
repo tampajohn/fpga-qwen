@@ -1,0 +1,287 @@
+{
+  "completed": true,
+  "candidate_tag": "prefill-query-row-pair",
+  "release": "build-20",
+  "decode_threads": 12,
+  "prefill_threads": 6,
+  "records": [
+    {
+      "source": "tests/native_cpu_browser_server.py",
+      "source_sha256": "77f603a5befc7bbf13637f5245837a4b0d49404a3b789e7487321ec7d0c00c0c",
+      "snapshot": "tools/experiments/native-release20/tests/native_cpu_browser_server.py",
+      "snapshot_sha256": "77f603a5befc7bbf13637f5245837a4b0d49404a3b789e7487321ec7d0c00c0c",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "build/native-cpu/archive-release20-v1.py",
+      "source_sha256": "dab72561b8038a68b212390e0257f5ff7e6d32499f681612630b3bdf329d7b33",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/archive-release20-v1.py",
+      "snapshot_sha256": "dab72561b8038a68b212390e0257f5ff7e6d32499f681612630b3bdf329d7b33",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "tools/benchmark_guard.py",
+      "source_sha256": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7",
+      "snapshot": "tools/experiments/native-release20/tools/benchmark_guard.py",
+      "snapshot_sha256": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "build/native-cpu/promote-release20.py",
+      "source_sha256": "581641ab5a8b386c730faec89b3d83ecaf38a27739877968083fcd5819e1b71a",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/promote-release20.py",
+      "snapshot_sha256": "581641ab5a8b386c730faec89b3d83ecaf38a27739877968083fcd5819e1b71a",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "build/native-cpu/run-release20-browser-live.py",
+      "source_sha256": "bbd038c881a4167867508782f1533f01e33c0680d81fbe7a4518d952291cfcb6",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/run-release20-browser-live.py",
+      "snapshot_sha256": "bbd038c881a4167867508782f1533f01e33c0680d81fbe7a4518d952291cfcb6",
+      "provenance": "original frozen controller; parser rejected before browser execution"
+    },
+    {
+      "source": "build/native-cpu/build-20/rollback-source/main.cpp",
+      "source_sha256": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/build-20/rollback-source/main.cpp",
+      "snapshot_sha256": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "build/native-cpu/run-release20-browser-isolated.py",
+      "source_sha256": "40d76ab78ad84e53db9d33a3a2cf6babec29fed22cf21d8bd20417567a9d5dc8",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/run-release20-browser-isolated.py",
+      "snapshot_sha256": "40d76ab78ad84e53db9d33a3a2cf6babec29fed22cf21d8bd20417567a9d5dc8",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "build/native-cpu/stage-release20.py",
+      "source_sha256": "a836d01ff5eab29b8a340bc75f3640a97102788b746efa8653f61c4752f9bc4d",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/stage-release20.py",
+      "snapshot_sha256": "a836d01ff5eab29b8a340bc75f3640a97102788b746efa8653f61c4752f9bc4d",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "tools/benchmark_native_cpu.py",
+      "source_sha256": "8f0d62b38b29d48bf4d3e94156d591686208fba4168ad7fe6753c7da77063090",
+      "snapshot": "tools/experiments/native-release20/tools/benchmark_native_cpu.py",
+      "snapshot_sha256": "8f0d62b38b29d48bf4d3e94156d591686208fba4168ad7fe6753c7da77063090",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "tools/benchmark_native_phase0.py",
+      "source_sha256": "2072dff376baf6e0476c7beddfae311483ea2a15a3af54af8622ad8bbbe17b7e",
+      "snapshot": "tools/experiments/native-release20/tools/benchmark_native_phase0.py",
+      "snapshot_sha256": "2072dff376baf6e0476c7beddfae311483ea2a15a3af54af8622ad8bbbe17b7e",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "tests/browser_native_cpu.py",
+      "source_sha256": "407c73851b4c0f882d25fdeb947721c2131c883fc511754fc89f105885e2209d",
+      "snapshot": "tools/experiments/native-release20/tests/browser_native_cpu.py",
+      "snapshot_sha256": "407c73851b4c0f882d25fdeb947721c2131c883fc511754fc89f105885e2209d",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "build/native-cpu/build-20/rollback-source/core.hpp",
+      "source_sha256": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/build-20/rollback-source/core.hpp",
+      "snapshot_sha256": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "tools/chat_server.py",
+      "source_sha256": "1c5c18e8177838cdbeefe8d658457c98360c197bb287794062549fe341217c35",
+      "snapshot": "tools/experiments/native-release20/tools/chat_server.py",
+      "snapshot_sha256": "1c5c18e8177838cdbeefe8d658457c98360c197bb287794062549fe341217c35",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "tools/chat_backends.py",
+      "source_sha256": "73039c7be6f2717a0825d3431cdb65d198ffcee31fa14bad156ac7232e489c44",
+      "snapshot": "tools/experiments/native-release20/tools/chat_backends.py",
+      "snapshot_sha256": "73039c7be6f2717a0825d3431cdb65d198ffcee31fa14bad156ac7232e489c44",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "build/native-cpu/prefill-query-row-pair-source/main.cpp",
+      "source_sha256": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/prefill-query-row-pair-source/main.cpp",
+      "snapshot_sha256": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "build/native-cpu/prepare-release20-base12-prerequisites-v1.py",
+      "source_sha256": "4b4d21d4889ab596e46e892d6deb8db2f0156c5cbad872000bde7d76a68ffd00",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/prepare-release20-base12-prerequisites-v1.py",
+      "snapshot_sha256": "4b4d21d4889ab596e46e892d6deb8db2f0156c5cbad872000bde7d76a68ffd00",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "build/native-cpu/run-final-native-comparisons-v1.py",
+      "source_sha256": "87285f299cabdb7c9e2efb167a9411062e9318d540b4f9f03bea92e47b5e77ee",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/run-final-native-comparisons-v1.py",
+      "snapshot_sha256": "87285f299cabdb7c9e2efb167a9411062e9318d540b4f9f03bea92e47b5e77ee",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "build/native-cpu/archive-final-native-comparisons-v1.py",
+      "source_sha256": "dd62782241fc06da6b5d00bcd4257edf2ab89640836ccffc093f52df2792df6a",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/archive-final-native-comparisons-v1.py",
+      "snapshot_sha256": "dd62782241fc06da6b5d00bcd4257edf2ab89640836ccffc093f52df2792df6a",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "tools/native_cpu_chat.py",
+      "source_sha256": "154729079992e9c8c0df6e43077789ea73b8f85decb0a000f40e4cc3853b5882",
+      "snapshot": "tools/experiments/native-release20/tools/native_cpu_chat.py",
+      "snapshot_sha256": "154729079992e9c8c0df6e43077789ea73b8f85decb0a000f40e4cc3853b5882",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "build/native-cpu/build-20/rollback-source/core.cpp",
+      "source_sha256": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/build-20/rollback-source/core.cpp",
+      "snapshot_sha256": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "build/native-cpu/prefill-query-row-pair-source/core.cpp",
+      "source_sha256": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/prefill-query-row-pair-source/core.cpp",
+      "snapshot_sha256": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "build/native-cpu/run-release20-browser-live-v2.py",
+      "source_sha256": "ecd697541510ed18eb004d48f8f20c51715306b522ea5f54701429d188c754b2",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/run-release20-browser-live-v2.py",
+      "snapshot_sha256": "ecd697541510ed18eb004d48f8f20c51715306b522ea5f54701429d188c754b2",
+      "provenance": "corrected live controller executed; bound to correction record"
+    },
+    {
+      "source": "build/native-cpu/prefill-query-row-pair-source/core.hpp",
+      "source_sha256": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/prefill-query-row-pair-source/core.hpp",
+      "snapshot_sha256": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "build/native-cpu/release20_common.py",
+      "source_sha256": "fd8e7e919f2fa8fa38a21a134a5203848bbfd1b0b2a7b763e8ebf38efd1f0a78",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/release20_common.py",
+      "snapshot_sha256": "fd8e7e919f2fa8fa38a21a134a5203848bbfd1b0b2a7b763e8ebf38efd1f0a78",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "tools/analyze_native_phase0.py",
+      "source_sha256": "6e27a7964cb7475aca76f214bee152dc472bd6d8dcc4b2b75becf014a4ac89d6",
+      "snapshot": "tools/experiments/native-release20/tools/analyze_native_phase0.py",
+      "snapshot_sha256": "6e27a7964cb7475aca76f214bee152dc472bd6d8dcc4b2b75becf014a4ac89d6",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "build/native-cpu/check-queryrow-relative-prerequisites.py",
+      "source_sha256": "b9ef1f4ab182f84575b14535b170afedd6a973803913acb10be213eabc2fe867",
+      "snapshot": "tools/experiments/native-release20/build/native-cpu/check-queryrow-relative-prerequisites.py",
+      "snapshot_sha256": "b9ef1f4ab182f84575b14535b170afedd6a973803913acb10be213eabc2fe867",
+      "provenance": "source hash bound to release/plan/build evidence"
+    },
+    {
+      "source": "tools/suffix.py",
+      "source_sha256": "06bd949ad8f1c4b96fa641b1bbde8a0e706519f26d4267e7e4e3342999a12ab7",
+      "snapshot": "tools/experiments/native-release20/tools/suffix.py",
+      "snapshot_sha256": "06bd949ad8f1c4b96fa641b1bbde8a0e706519f26d4267e7e4e3342999a12ab7",
+      "provenance": "current source snapshot; not independently bound to execution"
+    },
+    {
+      "source": "build/native-cpu/build-20/staging.json",
+      "source_sha256": "4b595319a8402c305bd3fa767ae5c023a6486d4dcfdf4a229ffbf8fb8c6e8655",
+      "archive": "reports/native-cpu-build-20-staging.json",
+      "archive_sha256": "19c392fb70e61b9b2fee0b0628491551b8fdb8e7ec2a98aa5b4277c0340f179a"
+    },
+    {
+      "source": "build/native-cpu/build-20/manifest.json",
+      "source_sha256": "d6329dc58d1e1a02b49189384db1fedbb64a3622082bf91ae8a9505a393e5bca",
+      "archive": "reports/native-cpu-build-20-manifest.json",
+      "archive_sha256": "e74c4ffb6e1bf2af6195e88e40bf103b42300dbe6a99632272987b3a84cc60d8"
+    },
+    {
+      "source": "build/native-cpu/build-20/original-manifest.json",
+      "source_sha256": "e0954d18b281fb2652421daacc85b8247d930744d846247a359df220face8dc9",
+      "archive": "reports/native-cpu-build-20-original-manifest.json",
+      "archive_sha256": "50bd1834ab9ccdb094469206f19d1890cca9db1547acdea52d3158af2934dcbd"
+    },
+    {
+      "source": "build/native-cpu/build-20/prerequisites.json",
+      "source_sha256": "faa05797e6edc39e8378e128936b5a47b070c73c0b6ccd990fd543d05a54265b",
+      "archive": "reports/native-cpu-build-20-prerequisites.json",
+      "archive_sha256": "c580bde4432612c427d2ca142342a5cfff7fbcd197ab24784772edfb134e4fb5"
+    },
+    {
+      "source": "build/native-cpu/build-20-promotion.json",
+      "source_sha256": "97fd882a0452f8511693c05d1daece0ccab052df09c579a9f56653bca13be07f",
+      "archive": "reports/native-cpu-build-20-promotion.json",
+      "archive_sha256": "aea49fb2c544ba845befbd15755b10bcd779b0371addfd99a9d537ecedae2717"
+    },
+    {
+      "source": "build/native-cpu/build-20-browser-isolated/report.json",
+      "source_sha256": "36f1d6dd0aaec41aafd497a494515f76174b3809b8cb65d89d26fa1ac2836dcb",
+      "archive": "reports/native-cpu-build-20-browser-isolated.json",
+      "archive_sha256": "8fedaa7142ace876276c2ce8449289e217b7536dbf79c6a76718139ec0ca447f"
+    },
+    {
+      "source": "build/native-cpu/build-20-browser-isolated-launch/report.json",
+      "source_sha256": "262a0c2198531dfb2cdc41881f08a2c349ec5283ff6dce9eb76ae906b0f08fb9",
+      "archive": "reports/native-cpu-build-20-browser-isolated-launch.json",
+      "archive_sha256": "abde15da1391551ca3317d5564133e19bd2046c40bbc13ca5345b62b25bfcead"
+    },
+    {
+      "source": "build/native-cpu/build-20-browser-live/report.json",
+      "source_sha256": "17749863c7a105a72b7445dcc3dc69fd51c87c6e33577e3c9868a3c8c1a4c46a",
+      "archive": "reports/native-cpu-build-20-browser-live.json",
+      "archive_sha256": "0c19e1aac1c64f5748a29abffcbe996ba9bd1dcd6cda8672841715c561fa9d84"
+    },
+    {
+      "source": "build/native-cpu/build-20-live-browser-binding.json",
+      "source_sha256": "a8dd2fbfe48f765ee768b73ab5a43e78440a186a8e67195b5c2a8c2c1e72736c",
+      "archive": "reports/native-cpu-build-20-live-browser-binding.json",
+      "archive_sha256": "a3d61f0182c6e7a517d2ba10ed9abef6e1a61534b3dd6bb055eeff07b6045ed9"
+    },
+    {
+      "source": "build/native-cpu/build-20-live-controller-correction.json",
+      "source_sha256": "c82f3008dcbb031ee1a6026086c35a0b4817624c8545d21aac2c710c0de2cb90",
+      "archive": "reports/native-cpu-build-20-live-controller-correction.json",
+      "archive_sha256": "86da63c29e6a9752b16ce4071dcf827dbc262780016232587fff1cbf076fbac9"
+    },
+    {
+      "source": "build/native-cpu/prefill-query-row-pair-final-vs19-plan-v1.json",
+      "source_sha256": "e5ca778baccd88aaaa36d5379fa989634f6b17c2a9215f45d70f69205ba0cd9f",
+      "archive": "reports/native-cpu-build-20-final-vs19-plan.json",
+      "archive_sha256": "915c1c1a6d9c7d8b86d04c2adf4d4ed7b9baa4862aa4a4675c31719a8aef415b"
+    },
+    {
+      "source": "build/native-cpu/prefill-query-row-pair-final-vsllama-plan-v1.json",
+      "source_sha256": "88d2dd8436cab9c38e536565224a766d6219fa907dcb1402e9a79ea58e677c07",
+      "archive": "reports/native-cpu-build-20-final-vsllama-plan.json",
+      "archive_sha256": "b087e1b204bdd20da88233d7155f3d0215da050128d76d7adc3179e8898e0255"
+    }
+  ],
+  "source_patch": {
+    "path": "tools/experiments/native-release20/build19-to-build20.patch",
+    "sha256": "29749361e87b09e5eca03e36f6aa40d5d73d18d7eace5cbcfdc0f47e34f614e4"
+  },
+  "archive_helper_sha256": "dab72561b8038a68b212390e0257f5ff7e6d32499f681612630b3bdf329d7b33",
+  "known_absolute_failures": [
+    "boundary63",
+    "boundary64"
+  ],
+  "absolute_oracle_pass_claimed": false,
+  "limitations": [
+    "Archive validates recorded binary digest agreement; it does not rehash executable or model payloads.",
+    "No new inference, timing, deployment or live status query. Browser status is bound historical evidence.",
+    "Source snapshots are exact bytes; report paths and process identifiers are sanitized.",
+    "Optional worker8 patches are excluded and must remain unapplied.",
+    "Original live controller omitted --live and failed argument parsing before browser execution; separately archived v2 supplied --live and produced the successful bound live evidence. Frozen original helper was not changed."
+  ]
+}

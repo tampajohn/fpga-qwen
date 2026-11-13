@@ -1,0 +1,624 @@
+// Original CPU implementation. Matrix kernels are independent of llama/ggml.
+#include "core.hpp"
+#include <Accelerate/Accelerate.h>
+#include <arm_neon.h>
+#include <algorithm>
+#include <array>
+#include <bit>
+#include <atomic>
+#include <chrono>
+#include <cmath>
+#include <condition_variable>
+#include <cstdint>
+#include <cstring>
+#include <fcntl.h>
+#include <fstream>
+#include <limits>
+#include <map>
+#include <mutex>
+#include <stdexcept>
+#include <string>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <thread>
+#include <unistd.h>
+
+namespace qwen_cpu {
+namespace {
+constexpr int H=1024, D=128, Q=16, K=8, F=3072, L=28;
+constexpr size_t prefill_chunk=prefix_reuse_chunk;
+using Half=__fp16;
+static_assert(sizeof(Half)==2 && sizeof(float)==4);
+static_assert(std::endian::native==std::endian::little,"Weight pack requires little endian");
+void require(bool yes,const std::string& message) { if(!yes) throw std::runtime_error(message); }
+
+// The submitting thread is worker zero. Workers spin briefly between adjacent
+// kernels, then park; an inactive pool never spins indefinitely. Publication and
+// the transition into CV wait share a mutex, preventing a lost wakeup. Completion
+// has one cache-line-separated release/acquire slot per worker, not a shared
+// decrement counter. All jobs complete before scratch or job storage is reused.
+class Pool {
+    struct alignas(128) Completion { std::atomic<uint64_t> generation{0}; };
+    int n_; std::vector<std::thread> threads_; std::mutex mutex_;
+    std::condition_variable start_; std::atomic<bool> stop_{false};
+    alignas(128) std::atomic<uint64_t> generation_{0};
+    std::array<Completion,64> completed_{};
+    int parked_=0; size_t count_=0;
+    void* job_context_=nullptr;
+    void (*job_)(void*,size_t,size_t,int)=nullptr; std::exception_ptr error_;
+    void work(int i) {
+        uint64_t seen=0;
+        for(;;) {
+            const auto deadline=std::chrono::steady_clock::now()+std::chrono::microseconds(50);
+            unsigned spins=0;
+            while(generation_.load(std::memory_order_acquire)==seen && !stop_.load(std::memory_order_relaxed)) {
+                // ARM's scheduling hint does not enter the kernel.
+                __asm__ volatile("yield" ::: "memory");
+                if((++spins&63)==0 && std::chrono::steady_clock::now()>=deadline)break;
+            }
+            if(stop_.load(std::memory_order_acquire))return;
+            if(generation_.load(std::memory_order_acquire)==seen) {
+                std::unique_lock lock(mutex_);++parked_;
+                start_.wait(lock,[&]{return stop_.load(std::memory_order_relaxed) || generation_.load(std::memory_order_acquire)!=seen;});
+                --parked_;
+                if(stop_.load(std::memory_order_relaxed))return;
+            }
+            const uint64_t next=generation_.load(std::memory_order_acquire);
+            const size_t count=count_;
+            try {job_(job_context_,count*i/n_,count*(i+1)/n_,i);}
+            catch(...) {std::lock_guard lock(mutex_);if(!error_)error_=std::current_exception();}
+            seen=next;completed_[i].generation.store(seen,std::memory_order_release);
+        }
+    }
+public:
+    explicit Pool(int n):n_(n) {
+        try {for(int i=1;i<n_;++i)threads_.emplace_back([this,i]{work(i);});}
+        catch(...) {shutdown();throw;}
+    }
+    ~Pool(){shutdown();}
+    int worker_count()const{return n_;}
+    void shutdown() {
+        {std::lock_guard lock(mutex_);stop_.store(true,std::memory_order_release);}
+        start_.notify_all();for(auto& t:threads_)if(t.joinable())t.join();
+    }
+    template<class Fn> void run(size_t count,Fn fn) {
+        uint64_t next;bool wake;
+        {
+            std::lock_guard lock(mutex_);
+            // fn stays on this caller's stack until every completion is acquired.
+            // A non-owning thunk avoids per-kernel std::function allocations.
+            job_context_=&fn;job_=[](void* context,size_t begin,size_t end,int worker){(*static_cast<Fn*>(context))(begin,end,worker);};
+            count_=count;error_=nullptr;
+            next=generation_.load(std::memory_order_relaxed)+1;
+            generation_.store(next,std::memory_order_release);wake=parked_!=0;
+        }
+        if(wake)start_.notify_all();
+        try {job_(job_context_,0,count/n_,0);}
+        catch(...) {std::lock_guard lock(mutex_);if(!error_)error_=std::current_exception();}
+        for(int i=1;i<n_;++i) {
+            unsigned spins=0;
+            while(completed_[i].generation.load(std::memory_order_acquire)!=next) {
+                __asm__ volatile("yield" ::: "memory");
+                if((++spins&1023)==0)std::this_thread::yield();
+            }
+        }
+        job_=nullptr;job_context_=nullptr;if(error_)std::rethrow_exception(error_);
+    }
+};
+struct Mapping {
+    void* data=MAP_FAILED;size_t length=0;
+    explicit Mapping(const std::string& path) {
+        int fd=open(path.c_str(),O_RDONLY);require(fd>=0,"Cannot open weights");
+        struct stat st{};if(fstat(fd,&st)!=0 || st.st_size<64){close(fd);throw std::runtime_error("Invalid weights size");}
+        length=static_cast<size_t>(st.st_size);data=mmap(nullptr,length,PROT_READ,MAP_PRIVATE,fd,0);close(fd);
+        require(data!=MAP_FAILED,"Cannot mmap weights");
+    }
+    ~Mapping(){if(data!=MAP_FAILED)munmap(data,length);}
+};
+struct Tensor {int rows=0,cols=0;const Half* half=nullptr;const float* norm=nullptr;std::vector<float> wide;};
+float dot(const float* x,const Half* w,int n) {
+    float32x4_t a=vdupq_n_f32(0),b=a;
+    for(int j=0;j<n;j+=8) {
+        const float16x8_t wh=vld1q_f16(w+j);
+        a=vfmaq_f32(a,vld1q_f32(x+j),vcvt_f32_f16(vget_low_f16(wh)));
+        b=vfmaq_f32(b,vld1q_f32(x+j+4),vcvt_f32_f16(vget_high_f16(wh)));
+    }
+    return vaddvq_f32(vaddq_f32(a,b));
+}
+// Four independent rows share activation loads while retaining exactly the
+// scalar-row kernel's two accumulators, increasing-j FMA order and reduction.
+// Call only where four complete rows lie in the same matrix and worker slice.
+void dot4(const float* x,const Half* w,int n,float* y) {
+    float32x4_t a0=vdupq_n_f32(0),b0=a0,a1=a0,b1=a0,a2=a0,b2=a0,a3=a0,b3=a0;
+    for(int j=0;j<n;j+=8) {
+        const float32x4_t xl=vld1q_f32(x+j),xh=vld1q_f32(x+j+4);
+        const float16x8_t w0=vld1q_f16(w+j),w1=vld1q_f16(w+n+j),w2=vld1q_f16(w+2*n+j),w3=vld1q_f16(w+3*n+j);
+        a0=vfmaq_f32(a0,xl,vcvt_f32_f16(vget_low_f16(w0)));
+        b0=vfmaq_f32(b0,xh,vcvt_f32_f16(vget_high_f16(w0)));
+        a1=vfmaq_f32(a1,xl,vcvt_f32_f16(vget_low_f16(w1)));
+        b1=vfmaq_f32(b1,xh,vcvt_f32_f16(vget_high_f16(w1)));
+        a2=vfmaq_f32(a2,xl,vcvt_f32_f16(vget_low_f16(w2)));
+        b2=vfmaq_f32(b2,xh,vcvt_f32_f16(vget_high_f16(w2)));
+        a3=vfmaq_f32(a3,xl,vcvt_f32_f16(vget_low_f16(w3)));
+        b3=vfmaq_f32(b3,xh,vcvt_f32_f16(vget_high_f16(w3)));
+    }
+    y[0]=vaddvq_f32(vaddq_f32(a0,b0));y[1]=vaddvq_f32(vaddq_f32(a1,b1));
+    y[2]=vaddvq_f32(vaddq_f32(a2,b2));y[3]=vaddvq_f32(vaddq_f32(a3,b3));
+}
+// Two GQA queries share K conversion; each keeps the original dot's two
+// accumulators and identical per-lane FMA and final reduction order.
+void dot_query_pair(const float* q0,const float* q1,const Half* key,float& out0,float& out1) {
+    float32x4_t a0=vdupq_n_f32(0),b0=a0,a1=a0,b1=a0;
+    for(int j=0;j<D;j+=8) {
+        const float16x8_t packed=vld1q_f16(key+j);
+        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+        a0=vfmaq_f32(a0,vld1q_f32(q0+j),lo);b0=vfmaq_f32(b0,vld1q_f32(q0+j+4),hi);
+        a1=vfmaq_f32(a1,vld1q_f32(q1+j),lo);b1=vfmaq_f32(b1,vld1q_f32(q1+j+4),hi);
+    }
+    out0=vaddvq_f32(vaddq_f32(a0,b0));out1=vaddvq_f32(vaddq_f32(a1,b1));
+}
+// Original B2 verifier tiles: share weight loads/conversion, never combine
+// accumulators between positions. Each output retains B1's exact FMA sequence.
+void dot_verify_pair(const float* x0,const float* x1,const Half* w,int n,float& y0,float& y1) {
+    float32x4_t a0=vdupq_n_f32(0),b0=a0,a1=a0,b1=a0;
+    for(int j=0;j<n;j+=8) {
+        const float16x8_t packed=vld1q_f16(w+j);
+        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+        a0=vfmaq_f32(a0,vld1q_f32(x0+j),lo);b0=vfmaq_f32(b0,vld1q_f32(x0+j+4),hi);
+        a1=vfmaq_f32(a1,vld1q_f32(x1+j),lo);b1=vfmaq_f32(b1,vld1q_f32(x1+j+4),hi);
+    }
+    y0=vaddvq_f32(vaddq_f32(a0,b0));y1=vaddvq_f32(vaddq_f32(a1,b1));
+}
+void dot_verify_two_rows(const float* x0,const float* x1,const Half* w,int n,float* y0,float* y1) {
+    float32x4_t a00=vdupq_n_f32(0),b00=a00,a01=a00,b01=a00,a10=a00,b10=a00,a11=a00,b11=a00;
+    for(int j=0;j<n;j+=8) {
+        const float16x8_t w0=vld1q_f16(w+j),w1=vld1q_f16(w+n+j);
+        const float32x4_t l0=vcvt_f32_f16(vget_low_f16(w0)),h0=vcvt_f32_f16(vget_high_f16(w0));
+        const float32x4_t l1=vcvt_f32_f16(vget_low_f16(w1)),h1=vcvt_f32_f16(vget_high_f16(w1));
+        const float32x4_t x0l=vld1q_f32(x0+j),x0h=vld1q_f32(x0+j+4),x1l=vld1q_f32(x1+j),x1h=vld1q_f32(x1+j+4);
+        a00=vfmaq_f32(a00,x0l,l0);b00=vfmaq_f32(b00,x0h,h0);
+        a01=vfmaq_f32(a01,x0l,l1);b01=vfmaq_f32(b01,x0h,h1);
+        a10=vfmaq_f32(a10,x1l,l0);b10=vfmaq_f32(b10,x1h,h0);
+        a11=vfmaq_f32(a11,x1l,l1);b11=vfmaq_f32(b11,x1h,h1);
+    }
+    y0[0]=vaddvq_f32(vaddq_f32(a00,b00));y0[1]=vaddvq_f32(vaddq_f32(a01,b01));
+    y1[0]=vaddvq_f32(vaddq_f32(a10,b10));y1[1]=vaddvq_f32(vaddq_f32(a11,b11));
+}
+void norm(const float* x,const float* w,float* out,int n) {
+    // Accumulate FP32-rounded squares in FP64, then round the sum once
+    // before the existing FP32 scale and output operations.
+    double precise_sum=0;
+    for(int j=0;j<n;++j){const float square=x[j]*x[j];precise_sum+=static_cast<double>(square);}
+    const float sum=static_cast<float>(precise_sum);
+    const float inv=1.0f/std::sqrt(sum/n+1e-6f);
+    for(int j=0;j<n;++j)out[j]=(x[j]*inv)*w[j];
+}
+void rope(float* x,const float* cs,const float* sn) {
+    for(int j=0;j<64;++j){float a=x[j],b=x[j+64];x[j]=a*cs[j]-b*sn[j];x[j+64]=b*cs[j]+a*sn[j];}
+}
+}
+struct Model::Impl {
+    Options options;Mapping mapping;std::map<std::string,Tensor> tensors;
+    std::unique_ptr<Pool> decode_pool,prefill_pool;
+    std::vector<Half> keys,values;std::vector<float> cosines,sines,output;
+    // Retain allocation capacity across prefill chunks and decode steps. Every
+    // logical element is overwritten before use; reset only invalidates KV/logits.
+    std::vector<float> x,h,q,k,v,attended,residual,gate,up,attention_scores;
+    std::vector<float> half_gate,tanh_gate;
+    std::vector<float> shifted_scores,probabilities;
+    std::vector<float> pair_scores,pair_shifted,pair_probabilities;
+    std::array<float,H> last_hidden{};
+    int pos=0;
+    bool verification_pending=false;
+    std::vector<float> verification_logits,verification_hidden;
+    Impl(const std::string& path,Options opt):options(opt),mapping(path) {
+        require(opt.decode_threads>=1&&opt.decode_threads<=64&&opt.prefill_threads>=1&&opt.prefill_threads<=64,"Threads must be in 1..64");
+        require(opt.context>=1&&opt.context<=4096,"Context must be in 1..4096");
+        std::array<unsigned char,64> magic{};std::memcpy(magic.data(),"QWCPU01",7);
+        require(std::memcmp(mapping.data,magic.data(),64)==0,"Invalid weight pack header");
+        std::map<std::string,std::pair<int,int>> expected;
+        expected["model.embed_tokens.weight"]={vocabulary,H};expected["model.norm.weight"]={H,1};
+        for(int l=0;l<L;++l){std::string p="model.layers."+std::to_string(l)+".";
+            for(const char* n:{"input_layernorm","post_attention_layernorm"})expected[p+n+".weight"]={H,1};
+            for(const char* n:{"q_norm","k_norm"})expected[p+"self_attn."+n+".weight"]={D,1};
+            expected[p+"self_attn.q_proj.weight"]={Q*D,H};
+            expected[p+"self_attn.k_proj.weight"]={K*D,H};expected[p+"self_attn.v_proj.weight"]={K*D,H};
+            expected[p+"self_attn.o_proj.weight"]={H,Q*D};
+            expected[p+"mlp.gate_proj.weight"]={F,H};expected[p+"mlp.up_proj.weight"]={F,H};expected[p+"mlp.down_proj.weight"]={H,F};
+        }
+        std::ifstream index(path+".index");std::string signature;size_t count=0;
+        require(bool(index>>signature>>count)&&signature=="QWCPU01"&&count==expected.size(),"Invalid weight index header/count");
+        std::vector<std::pair<size_t,size_t>> ranges;
+        for(size_t i=0;i<count;++i) {
+            std::string name,type;uint64_t rows,cols,offset,length;
+            require(bool(index>>name>>type>>rows>>cols>>offset>>length),"Truncated weight index");
+            auto it=expected.find(name);require(it!=expected.end()&&!tensors.count(name),"Unexpected or duplicate tensor: "+name);
+            require(rows==static_cast<uint64_t>(it->second.first)&&cols==static_cast<uint64_t>(it->second.second),"Wrong tensor shape: "+name);
+            bool matrix=cols!=1;require(type==(matrix?"F16":"F32"),"Wrong tensor dtype: "+name);
+            require(length==rows*cols*(matrix?2:4)&&offset>=64&&offset%64==0&&offset<=mapping.length&&length<=mapping.length-offset,"Invalid tensor range: "+name);
+            ranges.emplace_back(offset,offset+length);Tensor t;t.rows=rows;t.cols=cols;
+            const auto* bytes=static_cast<const unsigned char*>(mapping.data)+offset;
+            if(matrix) {
+                t.half=reinterpret_cast<const Half*>(bytes);
+                // Layer-only FP32 cache costs ~1.76 GB, plus ~1.2 GB mapped F16
+                // weights. Output/embedding stays F16; cache avoids repeated
+                // conversion/temporary worker creation in batched prefill.
+                if(name!="model.embed_tokens.weight")t.wide.resize(rows*cols);
+                for(size_t j=0;j<rows*cols;++j){float v=t.half[j];if(!std::isfinite(v))throw std::runtime_error("Nonfinite matrix: "+name);if(!t.wide.empty())t.wide[j]=v;}
+            } else {
+                t.norm=reinterpret_cast<const float*>(bytes);
+                for(size_t j=0;j<rows;++j)require(std::isfinite(t.norm[j]),"Nonfinite norm: "+name);
+            }
+            tensors.emplace(name,std::move(t));
+        }
+        std::string extra;require(!(index>>extra),"Trailing weight index data");
+        std::sort(ranges.begin(),ranges.end());for(size_t i=1;i<ranges.size();++i)require(ranges[i].first>=ranges[i-1].second,"Overlapping tensors");
+        keys.resize(size_t(L)*opt.context*K*D);values.resize(keys.size());
+        attention_scores.resize(size_t(std::max(opt.decode_threads,opt.prefill_threads))*opt.context);
+        shifted_scores.resize(attention_scores.size());probabilities.resize(attention_scores.size());
+        pair_scores.resize(attention_scores.size());pair_shifted.resize(attention_scores.size());pair_probabilities.resize(attention_scores.size());
+        x.reserve(prefill_chunk*H);h.reserve(prefill_chunk*H);q.reserve(prefill_chunk*Q*D);k.reserve(prefill_chunk*K*D);v.reserve(prefill_chunk*K*D);
+        attended.reserve(prefill_chunk*Q*D);residual.reserve(prefill_chunk*H);gate.reserve(prefill_chunk*F);up.reserve(prefill_chunk*F);
+        half_gate.reserve(prefill_chunk*F);tanh_gate.reserve(prefill_chunk*F);
+        output.reserve(vocabulary);
+        cosines.resize(size_t(opt.context)*64);sines.resize(cosines.size());
+        for(int p=0;p<opt.context;++p)for(int j=0;j<64;++j){double angle=p/std::pow(1000000.0,2.0*j/D);cosines[p*64+j]=std::cos(angle);sines[p*64+j]=std::sin(angle);}
+        decode_pool=std::make_unique<Pool>(opt.decode_threads);prefill_pool=std::make_unique<Pool>(opt.prefill_threads);
+    }
+    Tensor& tensor(const std::string& name){return tensors.at(name);}
+    void project(Tensor& w,const float* x,float* y,int batch,Pool& pool) {
+        if(batch>1&&!w.wide.empty()) {
+            cblas_sgemm(CblasRowMajor,CblasNoTrans,CblasTrans,batch,w.rows,w.cols,1.0f,x,w.cols,w.wide.data(),w.cols,0.0f,y,w.rows);
+        } else {
+            pool.run(size_t(batch)*w.rows,[&](size_t begin,size_t end,int){
+                size_t i=begin;
+                if(batch==1)for(;i+4<=end;i+=4)dot4(x,w.half+i*w.cols,w.cols,y+i);
+                for(;i<end;++i)y[i]=dot(x+(i/w.rows)*w.cols,w.half+(i%w.rows)*w.cols,w.cols);
+            });
+        }
+    }
+    // Independent projections sharing one input can share one worker launch.
+    // Only row ownership changes: each dot keeps the original eight-lane order.
+    template<size_t N> void project_group(const std::array<Tensor*,N>& weights,
+                                          const float* input,
+                                          const std::array<float*,N>& outputs,Pool& pool) {
+        size_t total=0;for(const Tensor* w:weights)total+=w->rows;
+        pool.run(total,[&](size_t begin,size_t end,int){
+            size_t offset=0;
+            for(size_t segment=0;segment<N;++segment) {
+                const Tensor& w=*weights[segment];const size_t limit=offset+w.rows;
+                const size_t first=std::max(begin,offset),last=std::min(end,limit);
+                size_t i=first;
+                for(;i+4<=last;i+=4) {
+                    const size_t row=i-offset;
+                    dot4(input,w.half+row*w.cols,w.cols,outputs[segment]+row);
+                }
+                for(;i<last;++i) {
+                    const size_t row=i-offset;
+                    outputs[segment][row]=dot(input,w.half+row*w.cols,w.cols);
+                }
+                offset=limit;
+            }
+        });
+    }
+    void project_verify_range(const Tensor& w,const float* input,float* output,size_t begin,size_t end) {
+        size_t row=begin;
+        for(;row+2<=end;row+=2)
+            dot_verify_two_rows(input,input+w.cols,w.half+row*w.cols,w.cols,output+row,output+w.rows+row);
+        for(;row<end;++row)
+            dot_verify_pair(input,input+w.cols,w.half+row*w.cols,w.cols,output[row],output[w.rows+row]);
+    }
+    void project_verify(Tensor& w,const float* input,float* output,Pool& pool) {
+        pool.run(w.rows,[&](size_t begin,size_t end,int){project_verify_range(w,input,output,begin,end);});
+    }
+    template<size_t N> void project_group_verify(const std::array<Tensor*,N>& weights,
+                                                const float* input,const std::array<float*,N>& outputs,Pool& pool) {
+        size_t total=0;for(const Tensor* w:weights)total+=w->rows;
+        pool.run(total,[&](size_t begin,size_t end,int){
+            size_t offset=0;
+            for(size_t segment=0;segment<N;++segment) {
+                const Tensor& w=*weights[segment];const size_t limit=offset+w.rows;
+                const size_t first=std::max(begin,offset),last=std::min(end,limit);
+                if(first<last)project_verify_range(w,input,outputs[segment],first-offset,last-offset);
+                offset=limit;
+            }
+        });
+    }
+    // Full retained FP16 KV, laid out [layer][head][position][channel].
+    // Logical positions and visible context are unchanged; there is no eviction.
+    size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*K+head)*options.context+position)*D;}
+    void chunk(const int* ids,int batch,Pool& pool) {
+        x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
+        attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
+        half_gate.resize(gate.size());tanh_gate.resize(gate.size());
+        // Token-major attention has increasing causal lengths. A thin prefix-
+        // cost map balances those lengths while preserving contiguous, disjoint
+        // query ownership and each query's arithmetic/reduction order.
+        std::array<size_t,65> attention_ranges{};
+        if(batch>1) {
+            const size_t items=size_t(batch)*K;
+            const int workers=pool.worker_count();
+            auto prefix_cost=[&](size_t item)->uint64_t {
+                const uint64_t b=item/K,head=item%K;
+                const uint64_t preceding=b*(uint64_t(2)*pos+b+1)/2;
+                return K*preceding+head*(pos+b+1);
+            };
+            const uint64_t total=prefix_cost(items);
+            attention_ranges[0]=0;attention_ranges[workers]=items;
+            for(int worker=1;worker<workers;++worker) {
+                const uint64_t target=total*worker/workers;
+                size_t lo=0,hi=items;
+                while(lo<hi) {
+                    const size_t mid=lo+(hi-lo)/2;
+                    if(prefix_cost(mid)<target)lo=mid+1;else hi=mid;
+                }
+                attention_ranges[worker]=lo;
+            }
+        }
+        const Half* embeddings=tensor("model.embed_tokens.weight").half;
+        for(int b=0;b<batch;++b)for(int j=0;j<H;++j)x[b*H+j]=embeddings[size_t(ids[b])*H+j];
+        for(int layer=0;layer<L;++layer){std::string p="model.layers."+std::to_string(layer)+".";
+            const float* nw=tensor(p+"input_layernorm.weight").norm;
+            for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
+            if(batch==1) {
+                project_group<3>({&tensor(p+"self_attn.q_proj.weight"),&tensor(p+"self_attn.k_proj.weight"),&tensor(p+"self_attn.v_proj.weight")},
+                                 h.data(),{q.data(),k.data(),v.data()},pool);
+            } else {
+                project(tensor(p+"self_attn.q_proj.weight"),h.data(),q.data(),batch,pool);
+                project(tensor(p+"self_attn.k_proj.weight"),h.data(),k.data(),batch,pool);
+                project(tensor(p+"self_attn.v_proj.weight"),h.data(),v.data(),batch,pool);
+            }
+            const float* qn=tensor(p+"self_attn.q_norm.weight").norm;const float* kn=tensor(p+"self_attn.k_norm.weight").norm;
+            for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
+                for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
+                for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
+                // Heads are no longer adjacent for a single token. Convert
+                // canonical K/V once at their original logical head/position.
+                for(int head=0;head<K;++head) {
+                    const size_t dst=cache_offset(layer,pos+b,head);
+                    const size_t src=(size_t(b)*K+head)*D;
+                    for(int j=0;j<D;++j){keys[dst+j]=Half(k[src+j]);values[dst+j]=Half(v[src+j]);}
+                }
+            }
+            if(batch>1) {
+                // One item owns both query heads for one KV head. The factor
+                // two cancels in the cumulative-cost scheduling targets.
+                pool.run(size_t(batch)*K,[&](size_t,size_t,int worker){
+                    const size_t begin=attention_ranges[worker],end=attention_ranges[worker+1];
+                    const size_t scratch=size_t(worker)*options.context;
+                    float* scores0=attention_scores.data()+scratch;float* scores1=pair_scores.data()+scratch;
+                    float* shifted0=shifted_scores.data()+scratch;float* shifted1=pair_shifted.data()+scratch;
+                    float* probs0=probabilities.data()+scratch;float* probs1=pair_probabilities.data()+scratch;
+                    for(size_t item=begin;item<end;++item) {
+                        const int b=item/K,kh=item%K,n=pos+b+1;
+                        const size_t head0=size_t(b)*Q+2*kh;
+                        const float* query0=q.data()+head0*D;const float* query1=query0+D;
+                        float maximum0=-std::numeric_limits<float>::infinity(),maximum1=maximum0;
+                        for(int t=0;t<n;++t) {
+                            float score0,score1;
+                            dot_query_pair(query0,query1,keys.data()+cache_offset(layer,t,kh),score0,score1);
+                            score0*=1.0f/std::sqrt(float(D));score1*=1.0f/std::sqrt(float(D));
+                            scores0[t]=score0;scores1[t]=score1;
+                            maximum0=std::max(maximum0,score0);maximum1=std::max(maximum1,score1);
+                        }
+                        for(int t=0;t<n;++t)shifted0[t]=scores0[t]-maximum0;
+                        for(int t=0;t<n;++t)shifted1[t]=scores1[t]-maximum1;
+                        // Keep separate vector-libm calls of the original length;
+                        // concatenating the heads could select different arithmetic.
+                        vvexpf(probs0,shifted0,&n);vvexpf(probs1,shifted1,&n);
+                        float sum0=0;for(int t=0;t<n;++t)sum0+=probs0[t];
+                        float sum1=0;for(int t=0;t<n;++t)sum1+=probs1[t];
+                        float* dest0=attended.data()+head0*D;float* dest1=dest0+D;
+                        // Fixed 32-time/32-channel blocking bounds the active KV
+                        // span without changing any output's ascending-t FMAs.
+                        // Each boundary stores/reloads FP32 accumulators exactly.
+                        for(int t=0;t<n;++t)probs0[t]=probs0[t]/sum0;
+                        for(int t=0;t<n;++t)probs1[t]=probs1[t]/sum1;
+                        for(int time_begin=0;time_begin<n;time_begin+=32) {
+                            const int time_end=std::min(n,time_begin+32);
+                            for(int j=0;j<D;j+=32) {
+                                float32x4_t a00=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+0),a01=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+4),a02=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+8),a03=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+12),a04=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+16),a05=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+20),a06=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+24),a07=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+28);
+                                float32x4_t a10=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+0),a11=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+4),a12=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+8),a13=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+12),a14=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+16),a15=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+20),a16=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+24),a17=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+28);
+                                for(int t=time_begin;t<time_end;++t) {
+                                    const float prob0=probs0[t],prob1=probs1[t];
+                                    const Half* val=values.data()+cache_offset(layer,t,kh)+j;
+                                    {
+                                        const float16x8_t packed=vld1q_f16(val+0);
+                                        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                        a00=vfmaq_n_f32(a00,lo,prob0);a01=vfmaq_n_f32(a01,hi,prob0);
+                                        a10=vfmaq_n_f32(a10,lo,prob1);a11=vfmaq_n_f32(a11,hi,prob1);
+                                    }
+                                    {
+                                        const float16x8_t packed=vld1q_f16(val+8);
+                                        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                        a02=vfmaq_n_f32(a02,lo,prob0);a03=vfmaq_n_f32(a03,hi,prob0);
+                                        a12=vfmaq_n_f32(a12,lo,prob1);a13=vfmaq_n_f32(a13,hi,prob1);
+                                    }
+                                    {
+                                        const float16x8_t packed=vld1q_f16(val+16);
+                                        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                        a04=vfmaq_n_f32(a04,lo,prob0);a05=vfmaq_n_f32(a05,hi,prob0);
+                                        a14=vfmaq_n_f32(a14,lo,prob1);a15=vfmaq_n_f32(a15,hi,prob1);
+                                    }
+                                    {
+                                        const float16x8_t packed=vld1q_f16(val+24);
+                                        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                        a06=vfmaq_n_f32(a06,lo,prob0);a07=vfmaq_n_f32(a07,hi,prob0);
+                                        a16=vfmaq_n_f32(a16,lo,prob1);a17=vfmaq_n_f32(a17,hi,prob1);
+                                    }
+                                }
+                                vst1q_f32(dest0+j+0,a00);
+                                vst1q_f32(dest0+j+4,a01);
+                                vst1q_f32(dest0+j+8,a02);
+                                vst1q_f32(dest0+j+12,a03);
+                                vst1q_f32(dest0+j+16,a04);
+                                vst1q_f32(dest0+j+20,a05);
+                                vst1q_f32(dest0+j+24,a06);
+                                vst1q_f32(dest0+j+28,a07);
+                                vst1q_f32(dest1+j+0,a10);
+                                vst1q_f32(dest1+j+4,a11);
+                                vst1q_f32(dest1+j+8,a12);
+                                vst1q_f32(dest1+j+12,a13);
+                                vst1q_f32(dest1+j+16,a14);
+                                vst1q_f32(dest1+j+20,a15);
+                                vst1q_f32(dest1+j+24,a16);
+                                vst1q_f32(dest1+j+28,a17);
+                            }
+                        }
+                    }
+                });
+            } else pool.run(size_t(batch)*Q,[&](size_t begin,size_t end,int worker){
+                float* scores=attention_scores.data()+size_t(worker)*options.context;
+                float* shifted=shifted_scores.data()+size_t(worker)*options.context;
+                float* probs=probabilities.data()+size_t(worker)*options.context;
+                for(size_t item=begin;item<end;++item){int b=item/Q,head=item%Q,kh=head/2,n=pos+b+1;
+                    const float* query=q.data()+item*D;float maximum=-std::numeric_limits<float>::infinity();
+                    for(int t=0;t<n;++t){float s=dot(query,keys.data()+cache_offset(layer,t,kh),D)*(1.0f/std::sqrt(float(D)));scores[t]=s;maximum=std::max(maximum,s);}
+                    // Keep causal length, maximum subtraction, and sequential
+                    // normalization sum; only scalar libm becomes vector libm.
+                    // vForce.h allows denormal/result differences, requiring gates.
+                    for(int t=0;t<n;++t)shifted[t]=scores[t]-maximum;
+                    vvexpf(probs,shifted,&n);
+                    float sum=0;for(int t=0;t<n;++t)sum+=probs[t];
+                    float* dest=attended.data()+item*D;std::fill(dest,dest+D,0.0f);
+                    for(int t=0;t<n;++t){float prob=probs[t]/sum;const Half* val=values.data()+cache_offset(layer,t,kh);
+                        for(int j=0;j<D;j+=8){float16x8_t vv=vld1q_f16(val+j);vst1q_f32(dest+j,vfmaq_n_f32(vld1q_f32(dest+j),vcvt_f32_f16(vget_low_f16(vv)),prob));vst1q_f32(dest+j+4,vfmaq_n_f32(vld1q_f32(dest+j+4),vcvt_f32_f16(vget_high_f16(vv)),prob));}
+                    }
+                }
+            });
+            project(tensor(p+"self_attn.o_proj.weight"),attended.data(),residual.data(),batch,pool);
+            for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
+            nw=tensor(p+"post_attention_layernorm.weight").norm;for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
+            if(batch==1) {
+                project_group<2>({&tensor(p+"mlp.gate_proj.weight"),&tensor(p+"mlp.up_proj.weight")},h.data(),{gate.data(),up.data()},pool);
+            } else {
+                project(tensor(p+"mlp.gate_proj.weight"),h.data(),gate.data(),batch,pool);project(tensor(p+"mlp.up_proj.weight"),h.data(),up.data(),batch,pool);
+            }
+            // vForce is an explicit CPU vector-libm path, including batch one.
+            // Apple vForce.h permits denormal flushing and OS/architecture-dependent
+            // results; this change requires the full numerical gate, not bit equality.
+            for(size_t j=0;j<gate.size();++j)half_gate[j]=gate[j]*0.5f;
+            const int gate_count=static_cast<int>(gate.size());
+            vvtanhf(tanh_gate.data(),half_gate.data(),&gate_count);
+            for(size_t j=0;j<gate.size();++j)gate[j]=gate[j]*(0.5f+0.5f*tanh_gate[j])*up[j];
+            project(tensor(p+"mlp.down_proj.weight"),gate.data(),residual.data(),batch,pool);
+            for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
+        }
+        pos+=batch;
+        // Keep only last hidden state; vocabulary is computed once per API call.
+        norm(x.data()+size_t(batch-1)*H,tensor("model.norm.weight").norm,last_hidden.data(),H);
+    }
+    void verify_chunk(const int* ids,Pool& pool) {
+        constexpr int batch=2;
+        x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
+        attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
+        half_gate.resize(gate.size());tanh_gate.resize(gate.size());
+        const Half* embeddings=tensor("model.embed_tokens.weight").half;
+        for(int b=0;b<batch;++b)for(int j=0;j<H;++j)x[b*H+j]=embeddings[size_t(ids[b])*H+j];
+        for(int layer=0;layer<L;++layer){std::string p="model.layers."+std::to_string(layer)+".";
+            const float* nw=tensor(p+"input_layernorm.weight").norm;
+            for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
+            project_group_verify<3>({&tensor(p+"self_attn.q_proj.weight"),&tensor(p+"self_attn.k_proj.weight"),&tensor(p+"self_attn.v_proj.weight")},
+                                    h.data(),{q.data(),k.data(),v.data()},pool);
+            const float* qn=tensor(p+"self_attn.q_norm.weight").norm;const float* kn=tensor(p+"self_attn.k_norm.weight").norm;
+            for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
+                for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
+                for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
+                // Heads are no longer adjacent for a single token. Convert
+                // canonical K/V once at their original logical head/position.
+                for(int head=0;head<K;++head) {
+                    const size_t dst=cache_offset(layer,pos+b,head);
+                    const size_t src=(size_t(b)*K+head)*D;
+                    for(int j=0;j<D;++j){keys[dst+j]=Half(k[src+j]);values[dst+j]=Half(v[src+j]);}
+                }
+            }
+            pool.run(size_t(batch)*Q,[&](size_t begin,size_t end,int worker){
+                float* scores=attention_scores.data()+size_t(worker)*options.context;
+                float* shifted=shifted_scores.data()+size_t(worker)*options.context;
+                float* probs=probabilities.data()+size_t(worker)*options.context;
+                for(size_t item=begin;item<end;++item){int b=item/Q,head=item%Q,kh=head/2,n=pos+b+1;
+                    const float* query=q.data()+item*D;float maximum=-std::numeric_limits<float>::infinity();
+                    for(int t=0;t<n;++t){float s=dot(query,keys.data()+cache_offset(layer,t,kh),D)*(1.0f/std::sqrt(float(D)));scores[t]=s;maximum=std::max(maximum,s);}
+                    // Keep causal length, maximum subtraction, and sequential
+                    // normalization sum; only scalar libm becomes vector libm.
+                    // vForce.h allows denormal/result differences, requiring gates.
+                    for(int t=0;t<n;++t)shifted[t]=scores[t]-maximum;
+                    vvexpf(probs,shifted,&n);
+                    float sum=0;for(int t=0;t<n;++t)sum+=probs[t];
+                    float* dest=attended.data()+item*D;std::fill(dest,dest+D,0.0f);
+                    for(int t=0;t<n;++t){float prob=probs[t]/sum;const Half* val=values.data()+cache_offset(layer,t,kh);
+                        for(int j=0;j<D;j+=8){float16x8_t vv=vld1q_f16(val+j);vst1q_f32(dest+j,vfmaq_n_f32(vld1q_f32(dest+j),vcvt_f32_f16(vget_low_f16(vv)),prob));vst1q_f32(dest+j+4,vfmaq_n_f32(vld1q_f32(dest+j+4),vcvt_f32_f16(vget_high_f16(vv)),prob));}
+                    }
+                }
+            });
+            project_verify(tensor(p+"self_attn.o_proj.weight"),attended.data(),residual.data(),pool);
+            for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
+            nw=tensor(p+"post_attention_layernorm.weight").norm;for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
+            project_group_verify<2>({&tensor(p+"mlp.gate_proj.weight"),&tensor(p+"mlp.up_proj.weight")},h.data(),{gate.data(),up.data()},pool);
+            // Preserve B1's nonlinear call length separately for each position;
+            // a concatenated B2 call is not an exact-verification substitute.
+            for(size_t j=0;j<gate.size();++j)half_gate[j]=gate[j]*0.5f;
+            const int gate_count=F;
+            for(int b=0;b<batch;++b)vvtanhf(tanh_gate.data()+b*F,half_gate.data()+b*F,&gate_count);
+            for(size_t j=0;j<gate.size();++j)gate[j]=gate[j]*(0.5f+0.5f*tanh_gate[j])*up[j];
+            project_verify(tensor(p+"mlp.down_proj.weight"),gate.data(),residual.data(),pool);
+            for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
+        }
+        for(int b=0;b<batch;++b)
+            norm(x.data()+size_t(b)*H,tensor("model.norm.weight").norm,verification_hidden.data()+size_t(b)*H,H);
+        project_verify(tensor("model.embed_tokens.weight"),verification_hidden.data(),verification_logits.data(),pool);
+    }
+    void append(const std::vector<int>& ids,bool prefill) {
+        if(verification_pending)throw std::runtime_error("Commit or discard pending verification before inference");
+        require(!ids.empty(),"Empty token input");require(ids.size()<=size_t(options.context-pos),"Context capacity exceeded");
+        for(int id:ids)require(id>=0&&id<vocabulary,"Token ID out of range");
+        Pool& pool=prefill?*prefill_pool:*decode_pool;
+        for(size_t begin=0;begin<ids.size();begin+=prefill_chunk){int batch=std::min(prefill_chunk,ids.size()-begin);chunk(ids.data()+begin,batch,pool);}
+        output.resize(vocabulary);project(tensor("model.embed_tokens.weight"),last_hidden.data(),output.data(),1,pool);
+    }
+};
+Model::Model(const std::string& path,Options options):impl_(std::make_unique<Impl>(path,options)){}
+Model::~Model()=default;
+void Model::reset(){
+    impl_->pos=0;impl_->output.clear();impl_->verification_pending=false;
+    impl_->verification_logits.clear();impl_->verification_hidden.clear();
+}
+void Model::truncate(int position){
+    require(position>=0&&position<=impl_->pos,"Rewind position out of range");
+    impl_->pos=position;impl_->output.clear();impl_->verification_pending=false;
+    impl_->verification_logits.clear();impl_->verification_hidden.clear();
+}
+void Model::prefill(const std::vector<int>& ids){impl_->append(ids,true);}
+void Model::step(int token){impl_->append(std::vector<int>{token},false);}
+VerificationRows Model::verify_two(int first,int second){
+    require(!impl_->verification_pending,"Verification already pending");
+    require(first>=0&&first<vocabulary&&second>=0&&second<vocabulary,"Token ID out of range");
+    require(impl_->pos<=impl_->options.context-2,"Context capacity exceeded");
+    try {
+        impl_->verification_logits.resize(size_t(2)*vocabulary);
+        impl_->verification_hidden.resize(size_t(2)*H);
+        const int ids[2]={first,second};
+        impl_->verify_chunk(ids,*impl_->decode_pool);
+        impl_->verification_pending=true;
+        return {impl_->verification_logits,impl_->verification_hidden,impl_->pos};
+    } catch(...) {reset();throw;}
+}
+void Model::commit_verified(int count){
+    require(impl_->verification_pending,"No verification pending");
+    require(count==1||count==2,"Commit count must be one or two");
+    try {
+        impl_->output.resize(vocabulary);
+        std::copy_n(impl_->verification_logits.data()+size_t(count-1)*vocabulary,vocabulary,impl_->output.data());
+        std::copy_n(impl_->verification_hidden.data()+size_t(count-1)*H,H,impl_->last_hidden.data());
+        impl_->pos+=count;impl_->verification_pending=false;
+        impl_->verification_logits.clear();impl_->verification_hidden.clear();
+    } catch(...) {reset();throw;}
+}
+const std::vector<float>& Model::logits()const{return impl_->output;}
+std::span<const float> Model::hidden()const{
+    require(impl_->pos>0&&impl_->output.size()==vocabulary,"No current hidden state");
+    return std::span<const float>(impl_->last_hidden);
+}
+int Model::position()const{return impl_->pos;}
+std::size_t Model::lossless_bf16_cache_bytes()const{return 0;}
+}

@@ -1,0 +1,173 @@
+{
+  "completed": true,
+  "passed": true,
+  "live_mutation": false,
+  "staging_sha256": "4b595319a8402c305bd3fa767ae5c023a6486d4dcfdf4a229ffbf8fb8c6e8655",
+  "binary_sha256": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+  "commands": [
+    [
+      "$REPO/.venv/bin/python",
+      "$REPO/tests/native_cpu_browser_server.py",
+      "--binary",
+      "$REPO/build/native-cpu/build-20/qwen_cpu",
+      "--guard-state-dir",
+      "$REPO/build/native-cpu/build-20-browser-guard"
+    ],
+    [
+      "$REPO/.venv/bin/python",
+      "$REPO/tests/browser_native_cpu.py",
+      "--url",
+      "http://127.0.0.1:8766",
+      "--expect-prefix-reuse",
+      "--expect-greedy-suffix",
+      "--expect-norm-accumulator-f64",
+      "--guard-state-dir",
+      "$REPO/build/native-cpu/build-20-browser-guard",
+      "--directory",
+      "$REPO/build/native-cpu/build-20-browser-isolated"
+    ]
+  ],
+  "cleanup": {
+    "owned_server_returncode": 0
+  },
+  "helper_sha256": {
+    "$REPO/build/native-cpu/release20_common.py": "fd8e7e919f2fa8fa38a21a134a5203848bbfd1b0b2a7b763e8ebf38efd1f0a78",
+    "$REPO/build/native-cpu/stage-release20.py": "a836d01ff5eab29b8a340bc75f3640a97102788b746efa8653f61c4752f9bc4d",
+    "$REPO/build/native-cpu/promote-release20.py": "581641ab5a8b386c730faec89b3d83ecaf38a27739877968083fcd5819e1b71a",
+    "$REPO/build/native-cpu/run-release20-browser-isolated.py": "40d76ab78ad84e53db9d33a3a2cf6babec29fed22cf21d8bd20417567a9d5dc8",
+    "$REPO/build/native-cpu/run-release20-browser-live.py": "bbd038c881a4167867508782f1533f01e33c0680d81fbe7a4518d952291cfcb6",
+    "$REPO/tests/browser_native_cpu.py": "407c73851b4c0f882d25fdeb947721c2131c883fc511754fc89f105885e2209d",
+    "$REPO/tests/native_cpu_browser_server.py": "77f603a5befc7bbf13637f5245837a4b0d49404a3b789e7487321ec7d0c00c0c",
+    "$REPO/tools/benchmark_guard.py": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7",
+    "$REPO/tools/chat_server.py": "1c5c18e8177838cdbeefe8d658457c98360c197bb287794062549fe341217c35"
+  },
+  "ready_status": {
+    "ready": true,
+    "busy": false,
+    "model": "Qwen3-0.6B",
+    "device": "cpu",
+    "precision": "FP16 matrices / FP32 norm weights / FP16 KV",
+    "norm_accumulator_precision": null,
+    "gpu_inference": false,
+    "pytorch_loaded": false,
+    "cpu_threads": 12,
+    "prefill_workers": 6,
+    "decode_workers": 12,
+    "context_limit": 4096,
+    "rtl": null,
+    "inference": "Original native CPU engine (experimental)",
+    "accelerate_thread_request": 6,
+    "thread_placement": "No hard pinning; Accelerate thread count requested, not independently verified",
+    "cached_tokens": 0,
+    "prefix_reuse_supported": false,
+    "prefix_reuse_enabled": false,
+    "canonical_reusable_tokens": 0,
+    "canonical_prefix_policy": null,
+    "suffix_supported": false,
+    "suffix_greedy_only": true,
+    "max_verified_draft": 0,
+    "prefill_block_size": null,
+    "precision_profile": null,
+    "precision_verified": false,
+    "reduction_lanes": null,
+    "prefill_reduction_lanes": null,
+    "build_id": "build-20",
+    "backends": [
+      {
+        "id": "native-cpu-f16",
+        "label": "Native CPU \u00b7 FP16 \u00b7 build-20 \u00b7 12/6 threads",
+        "build_id": "build-20",
+        "available": true,
+        "cpu_threads": 12,
+        "prefill_workers": 6,
+        "norm_accumulator_precision": null,
+        "simulation": false,
+        "prefix_reuse_supported": false,
+        "prefix_reuse_enabled": false,
+        "canonical_prefix_policy": null,
+        "canonical_reusable_tokens": 0,
+        "suffix_supported": false,
+        "suffix_greedy_only": true,
+        "max_draft": 0,
+        "default_eligible": true
+      },
+      {
+        "id": "rtl",
+        "label": "SystemVerilog \u00b7 fast",
+        "available": true,
+        "cpu_threads": 8,
+        "simulation": true,
+        "min_workers": 0,
+        "fixed_workers": null,
+        "prefill_workers": null,
+        "decode_workers": null,
+        "precision": "BF16 weights / FP64 arithmetic and KV",
+        "prefix_reuse_supported": true,
+        "canonical_prefix_policy": null,
+        "suffix_supported": true,
+        "max_draft": 3,
+        "prefill_block_size": 8
+      },
+      {
+        "id": "rtl-fp32",
+        "label": "SystemVerilog \u00b7 FP32 hybrid",
+        "available": false,
+        "simulation": true,
+        "min_workers": 1,
+        "suffix_supported": false
+      },
+      {
+        "id": "rtl-fp32-phase",
+        "label": "SystemVerilog \u00b7 FP32 hybrid \u00b7 12 prefill / 8 decode",
+        "available": false,
+        "simulation": true,
+        "min_workers": 1,
+        "fixed_workers": 8,
+        "suffix_supported": false
+      },
+      {
+        "id": "rtl-fp32-fused-phase",
+        "label": "SystemVerilog \u00b7 Fused FP32 prefill \u00b7 12 prefill / 8 decode",
+        "available": false,
+        "simulation": true,
+        "min_workers": 1,
+        "fixed_workers": 8,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-q4",
+        "label": "llama.cpp \u00b7 Q4_K_M",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-f16",
+        "label": "llama.cpp \u00b7 FP16",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      },
+      {
+        "id": "llama-f32",
+        "label": "llama.cpp \u00b7 FP32",
+        "available": true,
+        "cpu_threads": 6,
+        "suffix_supported": false
+      }
+    ],
+    "active_backend": "native-cpu-f16",
+    "default_backend": "native-cpu-f16",
+    "benchmark": {
+      "running": false,
+      "last_run": null
+    }
+  },
+  "browser_returncode": 0,
+  "browser_report_sha256": "36f1d6dd0aaec41aafd497a494515f76174b3809b8cb65d89d26fa1ac2836dcb",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/build-20-browser-isolated-launch/report.json",
+    "source_sha256": "262a0c2198531dfb2cdc41881f08a2c349ec5283ff6dce9eb76ae906b0f08fb9",
+    "sanitization": "Repository/home paths and process identifiers/names sanitized using final comparison archive helper. Full evidence retained."
+  }
+}

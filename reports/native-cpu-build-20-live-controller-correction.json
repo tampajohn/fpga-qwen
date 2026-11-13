@@ -1,0 +1,13 @@
+{
+  "completed": true,
+  "reason": "Original controller omitted required --live flag; argument parser rejected before browser execution. Original frozen helper remains unchanged.",
+  "original_helper_sha256": "bbd038c881a4167867508782f1533f01e33c0680d81fbe7a4518d952291cfcb6",
+  "executed_helper_sha256": "ecd697541510ed18eb004d48f8f20c51715306b522ea5f54701429d188c754b2",
+  "executed_helper": "$REPO/build/native-cpu/run-release20-browser-live-v2.py",
+  "binding_sha256": "a8dd2fbfe48f765ee768b73ab5a43e78440a186a8e67195b5c2a8c2c1e72736c",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/build-20-live-controller-correction.json",
+    "source_sha256": "c82f3008dcbb031ee1a6026086c35a0b4817624c8545d21aac2c710c0de2cb90",
+    "sanitization": "Repository/home paths and process identifiers/names sanitized using final comparison archive helper. Full evidence retained."
+  }
+}
