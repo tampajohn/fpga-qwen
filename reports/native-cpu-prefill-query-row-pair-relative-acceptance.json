@@ -1,0 +1,49 @@
+{
+  "completed": true,
+  "passed_relative_acceptance": true,
+  "absolute_numerical_qualification": false,
+  "promoted": false,
+  "performance_claim": false,
+  "candidate_binary_sha256": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+  "candidate_manifest_sha256": "e0954d18b281fb2652421daacc85b8247d930744d846247a359df220face8dc9",
+  "reports": [
+    {
+      "raw_report": "build/native-cpu/prefill-query-row-pair-verify-api/report.json",
+      "raw_sha256": "29203d5c9f6dddcd1ebeadc1d59992d864c6396f990d0e989b988baace545bc6",
+      "archive": "reports/native-cpu-prefill-query-row-pair-verify-api.json",
+      "archive_sha256": "3bf48213be3abdf2bce58108dbaa0ce9ca3c9450f46b4158bb4e6933ba34b9e3"
+    },
+    {
+      "raw_report": "build/native-cpu/prefill-query-row-pair-prefix-check/report.json",
+      "raw_sha256": "eca07456eb5492e972c92fb9e28ce7e7f0311fda8bbc9a4d929e8b08ed4528ae",
+      "archive": "reports/native-cpu-prefill-query-row-pair-prefix-check.json",
+      "archive_sha256": "a5cdda340f1bcb92655ab684a9e41e0b72c58b9094a6785e24f29eef81c4d1a9"
+    },
+    {
+      "raw_report": "build/native-cpu/prefill-query-row-pair-suffix-trajectories.json",
+      "raw_sha256": "f9e17a9b115032d97fdde3b299c3f12e23d65d8fde19d0cd226fe71ce8c72a0f",
+      "archive": "reports/native-cpu-prefill-query-row-pair-suffix-trajectories.json",
+      "archive_sha256": "eae175c1e9a36536d787bf18c3d54c34db7757ba86dfa67edbe49f5dc3b3e765"
+    },
+    {
+      "raw_report": "build/native-cpu/prefill-query-row-pair-suffix-cli/report.json",
+      "raw_sha256": "e7f402dc2ea329056c15107b535770bb4812f0d806ddc9e48f1be93dd49fbb2d",
+      "archive": "reports/native-cpu-prefill-query-row-pair-suffix-cli.json",
+      "archive_sha256": "801ec0bcfd6021d81996fdb680aa48c3667dea564fd15a593d8c22cf17ac1bc6"
+    },
+    {
+      "raw_report": "build/native-cpu/prefill-query-row-pair-quality.json",
+      "raw_sha256": "a47fb8d8eb5215f5bb750962d476a2763906fe495038748cda4561aa15914950",
+      "archive": "reports/native-cpu-prefill-query-row-pair-quality.json",
+      "archive_sha256": "7fda9459d5059b415f3774ae2f50f208c1640d9712f61cec5058ba6347b04121"
+    },
+    {
+      "raw_report": "build/native-cpu/prefill-query-row-pair-extended-quality.json",
+      "raw_sha256": "9249ba2c19fa573098117b1acc10becdb7fc939ce72a0c153315a6d7170fe468",
+      "archive": "reports/native-cpu-prefill-query-row-pair-extended-quality.json",
+      "archive_sha256": "4331448fcd4928f70cf045f59b8ba213e9c2420bd0959d7ed8a876f8ad3b172f"
+    }
+  ],
+  "quality_scope": "Exact complete trajectories and same grades as tuned llama:4/9 and10/18; no general quality gain.",
+  "known_limit": "Build19 independent absolute63 failure remains unresolved; relative/lifecycle checks do not establish absolute oracle qualification."
+}
