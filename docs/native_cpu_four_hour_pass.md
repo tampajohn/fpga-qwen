@@ -219,3 +219,30 @@ expects the original `build/native-cpu/numerical-diagnostics/` location, which
 must be restored when reproducing it. Source-only flags in helper provenance
 refer to preparation; the terminal reports establish execution. No engine or
 shared capture helper was changed by this diagnostic publication.
+
+
+## Matched-input projection roundoff diagnostic
+
+The completed [local projection study](../reports/native-cpu-matched-projection-roundoff-v1.json)
+evaluates every layer0 Q/K/V output row (4096 total), using the same captured
+FP32 normalized input at zero-based position62 and the same stored FP16 weights.
+Its diagnostic reference forms each product in FP64 and reduces all1024 products
+with `math.fsum`. It is not a replacement network oracle, a changed acceptance
+limit or a model inference run. The [exact helper snapshot](../tools/experiments/analyze-matched-projection-roundoff.py.txt)
+retains its original location-dependent imports and is archived as text.
+
+| Tensor | Rows | SGEMM RMS error | B1 dot RMS error | NumPy matvec RMS error |
+|---|---:|---:|---:|---:|
+| q_projection | 2048 | 7.57166603e-07 | 1.76109722e-07 | 8.03470344e-08 |
+| k_projection | 1024 | 7.96927272e-07 | 2.0275783e-07 | 7.9777722e-08 |
+| v_projection | 1024 | 1.26186197e-07 | 5.92250517e-08 | 2.55833279e-08 |
+
+For these three complete tensors, captured native SGEMM has larger RMS error
+against this higher-precision local reference than either captured B1 dot or
+NumPy matvec on the identical input. This isolates projection roundoff for this
+input, but does not establish a library defect or explain all later network
+error. Different FP32 reduction orders legitimately differ; NumPy may select a
+different BLAS algorithm. Large ULP counts on near-zero outputs must be read
+alongside absolute and RMS errors, not treated as catastrophic relative error
+or a new pass/fail threshold. The report preserves full ULP histograms, rows,
+input identity and source/artifact bindings. No timing or promotion claim is made.

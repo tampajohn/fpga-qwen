@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+"""Guarded matched-input projection diagnostics; not a network oracle or performance gate."""
+import argparse,hashlib,json,math,os,sys
+from pathlib import Path
+os.environ['VECLIB_MAXIMUM_THREADS']='4'
+os.environ['OPENBLAS_NUM_THREADS']='4'
+ROOT=Path(__file__).resolve().parents[3]
+sys.path.insert(0,str(ROOT/'tools'))
+from benchmark_native_phase0 import guard
+from experiment import read_header
+import numpy as np
+
+def sha(path):
+ with Path(path).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def ordered_float32(a):
+ bits=a.view(np.uint32).copy();bits[a==0]=0
+ return np.where((bits&np.uint32(0x80000000))!=0,~bits,bits|np.uint32(0x80000000)).astype(np.int64)
+def measure(actual,reference):
+ rounded=reference.astype(np.float32);actual64=actual.astype(np.float64)
+ error=actual64-reference;absolute=np.abs(error);rms=float(np.sqrt(np.mean(error*error)));rr=float(np.sqrt(np.mean(reference*reference)))
+ distances=np.abs(ordered_float32(actual)-ordered_float32(rounded));unique,counts=np.unique(distances,return_counts=True)
+ worst=int(absolute.argmax());worst_ulp=int(distances.argmax())
+ return dict(rows=len(actual),max_absolute_error=float(absolute[worst]),rms_error=rms,reference_rms=rr,relative_rms=(rms/rr if rr else None),worst_absolute_row=worst,actual_at_worst=float(actual64[worst]),reference_at_worst=float(reference[worst]),ulp_reference='FP32-rounded math.fsum of exact FP64 products; descriptive diagnostic, not a changed model oracle',ulp_distance_quantiles={str(q):float(np.quantile(distances,q)) for q in (0,.5,.9,.95,.99,1)},ulp_distance_histogram={str(int(k)):int(v) for k,v in zip(unique,counts)},zero_ulp_rows=int((distances==0).sum()),worst_ulp_row=worst_ulp,actual_at_worst_ulp=float(actual64[worst_ulp]),reference_at_worst_ulp=float(reference[worst_ulp]),max_ulp_distance=int(distances.max()),signed_zero_note='Signed zeros collapse only for ULP distance; original full-array hashes remain preserved.')
+def main():
+ p=argparse.ArgumentParser(description=__doc__)
+ p.add_argument('--stage-analysis',type=Path,default=ROOT/'build/native-cpu/native63-stage-analysis-v1.json')
+ p.add_argument('--batch-trace',type=Path,default=ROOT/'build/native-cpu/native63-batched-layer-trace-v1/capture-000000')
+ p.add_argument('--sequential-trace',type=Path,default=ROOT/'build/native-cpu/native63-sequential-layer-trace-v1/capture-000000')
+ p.add_argument('--weights',type=Path,default=ROOT/'build/native-cpu/weights.bin')
+ p.add_argument('--include-numpy',action='store_true',help='Also compute original NumPy FP32 matvec on the same captured native input')
+ p.add_argument('--directory',type=Path,required=True)
+ p.add_argument('--guard-state-dir',type=Path,default=ROOT/'build/benchmark-status');a=p.parse_args();guard(a.guard_state_dir)
+ out=a.directory.resolve();out.mkdir(exist_ok=False)
+ report=dict(completed=False,diagnostic_only=True,inference_run=False,subkernel_arithmetic_run=True,gpu=False,pytorch=False,performance_claim_eligible=False,model_oracle_changed=False,network_tolerances_changed=False,layer=0,target_position=62,inputs={},projections=[],reference_method='Each FP32 activation times stored FP16 weight is evaluated as a separate FP64 product (at most35 significand bits, hence exactly representable); math.fsum reduces all1024products per output row. This is a local roundoff diagnostic, not full FP64 network inference or a replacement oracle.',limitations=['All rows of layer0 Q/K/V for one identical captured input are evaluated; no handpicked channels.','Different FP32 reduction orders are allowed to differ; larger error here is not by itself a kernel bug.','Native captured SGEMM row and B1 dot row use the same input and weight values, but this local study does not prove the cause of later network error.','ULP distances are relative to rounded fsum results, not an invented acceptance threshold.','Optional NumPy matvec may use a different BLAS algorithm than native SGEMM.'],numpy_version=np.__version__,library_threads={k:os.environ.get(k) for k in ('VECLIB_MAXIMUM_THREADS','OPENBLAS_NUM_THREADS')})
+ def save():(out/'report.json').write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
+ def freeze(path,digest=None):
+  path=Path(path).resolve();key=str(path)
+  if key not in report['inputs']:report['inputs'][key]=sha(path)
+  if digest is not None:assert report['inputs'][key]==digest,key
+  return path
+ def read_vector(path,count,digest=None):
+  path=freeze(path,digest);assert path.stat().st_size==count*4
+  data=np.fromfile(path,dtype='<f4');assert data.shape==(count,) and np.isfinite(data).all();return data
+ def write_vector(name,data):
+  path=out/name;payload=data.tobytes(order='C')
+  with path.open('xb') as f:assert f.write(payload)==len(payload)
+  return dict(path=str(path),sha256=hashlib.sha256(payload).hexdigest(),dtype=str(data.dtype),byte_order='little',shape=list(data.shape),bytes=len(payload))
+ try:
+  freeze(Path(__file__).resolve());freeze(ROOT/'tools/benchmark_native_phase0.py');freeze(ROOT/'tools/experiment.py')
+  analysis=json.loads(freeze(a.stage_analysis).read_text());assert analysis['completed'] is True and analysis['identity_prerequisites_passed'] is True and not analysis.get('error')
+  for path,digest in analysis['inputs'].items():freeze(path,digest)
+  def stage_vector(directory,phase,count):
+   path=(directory/f'layer-00-{phase}.f32').resolve();assert str(path) in analysis['inputs'],'Tensor not bound by stage analysis'
+   return read_vector(path,count,analysis['inputs'][str(path)])
+  h=stage_vector(a.batch_trace,'input_norm_h',1024);other=stage_vector(a.sequential_trace,'input_norm_h',1024)
+  assert h.tobytes()==other.tobytes(),'Inputs differ; not a matched-input projection diagnostic'
+  report['input_h']=dict(batch_path=str((a.batch_trace/'layer-00-input_norm_h.f32').resolve()),sequential_path=str((a.sequential_trace/'layer-00-input_norm_h.f32').resolve()),sha256=hashlib.sha256(h.tobytes()).hexdigest(),bit_identical=True)
+  weights=freeze(a.weights);index=freeze(Path(str(weights)+'.index'));manifest=freeze(Path(str(weights)+'.manifest.json'))
+  pack=json.loads(manifest.read_text());assert pack['completed'] is True and pack['format']=='QWCPU01' and pack['gpu'] is False and pack['pytorch'] is False
+  assert sha(weights)==pack['binary']['sha256'] and sha(index)==pack['index']['sha256']
+  checkpoint=freeze(pack['checkpoint']['path'],pack['checkpoint']['sha256']);header,start,_=read_header(checkpoint)
+  lines=index.read_text().splitlines();signature,total=lines[0].split();assert signature=='QWCPU01' and len(lines)-1==int(total)
+  tensors={}
+  for line in lines[1:]:
+   name,dtype,rows,cols,offset,length=line.split();assert name not in tensors
+   tensors[name]=dict(dtype=dtype,rows=int(rows),columns=int(cols),offset_bytes=int(offset),length_bytes=int(length))
+  manifest_tensors={t['name']:t for t in pack['tensors']};assert len(manifest_tensors)==int(total)
+  report['weight_pack']=dict(path=str(weights),sha256=pack['binary']['sha256'],checkpoint=str(checkpoint),checkpoint_sha256=pack['checkpoint']['sha256']);save()
+  hf64=h.astype(np.float64)
+  for phase,rows in [('q_projection',2048),('k_projection',1024),('v_projection',1024)]:
+   tensor_name=f'model.layers.0.self_attn.{phase[0]}_proj.weight';spec=tensors[tensor_name];stored=manifest_tensors[tensor_name]
+   assert spec=={k:stored[k] for k in ('dtype','rows','columns','offset_bytes','length_bytes')}
+   assert spec['dtype']=='F16' and spec['rows']==rows and spec['columns']==1024 and spec['length_bytes']==rows*1024*2
+   assert spec['offset_bytes']>=64 and spec['offset_bytes']+spec['length_bytes']<=weights.stat().st_size
+   matrix=np.memmap(weights,dtype='<f2',mode='r',offset=spec['offset_bytes'],shape=(rows,1024))
+   assert np.isfinite(matrix).all() and hashlib.sha256(matrix.tobytes()).hexdigest()==stored['sha256']
+   original=header[tensor_name];assert original['dtype']=='BF16' and original['shape']==[rows,1024]
+   with checkpoint.open('rb') as f:f.seek(start+original['data_offsets'][0]);raw=f.read(original['data_offsets'][1]-original['data_offsets'][0])
+   assert hashlib.sha256(raw).hexdigest()==stored['checkpoint_sha256']
+   checkpoint_f32=(np.frombuffer(raw,dtype='<u2').astype(np.uint32)<<16).view(np.float32).reshape(rows,1024)
+   assert checkpoint_f32.astype(np.float16).tobytes()==matrix.tobytes(),'Packed matrix does not match checkpoint rounding'
+   observed={'native_sgemm':stage_vector(a.batch_trace,phase,rows),'native_b1_dot':stage_vector(a.sequential_trace,phase,rows)}
+   item=dict(phase=phase,weight_tensor=tensor_name,rows=rows,columns=1024,all_rows_evaluated=False,weight_tensor_sha256=stored['sha256'],checkpoint_tensor_sha256=stored['checkpoint_sha256'],fsum_rows_completed=0,comparisons={})
+   report['projections'].append(item);save()
+   reference=np.empty(rows,dtype=np.float64)
+   for row in range(rows):
+    products=matrix[row].astype(np.float64)*hf64
+    reference[row]=math.fsum(map(float,products))
+    if (row+1)%256==0:item['fsum_rows_completed']=row+1;save()
+   assert np.isfinite(reference).all()
+   item['reference_f64']=write_vector(f'{phase}-fsum.f64',reference)
+   item['rounded_reference_f32']=write_vector(f'{phase}-fsum-rounded.f32',reference.astype(np.float32))
+   if a.include_numpy:
+    observed['numpy_fp32_matvec']=matrix.astype(np.float32)@h
+    assert observed['numpy_fp32_matvec'].dtype==np.float32 and np.isfinite(observed['numpy_fp32_matvec']).all()
+    item['numpy_fp32_matvec']=write_vector(f'{phase}-numpy-matched-input.f32',observed['numpy_fp32_matvec'])
+   for name,values in observed.items():item['comparisons'][name]=measure(values,reference)
+   item.update(all_rows_evaluated=True,fsum_rows_completed=rows);save();del matrix
+  assert sum(item['rows'] for item in report['projections'])==4096 and all(item['all_rows_evaluated'] for item in report['projections'])
+  assert all(sha(path)==digest for path,digest in report['inputs'].items()),'Frozen inputs changed'
+  report['completed']=True
+ except BaseException as error:report['error']=dict(type=type(error).__name__,message=str(error));raise
+ finally:save()
+ print(out/'report.json')
+if __name__=='__main__':main()
