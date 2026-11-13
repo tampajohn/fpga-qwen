@@ -1,0 +1,25 @@
+"""Root-only guarded worker partition captures; no performance measurement."""
+from pathlib import Path
+import hashlib,json,subprocess,sys
+base=Path('build/native-cpu').resolve();tag='head-rowpack4-v1'
+binary=base/(tag+'-build/qwen_cpu');reference=base/'kv-head-major-time32-tiny-logits/report.json'
+output=base/(tag+'-worker-boundaries-exact-gate.json')
+def sha(p):
+ with Path(p).open('rb')as f:return hashlib.file_digest(f,'sha256').hexdigest()
+manifest=json.loads((binary.parent/'manifest.json').read_text())
+assert manifest['completed'] is True and manifest['binary_sha256']==sha(binary)
+assert not output.exists()
+workers=[1,2,6,12,64]
+paths=[base/(tag+'-tiny-logits' if t==12 else tag+f'-workers{t}-tiny-logits') for t in workers]
+assert paths[3].is_dir(),'Run exact68 first; reuse existing12-worker tiny capture'
+for t,p in zip(workers,paths):
+ if t!=12:assert not p.exists(),p
+frozen={str(p):sha(p)for p in [binary,binary.parent/'manifest.json',reference,Path(__file__),base/'compare-headrowpack-worker-boundaries.py']}
+def guarded(name,args):
+ subprocess.run([sys.executable,'tools/benchmark_guard.py','--name',name,'--',sys.executable,*args],check=True)
+for t,p in zip(workers,paths):
+ if t==12:continue
+ guarded(f'Head packed row worker partition {t}', ['tools/capture_native_cpu_logits.py','--binary',str(binary),'--weights',str(base/'weights.bin'),'--prompt','build/native-phase0/prompt-oracle.json','--continuation','build/native-phase0/continuation-oracle.json','--tokens','4','--threads',str(t),'--prefill-threads','6','--directory',str(p)])
+guarded('Exact full vocabulary across head worker partitions',[str(base/'compare-headrowpack-worker-boundaries.py'),'--reference',*[str(reference)]*5,'--candidate',*[str(p/'report.json')for p in paths],'--output',str(output)])
+r=json.loads(output.read_text());assert r['completed']is True and r['passed']is True and r['compared_arrays']==40
+assert all(sha(p)==h for p,h in frozen.items()),'Frozen sources changed'

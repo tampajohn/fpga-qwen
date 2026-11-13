@@ -1,0 +1,71 @@
+"""Source-only fixed head row packing; no build, inference, or live modifications."""
+from pathlib import Path
+import hashlib,json,difflib
+ROOT=Path(__file__).resolve().parents[2];source=ROOT/'engine';dest=ROOT/'build/native-cpu/head-rowpack4-v1-source'
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+manifest=json.loads((ROOT/'build/native-cpu/build-19/manifest.json').read_text())
+for n in ('core.cpp','core.hpp','main.cpp'):
+ assert [v for k,v in manifest['source_sha256'].items() if Path(k).name==n]==[sha(source/n)]
+dest.mkdir(exist_ok=False)
+s=(source/'core.cpp').read_text();original=s
+# Duplicate only the existing four-row arithmetic body; change weight addresses.
+a=s.index('void dot4(');b=s.index('// Two GQA queries',a)
+packed=s[a:b].replace('void dot4(', 'void dot4_packed_head(')
+old='        const float16x8_t w0=vld1q_f16(w+j),w1=vld1q_f16(w+n+j),w2=vld1q_f16(w+2*n+j),w3=vld1q_f16(w+3*n+j);'
+assert packed.count(old)==1
+packed=packed.replace(old,'        const Half* tile=w+size_t(j/8)*32;\n        const float16x8_t w0=vld1q_f16(tile),w1=vld1q_f16(tile+8),w2=vld1q_f16(tile+16),w3=vld1q_f16(tile+24);')
+s=s[:b]+'// Auxiliary head layout [rowblock4][colblock8][row4][8].\n// Each output retains dot4 lane accumulators, increasing-j FMA and reduction.\n'+packed+s[b:]
+needle='    Options options;Mapping mapping;std::map<std::string,Tensor> tensors;'
+s=s.replace(needle,needle+'''\n    // Exact FP16 bit-copy; original mapped embedding remains canonical.
+    std::vector<Half> packed_head;
+    const Half* original_head=nullptr;
+    double packed_head_startup_seconds=0;
+''')
+needle='        keys.resize(size_t(L)*opt.context*K*D);values.resize(keys.size());'
+assert s.count(needle)==1
+s=s.replace(needle,'''        // Complete packing synchronously before workers and constructor return.
+        // CLI ready cannot be emitted until all copied weights are initialized.
+        const Tensor& head=tensors.at("model.embed_tokens.weight");
+        require(head.rows==vocabulary && head.cols==H && head.rows%4==0 && head.cols%8==0,"Invalid packed head dimensions");
+        const size_t rows=static_cast<size_t>(head.rows),cols=static_cast<size_t>(head.cols);
+        require(rows<=std::numeric_limits<size_t>::max()/cols,"Packed head element overflow");
+        const size_t elements=rows*cols;
+        require(elements<=std::numeric_limits<size_t>::max()/sizeof(Half) && elements<=packed_head.max_size(),"Packed head byte/allocation overflow");
+        const auto packing_started=std::chrono::steady_clock::now();
+        packed_head.resize(elements);
+        original_head=head.half;
+        for(size_t row=0;row<rows;row+=4)for(size_t col=0;col<cols;col+=8)for(size_t lane=0;lane<4;++lane) {
+            const size_t destination=row*cols+(col/8)*32+lane*8;
+            std::memcpy(packed_head.data()+destination,original_head+(row+lane)*cols+col,8*sizeof(Half));
+        }
+        packed_head_startup_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-packing_started).count();
+'''+needle)
+needle='''                size_t i=begin;
+                if(batch==1)for(;i+4<=end;i+=4)dot4(x,w.half+i*w.cols,w.cols,y+i);'''
+assert s.count(needle)==1
+s=s.replace(needle,'''                size_t i=begin;
+                // project() is also called with batch1 for the final head after
+                // batched prefill. Both ordinary prefill and step heads use this;
+                // project_verify() and embedding lookup remain untouched.
+                if(batch==1 && w.half==original_head) {
+                    for(;i<end && i%4!=0;++i)y[i]=dot(x,w.half+i*w.cols,w.cols);
+                    for(;i+4<=end;i+=4)dot4_packed_head(x,packed_head.data()+i*w.cols,w.cols,y+i);
+                } else if(batch==1)for(;i+4<=end;i+=4)dot4(x,w.half+i*w.cols,w.cols,y+i);''')
+needle='std::size_t Model::lossless_bf16_cache_bytes()const{return 0;}'
+assert s.count(needle)==1
+s=s.replace(needle,needle+'\nstd::size_t Model::packed_head_cache_bytes()const{return impl_->packed_head.size()*sizeof(Half);}\ndouble Model::packed_head_startup_seconds()const{return impl_->packed_head_startup_seconds;}')
+(dest/'core.cpp').write_text(s)
+h=(source/'core.hpp').read_text().replace('    std::size_t lossless_bf16_cache_bytes() const;','    std::size_t lossless_bf16_cache_bytes() const;\n    std::size_t packed_head_cache_bytes() const;\n    double packed_head_startup_seconds() const;')
+(dest/'core.hpp').write_text(h)
+m=(source/'main.cpp').read_text();needle='        << ",\\"lossless_bf16_decode_cache_bytes\\":" << model.lossless_bf16_cache_bytes()'
+assert m.count(needle)==1
+m=m.replace(needle,needle+'''\n        << ",\\"packed_head_cache_bytes\\":" << model.packed_head_cache_bytes()
+        << ",\\"packed_head_startup_seconds\\":" << model.packed_head_startup_seconds()
+        << ",\\"packed_head_scope\\":\\"ordinary_final_vocabulary_projection_after_prefill_or_step\\""''')
+(dest/'main.cpp').write_text(m)
+meta=dict(prepared_only=True,built=False,promotion_allowed=False,baseline='build-19',baseline_manifest_sha256=sha(ROOT/'build/native-cpu/build-19/manifest.json'),source_sha256={str(source/n):sha(source/n) for n in ('core.cpp','core.hpp','main.cpp')},candidate_sha256={str(dest/n):sha(dest/n) for n in ('core.cpp','core.hpp','main.cpp')},layout='[rowblock4][colblock8][row4][8], FP16 bitwise copy,64 contiguous weight bytes per j+=8 iteration',dimensions=dict(rows=151936,cols=1024),extra_storage_bytes=151936*1024*2,extra_storage_mib=151936*1024*2/1024**2,memory='Additional296.75MiB duplicate FP16 head; original mapped weights, embedding lookup, widened prefill matrices and KV untouched. This does not reduce weight bytes read.',startup='Synchronous allocation and memcpy before pool construction/constructor return/CLIready; byte count and pack elapsed seconds exposed. Allocation/overflow failure aborts initialization, no partial ready.',scope='Only project(batch==1) for tiedembedding/head tensor: final vocabulary projection after ordinary prefill OR step. B2project_verify remains canonicaloriginal rows; ordinary otherprojections unchanged.',ownership='Eachworker scalarpeels originalrows until row%4==0, packed complete4rowblocks onlywhile i+4<=end, then originalscalar tails; no outputs outside [begin,end), no row mixing.',arithmetic='Same8FP32 laneaccumulators, increasingj+=8 FMA order and vaddvq(vadd(a,b)) perrow asdot4/dot. Only weightload addresses change; no quantization, normalization, attention or compilerflag changes.',qualification='Root-only build/assembly review then exactfull-logit+headrow/workerboundary checks, lifecycle/quality, samebinarysource hashes. Knownbaseline63absoluteoracle failure remains unresolved evenifexactnonregression passes.')
+(dest/'experiment.json').write_text(json.dumps(meta,indent=2)+'\n')
+patch=''
+for n in ('core.cpp','core.hpp','main.cpp'):patch+=''.join(difflib.unified_diff((source/n).read_text().splitlines(True),(dest/n).read_text().splitlines(True),fromfile='a/engine/'+n,tofile='b/engine/'+n))
+(dest/'candidate.patch').write_text(patch)
+print(dest)

@@ -1,0 +1,26 @@
+#!/bin/zsh
+# Diagnostic timing only. Exact relative gates do NOT clear inherited baseline63 absolute failure.
+set -eu
+cd "${0:A:h}/../.."
+for suite in standard extended; do
+ for suffix in confirmation.json confirmation-logs analysis.json; do
+  [[ ! -e "build/native-cpu/head-rowpack4-v1-${suite}-${suffix}" ]] || exit 1
+ done
+done
+.venv/bin/python tools/benchmark_guard.py --name 'Diagnostic head rowpack confirmation prerequisites' -- \
+ .venv/bin/python build/native-cpu/check-headrowpack-relative-prerequisites.py final
+for suite in standard extended; do
+ tokens=32
+ [[ "$suite" != extended ]] || tokens=128
+ .venv/bin/python tools/benchmark_guard.py --name "Diagnostic head rowpack versus19 ${suite} ten pairs" -- \
+  .venv/bin/python tools/benchmark_native_cpu.py \
+  --binary build/native-cpu/head-rowpack4-v1-build/qwen_cpu --reference-binary build/native-cpu/build-19/qwen_cpu \
+  --weights build/native-cpu/weights.bin --threads 12 --prefill-threads 6 --mode confirmation \
+  --rounds 10 --warmups 1 --context-suite "$suite" --tokens "$tokens" \
+  --output "build/native-cpu/head-rowpack4-v1-${suite}-confirmation.json"
+ .venv/bin/python tools/analyze_native_phase0.py \
+  --report "build/native-cpu/head-rowpack4-v1-${suite}-confirmation.json" \
+  --baseline native-reference-build-19 \
+  --quality-gate build/native-cpu/head-rowpack4-v1-quality.json \
+  --output "build/native-cpu/head-rowpack4-v1-${suite}-analysis.json"
+done

@@ -1,0 +1,70 @@
+{
+  "scope": "Source preparation, independent source review and successful compilation only. Runtime exactness/lifecycle/quality/timing pending. Not promoted.",
+  "helpers": [
+    {
+      "original": "build/native-cpu/prepare-head-rowpack4-v1.py",
+      "archive": "tools/experiments/prepare-head-rowpack4-v1.py.txt",
+      "sha256": "aff3dff50d08175f74426ea08f8178b10a4e118d1863f0914e793284738e59b3",
+      "executed": false
+    },
+    {
+      "original": "build/native-cpu/run-head-rowpack4-v1-exact-gates.sh",
+      "archive": "tools/experiments/run-head-rowpack4-v1-exact-gates.sh.txt",
+      "sha256": "0dce323adf564ac117b38bc9514d6720bbac08014af1a8afd70510581af16553",
+      "executed": false
+    },
+    {
+      "original": "build/native-cpu/compare-headrowpack-worker-boundaries.py",
+      "archive": "tools/experiments/compare-headrowpack-worker-boundaries.py.txt",
+      "sha256": "403caeb3d6e6a1c6e3e2edf083ed7102008592b7ebfdc4381ee2e2eeeaa1a6f1",
+      "executed": false
+    },
+    {
+      "original": "build/native-cpu/run-headrowpack-worker-boundaries.py",
+      "archive": "tools/experiments/run-headrowpack-worker-boundaries.py.txt",
+      "sha256": "cc2f865066b548a1a173de7f8751771ee40a3b0fec01fb1c7ac34e2de598777e",
+      "executed": false
+    },
+    {
+      "original": "build/native-cpu/check-headrowpack-relative-prerequisites.py",
+      "archive": "tools/experiments/check-headrowpack-relative-prerequisites.py.txt",
+      "sha256": "4d28d116dfe5351c4dab14bcf1223659fb964d5bc834d989f56eec20a85d3ff0",
+      "executed": false
+    },
+    {
+      "original": "build/native-cpu/run-headrowpack-relative-acceptance.sh",
+      "archive": "tools/experiments/run-headrowpack-relative-acceptance.sh.txt",
+      "sha256": "1789298ca7f59e1f8b7ecb67469485e20cb112e4751420285c6c38eb2d6689bb",
+      "executed": false
+    },
+    {
+      "original": "build/native-cpu/run-headrowpack-diagnostic-confirmations.sh",
+      "archive": "tools/experiments/run-headrowpack-diagnostic-confirmations.sh.txt",
+      "sha256": "24fbac130bdf3354e8ce8331a41851d3e258ed9a8e06c1b730b5e332fd8134d6",
+      "executed": false
+    },
+    {
+      "original": "build/native-cpu/run-headrowpack-all-relative-gates-and-diagnostics.sh",
+      "archive": "tools/experiments/run-headrowpack-all-relative-gates-and-diagnostics.sh.txt",
+      "sha256": "72477619589c6dd406a8a6a29c224e12d65ce4a561e8fd05dffc9d4a05382df7",
+      "executed": false
+    }
+  ],
+  "patch": {
+    "path": "tools/experiments/native-head-rowpack4-v1.patch",
+    "sha256": "10c155e80389c7f3be052f92afd2f2a9e74b0daae7127b3306d893dd814c3fa4"
+  },
+  "peer_review": {
+    "reviewer": "context_dispatch_review",
+    "source_only": true,
+    "blocking_issue_found": false,
+    "findings": [
+      "Packed indexing covers each four-row/eight-column block exactly once.",
+      "FP16 memcpy preserves stored bits; synchronous packing completes before workers and ready response.",
+      "Global row alignment peel, worker-bounded groups and scalar tails preserve row ownership.",
+      "Per-row FMA/reduction order preserved; B2 and embedding paths unchanged."
+    ],
+    "limitations": "Compiled exactness across worker boundaries, full B2/lifecycle and actual performance remain required."
+  },
+  "baseline_absolute_gap": "Released19 fails independent NumPy boundary63 limits; relative byte identity cannot clear that failure."
+}

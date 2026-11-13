@@ -1,0 +1,17 @@
+# Experimental FP16 vocabulary-head row packing
+
+This candidate has been prepared, independently source-reviewed, and compiled. Runtime numerical nonregression, lifecycle, quality, and performance gates are pending. It has not been promoted; build19 remains live.
+
+The [source metadata](../reports/native-cpu-head-rowpack4-v1-experiment.json), [build manifest](../reports/native-cpu-head-rowpack4-v1-build.json), and [preparation/reproduction inventory](../reports/native-cpu-head-rowpack4-v1-preparation.json) retain the baseline and candidate hashes. The source metadata's `built:false` describes its original preparation snapshot; the separate completed manifest records the subsequent compilation. Neither is a runtime correctness result.
+
+The auxiliary head stores the same FP16 bits in `[row block of 4][column block of 8][row][8 columns]` order. Each four-row dot retains the original per-row FP32 accumulator, increasing-column FMA order, and final reduction. Workers peel to a global four-row boundary, process complete groups within their assigned rows, and finish with original scalar row kernels. The tied embedding lookup and B2 verification path retain the original layout.
+
+This applies to the final vocabulary projection after both ordinary prefill and ordinary decode, because both invoke the single-input head. It does not change other projections or attention. The extra allocation is **311,164,928 bytes (296.75 MiB)**; the original mapped weights, widened prefill matrices, and KV storage remain. Weight traffic is not claimed to decrease. Synchronous packing finishes before worker creation and the ready handshake; allocation or size failures abort initialization. Startup packing time and actual cache bytes are exposed separately.
+
+The [exact patch](../tools/experiments/native-head-rowpack4-v1.patch) and byte-preserved helper copies listed in the inventory reproduce the isolated experiment. Copy the `.txt` helpers back to their recorded `build/native-cpu/` locations before invoking them; their relative paths intentionally retain the tested repository layout. Fresh destinations are mandatory. The generator requires source hashes matching immutable build19; shared source is not changed.
+
+The prepared serialized runner checks 68 existing full-logit arrays, then 40 arrays over decode worker counts 1, 2, 6, 12, and 64 with prefill workers fixed at 6. The existing 12-worker tiny capture is reused. Its isolated comparator permits only the declared decode-worker configuration difference; complete logits, IDs, EOS positions, and all other configuration fields must match. API36, prefix28, suffix35 plus seven lifecycle cases, CLI5, and the existing nine/eighteen-case quality suites precede any standard32/extended128 ten-pair whole-request comparisons against build19. Startup is outside request timing; the memory and packing costs still require disclosure.
+
+The standalone `benchmark_native_head.py` measures a separate SDOT routing prototype and does not exercise this candidate's actual Model head. It is therefore not used as evidence for this packing change. No new diagnostic API or duplicate benchmark kernel is introduced.
+
+Released build19's newly observed 63-token absolute NumPy failure remains unresolved. Even successful relative byte-identity gates would establish only sampled nonregression against that baseline. Any eventual timings are diagnostic evidence, not an absolute numerical qualification or promotion decision.

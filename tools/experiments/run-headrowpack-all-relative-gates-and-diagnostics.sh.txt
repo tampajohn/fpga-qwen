@@ -1,0 +1,8 @@
+#!/bin/zsh
+# Root executes only: relative gates and diagnostic timing, not absolute numerical qualification.
+set -eu
+cd "${0:A:h}/../.."
+bash build/native-cpu/run-head-rowpack4-v1-exact-gates.sh
+.venv/bin/python build/native-cpu/run-headrowpack-worker-boundaries.py
+zsh build/native-cpu/run-headrowpack-relative-acceptance.sh
+zsh build/native-cpu/run-headrowpack-diagnostic-confirmations.sh

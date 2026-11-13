@@ -1,0 +1,35 @@
+{
+  "prepared_only": true,
+  "built": false,
+  "promotion_allowed": false,
+  "baseline": "build-19",
+  "baseline_manifest_sha256": "bf06884120b0a4429b794e28b99e3c6d15743dc463124abfd7e57ed7b6b7f3b0",
+  "source_sha256": {
+    "$REPO/engine/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_sha256": {
+    "$REPO/build/native-cpu/head-rowpack4-v1-source/core.cpp": "e164e1bb976fd3e52eaaa7010db975fdb525db164daa0a528efb6b66d6b07328",
+    "$REPO/build/native-cpu/head-rowpack4-v1-source/core.hpp": "3edad48a89220255ad286b808a074b56809d2e70634ea1ba1a5f0320fb976450",
+    "$REPO/build/native-cpu/head-rowpack4-v1-source/main.cpp": "e95710f6d1ba7be8cbc04e257abb496bb04db96aa817749b29ad98ff8c8edf58"
+  },
+  "layout": "[rowblock4][colblock8][row4][8], FP16 bitwise copy,64 contiguous weight bytes per j+=8 iteration",
+  "dimensions": {
+    "rows": 151936,
+    "cols": 1024
+  },
+  "extra_storage_bytes": 311164928,
+  "extra_storage_mib": 296.75,
+  "memory": "Additional296.75MiB duplicate FP16 head; original mapped weights, embedding lookup, widened prefill matrices and KV untouched. This does not reduce weight bytes read.",
+  "startup": "Synchronous allocation and memcpy before pool construction/constructor return/CLIready; byte count and pack elapsed seconds exposed. Allocation/overflow failure aborts initialization, no partial ready.",
+  "scope": "Only project(batch==1) for tiedembedding/head tensor: final vocabulary projection after ordinary prefill OR step. B2project_verify remains canonicaloriginal rows; ordinary otherprojections unchanged.",
+  "ownership": "Eachworker scalarpeels originalrows until row%4==0, packed complete4rowblocks onlywhile i+4<=end, then originalscalar tails; no outputs outside [begin,end), no row mixing.",
+  "arithmetic": "Same8FP32 laneaccumulators, increasingj+=8 FMA order and vaddvq(vadd(a,b)) perrow asdot4/dot. Only weightload addresses change; no quantization, normalization, attention or compilerflag changes.",
+  "qualification": "Root-only build/assembly review then exactfull-logit+headrow/workerboundary checks, lifecycle/quality, samebinarysource hashes. Knownbaseline63absoluteoracle failure remains unresolved evenifexactnonregression passes.",
+  "archive_provenance": {
+    "raw_source_report": "build/native-cpu/head-rowpack4-v1-source/experiment.json",
+    "raw_source_sha256": "90873eb9ddbaaccb8aa923e714658cbc6a027cb23cc6c0058f187217a1425a79",
+    "sanitization": "Repository/home paths replaced; process identifiers removed. Numerical values and raw source hashes unchanged."
+  }
+}

@@ -1,0 +1,48 @@
+#!/bin/bash
+# SOURCE ONLY: root schedules after compiling isolated head-rowpack candidate.
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+exec .venv/bin/python - <<'PY'
+from pathlib import Path
+import json,hashlib,subprocess,sys
+base=Path('build/native-cpu');tag='head-rowpack4-v1';reference_tag='kv-head-major-time32'
+binary=(base/(tag+'-build/qwen_cpu')).resolve()
+release=(base/'build-19/qwen_cpu').resolve();reference=(base/(reference_tag+'-build/qwen_cpu')).resolve()
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+assert sha(release)==sha(reference),'Completed reference executable must be byte-identical to released19'
+for executable in (binary,release,reference):
+ m=json.loads((executable.parent/'manifest.json').read_text());assert m['completed']is True and m['binary_sha256']==sha(executable)
+rows=[('tiny',4,Path('build/native-phase0/prompt-oracle.json'),Path('build/native-phase0/continuation-oracle.json')),
+ ('short',8,Path('build/native-phase0/prompt-short.json'),base/'continuation-short.json'),
+ ('long',4,Path('build/native-phase0/prompt-long.json'),base/'continuation-long.json')]
+for n in (511,512,513):rows.append((f'boundary{n}',2,base/f'boundary-fixtures-v1/prompt-{n}.json',base/f'boundary-fixtures-v1/continuation-{n}.json'))
+for n in (1024,2048,3968):rows.append((f'context{n}',2,base/f'extended-tutorial-fixtures/context{n}.json',base/f'extended-tutorial-fixtures/context{n}-continuation1.json'))
+ordinary=[(label,count,prompt,teacher,base/f'{reference_tag}-{label}-logits/report.json',base/f'{tag}-{label}-logits')for label,count,prompt,teacher in rows]
+boundaries=[(f'timeboundary-{n}',1,base/f'prefill-v-time32-boundary-fixtures/prompt-{n}.json',base/'prefill-v-time32-boundary-fixtures/continuation-empty.json',base/f'{reference_tag}-timeboundary-candidate-{n}/report.json',base/f'{tag}-timeboundary-candidate-{n}')for n in (31,32,33,63,64,65)]
+fixture_manifest=base/'prefill-v-time32-boundary-fixtures/manifest.json'
+frozen=json.loads(fixture_manifest.read_text())['inputs']
+for path,digest in frozen.items():assert sha(path)==digest,path
+freeze_paths=[binary,release,reference,fixture_manifest]
+for label,count,prompt,teacher,ref,destination in ordinary+boundaries:
+ assert not destination.exists(),destination
+ old=json.loads(ref.read_text());ids=json.loads(prompt.read_text());consumed=json.loads(teacher.read_text())[:count-1]
+ assert old['completed']is True and not old.get('error') and old['prompt_ids']==ids and old['requested_steps']==count
+ assert len(old['runs'])==2 and all(r['consumed_continuation_ids']==consumed for r in old['runs'])
+ assert old['inputs'].get(str(reference))==sha(reference),'Reference capture binary binding mismatch'
+ for run in old['runs']:
+  for dump in run['logit_dumps']:assert sha(dump['path'])==dump['sha256']
+ freeze_paths.extend((prompt,teacher,ref))
+for suffix in ('exact-gate','timeboundary-exact-gate'):assert not (base/f'{tag}-{suffix}.json').exists()
+frozen.update({str(p):sha(p)for p in freeze_paths})
+def guarded(name,args):
+ subprocess.run([sys.executable,'tools/benchmark_guard.py','--name',name,'--',sys.executable,*args],check=True)
+for group,suffix,expected_arrays in [(ordinary,'exact-gate',56),(boundaries,'timeboundary-exact-gate',12)]:
+ for label,count,prompt,teacher,ref,destination in group:
+  guarded('Head rowpack exact '+label,['tools/capture_native_cpu_logits.py','--binary',str(binary),'--weights',str(base/'weights.bin'),'--prompt',str(prompt),'--continuation',str(teacher),'--tokens',str(count),'--threads','12','--prefill-threads','6','--directory',str(destination)])
+ output=base/f'{tag}-{suffix}.json'
+ guarded('Compare Head rowpack '+suffix,['tools/compare_native_cpu_captures.py','--reference',*[str(r[4])for r in group],'--candidate',*[str(r[5]/'report.json')for r in group],'--output',str(output)])
+ gate=json.loads(output.read_text());assert gate['completed']is True and gate['passed']is True and gate['compared_arrays']==expected_arrays
+ assert all(sha(path)==digest for path,digest in frozen.items()),'Frozen evidence changed'
+print('Exact68 arrays passed against completed captures byte-bound to released19')
+PY

@@ -1,0 +1,32 @@
+#!/bin/zsh
+# Relative nonregression only; baseline63 absolute failure remains unresolved. No release.
+set -eu
+cd "${0:A:h}/../.."
+BINARY=build/native-cpu/head-rowpack4-v1-build/qwen_cpu
+WEIGHTS=build/native-cpu/weights.bin
+for suffix in verify-api prefix-check suffix-trajectories.json suffix-cli quality.json quality-logs extended-quality.json extended-quality-logs; do
+    [[ ! -e "build/native-cpu/head-rowpack4-v1-$suffix" ]] || exit 1
+done
+.venv/bin/python tools/benchmark_guard.py --name 'Diagnostic head rowpack acceptance prerequisites' -- \
+ .venv/bin/python build/native-cpu/check-headrowpack-relative-prerequisites.py numerical
+.venv/bin/python tools/benchmark_guard.py --name 'Diagnostic head rowpack full B2 API matrix' -- \
+ .venv/bin/python tools/check_native_verify.py --source-directory build/native-cpu/head-rowpack4-v1-source \
+ --weights "$WEIGHTS" --directory build/native-cpu/head-rowpack4-v1-verify-api
+.venv/bin/python tools/benchmark_guard.py --name 'Diagnostic head rowpack canonical prefix28 lifecycle' -- \
+ .venv/bin/python tools/check_native_cpu_prefix.py --binary "$BINARY" --weights "$WEIGHTS" \
+ --directory build/native-cpu/head-rowpack4-v1-prefix-check
+.venv/bin/python tools/benchmark_guard.py --name 'Diagnostic head rowpack suffix exact against19' -- \
+ .venv/bin/python tools/check_native_suffix.py --binary "$BINARY" --reference-binary build/native-cpu/build-19/qwen_cpu \
+ --weights "$WEIGHTS" --output build/native-cpu/head-rowpack4-v1-suffix-trajectories.json
+.venv/bin/python tools/benchmark_guard.py --name 'Diagnostic head rowpack CLI suffix exact lifecycle' -- \
+ .venv/bin/python tools/check_native_suffix_cli.py --binary "$BINARY" --weights "$WEIGHTS" \
+ --prompt build/native-cpu/suffix-eos-hi.json --directory build/native-cpu/head-rowpack4-v1-suffix-cli
+.venv/bin/python tools/benchmark_guard.py --name 'Diagnostic head rowpack nine-case quality' -- \
+ .venv/bin/python tools/benchmark_native_cpu.py --binary "$BINARY" --weights "$WEIGHTS" --mode quality \
+ --threads 12 --prefill-threads 6 --output build/native-cpu/head-rowpack4-v1-quality.json
+.venv/bin/python tools/benchmark_guard.py --name 'Diagnostic head rowpack eighteen-case quality' -- \
+ .venv/bin/python tools/check_native_conversation_extended.py --binary "$BINARY" --weights "$WEIGHTS" \
+ --output build/native-cpu/head-rowpack4-v1-extended-quality.json
+
+.venv/bin/python tools/benchmark_guard.py --name 'Diagnostic head rowpack final acceptance bindings' -- \
+ .venv/bin/python build/native-cpu/check-headrowpack-relative-prerequisites.py final
