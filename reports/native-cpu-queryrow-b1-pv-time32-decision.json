@@ -1,0 +1,130 @@
+{
+  "completed": true,
+  "selected_for_release": false,
+  "promoted": false,
+  "reference": "tested prefill query-row time32, not build19",
+  "reason": "No established incremental benefit;1024decode and complete-request intervals favor reference. Preserve all other uncertain outcomes.",
+  "relative_exact_arrays": 100,
+  "reports": [
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-experiment.json",
+      "raw_sha256": "300203ac879d2e10789fc20e58f567db1c286c26358a2e5e40abaaee2410e59f"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-manifest.json",
+      "raw_sha256": "dd5bd2b961fec81edfa0227ba625cb37434f38c7a3afabc682cc669c46a09d52"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-controller-provenance.json",
+      "raw_sha256": "90ff75bb6ab579b0af180fa850c6977ef243af1cc39f3f89a10c283f744c8438"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-assembly-review.json",
+      "raw_sha256": "97695b60a0ed850d09c4b59cb08952d347f7b81e173b7489d6a2c50a7a0dd195"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-exact-gate.json",
+      "raw_sha256": "96f617628a05d3bd6de9fc841d4ce475d407206ddbf60415f8bc25814998587a"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-timeboundary-exact-gate.json",
+      "raw_sha256": "a1bc18a67a8b26bb2d497c0afb8b18f4795c3e46cd1ec7dd92aedcae43bd5876"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-newboundary-relative-exact-gate.json",
+      "raw_sha256": "8c190e4715fcb8d7a5bc31a0daa65683e68f99c57ff33efebc267bbafefea426"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-step-edge-exact-gate.json",
+      "raw_sha256": "049b74dff397fee974554bf6fa205f2de0977b816f27a33c80ac724829bda1ac"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-suffix-trajectories.json",
+      "raw_sha256": "4658cc522f11d6ec98a1f9dfd15b62bf0205532298552a713b74812e7f8423c6"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-quality.json",
+      "raw_sha256": "c10dc186e38011db111c3f7ce534b46d899a6e3f9c2fc49aefe9f41714e2fc81"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-extended-quality.json",
+      "raw_sha256": "3aed2e073fc99f64aa13750d2e3b27115ed19914613b1c96cdfb782818c5cab7"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-verify-api.json",
+      "raw_sha256": "13cc89019977f2bc34254c7dccd77729935eb37b6ae35d0806717f4232bf3901"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-prefix-check.json",
+      "raw_sha256": "def4ef7675428bb0d045af32d03b4eda545535fa5692d774995e652f2b84265b"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-suffix-cli.json",
+      "raw_sha256": "4cb8c8d269dc6c45e0ffe0400028ff324bb87d09fda2afc505723ac4c12ee48f"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-seeded-stream.json",
+      "raw_sha256": "c2d06673718e6bfb57975daebab5d209f2179bde484432acb7669671005dc5f2"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-vs-queryrow-standard-confirmation.json",
+      "raw_sha256": "df78e8f076234ddb0f0eb78476be54fd8294b125df6145ab8ff6fd5beb4b2db1"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-vs-queryrow-standard-analysis.json",
+      "raw_sha256": "00cf22cc6c892ba0422fc4dbd9a7be2c7e6c868b811cf35a4dc3ea49e73b846a"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-vs-queryrow-extended-confirmation.json",
+      "raw_sha256": "b3b65a489245b9593561eca33bc5e90198f8a29a23c79f86747d44c5244b3ae0"
+    },
+    {
+      "report": "reports/native-cpu-queryrow-b1-pv-time32-vs-queryrow-extended-analysis.json",
+      "raw_sha256": "7c03a7da00ae35758531fc95ce46263c05b6c2197b255a85bfa3780d0b7315a3"
+    }
+  ],
+  "reproduction": [
+    {
+      "original": "build/native-cpu/queryrow-b1-pv-time32-source/candidate.patch",
+      "archive": "tools/experiments/native-queryrow-b1-pv-time32.patch",
+      "sha256": "4501e2969ba1c48c95e8abe8d075270d76e1133ee3621c774a1e992afa986e1a"
+    },
+    {
+      "original": "build/native-cpu/run-queryrow-b1-pv-time32-exact-gates-executed.sh",
+      "archive": "tools/experiments/run-queryrow-b1-pv-time32-exact-gates-executed.sh.txt",
+      "sha256": "32eddde1c691df42fe4c2cb604f8fd714c90e2226782a4f662cb7f6577b40485"
+    },
+    {
+      "original": "build/native-cpu/run-b1pv-incremental-confirmations.py",
+      "archive": "tools/experiments/run-b1pv-incremental-confirmations.py.txt",
+      "sha256": "116a14e902a252cdda96e49591235a764e63b35326a8f7a8d08d8b53bf4c1a82"
+    },
+    {
+      "original": "build/native-cpu/run-b1pv-remaining-relative-gates.sh",
+      "archive": "tools/experiments/run-b1pv-remaining-relative-gates.sh.txt",
+      "sha256": "8e6938da635389797b62461e2387c692b41ad10e552cfcad8d1a33540fa94fd8"
+    },
+    {
+      "original": "build/native-cpu/run-b1pv-newboundary-relative-exact.py",
+      "archive": "tools/experiments/run-b1pv-newboundary-relative-exact.py.txt",
+      "sha256": "70c48cbf95a406e28bbca77612ede81496e9bb094a5a0bf41514e8a0f27b131c"
+    },
+    {
+      "original": "build/native-cpu/run-b1pv-step-edges.py",
+      "archive": "tools/experiments/run-b1pv-step-edges.py.txt",
+      "sha256": "81e8e77047ab45711030560addcb66b66c771bca49513fd24bea94af75fc9e8f"
+    },
+    {
+      "original": "build/native-cpu/run-b1pv-relative-acceptance.sh",
+      "archive": "tools/experiments/run-b1pv-relative-acceptance.sh.txt",
+      "sha256": "bbef902428b52b55806f3475616d96cd882965bdf710776be26f77d71dd4799f"
+    },
+    {
+      "original": "build/native-cpu/check-b1pv-relative-prerequisites.py",
+      "archive": "tools/experiments/check-b1pv-relative-prerequisites.py.txt",
+      "sha256": "740bfac2059fde997ee0732c99fc6ca57eceec50f18e4f45bfbcedc1e8324530"
+    }
+  ],
+  "known_absolute_failures_retained": true,
+  "headpair_parent": "plain tested query-row time32, NOT this rejected B1PV candidate"
+}

@@ -1,0 +1,14 @@
+#!/bin/bash
+# Run AFTER root's already-active old68 gate; never repeats/overwrites it.
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+.venv/bin/python - <<'PY'
+import json
+from pathlib import Path
+b=Path('build/native-cpu')
+for name,count in [('exact-gate',56),('timeboundary-exact-gate',12)]:
+ g=json.loads((b/f'queryrow-b1-pv-time32-{name}.json').read_text());assert g['completed'] and g['passed'] and g['compared_arrays']==count
+PY
+.venv/bin/python build/native-cpu/run-b1pv-newboundary-relative-exact.py
+.venv/bin/python build/native-cpu/run-b1pv-step-edges.py
+zsh build/native-cpu/run-b1pv-relative-acceptance.sh

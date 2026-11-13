@@ -1,0 +1,36 @@
+#!/bin/zsh
+# Relative nonregression only; baseline63 absolute failure remains unresolved. No release.
+set -eu
+cd "${0:A:h}/../.."
+BINARY=build/native-cpu/queryrow-b1-pv-time32-build/qwen_cpu
+WEIGHTS=build/native-cpu/weights.bin
+for suffix in seeded-stream verify-api prefix-check suffix-trajectories.json suffix-cli quality.json quality-logs extended-quality.json extended-quality-logs; do
+    [[ ! -e "build/native-cpu/queryrow-b1-pv-time32-$suffix" ]] || exit 1
+done
+.venv/bin/python tools/benchmark_guard.py --name 'B1PV relative head-major/time32 acceptance prerequisites' -- \
+ .venv/bin/python build/native-cpu/check-b1pv-relative-prerequisites.py numerical
+.venv/bin/python tools/benchmark_guard.py --name 'B1PV relative full B2 API matrix' -- \
+ .venv/bin/python tools/check_native_verify.py --source-directory build/native-cpu/queryrow-b1-pv-time32-source \
+ --weights "$WEIGHTS" --directory build/native-cpu/queryrow-b1-pv-time32-verify-api
+.venv/bin/python tools/benchmark_guard.py --name 'B1PV relative canonical prefix28 lifecycle' -- \
+ .venv/bin/python tools/check_native_cpu_prefix.py --binary "$BINARY" --weights "$WEIGHTS" \
+ --directory build/native-cpu/queryrow-b1-pv-time32-prefix-check
+.venv/bin/python tools/benchmark_guard.py --name 'B1PV relative head-major/time32 suffix exact against19' -- \
+ .venv/bin/python tools/check_native_suffix.py --binary "$BINARY" --reference-binary build/native-cpu/build-19/qwen_cpu \
+ --weights "$WEIGHTS" --output build/native-cpu/queryrow-b1-pv-time32-suffix-trajectories.json
+.venv/bin/python tools/benchmark_guard.py --name 'B1PV relative head-major/time32 CLI suffix exact lifecycle' -- \
+ .venv/bin/python tools/check_native_suffix_cli.py --binary "$BINARY" --weights "$WEIGHTS" \
+ --prompt build/native-cpu/suffix-eos-hi.json --directory build/native-cpu/queryrow-b1-pv-time32-suffix-cli
+.venv/bin/python tools/benchmark_guard.py --name 'B1PV relative head-major/time32 nine-case quality' -- \
+ .venv/bin/python tools/benchmark_native_cpu.py --binary "$BINARY" --weights "$WEIGHTS" --mode quality \
+ --threads 12 --prefill-threads 6 --output build/native-cpu/queryrow-b1-pv-time32-quality.json
+.venv/bin/python tools/benchmark_guard.py --name 'B1PV relative head-major/time32 eighteen-case quality' -- \
+ .venv/bin/python tools/check_native_conversation_extended.py --binary "$BINARY" --weights "$WEIGHTS" \
+ --output build/native-cpu/queryrow-b1-pv-time32-extended-quality.json
+
+.venv/bin/python tools/benchmark_guard.py --name 'B1PV sampled seeded-stream control versus19' -- \
+ .venv/bin/python build/native-cpu/check-seeded-stream-regression-v1.py --candidate "$BINARY" \
+ --baseline build/native-cpu/build-19/qwen_cpu --directory build/native-cpu/queryrow-b1-pv-time32-seeded-stream
+
+.venv/bin/python tools/benchmark_guard.py --name 'B1PV relative final acceptance bindings' -- \
+ .venv/bin/python build/native-cpu/check-b1pv-relative-prerequisites.py final
