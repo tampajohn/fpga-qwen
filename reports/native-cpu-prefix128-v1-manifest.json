@@ -1,0 +1,47 @@
+{
+  "completed": true,
+  "gpu": false,
+  "pytorch": false,
+  "guard": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Build isolated canonical128 prefix candidate",
+      "started_at": "2026-11-13T17:49:27.308566+00:00"
+    }
+  },
+  "command": [
+    "/usr/bin/clang++",
+    "-std=c++20",
+    "-O3",
+    "-mcpu=native",
+    "-flto=thin",
+    "-ffp-contract=fast",
+    "-fno-math-errno",
+    "-pthread",
+    "$REPO/build/native-cpu/prefix128-v1-source/core.cpp",
+    "$REPO/build/native-cpu/prefix128-v1-source/main.cpp",
+    "-framework",
+    "Accelerate",
+    "-o",
+    "$REPO/build/native-cpu/prefix128-v1-build/qwen_cpu"
+  ],
+  "source_directory": "$REPO/build/native-cpu/prefix128-v1-source",
+  "source_sha256": {
+    "$REPO/build/native-cpu/prefix128-v1-source/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "$REPO/build/native-cpu/prefix128-v1-source/core.hpp": "f7997e566b44f148cbdf1968cb1bf00d6d4e603063a48c64943dc7929406a1cf",
+    "$REPO/build/native-cpu/prefix128-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+    "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+  },
+  "removed_environment_keys": [],
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "started_at": "2026-11-13T17:49:27Z",
+  "exit_code": 0,
+  "binary": "$REPO/build/native-cpu/prefix128-v1-build/qwen_cpu",
+  "binary_sha256": "181a51cb44bdf280dc6475ac2d5ccc19b0d06aa3b8840862d99ba14de39c3df8",
+  "linked_libraries": "$REPO/build/native-cpu/prefix128-v1-build/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefix128-v1-build/manifest.json",
+    "source_sha256": "5bd55e53658cbab87fcc1c0dc598e7b1b13e2b9f1ebcf41e87388e04aac17914",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted. All comparisons and failed statuses preserved; original hashes retained."
+  }
+}

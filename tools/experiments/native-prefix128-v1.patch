@@ -1,0 +1,11 @@
+--- a/engine/core.hpp
++++ b/engine/core.hpp
+@@ -7,7 +7,7 @@
+ 
+ namespace qwen_cpu {
+ inline constexpr int vocabulary = 151936;
+-inline constexpr int prefix_reuse_chunk = 512;
++inline constexpr int prefix_reuse_chunk = 128;
+ struct Options {
+     int decode_threads = 12;
+     int prefill_threads = 6;

@@ -1,0 +1,41 @@
+{
+  "experiment": "canonical-prefix128-v1",
+  "prepared_only": true,
+  "built": false,
+  "baseline": "build-19",
+  "baseline_commit": "013ad6234341cec1b5f44692e50540b4bbc59438",
+  "baseline_binary_sha256": "827b0694d8304282bb11186e86ef62169770a3aed409e3444f2ebdac2f4e09e6",
+  "baseline_source_sha256": {
+    "$REPO/engine/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_source_sha256": {
+    "$REPO/build/native-cpu/prefix128-v1-source/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "$REPO/build/native-cpu/prefix128-v1-source/core.hpp": "f7997e566b44f148cbdf1968cb1bf00d6d4e603063a48c64943dc7929406a1cf",
+    "$REPO/build/native-cpu/prefix128-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "prefix_reuse_chunk": 128,
+  "compute_prefill_chunk": 128,
+  "changes": [
+    "Only prefix_reuse_chunk constant; chunk sizing/reservation and ready metadata already derive from it."
+  ],
+  "quality_requirements": [
+    "Cached vs fresh full-logit equality within each candidate using matching canonical boundaries.",
+    "Independent NumPy fixed maxabs0.01 RMS0.002 plus greedy identity; no cross-build exactness assumption because SGEMM batch shapes differ.",
+    "Keep full causal history and FP16 KV; do not reuse decoded/verified KV."
+  ],
+  "performance_requirements": [
+    "Complete cold and warm multi-turn requests with fixed tokenwork, ten alternating pairs; account for potentially slower coldprefill."
+  ],
+  "notes": [
+    "min(common,canonical_reusable_tokens,len(ids)-1) must be rounded down by advertisedchunk in isolatedadapter.",
+    "Repeated exactmultiple prompts deliberately recompute lastchunk to obtain logits.",
+    "core.cpp/main.cpp byte-identical to baseline19."
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefix128-v1-source/experiment.json",
+    "source_sha256": "f9dc20d06b9db568cab14eaa79bd7e366ea8079f779bdc0e9cf5c3f6b208110b",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted. All comparisons and failed statuses preserved; original hashes retained."
+  }
+}

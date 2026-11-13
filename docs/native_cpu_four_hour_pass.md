@@ -47,3 +47,40 @@ or by multiplying separately measured ratios. Build19 remains the fallback.
 - Root: numerical gates, serialized measurements, selection, merge and release.
 
 Status: active; no post-build19 candidate has been accepted or deployed.
+
+
+## First numerical results: new boundary failure also affects baseline19
+
+Isolated canonical 64/128 candidates change only the shared prefix/prefill chunk
+constant; they retain full causal history and FP16 KV. Source preparation flags
+in the metadata are historical, while the build manifests record executed builds:
+
+| Candidate | Source and provenance | Completed near-4K numerical evidence |
+|---|---|---|
+| 64 | [Patch](../tools/experiments/native-prefix64-v1.patch), [metadata](../reports/native-cpu-prefix64-v1-experiment.json), [build](../reports/native-cpu-prefix64-v1-manifest.json) | [3968/3969 gate](../reports/native-cpu-prefix64-v1-context3968-oracle.json): pass |
+| 128 | [Patch](../tools/experiments/native-prefix128-v1.patch), [metadata](../reports/native-cpu-prefix128-v1-experiment.json), [build](../reports/native-cpu-prefix128-v1-manifest.json) | [3968/3969 gate](../reports/native-cpu-prefix128-v1-context3968-oracle.json): pass |
+
+Both near-4K reports have maximum absolute errors 0.007285118 / 0.007415295 and
+RMS errors 0.001512432 / 0.001223014 at the two positions, with greedy identity.
+Those passes do not qualify other prompts or establish general numerical safety.
+
+The new [63-token boundary fixture](../reports/native-cpu-prefix-granularity-boundary63-oracle-v1.json)
+**failed** at position 63 for both candidates under unchanged max-absolute 0.01 /
+RMS 0.002 limits. The [independent baseline19 control](../reports/native-cpu-build19-newboundary63-control-oracle.json)
+produced the same errors on the same prompt and continuation:
+
+| Position | Maximum absolute error (both candidates and baseline19) | RMS error | Fixed gate |
+|---|---:|---:|---|
+| 63 | 0.012255669 | 0.002722482 | Fail: both limits |
+| 64 | 0.009222031 | 0.001818819 | Pass |
+
+All greedy predictions matched. Baseline agreement does not override the
+failed full-logit contract, and the later passing position does not erase the
+failure. The control establishes that this fixture also exposes a baseline19
+gap; it does not establish the cause or make either candidate acceptable.
+
+Performance claims and new optimization designs are held while numerical
+investigation proceeds. No tolerance change, candidate promotion or broad gate
+pass is claimed. Remaining boundary-suite outputs are not aggregated or published
+as complete. The prior 28-position baseline evidence remains valid within its
+own fixtures; this newly tested prompt extends coverage and reveals its limit.
