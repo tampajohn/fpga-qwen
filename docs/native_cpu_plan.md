@@ -1313,3 +1313,14 @@ The rebuilt combined candidate passed 56 ordinary full-logit arrays and 12
 additional time-boundary arrays against build18. No thresholds or further math
 changes were introduced. Lifecycle/quality acceptance is still running; no
 partial reports or performance claims are published. Live build18 is unchanged.
+
+
+### Combined candidate acceptance completed
+
+The terminal head-major/time32 prerequisite run passed its full B2 API, prefix,
+suffix CLI/trajectory/lifecycle, nine-case and 18-case quality checks. The
+[individually bound reports](native_kv_layout.md#combined-candidate-lifecycle-and-quality-acceptance)
+are archived; no nonexistent aggregate checker output is claimed. This extends
+the 68-array exactness evidence with runtime/quality coverage. Shape timing is
+next and no partial measurements are published. The candidate remains isolated,
+with live build18 unchanged and no answer-quality or speed claim from acceptance.

@@ -100,7 +100,25 @@ against build18: 68 arrays total, including repeated causal 31/32/33 and 63/64/6
 checks. This preserves the tested per-output arithmetic and canonical KV
 behavior; it is sampled exactness, not universal correctness.
 
-Combined lifecycle/quality acceptance is still running. No partial acceptance
-or timing output is published here. Component speedups are not multiplied or
+Combined lifecycle/quality acceptance subsequently completed as recorded below.
+No partial timing output is published here. Component speedups are not multiplied or
 inherited, and no performance conclusion follows from these gates. The combined
 candidate is not live; build18 remains the selected browser release.
+
+
+### Combined candidate lifecycle and quality acceptance
+
+The terminal prerequisite run completed successfully. Individual reports retain
+their original binary/input/source bindings and passed statuses:
+
+- [Full 36-case B2 API matrix](../reports/native-cpu-kv-head-major-time32-verify-api.json).
+- [28-case canonical-prefix gate](../reports/native-cpu-kv-head-major-time32-prefix-check.json).
+- [Suffix trajectories and cached lifecycle](../reports/native-cpu-kv-head-major-time32-suffix-trajectories.json), including cancellation/restart.
+- [Direct suffix CLI checks](../reports/native-cpu-kv-head-major-time32-suffix-cli.json).
+- [Nine-case quality](../reports/native-cpu-kv-head-major-time32-quality.json) and [18-case expanded quality](../reports/native-cpu-kv-head-major-time32-extended-quality.json), preserving reference trajectories and grades.
+
+The checker printed successful prerequisite completion but does not produce an
+aggregate acceptance JSON; these terminal individual reports are the evidence.
+Exact baseline agreement does not improve model answer accuracy. Shape timing
+is the next separate measurement. No timing result or browser deployment is
+inferred from acceptance, and live build18 remains unchanged.
