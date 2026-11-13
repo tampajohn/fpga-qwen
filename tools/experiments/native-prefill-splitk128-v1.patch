@@ -1,0 +1,40 @@
+--- a/engine/core.cpp
++++ b/engine/core.cpp
+@@ -207,6 +207,8 @@
+     std::vector<float> half_gate,tanh_gate;
+     std::vector<float> shifted_scores,probabilities;
+     std::vector<float> pair_scores,pair_shifted,pair_probabilities;
++    // Reused FP32 output-sized partial for fixed split-K prefill projections.
++    std::vector<float> projection_partial;
+     std::array<float,H> last_hidden{};
+     int pos=0;
+     bool verification_pending=false;
+@@ -260,6 +262,7 @@
+         x.reserve(prefill_chunk*H);h.reserve(prefill_chunk*H);q.reserve(prefill_chunk*Q*D);k.reserve(prefill_chunk*K*D);v.reserve(prefill_chunk*K*D);
+         attended.reserve(prefill_chunk*Q*D);residual.reserve(prefill_chunk*H);gate.reserve(prefill_chunk*F);up.reserve(prefill_chunk*F);
+         half_gate.reserve(prefill_chunk*F);tanh_gate.reserve(prefill_chunk*F);
++        projection_partial.reserve(prefill_chunk*F);
+         output.reserve(vocabulary);
+         cosines.resize(size_t(opt.context)*64);sines.resize(cosines.size());
+         for(int p=0;p<opt.context;++p)for(int j=0;j<64;++j){double angle=p/std::pow(1000000.0,2.0*j/D);cosines[p*64+j]=std::cos(angle);sines[p*64+j]=std::sin(angle);}
+@@ -268,7 +271,19 @@
+     Tensor& tensor(const std::string& name){return tensors.at(name);}
+     void project(Tensor& w,const float* x,float* y,int batch,Pool& pool) {
+         if(batch>1&&!w.wide.empty()) {
+-            cblas_sgemm(CblasRowMajor,CblasNoTrans,CblasTrans,batch,w.rows,w.cols,1.0f,x,w.cols,w.wide.data(),w.cols,0.0f,y,w.rows);
++            // Fixed 128-column reductions for every batched layer projection.
++            // Each SGEMM overwrites the same FP32 scratch; independent partials
++            // merge in increasing-K order with FP32 addition. No context gate.
++            constexpr int reduction_block=128;
++            const size_t count=size_t(batch)*w.rows;
++            projection_partial.resize(count);
++            std::fill(y,y+count,0.0f);
++            for(int first=0;first<w.cols;first+=reduction_block) {
++                const int width=std::min(reduction_block,w.cols-first);
++                cblas_sgemm(CblasRowMajor,CblasNoTrans,CblasTrans,batch,w.rows,width,1.0f,
++                    x+first,w.cols,w.wide.data()+first,w.cols,0.0f,projection_partial.data(),w.rows);
++                for(size_t j=0;j<count;++j)y[j]+=projection_partial[j];
++            }
+         } else {
+             pool.run(size_t(batch)*w.rows,[&](size_t begin,size_t end,int){
+                 size_t i=begin;

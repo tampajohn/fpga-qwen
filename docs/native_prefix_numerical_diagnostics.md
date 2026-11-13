@@ -142,3 +142,23 @@ After the serialized broad script stopped, root explicitly ran isolated2048/2049
 All greedy IDs match, but that does not override the full-logit failure. The [128 capture](../reports/native-cpu-norm-attention-direct-div-prefix128-v2-context2048-capture.json) and [64 capture](../reports/native-cpu-norm-attention-direct-div-prefix64-v2-context2048-capture.json) record exactly the same full-vector SHA as512 at each position and both repeats: `7fb2ed2d82bc71b98f1e21a26416c5ade13d277bcef96f4be228d097052854b7` at2048 and `45293f163804f175c4cf40e67651043dcce703ed93bdb3f4c321b11f08a346ac` at2049. This is fixture-specific equality, not a general proof that granularity never affects arithmetic.
 
 None of the three direct-division variants qualifies for fresh quality or performance measurement. The128/64 full broad matrices remain incomplete; short-boundary successes and these isolated controls are preserved without an aggregate pass. Live build19 is unchanged, and no native source change is made from this publication.
+
+
+## Fixed split-K128 projection experiment rejected
+
+An isolated [source patch](../tools/experiments/native-prefill-splitk128-v1.patch) changed ordinary batched wide-weight projections to independent K128 SGEMM partials followed by ascending FP32 merges. [Preparation metadata](../reports/native-cpu-prefill-splitk128-v1-experiment.json) and the [completed build](../reports/native-cpu-prefill-splitk128-v1-manifest.json) bind the experiment. The hypothesis was motivated by the matched-input projection roundoff diagnostic; it was not a proved fix. It retains baseline19 norm/attention math and does not combine the failed direct-division branch. A6 MiB reusable FP32 scratch buffer and80 rather than7 SGEMM calls per layer/chunk are disclosed, but no speed claim was measured.
+
+The [two-repeat capture](../reports/native-cpu-prefill-splitk128-v1-boundary63-capture.json) and [fixed oracle gate](../reports/native-cpu-prefill-splitk128-v1-boundary63-oracle.json) completed. **Both selected positions fail**, despite unchanged greedy IDs:
+
+| Position | Maximum absolute error (limit0.01) | RMS (limit0.002) | Result |
+|---|---:|---:|---|
+| 63 | 0.012241602 | 0.002866313 | Both limits fail |
+| 64 | 0.010024786 | 0.002008769 | Both limits fail |
+
+The candidate is rejected at this tripwire. There is no2048/3968 qualification, broader quality, timing or release claim for it; no tolerance change or selective treatment of the near-limit64 row is made. Live build19 remains unchanged. This failed alternative remains evidence alongside the earlier baseline and direct-division failures.
+
+## Distinguishing exact nonregression from absolute qualification
+
+For a separate arithmetic-preserving optimization, full-vector byte identity to build19—including the known63 failure—can establish sampled numerical nonregression. It cannot turn that inherited failure into an independent-oracle pass. An honest record must state both outcomes: exact baseline equivalence passed for the listed arrays, while the absolute63 contract remains failed and unresolved. Existing28-position qualification stays scoped to those positions; newly exposed failures are not excluded from the record.
+
+Such a record is not a numerical-fix claim or authorization to override an absolute-pass release requirement. If the release contract requires every declared absolute gate to pass, exact baseline identity alone does not satisfy it. Diagnostic performance evidence, if separately authorized after exactness checks, must carry the inherited numerical limitation rather than be labelled fully qualified. No new acceptance thresholds or silent release exception are introduced here.
