@@ -88,3 +88,46 @@ causal claim attributes the regression specifically to cache locality or
 register pressure without further evidence. Live build18 remains unchanged.
 The next investigation is baseline phase attribution, not promotion of this
 candidate.
+
+
+## Separate fixed time32/channel32 candidate
+
+After the full-time channel tile's long-tail regression, a distinct design
+bounds the active time span to 32 tokens before advancing through four 32-channel
+tiles. It initializes accumulators to positive zero in the first time block;
+later blocks reload the preceding FP32 output stores, preserving each output's
+ascending-time FMA chain. The final block uses its actual causal remainder.
+This fixed design was chosen before its measurement. It is neither a threshold
+that selects favorable earlier shapes nor a claim that cache locality has been
+proved to cause the first candidate's regression.
+
+The [source patch](../tools/experiments/native-prefill-v-time32.patch),
+[preparation metadata](../reports/native-cpu-prefill-v-time32-experiment.json), and
+[immutable build](../reports/native-cpu-prefill-v-time32-manifest.json) identify the
+isolated candidate. [56 full-logit arrays](../reports/native-cpu-prefill-v-time32-exact-gate.json)
+matched build18 exactly, and [12 additional boundary arrays](../reports/native-cpu-prefill-v-time32-timeboundary-exact-gate.json)
+matched at causal lengths 31/32/33 and 63/64/65 with two repeats. These are scoped
+compiled exactness checks, not exhaustive correctness proof.
+
+The [completed original eight-shape comparison](../reports/native-cpu-prefill-v-time32-original-shapes.json)
+retains ten alternating pairs, warmups and all outliers. Median paired wall-time
+speedup is reference/candidate, above 1 favoring the candidate; parentheses are
+95% paired bootstrap intervals. Retained-prefix priming is outside the clock.
+
+| Retained prefix | Appended batch | Wall-time speedup (95% interval) |
+|---|---:|---:|
+| 0 | 2 | 1.00646 (0.99781–1.01605) |
+| 0 | 16 | 1.00226 (0.98083–1.00892) |
+| 0 | 85 | 0.97780 (0.96799–0.98212) |
+| 0 | 452 | 1.05276 (1.02219–1.08384) |
+| 3584 | 2 | 1.03047 (0.98690–1.08794) |
+| 3584 | 16 | 1.16202 (1.13195–1.21547) |
+| 3584 | 64 | 1.22128 (1.17663–1.25062) |
+| 3584 | 384 | 1.22362 (1.16487–1.32969) |
+
+Long-prefix 16/64/384-token tails and fresh 452 improve with intervals above 1.
+Fresh 85 regresses, with its entire interval below 1. This is a measured tradeoff,
+not a general prefill win. Do not pool shapes or choose a new cutoff from this
+table. Whole-request and held-out evidence, prefix/suffix lifecycle acceptance
+and browser checks remain separate before any release decision. Candidate
+acceptance is ongoing; live build18 remains unchanged.

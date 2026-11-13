@@ -1245,3 +1245,20 @@ table and interpretation. Reject tile32 for general prefill; choose no new
 threshold from this data. Exact 56-array and static register evidence remain
 archived, live build18 is unchanged, and baseline phase attribution is the next
 pending diagnostic. The reopened optimization pass remains active.
+
+
+### Separate time32/channel32 candidate: gains with a short-prompt regression
+
+The [fixed time32 design](native_prefill_register_tiling.md#separate-fixed-time32channel32-candidate)
+retains exact per-output FMA order while reducing the working time span before
+advancing channel tiles. Its full 56-array and additional 12-array time-boundary
+gates passed. The completed ten-pair eight-shape comparison improves the
+3584-prefix 16/64/384-token tails by paired speedups around 1.162/1.221/1.224,
+with intervals above 1, and fresh 452 around 1.053. Fresh 85 regresses to 0.9778
+(interval approximately 0.968–0.982). Every shape and round is archived, including
+the regression; no threshold is selected to hide it.
+
+This is a separately preselected fixed loop design, not a general speed claim
+or promotion. Candidate prefix/lifecycle acceptance and further matched
+measurement are pending. Live build18 remains unchanged. A separately reviewed
+head-major KV source proposal has not been built or tested at this point.

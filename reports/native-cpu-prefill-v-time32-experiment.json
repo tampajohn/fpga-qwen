@@ -1,0 +1,35 @@
+{
+  "diagnostic_only": true,
+  "promotion_allowed": false,
+  "build_run": false,
+  "inference_run": false,
+  "fixed_design": {
+    "time_block": 32,
+    "channel_block": 32,
+    "context_threshold": null
+  },
+  "change": "Ordinary B>1 paired attention PV: normalizedprobabilities once, time32 outer/channel32 inner; FP32 accumulators reload/store at time boundaries.",
+  "exactness": "Firstblock seeds+0. Subsequentblocks reload exact FP32 outputs. Everyoutput sees original ascendingt FMA chain with identical operands; no partialsum reduction or new arithmetic. B1/B2 unchanged.",
+  "hypothesis": "Bound useful per-KV-head V payload to32*128*2=8192bytes per timeblock rather than wholecontext scans. Time-major interleavedKV address span larger than payload; cacheline/otherhead traffic and output boundary traffic remain costs. No speed claim.",
+  "preselection": "Fixed32time/32channel design chosen before measurements, no inputlength dispatch.",
+  "original_tile_source_sha256": {
+    "build/native-cpu/prefill-v-register-tile-source/core.cpp": "0c4c4444f03d7686ac660f5bfc2d7cd7dcd61aca523aec857f5fc936faaec26d",
+    "build/native-cpu/prefill-v-register-tile-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "build/native-cpu/prefill-v-register-tile-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "baseline_source_sha256": {
+    "engine/core.cpp": "0f064ab13a276da455585de36610685a0cbe7419e0f5dd745fab775c222b54ba",
+    "engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_sha256": {
+    "build/native-cpu/prefill-v-time32-source/core.cpp": "74eb1275d11a166af91926a63e35404ad1c4564cce4467b6a04f156fcb44dd3b",
+    "build/native-cpu/prefill-v-time32-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "build/native-cpu/prefill-v-time32-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefill-v-time32-source/experiment.json",
+    "source_sha256": "59de9ce0c9ee2f4b49c69d47eba2e0468c81f2306d49828612517cd9aeace3b0",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted. All timing rounds, warmups, outliers and uncertainty retained; original hashes preserved."
+  }
+}
