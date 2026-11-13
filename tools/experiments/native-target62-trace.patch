@@ -1,0 +1,147 @@
+--- a/engine/core.cpp
++++ b/engine/core.cpp
+@@ -13,6 +13,11 @@
+ #include <cstring>
+ #include <fcntl.h>
+ #include <fstream>
++#include <cstdlib>
++#include <filesystem>
++#include <iomanip>
++#include <initializer_list>
++#include <sstream>
+ #include <limits>
+ #include <map>
+ #include <mutex>
+@@ -116,6 +121,59 @@
+     ~Mapping(){if(data!=MAP_FAILED)munmap(data,length);}
+ };
+ struct Tensor {int rows=0,cols=0;const Half* half=nullptr;const float* norm=nullptr;std::vector<float> wide;};
++
++// Diagnostic-only observer. No inference operands are modified. Enable only
++// for root-owned numerical captures; trace I/O invalidates all timing claims.
++std::atomic<unsigned long long> diagnostic_capture_sequence{0};
++struct Target62Trace {
++    static constexpr int target=62;
++    bool enabled=false;
++    int row=0;
++    std::filesystem::path directory;
++    std::ofstream manifest;
++    static std::string number(unsigned long long n,int width) {
++        std::ostringstream out;out<<std::setw(width)<<std::setfill('0')<<n;return out.str();
++    }
++    Target62Trace(int base,int batch) {
++        if(target<base || target>=base+batch)return;
++        const char* path=std::getenv("QWEN_NATIVE_TRACE_DIR");
++        if(!path || !*path)return;
++        const std::filesystem::path root(path);
++        std::filesystem::create_directories(root);
++        require(std::filesystem::is_directory(root),"Trace root is not a directory");
++        directory=root/("capture-"+number(diagnostic_capture_sequence.fetch_add(1),6));
++        require(std::filesystem::create_directory(directory),"Trace capture already exists");
++        manifest.open(directory/"manifest.jsonl",std::ios::out|std::ios::trunc);
++        require(bool(manifest),"Cannot create trace manifest");
++        row=target-base;enabled=true;
++        manifest<<"{\"kind\":\"start\",\"target_position\":"<<target
++                <<",\"base_position\":"<<base<<",\"batch\":"<<batch
++                <<",\"target_row\":"<<row<<",\"dtype\":\"float32\",\"byte_order\":\"little\"}\n";
++        manifest.flush();require(bool(manifest),"Trace header write failed");
++    }
++    void write(int layer,const char* phase,const float* data,std::initializer_list<int> shape) {
++        if(!enabled)return;
++        size_t count=1;for(int dimension:shape){require(dimension>0,"Invalid trace shape");count*=size_t(dimension);}
++        const std::string file="layer-"+number(layer,2)+"-"+phase+".f32";
++        require(!std::filesystem::exists(directory/file),"Trace tensor already exists");
++        std::ofstream output(directory/file,std::ios::out|std::ios::binary|std::ios::trunc);
++        require(bool(output),"Cannot create trace tensor");
++        output.write(reinterpret_cast<const char*>(data),count*sizeof(float));output.close();
++        require(bool(output),"Trace tensor write failed");
++        manifest<<"{\"kind\":\"tensor\",\"layer\":"<<layer<<",\"phase\":\""<<phase
++                <<"\",\"file\":\""<<file<<"\",\"shape\":[";
++        bool first=true;for(int dimension:shape){if(!first)manifest<<",";first=false;manifest<<dimension;}
++        manifest<<"],\"elements\":"<<count<<",\"bytes\":"<<count*sizeof(float)
++                <<",\"dtype\":\"float32\",\"byte_order\":\"little\"}\n";
++        manifest.flush();require(bool(manifest),"Trace manifest write failed");
++    }
++    void tensor(int layer,const char* phase,const float* data,int stride,std::initializer_list<int> shape) {
++        if(enabled)write(layer,phase,data+size_t(row)*stride,shape);
++    }
++    void finish() {
++        if(enabled){manifest<<"{\"kind\":\"complete\",\"completed\":true}\n";manifest.flush();require(bool(manifest),"Trace completion write failed");}
++    }
++};
+ float dot(const float* x,const Half* w,int n) {
+     float32x4_t a=vdupq_n_f32(0),b=a;
+     for(int j=0;j<n;j+=8) {
+@@ -331,6 +389,7 @@
+         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
+         attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
+         half_gate.resize(gate.size());tanh_gate.resize(gate.size());
++        Target62Trace trace(pos,batch);
+         // Token-major attention has increasing causal lengths. A thin prefix-
+         // cost map balances those lengths while preserving contiguous, disjoint
+         // query ownership and each query's arithmetic/reduction order.
+@@ -360,6 +419,7 @@
+         for(int layer=0;layer<L;++layer){std::string p="model.layers."+std::to_string(layer)+".";
+             const float* nw=tensor(p+"input_layernorm.weight").norm;
+             for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
++            trace.tensor(layer,"input_norm_h",h.data(),H,{H});
+             if(batch==1) {
+                 project_group<3>({&tensor(p+"self_attn.q_proj.weight"),&tensor(p+"self_attn.k_proj.weight"),&tensor(p+"self_attn.v_proj.weight")},
+                                  h.data(),{q.data(),k.data(),v.data()},pool);
+@@ -368,6 +428,9 @@
+                 project(tensor(p+"self_attn.k_proj.weight"),h.data(),k.data(),batch,pool);
+                 project(tensor(p+"self_attn.v_proj.weight"),h.data(),v.data(),batch,pool);
+             }
++            trace.tensor(layer,"q_projection",q.data(),Q*D,{Q,D});
++            trace.tensor(layer,"k_projection",k.data(),K*D,{K,D});
++            trace.tensor(layer,"v_projection",v.data(),K*D,{K,D});
+             const float* qn=tensor(p+"self_attn.q_norm.weight").norm;const float* kn=tensor(p+"self_attn.k_norm.weight").norm;
+             for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
+                 for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
+@@ -379,6 +442,17 @@
+                     const size_t src=(size_t(b)*K+head)*D;
+                     for(int j=0;j<D;++j){keys[dst+j]=Half(k[src+j]);values[dst+j]=Half(v[src+j]);}
+                 }
++            }
++            trace.tensor(layer,"q_rope",q.data(),Q*D,{Q,D});
++            trace.tensor(layer,"k_rope",k.data(),K*D,{K,D});
++            if(trace.enabled) {
++                std::vector<float> canonical(size_t(Target62Trace::target+1)*K*D);
++                for(int t=0;t<=Target62Trace::target;++t)for(int head=0;head<K;++head)for(int j=0;j<D;++j)
++                    canonical[(size_t(t)*K+head)*D+j]=static_cast<float>(keys[cache_offset(layer,t,head)+j]);
++                trace.write(layer,"canonical_keys",canonical.data(),{Target62Trace::target+1,K,D});
++                for(int t=0;t<=Target62Trace::target;++t)for(int head=0;head<K;++head)for(int j=0;j<D;++j)
++                    canonical[(size_t(t)*K+head)*D+j]=static_cast<float>(values[cache_offset(layer,t,head)+j]);
++                trace.write(layer,"canonical_values",canonical.data(),{Target62Trace::target+1,K,D});
+             }
+             if(batch>1) {
+                 // One item owns both query heads for one KV head. The factor
+@@ -486,9 +560,12 @@
+                     }
+                 }
+             });
++            trace.tensor(layer,"attended",attended.data(),Q*D,{Q*D});
+             project(tensor(p+"self_attn.o_proj.weight"),attended.data(),residual.data(),batch,pool);
+             for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
++            trace.tensor(layer,"post_attention_residual",x.data(),H,{H});
+             nw=tensor(p+"post_attention_layernorm.weight").norm;for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
++            trace.tensor(layer,"post_norm_h",h.data(),H,{H});
+             if(batch==1) {
+                 project_group<2>({&tensor(p+"mlp.gate_proj.weight"),&tensor(p+"mlp.up_proj.weight")},h.data(),{gate.data(),up.data()},pool);
+             } else {
+@@ -501,12 +578,15 @@
+             const int gate_count=static_cast<int>(gate.size());
+             vvtanhf(tanh_gate.data(),half_gate.data(),&gate_count);
+             for(size_t j=0;j<gate.size();++j)gate[j]=gate[j]*(0.5f+0.5f*tanh_gate[j])*up[j];
++            trace.tensor(layer,"activated_mlp",gate.data(),F,{F});
+             project(tensor(p+"mlp.down_proj.weight"),gate.data(),residual.data(),batch,pool);
+             for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
++            trace.tensor(layer,"post_mlp_residual",x.data(),H,{H});
+         }
+         pos+=batch;
+         // Keep only last hidden state; vocabulary is computed once per API call.
+         norm(x.data()+size_t(batch-1)*H,tensor("model.norm.weight").norm,last_hidden.data(),H);
++        trace.finish();
+     }
+     void verify_chunk(const int* ids,Pool& pool) {
+         constexpr int batch=2;

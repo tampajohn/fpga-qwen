@@ -1,0 +1,9 @@
+{
+  "original": "$REPO/tests/test_full_model.py",
+  "original_sha256": "5d56aa9784ec89a98f34cfdfd14aa7a0be9d356dd804754a8ec52c1b6e5fc439",
+  "diagnostic": "$REPO/build/native-cpu/numerical-diagnostics/numpy_trace_oracle.py",
+  "diagnostic_sha256": "ea70efedcc27a51b88db6fa4318d75238fb39bae9b6df5f962406499ae89ee8f",
+  "target_position": 62,
+  "source_only": true,
+  "arithmetic": "Original expressions unchanged except projection values wrapped in identity-returning record(); observational arrays copied, no re-evaluation."
+}

@@ -1,0 +1,56 @@
+--- original NumpyQwen class
++++ observational NumpyQwen class
+@@ -20,6 +20,13 @@
+                     value = value.astype(np.float16).astype(np.float32)
+                 self.weights[name] = value
+         self.cache = []
++        self.trace_rows = {}
++        self.trace_position = 62
++
++    def record(self, name, layer, value):
++        if len(self.cache) == self.trace_position:
++            self.trace_rows[(layer,name)] = value.copy()
++        return value
+ 
+     def reset(self):
+         self.cache = []
+@@ -40,9 +47,13 @@
+             def weight(suffix):
+                 return w[f'model.layers.{layer}.{suffix}.weight']
+             h = norm(x, weight('input_layernorm'))
+-            q = rope(norm((weight('self_attn.q_proj') @ h).reshape(16, 128), weight('self_attn.q_norm')))
+-            k = rope(norm((weight('self_attn.k_proj') @ h).reshape(8, 128), weight('self_attn.k_norm')))
++            self.record('input_norm_h',layer,h)
++            q = rope(norm(self.record('q_projection',layer,(weight('self_attn.q_proj') @ h).reshape(16, 128)), weight('self_attn.q_norm')))
++            k = rope(norm(self.record('k_projection',layer,(weight('self_attn.k_proj') @ h).reshape(8, 128)), weight('self_attn.k_norm')))
+             v = (weight('self_attn.v_proj') @ h).reshape(8, 128)
++            self.record('v_projection',layer,v)
++            self.record('q_rope',layer,q)
++            self.record('k_rope',layer,k)
+             if self.kv_precision == 'f16':
+                 # Current-position values must be rounded before attention too,
+                 # not merely when they become previous-token cache entries.
+@@ -51,16 +62,23 @@
+             payload.append((k, v))
+             keys = np.stack([entry[layer][0] for entry in self.cache] + [k])
+             vals = np.stack([entry[layer][1] for entry in self.cache] + [v])
++            self.record('canonical_keys',layer,keys)
++            self.record('canonical_values',layer,vals)
+             keys, vals = np.repeat(keys, 2, axis=1), np.repeat(vals, 2, axis=1)
+             scores = np.einsum('hd,thd->ht', q, keys) / np.float32(np.sqrt(128))
+             probs = np.exp(scores - scores.max(axis=-1, keepdims=True))
+             probs /= probs.sum(axis=-1, keepdims=True)
+             attended = np.einsum('ht,thd->hd', probs, vals).reshape(-1)
++            self.record('attended',layer,attended)
+             x += weight('self_attn.o_proj') @ attended
++            self.record('post_attention_residual',layer,x)
+             h = norm(x, weight('post_attention_layernorm'))
++            self.record('post_norm_h',layer,h)
+             gate, up = weight('mlp.gate_proj') @ h, weight('mlp.up_proj') @ h
+             activated = gate * (.5 + .5*np.tanh(gate*.5)) * up
++            self.record('activated_mlp',layer,activated)
+             x += weight('mlp.down_proj') @ activated
++            self.record('post_mlp_residual',layer,x)
+         self.cache.append(payload)
+         if logits:
+             return w['model.embed_tokens.weight'] @ norm(x, w['model.norm.weight'])

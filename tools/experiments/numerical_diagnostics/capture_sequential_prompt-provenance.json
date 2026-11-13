@@ -1,0 +1,20 @@
+{
+  "original": "tools/capture_native_cpu_logits.py",
+  "original_sha256": "0734158bf38e8a8d34cc43655a58d56bc206f09ce2e8e569e2c14707232205de",
+  "diagnostic": "build/native-cpu/numerical-diagnostics/capture_sequential_prompt.py",
+  "diagnostic_sha256": "7559e8b94d48ccd908be814ce82d590fe489d085f526e092962a06eccc5756f2",
+  "source_only": true,
+  "changes": [
+    "Import/root path for isolated location",
+    "Original helper included in frozen source hashes",
+    "Explicit sequential_step_diagnostic metadata",
+    "Prompt only: fixed teacher IDs via step commands with positions checked; intermediate predictions ignored"
+  ],
+  "unchanged": [
+    "Two exact repeats",
+    "Full-vocabulary arrays and finite shape checks",
+    "Teacher-forced continuation",
+    "EOS policy and fixed comparison positions",
+    "Existing guard/environment/cleanup behavior"
+  ]
+}

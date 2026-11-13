@@ -62,3 +62,67 @@ locate their growth without altering math or tolerances. Different but valid
 FP32 reduction associations can produce nonzero differences; the first differing
 array alone does not establish an implementation defect. No stagewise capture
 or result is claimed here.
+
+## Qualified stage traces: observed differences, not a general bug diagnosis
+
+The [sequential63 control](../reports/native-cpu-build19-sequential63-diagnostic-oracle.json)
+passes the unchanged final gate (maximum absolute error0.00744188,
+RMS0.00145475), while baseline19's batched63 path fails. Both consume the same
+fixed prompt IDs. This isolates a processing-path effect on this fixture;
+it does not make sequential replay a performance solution or relax the gate.
+
+The [observational analysis](../reports/native-cpu-native63-stage-analysis-v1.json)
+passed its prerequisites. The [NumPy trace](../reports/native-cpu-numpy63-layer-trace-v1.json)
+retains exactly the original saved oracle's final full-vocabulary bytes.
+Instrumented native [batch](../reports/native-cpu-native63-batched-trace-identity-v1.json)
+and [sequential](../reports/native-cpu-native63-sequential-trace-identity-v1.json)
+outputs each match their own pristine build19 reference at both selected
+positions and both repeats: four full arrays per path. All364 intermediate
+arrays per native path also repeat exactly. This qualifies the instrumentation
+for observation; it is not evidence that the failing native path meets the
+independent numerical tolerance.
+
+At layer0, native batch and sequential **input-normalized hidden vectors are
+byte-identical**. Their Q/K/V projection outputs then differ:
+
+| Layer0 projection, batch minus sequential | Maximum absolute difference | RMS difference |
+|---|---:|---:|
+| Q | 0.0000123978 | 0.000000750911 |
+| K | 0.00000858307 | 0.000000826856 |
+| V | 0.00000131130 | 0.000000138276 |
+
+This is a local identical-input difference between the SGEMM batch and B1
+projection paths. Different floating-point reduction associations are a
+plausible explanation; the trace does not establish that either implementation
+is defective. After normalization/RoPE and FP16 rounding, layer0 canonical
+prefix K/V maxima differ by0.00390625 and0.000244141. The archive retains all63
+positions rather than attributing a history-wide maximum solely to the target
+row. Both native paths already differ slightly from the oracle at layer0 input
+normalization, so projection association is not the only numerical difference.
+
+By layer27, post-MLP residual RMS differences versus the oracle are approximately
+0.008146 for batch and0.006070 for sequential. Sequential is not closer at
+every intermediate layer; errors grow and interact through normalized
+projections, rounded KV history, attention and residual updates. Large final
+error cannot be assigned to a single stage merely because it has the largest
+observed difference. No per-stage acceptance threshold or winner is invented.
+
+The full analysis preserves13 phases×28 layers for batch/oracle,
+sequential/oracle and batch/sequential, plus every canonical-KV position's
+metrics. Raw tensors stay local; hashes, shapes, source/build bindings and all
+metrics are archived. See [native build](../reports/native-cpu-native-target62-trace-v1-build.json),
+[instrumentation metadata](../reports/native-cpu-native-target62-trace-v1-experiment.json),
+[batch capture](../reports/native-cpu-native63-batched-trace-capture-v1.json) and
+[sequential capture](../reports/native-cpu-native63-sequential-trace-capture-v1.json).
+
+Reproduction sources are preserved under
+[`tools/experiments/numerical_diagnostics/`](../tools/experiments/numerical_diagnostics/):
+byte-identical copied oracle, capture and analysis Python sources retain their
+repository-root resolution at the same directory depth. Sanitized provenance
+JSON uses `$REPO` placeholders and must be mapped back to local paths before
+reproduction; executed local hashes remain in the reports. The
+[native source generator](../tools/experiments/prepare-native-target62-trace.py)
+and [observational patch](../tools/experiments/native-target62-trace.patch)
+are separate from the unchanged live engine. Fresh directories and a guarded,
+serialized run are required. None of these diagnostics claims timing or fixes
+the failed broad direct-division candidate.
