@@ -246,3 +246,31 @@ different BLAS algorithm. Large ULP counts on near-zero outputs must be read
 alongside absolute and RMS errors, not treated as catastrophic relative error
 or a new pass/fail threshold. The report preserves full ULP histograms, rows,
 input identity and source/artifact bindings. No timing or promotion claim is made.
+
+
+## Original-arithmetic QK key-pair shape comparison
+
+The [completed eight-shape comparison](../reports/native-cpu-prefill-qk-keypair-original-shapes.json)
+retains all ten alternating pairs per shape, warmups, outliers and provenance.
+Ratios below are baseline19/candidate command wall latency; greater than1 means
+lower candidate latency. Confidence intervals are paired percentile bootstrap
+intervals for each shape separately, not pooled evidence.
+
+| Shape (prefix/new tokens) | Median paired speedup | 95% interval |
+|---|---:|---|
+| P0-B2 | 0.99561 | [0.98366, 1.00396] |
+| P0-B16 | 0.99815 | [0.98398, 1.00944] |
+| P0-B85 | 1.00277 | [0.98999, 1.01980] |
+| P0-B452 | 1.02832 | [0.98723, 1.03765] |
+| P3584-B2 | 1.01495 | [0.98924, 1.04534] |
+| P3584-B16 | 1.04074 | [1.01764, 1.08904] |
+| P3584-B64 | 1.06509 | [1.05145, 1.09517] |
+| P3584-B384 | 1.04929 | [1.03829, 1.08457] |
+
+The long-prefix B16/B64/B384 intervals exceed1; other shapes do not establish a
+gain in this run. This measures the original-arithmetic QK candidate with its
+68-array byte-identity evidence, not the later direct-division composition.
+It is neither a whole-request nor a llama comparison. Both baseline19 and this
+arithmetic-preserving candidate retain the known independent 63-token numerical
+gap; relative timing and baseline identity do not confer absolute numerical
+qualification. No candidate was promoted from this result.
