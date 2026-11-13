@@ -1282,9 +1282,24 @@ Head-major KV [acceptance](../reports/native-cpu-kv-head-major-acceptance.json)
 completed: 28 prefix cases, 35 initial suffix cases plus seven cached-prefix
 cases, and nine quality trajectories matched the build18 reference. These
 support correctness within the fixtures, not improved answer accuracy. Its
-shape timing is still running; no partial timing results are published.
+original-shape timing subsequently completed and is archived below.
 
 The separate time32 [28-case prefix check](../reports/native-cpu-prefill-v-time32-prefix-check.json)
 also passed. Its remaining lifecycle/quality/browser and broader request
 acceptance are not inferred from that pass. Neither candidate is promoted;
 live build18 remains unchanged.
+
+
+### Head-major original-shape timing completed
+
+The [full eight-shape ten-pair report](../reports/native-cpu-kv-head-major-original-shapes.json)
+completed with exact preflight and all measured rounds preserved. The
+[layout experiment document](native_kv_layout.md#completed-original-shape-comparison)
+shows every paired speedup and 95% interval. These are scoped append timings,
+with retained-prefix priming excluded, not a generic speedup or a llama target
+comparison. Broader request measurements remain separate.
+
+A fixed head-major plus time32 combination is being prepared as an isolated
+new candidate; it cannot inherit correctness or speed merely by composing the
+two source changes. Do not multiply separately measured ratios. Live build18
+remains selected and unchanged.

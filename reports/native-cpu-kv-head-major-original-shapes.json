@@ -1,0 +1,7403 @@
+{
+  "completed": true,
+  "paired_sampling_complete": true,
+  "performance_claim_eligible": false,
+  "gpu": false,
+  "pytorch": false,
+  "diagnostic_only": true,
+  "rounds": 10,
+  "warmups": 2,
+  "suite": "original",
+  "declared_shapes": {
+    "0": [
+      2,
+      16,
+      85,
+      452
+    ],
+    "3584": [
+      2,
+      16,
+      64,
+      384
+    ]
+  },
+  "threads": 12,
+  "prefill_threads": 6,
+  "preflight": [
+    {
+      "shape": "P0-B2",
+      "prefix": 0,
+      "tail": 2,
+      "configurations": {
+        "reference": {
+          "token": 25811,
+          "position": 2,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B2-reference-logits.f32",
+              "sha256": "4382fa0332df0290e2ae735997e3b7b7faafa9e82d486d200f3143b3e38f3056",
+              "bytes": 607744,
+              "position": 2
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B2-reference-hidden.f32",
+              "sha256": "29eae0f3dec0955a839a277ad53c684fa119a6fc660d3d2015aad89420822f04",
+              "bytes": 4096,
+              "position": 2
+            }
+          }
+        },
+        "candidate": {
+          "token": 25811,
+          "position": 2,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B2-candidate-logits.f32",
+              "sha256": "4382fa0332df0290e2ae735997e3b7b7faafa9e82d486d200f3143b3e38f3056",
+              "bytes": 607744,
+              "position": 2
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B2-candidate-hidden.f32",
+              "sha256": "29eae0f3dec0955a839a277ad53c684fa119a6fc660d3d2015aad89420822f04",
+              "bytes": 4096,
+              "position": 2
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P0-B16",
+      "prefix": 0,
+      "tail": 16,
+      "configurations": {
+        "reference": {
+          "token": 4128,
+          "position": 16,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B16-reference-logits.f32",
+              "sha256": "2e440dd4e8530b78e6ed66d57da7bd2575b50c7e6a01bd09adaa7a909169e011",
+              "bytes": 607744,
+              "position": 16
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B16-reference-hidden.f32",
+              "sha256": "1ee68f296dbf8190d95c9da4925a1fa7225af6fdde3772e89dd376f077fecbde",
+              "bytes": 4096,
+              "position": 16
+            }
+          }
+        },
+        "candidate": {
+          "token": 4128,
+          "position": 16,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B16-candidate-logits.f32",
+              "sha256": "2e440dd4e8530b78e6ed66d57da7bd2575b50c7e6a01bd09adaa7a909169e011",
+              "bytes": 607744,
+              "position": 16
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B16-candidate-hidden.f32",
+              "sha256": "1ee68f296dbf8190d95c9da4925a1fa7225af6fdde3772e89dd376f077fecbde",
+              "bytes": 4096,
+              "position": 16
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P0-B85",
+      "prefix": 0,
+      "tail": 85,
+      "configurations": {
+        "reference": {
+          "token": 856,
+          "position": 85,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B85-reference-logits.f32",
+              "sha256": "5af4487f95c6411a8f890d240ccad67954f82cc430c92b450a53006a95a53f4f",
+              "bytes": 607744,
+              "position": 85
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B85-reference-hidden.f32",
+              "sha256": "65bfc5759e0ed4dc18654090f4c06adf4845d93e7a447ad547dc69ce958e055e",
+              "bytes": 4096,
+              "position": 85
+            }
+          }
+        },
+        "candidate": {
+          "token": 856,
+          "position": 85,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B85-candidate-logits.f32",
+              "sha256": "5af4487f95c6411a8f890d240ccad67954f82cc430c92b450a53006a95a53f4f",
+              "bytes": 607744,
+              "position": 85
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B85-candidate-hidden.f32",
+              "sha256": "65bfc5759e0ed4dc18654090f4c06adf4845d93e7a447ad547dc69ce958e055e",
+              "bytes": 4096,
+              "position": 85
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P0-B452",
+      "prefix": 0,
+      "tail": 452,
+      "configurations": {
+        "reference": {
+          "token": 856,
+          "position": 452,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B452-reference-logits.f32",
+              "sha256": "77752b739b2ae73d2a351527de1f85ad61c2edb89e58837d99dd2ed433e0e15a",
+              "bytes": 607744,
+              "position": 452
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B452-reference-hidden.f32",
+              "sha256": "bb5f97786192463ace021f6445e549b743b1f5904b528330fa959466ea0bb608",
+              "bytes": 4096,
+              "position": 452
+            }
+          }
+        },
+        "candidate": {
+          "token": 856,
+          "position": 452,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B452-candidate-logits.f32",
+              "sha256": "77752b739b2ae73d2a351527de1f85ad61c2edb89e58837d99dd2ed433e0e15a",
+              "bytes": 607744,
+              "position": 452
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B452-candidate-hidden.f32",
+              "sha256": "bb5f97786192463ace021f6445e549b743b1f5904b528330fa959466ea0bb608",
+              "bytes": 4096,
+              "position": 452
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P3584-B2",
+      "prefix": 3584,
+      "tail": 2,
+      "configurations": {
+        "reference": {
+          "token": 856,
+          "position": 3586,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B2-reference-logits.f32",
+              "sha256": "f8ce6a9db873569b0089a3a679696106e15d0e18d35c06a2aafe8e9192e24ce9",
+              "bytes": 607744,
+              "position": 3586
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B2-reference-hidden.f32",
+              "sha256": "d09217d695a92f387750de5111c1a7eb599d86f4f7c406013d757ab4ee2e9e13",
+              "bytes": 4096,
+              "position": 3586
+            }
+          }
+        },
+        "candidate": {
+          "token": 856,
+          "position": 3586,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B2-candidate-logits.f32",
+              "sha256": "f8ce6a9db873569b0089a3a679696106e15d0e18d35c06a2aafe8e9192e24ce9",
+              "bytes": 607744,
+              "position": 3586
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B2-candidate-hidden.f32",
+              "sha256": "d09217d695a92f387750de5111c1a7eb599d86f4f7c406013d757ab4ee2e9e13",
+              "bytes": 4096,
+              "position": 3586
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P3584-B16",
+      "prefix": 3584,
+      "tail": 16,
+      "configurations": {
+        "reference": {
+          "token": 856,
+          "position": 3600,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B16-reference-logits.f32",
+              "sha256": "79cb4183c21616012ecfbc7a02c0f1ed4d07727b71daf11230a1308d9b2d3eb0",
+              "bytes": 607744,
+              "position": 3600
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B16-reference-hidden.f32",
+              "sha256": "fc89af39912fdb83034bea9191a05c9ff08413ab1e17045b0040800153524dec",
+              "bytes": 4096,
+              "position": 3600
+            }
+          }
+        },
+        "candidate": {
+          "token": 856,
+          "position": 3600,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B16-candidate-logits.f32",
+              "sha256": "79cb4183c21616012ecfbc7a02c0f1ed4d07727b71daf11230a1308d9b2d3eb0",
+              "bytes": 607744,
+              "position": 3600
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B16-candidate-hidden.f32",
+              "sha256": "fc89af39912fdb83034bea9191a05c9ff08413ab1e17045b0040800153524dec",
+              "bytes": 4096,
+              "position": 3600
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P3584-B64",
+      "prefix": 3584,
+      "tail": 64,
+      "configurations": {
+        "reference": {
+          "token": 856,
+          "position": 3648,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B64-reference-logits.f32",
+              "sha256": "c3333a0e046a55aa01d6503c303f6711ee2d64d30704665b213abe598913c7f5",
+              "bytes": 607744,
+              "position": 3648
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B64-reference-hidden.f32",
+              "sha256": "e5ecddb66b0a3befa46929ac9c98025f879348a49b0c2af106526e42cc91a815",
+              "bytes": 4096,
+              "position": 3648
+            }
+          }
+        },
+        "candidate": {
+          "token": 856,
+          "position": 3648,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B64-candidate-logits.f32",
+              "sha256": "c3333a0e046a55aa01d6503c303f6711ee2d64d30704665b213abe598913c7f5",
+              "bytes": 607744,
+              "position": 3648
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B64-candidate-hidden.f32",
+              "sha256": "e5ecddb66b0a3befa46929ac9c98025f879348a49b0c2af106526e42cc91a815",
+              "bytes": 4096,
+              "position": 3648
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P3584-B384",
+      "prefix": 3584,
+      "tail": 384,
+      "configurations": {
+        "reference": {
+          "token": 31615,
+          "position": 3968,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B384-reference-logits.f32",
+              "sha256": "7219b435bb3de631f6453fe941a6ab1cedd5725eb6e631004b8763f83c9ccf15",
+              "bytes": 607744,
+              "position": 3968
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B384-reference-hidden.f32",
+              "sha256": "d68e9b2488e05f583ca96e1146d86b21a31abe700c1b44554c2f29c7cde2d567",
+              "bytes": 4096,
+              "position": 3968
+            }
+          }
+        },
+        "candidate": {
+          "token": 31615,
+          "position": 3968,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B384-candidate-logits.f32",
+              "sha256": "7219b435bb3de631f6453fe941a6ab1cedd5725eb6e631004b8763f83c9ccf15",
+              "bytes": 607744,
+              "position": 3968
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B384-candidate-hidden.f32",
+              "sha256": "d68e9b2488e05f583ca96e1146d86b21a31abe700c1b44554c2f29c7cde2d567",
+              "bytes": 4096,
+              "position": 3968
+            }
+          }
+        }
+      },
+      "passed": true
+    }
+  ],
+  "priming": [
+    {
+      "phase": "preflight",
+      "configuration": "reference",
+      "prefix_tokens": 0,
+      "full_prefill_executed": false,
+      "outside_timing": true
+    },
+    {
+      "phase": "preflight",
+      "configuration": "candidate",
+      "prefix_tokens": 0,
+      "full_prefill_executed": false,
+      "outside_timing": true
+    },
+    {
+      "phase": "preflight",
+      "configuration": "reference",
+      "prefix_tokens": 3584,
+      "full_prefill_executed": true,
+      "outside_timing": true
+    },
+    {
+      "phase": "preflight",
+      "configuration": "candidate",
+      "prefix_tokens": 3584,
+      "full_prefill_executed": true,
+      "outside_timing": true
+    },
+    {
+      "phase": "timing",
+      "configuration": "reference",
+      "prefix_tokens": 0,
+      "full_prefill_executed": false,
+      "outside_timing": true
+    },
+    {
+      "phase": "timing",
+      "configuration": "candidate",
+      "prefix_tokens": 0,
+      "full_prefill_executed": false,
+      "outside_timing": true
+    },
+    {
+      "phase": "timing",
+      "configuration": "reference",
+      "prefix_tokens": 3584,
+      "full_prefill_executed": true,
+      "outside_timing": true
+    },
+    {
+      "phase": "timing",
+      "configuration": "candidate",
+      "prefix_tokens": 3584,
+      "full_prefill_executed": true,
+      "outside_timing": true
+    }
+  ],
+  "shapes": [
+    {
+      "shape": "P0-B2",
+      "prefix": 0,
+      "tail": 2,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.048871917,
+              "wall_seconds": 0.0489518329850398
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.048883667,
+              "wall_seconds": 0.04896108398679644
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046560875,
+              "wall_seconds": 0.04663483303738758
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.045647333,
+              "wall_seconds": 0.04572204203577712
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.045946167,
+              "wall_seconds": 0.04601491696666926
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046634875,
+              "wall_seconds": 0.04671058402163908
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 0.9852319106677139,
+            "wall_seconds": 0.9851068645459979
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046497667,
+              "wall_seconds": 0.046566582983359694
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.04755475,
+              "wall_seconds": 0.047625667008105665
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.022734108358598,
+            "wall_seconds": 1.0227434343877975
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046634666,
+              "wall_seconds": 0.046702499967068434
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.044974209,
+              "wall_seconds": 0.045038165990263224
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.0369202046443995,
+            "wall_seconds": 1.0369538576940505
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.045411958,
+              "wall_seconds": 0.04548333398997784
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.04639,
+              "wall_seconds": 0.04645933298161253
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.0215371026283429,
+            "wall_seconds": 1.021458387194082
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046312917,
+              "wall_seconds": 0.046382333035580814
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046739042,
+              "wall_seconds": 0.04679862497141585
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 0.9908828897263234,
+            "wall_seconds": 0.9911046118109389
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.04619275,
+              "wall_seconds": 0.046259500028099865
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046303334,
+              "wall_seconds": 0.04637358401669189
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.0023939687505075,
+            "wall_seconds": 1.0024661742673986
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.045638583,
+              "wall_seconds": 0.04570587503258139
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.045336,
+              "wall_seconds": 0.04541116702603176
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.0066742323980942,
+            "wall_seconds": 1.0064897694961392
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.044745958,
+              "wall_seconds": 0.04480629204772413
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.043243834,
+              "wall_seconds": 0.04331233398988843
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 0.9664299510583727,
+            "wall_seconds": 0.9666574048072433
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.043546583,
+              "wall_seconds": 0.043601415993180126
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.044279084,
+              "wall_seconds": 0.04434420901816338
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 0.9834571781114532,
+            "wall_seconds": 0.9832493793117607
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.045103875,
+              "wall_seconds": 0.045163042028434575
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.044544542,
+              "wall_seconds": 0.044611416989937425
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 0.9875990034115694,
+            "wall_seconds": 0.9877859193331165
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 0.9966384292384154,
+            "percentile_95_ci": [
+              0.9852319106677139,
+              1.0215371026283429
+            ],
+            "minimum_observed_ratio": 0.9664299510583727,
+            "maximum_observed_ratio": 1.0369202046443995
+          },
+          "medians": {
+            "reference": 0.046124750500000006,
+            "candidate": 0.045373979
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 0.9967853930391688,
+            "percentile_95_ci": [
+              0.9851068645459979,
+              1.021458387194082
+            ],
+            "minimum_observed_ratio": 0.9666574048072433,
+            "maximum_observed_ratio": 1.0369538576940505
+          },
+          "medians": {
+            "reference": 0.04619425049168058,
+            "candidate": 0.0454472505080048
+          }
+        }
+      }
+    },
+    {
+      "shape": "P0-B16",
+      "prefix": 0,
+      "tail": 16,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.045214834,
+              "wall_seconds": 0.045287500019185245
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.047066709,
+              "wall_seconds": 0.04714037501253188
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.046724667,
+              "wall_seconds": 0.04679941601352766
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.04537675,
+              "wall_seconds": 0.045449875004123896
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.047177792,
+              "wall_seconds": 0.04725116695044562
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.046077834,
+              "wall_seconds": 0.04615254100644961
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.023871738415482,
+            "wall_seconds": 1.0238042352606866
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044686875,
+              "wall_seconds": 0.044752374989911914
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.046903375,
+              "wall_seconds": 0.04698758298764005
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.0496006937159958,
+            "wall_seconds": 1.0499461313110645
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.048822,
+              "wall_seconds": 0.04889550001826137
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.047583667,
+              "wall_seconds": 0.047657334012910724
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.026024328894198,
+            "wall_seconds": 1.025980597341329
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.0461555,
+              "wall_seconds": 0.04622929100878537
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044615459,
+              "wall_seconds": 0.04469087504548952
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 0.9666336406278775,
+            "wall_seconds": 0.9667220515451235
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044524709,
+              "wall_seconds": 0.04460383305558935
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.04524525,
+              "wall_seconds": 0.04531958303414285
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 0.9840747702797532,
+            "wall_seconds": 0.9842066071522707
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.046058416,
+              "wall_seconds": 0.04613345902180299
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.04470325,
+              "wall_seconds": 0.04477720899740234
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 0.9705772339196381,
+            "wall_seconds": 0.9706015969069287
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044188,
+              "wall_seconds": 0.04425616702064872
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044323625,
+              "wall_seconds": 0.044385791989043355
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 0.9969401194058474,
+            "wall_seconds": 0.9970795841960726
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.045747042,
+              "wall_seconds": 0.04581475001759827
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.045979167,
+              "wall_seconds": 0.0460491250269115
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.0050740985613889,
+            "wall_seconds": 1.0051157107530477
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.04364325,
+              "wall_seconds": 0.04370995896169916
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.043909208,
+              "wall_seconds": 0.0439906669780612
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 0.993943001659242,
+            "wall_seconds": 0.9936189188378972
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.043498959,
+              "wall_seconds": 0.04357741598505527
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.043575125,
+              "wall_seconds": 0.043646167032420635
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.0017509844316046,
+            "wall_seconds": 1.0015776760923352
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 0.999345551918726,
+            "percentile_95_ci": [
+              0.9822601177894401,
+              1.023871738415482
+            ],
+            "minimum_observed_ratio": 0.9666336406278775,
+            "maximum_observed_ratio": 1.0496006937159958
+          },
+          "medians": {
+            "reference": 0.0446593545,
+            "candidate": 0.045496146
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 0.9993286301442039,
+            "percentile_95_ci": [
+              0.982110257872413,
+              1.0238042352606866
+            ],
+            "minimum_observed_ratio": 0.9667220515451235,
+            "maximum_observed_ratio": 1.0499461313110645
+          },
+          "medians": {
+            "reference": 0.04473404202144593,
+            "candidate": 0.04556716652587056
+          }
+        }
+      }
+    },
+    {
+      "shape": "P0-B85",
+      "prefix": 0,
+      "tail": 85,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.099818667,
+              "wall_seconds": 0.09991124999942258
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.092904584,
+              "wall_seconds": 0.09299962496152148
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.097684042,
+              "wall_seconds": 0.09777937497710809
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.099803917,
+              "wall_seconds": 0.09991029201773927
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.100042416,
+              "wall_seconds": 0.1001391660538502
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.093012709,
+              "wall_seconds": 0.09310208301758394
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.075577919142211,
+            "wall_seconds": 1.0755845928273935
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.093013375,
+              "wall_seconds": 0.09310579102020711
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.099607541,
+              "wall_seconds": 0.09970162500394508
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.0708948148586157,
+            "wall_seconds": 1.0708423601954733
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.099560125,
+              "wall_seconds": 0.09965091699268669
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.092427083,
+              "wall_seconds": 0.09253612498287112
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.0771748038396929,
+            "wall_seconds": 1.0768866430394892
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.091930625,
+              "wall_seconds": 0.09201512497384101
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.098674792,
+              "wall_seconds": 0.09877483401214704
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.0733614831836507,
+            "wall_seconds": 1.073463020783026
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.0997685,
+              "wall_seconds": 0.09985733299981803
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.092495625,
+              "wall_seconds": 0.09258533298270777
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.07862939463353,
+            "wall_seconds": 1.0785437583128685
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.091913791,
+              "wall_seconds": 0.09199866600101814
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.099653584,
+              "wall_seconds": 0.0997304999618791
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.0842070914037265,
+            "wall_seconds": 1.0840428921086247
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.100684333,
+              "wall_seconds": 0.10078916698694229
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.093451833,
+              "wall_seconds": 0.09353762498358265
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.0773928104759594,
+            "wall_seconds": 1.0775254022606668
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.093057625,
+              "wall_seconds": 0.0931437499821186
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.099747083,
+              "wall_seconds": 0.09984533296665177
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.071885114196714,
+            "wall_seconds": 1.0719488208905021
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.099299417,
+              "wall_seconds": 0.09940008301055059
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.092326,
+              "wall_seconds": 0.0924079169635661
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.0755303706431558,
+            "wall_seconds": 1.0756663095191434
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.091807875,
+              "wall_seconds": 0.0919042500318028
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.100953958,
+              "wall_seconds": 0.10103833302855492
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.0996219877652107,
+            "wall_seconds": 1.0993869488472114
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.076376361490952,
+            "percentile_95_ci": [
+              1.0733614831836507,
+              1.080799950939843
+            ],
+            "minimum_observed_ratio": 1.0708948148586157,
+            "maximum_observed_ratio": 1.0996219877652107
+          },
+          "medians": {
+            "reference": 0.0997003335,
+            "candidate": 0.092461354
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0762764762793164,
+            "percentile_95_ci": [
+              1.073463020783026,
+              1.0807841471846458
+            ],
+            "minimum_observed_ratio": 1.0708423601954733,
+            "maximum_observed_ratio": 1.0993869488472114
+          },
+          "medians": {
+            "reference": 0.09978791646426544,
+            "candidate": 0.09256072898278944
+          }
+        }
+      }
+    },
+    {
+      "shape": "P0-B452",
+      "prefix": 0,
+      "tail": 452,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.464936291,
+              "wall_seconds": 0.4651020000455901
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.423089875,
+              "wall_seconds": 0.42325395898660645
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.441462042,
+              "wall_seconds": 0.44161062501370907
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.461078,
+              "wall_seconds": 0.46123175002867356
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.46473375,
+              "wall_seconds": 0.46493783296318725
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.45032975,
+              "wall_seconds": 0.45047529198927805
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.031985450661432,
+            "wall_seconds": 1.0321050704247137
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.432843,
+              "wall_seconds": 0.432990790985059
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.474875417,
+              "wall_seconds": 0.4750499170040712
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.0971077665573892,
+            "wall_seconds": 1.097136306117105
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.470374959,
+              "wall_seconds": 0.4705362920067273
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.427621167,
+              "wall_seconds": 0.42778662499040365
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.099980532535238,
+            "wall_seconds": 1.099932219753908
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.429290542,
+              "wall_seconds": 0.4294370830175467
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.462520208,
+              "wall_seconds": 0.46268404100555927
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.0774060053715322,
+            "wall_seconds": 1.0774198580020025
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.466104208,
+              "wall_seconds": 0.4662625000346452
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.430296625,
+              "wall_seconds": 0.43045654200250283
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.0832160442810819,
+            "wall_seconds": 1.083181354070196
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.424791417,
+              "wall_seconds": 0.4249478330020793
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.46221675,
+              "wall_seconds": 0.46237041702261195
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.0881028464847726,
+            "wall_seconds": 1.0880639483584555
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.462996959,
+              "wall_seconds": 0.4631778749753721
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.43144925,
+              "wall_seconds": 0.43160383304348215
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.0731203241169152,
+            "wall_seconds": 1.0731551471849625
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.423162,
+              "wall_seconds": 0.42331979202572256
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.462177959,
+              "wall_seconds": 0.4623278749641031
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.0922009986719035,
+            "wall_seconds": 1.0921480253774911
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.461234958,
+              "wall_seconds": 0.4613803339889273
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.446218292,
+              "wall_seconds": 0.4463677909807302
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.0336531833616538,
+            "wall_seconds": 1.0336326753666802
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.436021167,
+              "wall_seconds": 0.436171832960099
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.467457125,
+              "wall_seconds": 0.46760629100026563
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.072097320908276,
+            "wall_seconds": 1.0720689775560135
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.080311024826307,
+            "percentile_95_ci": [
+              1.0533867537392845,
+              1.0926053065210808
+            ],
+            "minimum_observed_ratio": 1.031985450661432,
+            "maximum_observed_ratio": 1.099980532535238
+          },
+          "medians": {
+            "reference": 0.4638653545,
+            "candidate": 0.4308729375
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0803006060360993,
+            "percentile_95_ci": [
+              1.0533939112758213,
+              1.0926001272377803
+            ],
+            "minimum_observed_ratio": 1.0321050704247137,
+            "maximum_observed_ratio": 1.099932219753908
+          },
+          "medians": {
+            "reference": 0.4640578539692797,
+            "candidate": 0.4310301875229925
+          }
+        }
+      }
+    },
+    {
+      "shape": "P3584-B2",
+      "prefix": 3584,
+      "tail": 2,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.062316417,
+              "wall_seconds": 0.06240845797583461
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.057425291,
+              "wall_seconds": 0.057489417027682066
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.055832334,
+              "wall_seconds": 0.05589662498096004
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.057773083,
+              "wall_seconds": 0.057853750011418015
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.0580845,
+              "wall_seconds": 0.05814208299852908
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.05343575,
+              "wall_seconds": 0.05351424997206777
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.08699700107138,
+            "wall_seconds": 1.0864785179438532
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.053073583,
+              "wall_seconds": 0.053141999989748
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.055462917,
+              "wall_seconds": 0.055526250042021275
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.0450192706981927,
+            "wall_seconds": 1.04486564398655
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.054959042,
+              "wall_seconds": 0.0550274170236662
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.050765458,
+              "wall_seconds": 0.05083833396201953
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.082607035673745,
+            "wall_seconds": 1.0824000854311289
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.050115,
+              "wall_seconds": 0.050186874985229224
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.055292084,
+              "wall_seconds": 0.0553457920323126
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.1033040806145864,
+            "wall_seconds": 1.1027941478444658
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.05479,
+              "wall_seconds": 0.05485095799667761
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.053319083,
+              "wall_seconds": 0.05337275000056252
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.0275870648413064,
+            "wall_seconds": 1.0276959309029328
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.053779834,
+              "wall_seconds": 0.05384299997240305
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.057624,
+              "wall_seconds": 0.05768691695993766
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.0714796925553918,
+            "wall_seconds": 1.0713912112903217
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.061668541,
+              "wall_seconds": 0.0617378749884665
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.054714792,
+              "wall_seconds": 0.054773665964603424
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.127090842271684,
+            "wall_seconds": 1.1271452056607565
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.058425541,
+              "wall_seconds": 0.058496000012382865
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.060686709,
+              "wall_seconds": 0.060759250016417354
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.0387017041057438,
+            "wall_seconds": 1.0386906797653752
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.059593792,
+              "wall_seconds": 0.059706500032916665
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.058801833,
+              "wall_seconds": 0.05886550003197044
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.0134682706234686,
+            "wall_seconds": 1.0142868063719745
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.054276709,
+              "wall_seconds": 0.05434704094659537
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.058062375,
+              "wall_seconds": 0.05812787503236905
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.0697475228278854,
+            "wall_seconds": 1.0695683522031851
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0706136076916386,
+            "percentile_95_ci": [
+              1.0363031677697494,
+              1.0929555581441657
+            ],
+            "minimum_observed_ratio": 1.0134682706234686,
+            "maximum_observed_ratio": 1.127090842271684
+          },
+          "medians": {
+            "reference": 0.057843187500000004,
+            "candidate": 0.053607792
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0704797817467533,
+            "percentile_95_ci": [
+              1.0362807874447415,
+              1.0925971166377972
+            ],
+            "minimum_observed_ratio": 1.0142868063719745,
+            "maximum_observed_ratio": 1.1271452056607565
+          },
+          "medians": {
+            "reference": 0.057907395996153355,
+            "candidate": 0.05367862497223541
+          }
+        }
+      }
+    },
+    {
+      "shape": "P3584-B16",
+      "prefix": 3584,
+      "tail": 16,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.145566792,
+              "wall_seconds": 0.1456389999948442
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.105448625,
+              "wall_seconds": 0.10552741604624316
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.107742292,
+              "wall_seconds": 0.10781995800789446
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.147699292,
+              "wall_seconds": 0.14777341700391844
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.145779917,
+              "wall_seconds": 0.1458555000135675
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.107082667,
+              "wall_seconds": 0.1071562499855645
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.3613773459714074,
+            "wall_seconds": 1.3611478568279158
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.110229167,
+              "wall_seconds": 0.11029495799448341
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.134719375,
+              "wall_seconds": 0.1347980000427924
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.2221753884795301,
+            "wall_seconds": 1.222159221906903
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.129200084,
+              "wall_seconds": 0.1292747079860419
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.105785625,
+              "wall_seconds": 0.10586108302231878
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.2213387594013836,
+            "wall_seconds": 1.2211731100350334
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.106207291,
+              "wall_seconds": 0.10628141701454297
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.124320541,
+              "wall_seconds": 0.12439879204612225
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.1705462010136387,
+            "wall_seconds": 1.1704660658513821
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.111187709,
+              "wall_seconds": 0.11126220796722919
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.106151959,
+              "wall_seconds": 0.10622666601557285
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.047439067987431,
+            "wall_seconds": 1.047403746540611
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.106778041,
+              "wall_seconds": 0.10685220803134143
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.101162916,
+              "wall_seconds": 0.10123149998253211
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 0.9474131109035799,
+            "wall_seconds": 0.9473973617170299
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.110181875,
+              "wall_seconds": 0.11024041596101597
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.109620167,
+              "wall_seconds": 0.10970749997068197
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.005124130124706,
+            "wall_seconds": 1.004857607642836
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.107929875,
+              "wall_seconds": 0.10804679204011336
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.102849667,
+              "wall_seconds": 0.10293045901926234
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 0.9529304745326538,
+            "wall_seconds": 0.9526470622195656
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.103275041,
+              "wall_seconds": 0.10335595899960026
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.107421167,
+              "wall_seconds": 0.10749349999241531
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 0.9614030817594823,
+            "wall_seconds": 0.9615089192080731
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.109180125,
+              "wall_seconds": 0.1092493329779245
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.1223975,
+              "wall_seconds": 0.1224577910033986
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.1210602662343536,
+            "wall_seconds": 1.1209019557871633
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0842496671108923,
+            "percentile_95_ci": [
+              0.9614030817594823,
+              1.2213387594013836
+            ],
+            "minimum_observed_ratio": 0.9474131109035799,
+            "maximum_observed_ratio": 1.3613773459714074
+          },
+          "medians": {
+            "reference": 0.11679260450000001,
+            "candidate": 0.107251917
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0841528511638872,
+            "percentile_95_ci": [
+              0.9615089192080731,
+              1.2211731100350334
+            ],
+            "minimum_observed_ratio": 0.9473973617170299,
+            "maximum_observed_ratio": 1.3611478568279158
+          },
+          "medians": {
+            "reference": 0.11685999948531389,
+            "candidate": 0.1073248749889899
+          }
+        }
+      }
+    },
+    {
+      "shape": "P3584-B64",
+      "prefix": 3584,
+      "tail": 64,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.387668959,
+              "wall_seconds": 0.3877680000150576
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.3040615,
+              "wall_seconds": 0.3041535419761203
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.305796666,
+              "wall_seconds": 0.3058971249847673
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.3801685,
+              "wall_seconds": 0.3802565830410458
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.38446325,
+              "wall_seconds": 0.3845591669669375
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.308690875,
+              "wall_seconds": 0.3087954579968937
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.245463604973746,
+            "wall_seconds": 1.2453524072585482
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.308632625,
+              "wall_seconds": 0.30872558301780373
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.365642291,
+              "wall_seconds": 0.3657283339998685
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.1847169138389049,
+            "wall_seconds": 1.1846388965399655
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.367313791,
+              "wall_seconds": 0.3674004159984179
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.309453459,
+              "wall_seconds": 0.30954212497454137
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.186975877364486,
+            "wall_seconds": 1.186915726021572
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.312173458,
+              "wall_seconds": 0.3122685829875991
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.364135167,
+              "wall_seconds": 0.3642184580094181
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.1664513995933632,
+            "wall_seconds": 1.1663627974508153
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.381312042,
+              "wall_seconds": 0.3813933330238797
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.311040458,
+              "wall_seconds": 0.31114033301128075
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.2259242558085481,
+            "wall_seconds": 1.2257920062393577
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.313817791,
+              "wall_seconds": 0.3139127920148894
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.354151666,
+              "wall_seconds": 0.3542267919983715
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.1285264129591683,
+            "wall_seconds": 1.1284242025459412
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.416664584,
+              "wall_seconds": 0.41675612499238923
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.324597084,
+              "wall_seconds": 0.32470304204616696
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.2836362510268269,
+            "wall_seconds": 1.283499293280825
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.325036584,
+              "wall_seconds": 0.3251258750096895
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.413502292,
+              "wall_seconds": 0.4135976249817759
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.272171541157964,
+            "wall_seconds": 1.2721153767581548
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.394956333,
+              "wall_seconds": 0.39513466705102473
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.322226708,
+              "wall_seconds": 0.32231124996906146
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.2257094871229608,
+            "wall_seconds": 1.225941282189044
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.335239291,
+              "wall_seconds": 0.3353467920096591
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.392006292,
+              "wall_seconds": 0.3920991250197403
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.1693327796711035,
+            "wall_seconds": 1.1692347574580244
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.2063426822437235,
+            "percentile_95_ci": [
+              1.1693327796711035,
+              1.2489405141404624
+            ],
+            "minimum_observed_ratio": 1.1285264129591683,
+            "maximum_observed_ratio": 1.2836362510268269
+          },
+          "medians": {
+            "reference": 0.382887646,
+            "candidate": 0.3129956245
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.2063538661304647,
+            "percentile_95_ci": [
+              1.1692347574580244,
+              1.2490283294735995
+            ],
+            "minimum_observed_ratio": 1.1284242025459412,
+            "maximum_observed_ratio": 1.283499293280825
+          },
+          "medians": {
+            "reference": 0.3829762499954086,
+            "candidate": 0.31309068750124425
+          }
+        }
+      }
+    },
+    {
+      "shape": "P3584-B384",
+      "prefix": 3584,
+      "tail": 384,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.910307167,
+              "wall_seconds": 1.9104627080378123
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.767560333,
+              "wall_seconds": 1.7677276670001447
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.777997709,
+              "wall_seconds": 1.7781557500129566
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.929995292,
+              "wall_seconds": 1.9301512080128305
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.9449645,
+              "wall_seconds": 1.9451282499940135
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.775733917,
+              "wall_seconds": 1.7758979999925941
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.0953017686827233,
+            "wall_seconds": 1.0952927758250333
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.766146083,
+              "wall_seconds": 1.76630454196129
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.926224,
+              "wall_seconds": 1.9263935419730842
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.090636849658602,
+            "wall_seconds": 1.0906349931218728
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.889667792,
+              "wall_seconds": 1.8898112089955248
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.767182458,
+              "wall_seconds": 1.7673482499667443
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.0693110852507115,
+            "wall_seconds": 1.0692919231006592
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.768494709,
+              "wall_seconds": 1.7686583749600686
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.826647291,
+              "wall_seconds": 1.8268131669610739
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.0328825309479621,
+            "wall_seconds": 1.032880737639522
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.834818583,
+              "wall_seconds": 1.8349800409632735
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.735924625,
+              "wall_seconds": 1.7360866669914685
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.056969039194314,
+            "wall_seconds": 1.0569633854415696
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.722840833,
+              "wall_seconds": 1.7229968330357224
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.810830917,
+              "wall_seconds": 1.8109920000424609
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.0510726715518939,
+            "wall_seconds": 1.0510709975314936
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.764192666,
+              "wall_seconds": 1.7643580000149086
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.706225209,
+              "wall_seconds": 1.7063891249708831
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.0339740947995804,
+            "wall_seconds": 1.0339716622637376
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.733716459,
+              "wall_seconds": 1.733884124958422
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.862117875,
+              "wall_seconds": 1.8622749589849263
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.0740613699163133,
+            "wall_seconds": 1.07404810516365
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.838965042,
+              "wall_seconds": 1.8391377090010792
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.710082625,
+              "wall_seconds": 1.710249624971766
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.0753661929054452,
+            "wall_seconds": 1.0753621472254034
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.706733959,
+              "wall_seconds": 1.706911375047639
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.723800834,
+              "wall_seconds": 1.7239685829845257
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.0099997277900299,
+            "wall_seconds": 1.009993024937461
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0631400622225127,
+            "percentile_95_ci": [
+              1.0339740947995804,
+              1.0823491097874576
+            ],
+            "minimum_observed_ratio": 1.0099997277900299,
+            "maximum_observed_ratio": 1.0953017686827233
+          },
+          "medians": {
+            "reference": 1.8368918125,
+            "candidate": 1.734820542
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0631276542711143,
+            "percentile_95_ci": [
+              1.0339716622637376,
+              1.0823415491427615
+            ],
+            "minimum_observed_ratio": 1.009993024937461,
+            "maximum_observed_ratio": 1.0952927758250333
+          },
+          "medians": {
+            "reference": 1.8370588749821763,
+            "candidate": 1.7349853959749453
+          }
+        }
+      }
+    }
+  ],
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Measure contiguous per-head KV versus build18",
+      "started_at": "2026-11-13T16:36:32.970471+00:00"
+    }
+  },
+  "host_before": {
+    "timestamp_utc": "2026-11-13T16:36:33Z",
+    "load_average": [
+      5.740234375,
+      15.0380859375,
+      16.5068359375
+    ],
+    "ps_command": [
+      "ps",
+      "-Ao",
+      "pid,ppid,pcpu,pmem,etime,comm"
+    ],
+    "busiest_processes": [
+      "  PID  PPID  %CPU %MEM     ELAPSED COMM",
+      "85845     1  51.9 10.4 07-20:05:12 /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine",
+      "48248     1  26.1  0.1    04:05:21 /Applications/Tailscale 2.app/Contents/PlugIns/IPNExtension.appex/Contents/MacOS/IPNExtension",
+      "43614     1  19.3  0.4 07-01:14:44 /Applications/Warp.app/Contents/MacOS/stable",
+      "  425     1  19.2  0.3 11-02:52:33 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer",
+      "71010 71006  16.1  0.7 02-05:19:20 claude bg-spare",
+      "68419     1   8.2  0.0       43:42 /System/Library/DriverExtensions/com.apple.DriverKit.AppleUserECM.dext/com.apple.DriverKit.AppleUserECM",
+      "81621 81612   8.0  0.0       00:01 .venv/bin/python",
+      "  616     1   7.4  0.1 11-02:52:26 /Library/Application Support/JAMF/Jamf.app/Contents/MacOS/JamfDaemon.app/Contents/MacOS/JamfDaemon",
+      "  379     1   7.2  0.1 11-02:52:34 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds",
+      "81612 69723   6.4  0.0       00:01 .venv/bin/python",
+      "79413     1   6.1  0.2 01-23:32:02 $HOME/Applications/Herdr.app/Contents/MacOS/Herdr",
+      "  570     1   5.4  0.8 11-02:52:32 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+      "48092 43707   5.3  0.3 07-01:14:19 codex",
+      "  757     1   4.1  0.0 11-02:52:17 /usr/libexec/trustd",
+      "  417     1   3.4  0.0 11-02:52:34 /usr/sbin/bluetoothd",
+      "  527     1   2.7  0.1 11-02:52:33 /usr/libexec/syspolicyd",
+      "  885     1   2.6  0.0 11-02:52:07 /System/Library/PrivateFrameworks/TCC.framework/Support/tccd",
+      " 5575  5386   2.3  0.0 11-02:51:39 /Applications/EXO.app/Contents/Resources/exo/_internal/macmon",
+      " 5386  4421   1.9  0.1 11-02:51:45 /Applications/EXO.app/Contents/Resources/exo/exo",
+      "55401 55372   1.8  0.5 06-21:27:30 claude bg-spare"
+    ]
+  },
+  "timing_scope": "Only prefill tail command: CLI internal seconds and pipe round-trip wall seconds. Prefix priming, rewind, startup, dump IPC and validation are excluded.",
+  "limitations": [
+    "These token slices are numerical prefill-shape fixtures, not complete user messages or conversation quality tests.",
+    "Two processes remain resident; all priming and measured inference executes serially.",
+    "Each nonzero prefix is primed once per process per phase, then retained through rewind; this is not fresh-request TTFT.",
+    "Prefixes448/449 are numerical API fixtures, not canonical512-block browser prefix reuse. Both engines consume identical complete prefix IDs before tail execution.",
+    "Reference and candidate may differ in resident memory; OS activity/placement remain uncontrolled.",
+    "Separate shape intervals are unadjusted; no threshold is chosen from the fastest observed shape and no pooled/llama speed claim."
+  ],
+  "removed_environment_names": [],
+  "requested_veclib_maximum_threads": 6,
+  "source_fixture": {
+    "path": "$REPO/build/native-cpu/extended-tutorial-fixtures/context3968.json",
+    "ids": [
+      151644,
+      8948,
+      198,
+      2610,
+      525,
+      1207,
+      16948,
+      18,
+      12,
+      15,
+      13,
+      21,
+      33,
+      11,
+      264,
+      2613,
+      15235,
+      17847,
+      4303,
+      23490,
+      13,
+      21806,
+      279,
+      1196,
+      594,
+      5535,
+      3405,
+      5961,
+      13,
+      5443,
+      6788,
+      6605,
+      438,
+      2266,
+      11,
+      537,
+      438,
+      264,
+      5316,
+      311,
+      13153,
+      13,
+      1446,
+      1231,
+      12641,
+      6788,
+      30637,
+      979,
+      4588,
+      13,
+      1416,
+      498,
+      653,
+      537,
+      1414,
+      2494,
+      11,
+      1977,
+      773,
+      13,
+      151645,
+      198,
+      151644,
+      872,
+      198,
+      8706,
+      8388,
+      25,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      198,
+      12497,
+      279,
+      4004,
+      8388,
+      13,
+      9645,
+      264,
+      11682,
+      21514,
+      315,
+      518,
+      3245,
+      220,
+      21,
+      15,
+      15,
+      4244,
+      25021,
+      13940,
+      4938,
+      33394,
+      11,
+      6500,
+      5866,
+      11,
+      6500,
+      68087,
+      11,
+      323,
+      6172,
+      46444,
+      13,
+      5443,
+      5779,
+      48826,
+      42643,
+      448,
+      14175,
+      10295,
+      13,
+      18597,
+      448,
+      14311,
+      220,
+      16,
+      13,
+      151645,
+      198,
+      151644,
+      77091,
+      198,
+      151667,
+      271,
+      151668,
+      271
+    ],
+    "selection": "Tail IDs are source_ids[P:P+B], prefix IDs source_ids[:P], without token insertion."
+  },
+  "inputs": {
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$REPO/build/native-cpu/extended-tutorial-fixtures/context3968.json": "09efb528b8c9067981da834b757db999f83cab44a33960f5e32ff98863c82b9b",
+    "$REPO/build/native-cpu/build-18/qwen_cpu": "3fd042ff0abd1925bec4c7b31946156ef14adf8bb82c5c4e945c3e752cb544fc",
+    "$REPO/build/native-cpu/build-18/manifest.json": "8d9ec131d1ba710a92f26cd8f5ed6deac041ea994c93c0f4fa86fb7eb63a740e",
+    "$REPO/build/native-cpu/kv-head-major-build/qwen_cpu": "1e37fb2f6d9d62399a9e599824c99924f3c4477c550e5b1eb3513bb50acd66d0",
+    "$REPO/build/native-cpu/kv-head-major-build/manifest.json": "d87f6d5b3ce3ac5e3c65f4dd32971a9a609a287928d8a727fddcb030cf4e2f4a",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B2-reference-logits.f32": "4382fa0332df0290e2ae735997e3b7b7faafa9e82d486d200f3143b3e38f3056",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B2-reference-hidden.f32": "29eae0f3dec0955a839a277ad53c684fa119a6fc660d3d2015aad89420822f04",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B2-candidate-logits.f32": "4382fa0332df0290e2ae735997e3b7b7faafa9e82d486d200f3143b3e38f3056",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B2-candidate-hidden.f32": "29eae0f3dec0955a839a277ad53c684fa119a6fc660d3d2015aad89420822f04",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B16-reference-logits.f32": "2e440dd4e8530b78e6ed66d57da7bd2575b50c7e6a01bd09adaa7a909169e011",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B16-reference-hidden.f32": "1ee68f296dbf8190d95c9da4925a1fa7225af6fdde3772e89dd376f077fecbde",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B16-candidate-logits.f32": "2e440dd4e8530b78e6ed66d57da7bd2575b50c7e6a01bd09adaa7a909169e011",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B16-candidate-hidden.f32": "1ee68f296dbf8190d95c9da4925a1fa7225af6fdde3772e89dd376f077fecbde",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B85-reference-logits.f32": "5af4487f95c6411a8f890d240ccad67954f82cc430c92b450a53006a95a53f4f",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B85-reference-hidden.f32": "65bfc5759e0ed4dc18654090f4c06adf4845d93e7a447ad547dc69ce958e055e",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B85-candidate-logits.f32": "5af4487f95c6411a8f890d240ccad67954f82cc430c92b450a53006a95a53f4f",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B85-candidate-hidden.f32": "65bfc5759e0ed4dc18654090f4c06adf4845d93e7a447ad547dc69ce958e055e",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B452-reference-logits.f32": "77752b739b2ae73d2a351527de1f85ad61c2edb89e58837d99dd2ed433e0e15a",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B452-reference-hidden.f32": "bb5f97786192463ace021f6445e549b743b1f5904b528330fa959466ea0bb608",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B452-candidate-logits.f32": "77752b739b2ae73d2a351527de1f85ad61c2edb89e58837d99dd2ed433e0e15a",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P0-B452-candidate-hidden.f32": "bb5f97786192463ace021f6445e549b743b1f5904b528330fa959466ea0bb608",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B2-reference-logits.f32": "f8ce6a9db873569b0089a3a679696106e15d0e18d35c06a2aafe8e9192e24ce9",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B2-reference-hidden.f32": "d09217d695a92f387750de5111c1a7eb599d86f4f7c406013d757ab4ee2e9e13",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B2-candidate-logits.f32": "f8ce6a9db873569b0089a3a679696106e15d0e18d35c06a2aafe8e9192e24ce9",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B2-candidate-hidden.f32": "d09217d695a92f387750de5111c1a7eb599d86f4f7c406013d757ab4ee2e9e13",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B16-reference-logits.f32": "79cb4183c21616012ecfbc7a02c0f1ed4d07727b71daf11230a1308d9b2d3eb0",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B16-reference-hidden.f32": "fc89af39912fdb83034bea9191a05c9ff08413ab1e17045b0040800153524dec",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B16-candidate-logits.f32": "79cb4183c21616012ecfbc7a02c0f1ed4d07727b71daf11230a1308d9b2d3eb0",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B16-candidate-hidden.f32": "fc89af39912fdb83034bea9191a05c9ff08413ab1e17045b0040800153524dec",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B64-reference-logits.f32": "c3333a0e046a55aa01d6503c303f6711ee2d64d30704665b213abe598913c7f5",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B64-reference-hidden.f32": "e5ecddb66b0a3befa46929ac9c98025f879348a49b0c2af106526e42cc91a815",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B64-candidate-logits.f32": "c3333a0e046a55aa01d6503c303f6711ee2d64d30704665b213abe598913c7f5",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B64-candidate-hidden.f32": "e5ecddb66b0a3befa46929ac9c98025f879348a49b0c2af106526e42cc91a815",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B384-reference-logits.f32": "7219b435bb3de631f6453fe941a6ab1cedd5725eb6e631004b8763f83c9ccf15",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B384-reference-hidden.f32": "d68e9b2488e05f583ca96e1146d86b21a31abe700c1b44554c2f29c7cde2d567",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B384-candidate-logits.f32": "7219b435bb3de631f6453fe941a6ab1cedd5725eb6e631004b8763f83c9ccf15",
+    "$REPO/build/native-cpu/kv-head-major-original-shapes/P3584-B384-candidate-hidden.f32": "d68e9b2488e05f583ca96e1146d86b21a31abe700c1b44554c2f29c7cde2d567"
+  },
+  "source_hashes": {
+    "$REPO/tools/benchmark_native_prefill_shapes.py": "d7cb1ab1d59820e324cfd3029be886c3575b0b5233b97b2331d14de332239f03",
+    "$REPO/tools/native_cpu_chat.py": "154729079992e9c8c0df6e43077789ea73b8f85decb0a000f40e4cc3853b5882",
+    "$REPO/tools/suffix.py": "06bd949ad8f1c4b96fa641b1bbde8a0e706519f26d4267e7e4e3342999a12ab7",
+    "$REPO/tools/benchmark_native_phase0.py": "2072dff376baf6e0476c7beddfae311483ea2a15a3af54af8622ad8bbbe17b7e",
+    "$REPO/tools/benchmark_guard.py": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7",
+    "$REPO/tools/analyze_native_phase0.py": "6e27a7964cb7475aca76f214bee152dc472bd6d8dcc4b2b75becf014a4ac89d6",
+    "$REPO/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713",
+    "$REPO/tools/benchmark_matched.py": "88627ed3b10440864d451d1d81bb72b08b62558737fe7bd968a4fb093f821fc6",
+    "$REPO/tools/chat_protocol.py": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e"
+  },
+  "builds": {
+    "reference": {
+      "completed": true,
+      "gpu": false,
+      "pytorch": false,
+      "guard": {
+        "directory": "$REPO/build/benchmark-status",
+        "metadata": {
+          "name": "Build candidate18 with validated norm accumulation",
+          "started_at": "2026-11-12T18:36:20.575826+00:00"
+        }
+      },
+      "command": [
+        "/usr/bin/clang++",
+        "-std=c++20",
+        "-O3",
+        "-mcpu=native",
+        "-flto=thin",
+        "-ffp-contract=fast",
+        "-fno-math-errno",
+        "-pthread",
+        "$REPO/engine/core.cpp",
+        "$REPO/engine/main.cpp",
+        "-framework",
+        "Accelerate",
+        "-o",
+        "$REPO/build/native-cpu/build-18/qwen_cpu"
+      ],
+      "source_directory": "$REPO/engine",
+      "source_sha256": {
+        "$REPO/engine/core.cpp": "0f064ab13a276da455585de36610685a0cbe7419e0f5dd745fab775c222b54ba",
+        "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+        "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+        "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+      },
+      "removed_environment_keys": [],
+      "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+      "started_at": "2026-11-12T18:36:20Z",
+      "exit_code": 0,
+      "binary": "$REPO/build/native-cpu/build-18/qwen_cpu",
+      "binary_sha256": "3fd042ff0abd1925bec4c7b31946156ef14adf8bb82c5c4e945c3e752cb544fc",
+      "linked_libraries": "$REPO/build/native-cpu/build-18/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+    },
+    "candidate": {
+      "completed": true,
+      "gpu": false,
+      "pytorch": false,
+      "guard": {
+        "directory": "$REPO/build/benchmark-status",
+        "metadata": {
+          "name": "Build isolated contiguous per-head KV layout",
+          "started_at": "2026-11-13T16:29:50.593730+00:00"
+        }
+      },
+      "command": [
+        "/usr/bin/clang++",
+        "-std=c++20",
+        "-O3",
+        "-mcpu=native",
+        "-flto=thin",
+        "-ffp-contract=fast",
+        "-fno-math-errno",
+        "-pthread",
+        "$REPO/build/native-cpu/kv-head-major-source/core.cpp",
+        "$REPO/build/native-cpu/kv-head-major-source/main.cpp",
+        "-framework",
+        "Accelerate",
+        "-o",
+        "$REPO/build/native-cpu/kv-head-major-build/qwen_cpu"
+      ],
+      "source_directory": "$REPO/build/native-cpu/kv-head-major-source",
+      "source_sha256": {
+        "$REPO/build/native-cpu/kv-head-major-source/core.cpp": "52ecbe08587c2a618e53bbe53af6fc5e2b342a93a1a64ca19f99e960ec68d581",
+        "$REPO/build/native-cpu/kv-head-major-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+        "$REPO/build/native-cpu/kv-head-major-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+        "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+      },
+      "removed_environment_keys": [],
+      "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+      "started_at": "2026-11-13T16:29:50Z",
+      "exit_code": 0,
+      "binary": "$REPO/build/native-cpu/kv-head-major-build/qwen_cpu",
+      "binary_sha256": "1e37fb2f6d9d62399a9e599824c99924f3c4477c550e5b1eb3513bb50acd66d0",
+      "linked_libraries": "$REPO/build/native-cpu/kv-head-major-build/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+    }
+  },
+  "startup": {
+    "reference": {
+      "seconds": 0.3575414580409415,
+      "ready": {
+        "ready": true,
+        "protocol": 1,
+        "position": 0,
+        "decode_threads": 12,
+        "prefill_threads": 6,
+        "context": 4096,
+        "lossless_bf16_decode_cache_bytes": 0,
+        "gpu": false,
+        "pytorch": false,
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "norm_accumulator_precision": "f64",
+        "activation_precision": "f32",
+        "kv_precision": "f16",
+        "prefix_reuse": true,
+        "prefix_reuse_chunk": 512,
+        "suffix_drafting": false,
+        "verify_greedy_b2": true,
+        "max_verified_draft": 1
+      }
+    },
+    "candidate": {
+      "seconds": 0.40431795798940584,
+      "ready": {
+        "ready": true,
+        "protocol": 1,
+        "position": 0,
+        "decode_threads": 12,
+        "prefill_threads": 6,
+        "context": 4096,
+        "lossless_bf16_decode_cache_bytes": 0,
+        "gpu": false,
+        "pytorch": false,
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "norm_accumulator_precision": "f64",
+        "activation_precision": "f32",
+        "kv_precision": "f16",
+        "prefix_reuse": true,
+        "prefix_reuse_chunk": 512,
+        "suffix_drafting": false,
+        "verify_greedy_b2": true,
+        "max_verified_draft": 1
+      }
+    }
+  },
+  "all_shapes_exact_before_timing": true,
+  "bootstrap": {
+    "seed": 20261112,
+    "resamples": 10000,
+    "confidence_level": 0.95,
+    "method": "Paired-round percentile bootstrap of median reference/candidate command latency ratio"
+  },
+  "host_after": {
+    "timestamp_utc": "2026-11-13T16:38:27Z",
+    "load_average": [
+      10.46826171875,
+      13.5673828125,
+      15.7197265625
+    ],
+    "ps_command": [
+      "ps",
+      "-Ao",
+      "pid,ppid,pcpu,pmem,etime,comm"
+    ],
+    "busiest_processes": [
+      "  PID  PPID  %CPU %MEM     ELAPSED COMM",
+      "81639 81621  99.0  2.6       01:54 $REPO/build/native-cpu/build-18/qwen_cpu",
+      "81621 81612  79.9  0.0       01:55 .venv/bin/python",
+      "85845     1  78.1 10.4 07-20:07:06 /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine",
+      "43614     1  24.0  0.4 07-01:16:38 /Applications/Warp.app/Contents/MacOS/stable",
+      "  425     1  15.7  0.3 11-02:54:27 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer",
+      "48092 43707   8.2  0.3 07-01:16:13 codex",
+      " 5575  5386   6.5  0.0 11-02:53:33 /Applications/EXO.app/Contents/Resources/exo/_internal/macmon",
+      "79413     1   6.3  0.2 01-23:33:56 $HOME/Applications/Herdr.app/Contents/MacOS/Herdr",
+      "85779 42392   5.6  0.0       00:00 /usr/local/bin/kubectl",
+      "71010 71006   5.6  0.7 02-05:21:14 claude bg-spare",
+      " 5386  4421   5.5  0.1 11-02:53:39 /Applications/EXO.app/Contents/Resources/exo/exo",
+      "  616     1   3.7  0.1 11-02:54:20 /Library/Application Support/JAMF/Jamf.app/Contents/MacOS/JamfDaemon.app/Contents/MacOS/JamfDaemon",
+      "85773     1   3.7  0.0       00:01 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+      "  417     1   3.4  0.0 11-02:54:28 /usr/sbin/bluetoothd",
+      "27443 27416   3.1  0.4 06-13:59:05 claude bg-spare",
+      "    1     0   3.0  0.0 11-03:20:45 /sbin/launchd",
+      "66278 66005   1.5  0.4       46:09 $HOME/.local/share/claude/versions/2.1.323",
+      "66263 66020   1.4  0.4       46:09 $HOME/.local/share/claude/versions/2.1.323",
+      "66264 65976   1.4  0.4       46:09 $HOME/.local/share/claude/versions/2.1.323",
+      "  507     1   1.3  0.0 11-02:54:27 /System/Library/Frameworks/Security.framework/Versions/A/XPCServices/authd.xpc/Contents/MacOS/authd"
+    ]
+  },
+  "guard_after": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Measure contiguous per-head KV versus build18",
+      "started_at": "2026-11-13T16:36:32.970471+00:00"
+    }
+  },
+  "runtime_logs": {
+    "reference": {
+      "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/reference.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "candidate": {
+      "path": "$REPO/build/native-cpu/kv-head-major-original-shapes/candidate.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/kv-head-major-original-shapes/report.json",
+    "source_sha256": "794766507caca81f95cfe05635718632f50d206d739e20c0f7a42049d16f9c56",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted. All rounds, warmups, outliers and uncertainty retained; original hashes preserved."
+  }
+}

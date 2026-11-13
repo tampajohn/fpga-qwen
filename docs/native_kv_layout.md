@@ -3,7 +3,7 @@
 This isolated candidate changes the original native engine's physical KV
 layout from `[layer][position][head][channel]` to
 `[layer][head][position][channel]`. Live build18 remains unchanged. There is no
-published timing result or release decision yet.
+release decision; the completed shape timings below are scoped evidence.
 
 For one attention head, consecutive positions move 256 bytes instead of 2048
 bytes. This changes address strides; it is not a relevance index or sparse
@@ -48,5 +48,36 @@ now links a passing [28-case prefix gate](../reports/native-cpu-kv-head-major-pr
 [suffix/lifecycle gate](../reports/native-cpu-kv-head-major-suffix-trajectories.json)
 with 35 initial and seven cached cases, and [nine-case quality comparison](../reports/native-cpu-kv-head-major-quality.json)
 matching build18 exactly. These are no-new-regression checks, not improved
-answer quality. Timing and browser acceptance remain separate; no partial
-timing report is published and the candidate is not promoted.
+answer quality. The completed shape timings are recorded below. Broader request timing and
+browser acceptance remain separate; the candidate is not promoted.
+
+
+## Completed original-shape comparison
+
+The [full eight-shape report](../reports/native-cpu-kv-head-major-original-shapes.json)
+contains ten alternating pairs per shape against immutable build18, with exact
+preflight checks before timing. Ratios below are median paired wall-time
+speedups, reference/candidate, with 95% paired bootstrap intervals. Retained-
+prefix priming is outside the measured append. All rounds and outliers remain
+archived; workloads are not pooled.
+
+| Retained prefix | Appended batch | Wall-time speedup (95% interval) |
+|---|---:|---:|
+| 0 | 2 | 0.99679 (0.98511–1.02146) |
+| 0 | 16 | 0.99933 (0.98211–1.02380) |
+| 0 | 85 | 1.07628 (1.07346–1.08078) |
+| 0 | 452 | 1.08030 (1.05339–1.09260) |
+| 3584 | 2 | 1.07048 (1.03628–1.09260) |
+| 3584 | 16 | 1.08415 (0.96151–1.22117) |
+| 3584 | 64 | 1.20635 (1.16923–1.24903) |
+| 3584 | 384 | 1.06313 (1.03397–1.08234) |
+
+These are per-shape observations on this host, not a general engine-throughput
+claim or a direct comparison with llama. They do not isolate the contribution
+of cache lines, hardware prefetch or TLB behavior. Whole-request acceptance and
+release decisions require their own evidence; live build18 remains unchanged.
+
+A separately proposed combination with fixed time32/channel32 PV blocking must
+be checked and measured as a new candidate. Multiplying this table's ratios by
+the time32 results would not measure that composition and is not permitted as
+a performance conclusion.
