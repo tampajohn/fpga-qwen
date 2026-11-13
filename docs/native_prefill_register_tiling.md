@@ -131,3 +131,12 @@ not a general prefill win. Do not pool shapes or choose a new cutoff from this
 table. Whole-request and held-out evidence, prefix/suffix lifecycle acceptance
 and browser checks remain separate before any release decision. Candidate
 acceptance is ongoing; live build18 remains unchanged.
+
+
+### Time32 prefix acceptance
+
+The candidate-specific [28-case prefix gate](../reports/native-cpu-prefill-v-time32-prefix-check.json)
+completed and passed. This adds restricted canonical-prefix correctness evidence
+to its exact-array and shape results. Other suffix/lifecycle, quality and browser
+acceptance and broader request measurements remain separate pending work; this
+prefix result does not erase the fresh 85 regression or promote the candidate.

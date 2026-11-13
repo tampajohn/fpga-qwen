@@ -1,0 +1,34 @@
+{
+  "completed": true,
+  "passed": true,
+  "inference_scope": "Exact full KV layout change only; no approximation, eviction or performance claim.",
+  "reference_binary": "$REPO/build/native-cpu/build-18/qwen_cpu",
+  "candidate_binary": "$REPO/build/native-cpu/kv-head-major-build/qwen_cpu",
+  "reports": {
+    "exact": {
+      "path": "$REPO/build/native-cpu/kv-head-major-exact-gate.json",
+      "sha256": "48c7e083aa6a2d99f22e78d12753f3fa171a9ea2f5bf279923c7c49f67bcb104"
+    },
+    "api": {
+      "path": "$REPO/build/native-cpu/kv-head-major-verify-api/report.json",
+      "sha256": "500018acd4790baf6c83f4f7bb8caa6439b7db1a1e502bd7e4d458dbae5eda20"
+    },
+    "prefix": {
+      "path": "$REPO/build/native-cpu/kv-head-major-prefix-check/report.json",
+      "sha256": "1aa617317f0b7e897c6014fb2ca8c22577c81a17c85dad92777e08c5c7a548a7"
+    },
+    "suffix": {
+      "path": "$REPO/build/native-cpu/kv-head-major-suffix-trajectories.json",
+      "sha256": "9714bc0a61545ca63b6e369a3a539dd62ef1e394603a6674f966b0ae20aae1c8"
+    },
+    "quality": {
+      "path": "$REPO/build/native-cpu/kv-head-major-quality.json",
+      "sha256": "c401c2b39d4311f0a0b2615784025ed6aaab6e5638a8b9a8e8b12b946ded9d1e"
+    }
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/kv-head-major-acceptance.json",
+    "source_sha256": "89fc72cf5d17a1b85222ee46c97385efd8fc0439153600ae40fa350e93f541d0",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted; original hashes retained."
+  }
+}

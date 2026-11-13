@@ -43,6 +43,10 @@ probability–V tiling experiment.
 The address mapping covers exactly the same allocation without overlap; the
 last valid element remains `layers*heads*context*channels-1`. Source review and
 sampled compiled exactness support the implementation, but are not universal
-correctness proofs. Prefix, suffix/lifecycle and conversation-quality checks
-are ongoing. Timing and browser acceptance remain separate; no partial report
-is published and the candidate is not promoted.
+correctness proofs. The [completed acceptance record](../reports/native-cpu-kv-head-major-acceptance.json)
+now links a passing [28-case prefix gate](../reports/native-cpu-kv-head-major-prefix-check.json),
+[suffix/lifecycle gate](../reports/native-cpu-kv-head-major-suffix-trajectories.json)
+with 35 initial and seven cached cases, and [nine-case quality comparison](../reports/native-cpu-kv-head-major-quality.json)
+matching build18 exactly. These are no-new-regression checks, not improved
+answer quality. Timing and browser acceptance remain separate; no partial
+timing report is published and the candidate is not promoted.

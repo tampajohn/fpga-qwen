@@ -1274,3 +1274,17 @@ Its immutable build passed 56 complete-logit arrays against build18 and the
 full 36-case B2 API matrix with 1/12/64 workers. Prefix/suffix/quality checks are
 ongoing; no partial results or timing claims are published. Live build18 remains
 unchanged, and candidate promotion is not implied.
+
+
+### Layout and time32 acceptance status
+
+Head-major KV [acceptance](../reports/native-cpu-kv-head-major-acceptance.json)
+completed: 28 prefix cases, 35 initial suffix cases plus seven cached-prefix
+cases, and nine quality trajectories matched the build18 reference. These
+support correctness within the fixtures, not improved answer accuracy. Its
+shape timing is still running; no partial timing results are published.
+
+The separate time32 [28-case prefix check](../reports/native-cpu-prefill-v-time32-prefix-check.json)
+also passed. Its remaining lifecycle/quality/browser and broader request
+acceptance are not inferred from that pass. Neither candidate is promoted;
+live build18 remains unchanged.
