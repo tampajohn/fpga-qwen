@@ -1,0 +1,25 @@
+{
+  "diagnostic_only": true,
+  "promotion_allowed": false,
+  "build_run": false,
+  "inference_run": false,
+  "change": "Ordinary B>1 prefill attention weighted-V channel tiles32,16 register accumulators; probabilities divided once before tiles.",
+  "unchanged": "Canonical FP16 KV; causal lengths; query dots; softmax/vvexpf lengths and sums; ascending-t per-output FP32 FMA operand/order. B1 and dedicated B2 unchanged.",
+  "hypothesis": "Reduce repeated output load/store instructions; potential tradeoff four stridedKV scans/probability passes and register pressure. No measured speed claim.",
+  "required_gates": "Exact full-logit/hidden comparisons including1/511/512/513/1024/2048/3968; prefix and B2/suffix lifecycle; fresh pairedshape and request timings only after correctness.",
+  "source_sha256": {
+    "engine/core.cpp": "0f064ab13a276da455585de36610685a0cbe7419e0f5dd745fab775c222b54ba",
+    "engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_sha256": {
+    "build/native-cpu/prefill-v-register-tile-source/core.cpp": "0c4c4444f03d7686ac660f5bfc2d7cd7dcd61aca523aec857f5fc936faaec26d",
+    "build/native-cpu/prefill-v-register-tile-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "build/native-cpu/prefill-v-register-tile-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefill-v-register-tile-source/experiment.json",
+    "source_sha256": "07341baba0677a5442164c557d4b235fd13449b2a1761a5e343b7cdbd4df1975",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted; original artifact hashes retained."
+  }
+}

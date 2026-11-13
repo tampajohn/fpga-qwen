@@ -1212,3 +1212,19 @@ still parked. Final review verified all local evidence links, both ten-pair
 scoreboards, unchanged compiled sources, the selected binary and the idle
 CPU-only live service. This closes the approved follow-on work at its stated
 experimental scope.
+
+
+## Reopened CPU optimization pass — November 13
+
+After the prior finite follow-on and build18 release, the user reopened work
+focused on long-prompt prefill. The completed historical scope above remains
+completed; this is a new active optimization pass, with live build18 unchanged.
+Qwen3.5 and Metal remain parked.
+
+The first isolated experiment [tiles paired probability–V reduction into
+registers](native_prefill_register_tiling.md), preserving per-output arithmetic
+order. Its 56-array exact gate passed, and static compiled-loop review confirms
+sixteen accumulator registers with no stores/spills inside each causal tile
+loop. Neither result establishes speed. The initial guarded eight-shape timing
+run is still in progress; no partial results are published. Source, build,
+exactness and static-review evidence are linked in the experiment document.
