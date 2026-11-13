@@ -81,3 +81,26 @@ A separately proposed combination with fixed time32/channel32 PV blocking must
 be checked and measured as a new candidate. Multiplying this table's ratios by
 the time32 results would not measure that composition and is not permitted as
 a performance conclusion.
+
+
+## Combined fixed head-major/time32 candidate: exactness evidence
+
+A separately built candidate combines the reviewed head-major offset and both
+KV write changes with the fixed time32/channel32 paired-PV loop. Source review
+confirmed exact composition without additional arithmetic, eviction or context
+thresholds. The [combined patch](../tools/experiments/native-kv-head-major-time32.patch),
+[experiment metadata](../reports/native-cpu-kv-head-major-time32-experiment.json), and
+[build manifest](../reports/native-cpu-kv-head-major-time32-manifest.json) bind the
+baseline, both component sources and new candidate. Their hashes were checked
+before publication; source-preparation flags are historical, not execution status.
+
+The combined executable passed [56 full-logit arrays](../reports/native-cpu-kv-head-major-time32-exact-gate.json)
+plus [12 time-boundary arrays](../reports/native-cpu-kv-head-major-time32-timeboundary-exact-gate.json)
+against build18: 68 arrays total, including repeated causal 31/32/33 and 63/64/65
+checks. This preserves the tested per-output arithmetic and canonical KV
+behavior; it is sampled exactness, not universal correctness.
+
+Combined lifecycle/quality acceptance is still running. No partial acceptance
+or timing output is published here. Component speedups are not multiplied or
+inherited, and no performance conclusion follows from these gates. The combined
+candidate is not live; build18 remains the selected browser release.

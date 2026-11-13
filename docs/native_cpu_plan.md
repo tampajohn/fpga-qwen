@@ -1303,3 +1303,13 @@ A fixed head-major plus time32 combination is being prepared as an isolated
 new candidate; it cannot inherit correctness or speed merely by composing the
 two source changes. Do not multiply separately measured ratios. Live build18
 remains selected and unchanged.
+
+
+### Combined head-major/time32 candidate: 68 exact arrays passed
+
+The [combined-source evidence](native_kv_layout.md#combined-fixed-head-majortime32-candidate-exactness-evidence)
+records exact composition of the two isolated designs and checked source hashes.
+The rebuilt combined candidate passed 56 ordinary full-logit arrays and 12
+additional time-boundary arrays against build18. No thresholds or further math
+changes were introduced. Lifecycle/quality acceptance is still running; no
+partial reports or performance claims are published. Live build18 is unchanged.

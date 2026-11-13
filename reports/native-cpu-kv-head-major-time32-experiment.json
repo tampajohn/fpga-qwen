@@ -1,0 +1,38 @@
+{
+  "diagnostic_only": true,
+  "promotion_allowed": false,
+  "build_run": false,
+  "inference_run": false,
+  "fixed_design": {
+    "time_block": 32,
+    "channel_block": 32,
+    "context_threshold": null,
+    "kv_layout": "[layer][head][position][channel]"
+  },
+  "change": "Exact composition of reviewed head-major layout and fixed time32/channel32 paired-PV loop; no other changes.",
+  "unchanged": "Full FP16 KV capacity, canonical conversions, causal lengths, per-output ascending-time FMA order, B1 arithmetic and B2 arithmetic. Both KV write paths use head-major offsets.",
+  "hypothesis": "Measure interaction of contiguous head-major KV reads and bounded time-block register accumulation. Component gains are not additive and do not predict combined performance.",
+  "baseline_sha256": {
+    "engine/core.cpp": "0f064ab13a276da455585de36610685a0cbe7419e0f5dd745fab775c222b54ba",
+    "engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "component_sha256": {
+    "build/native-cpu/kv-head-major-source/core.cpp": "52ecbe08587c2a618e53bbe53af6fc5e2b342a93a1a64ca19f99e960ec68d581",
+    "build/native-cpu/kv-head-major-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "build/native-cpu/kv-head-major-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+    "build/native-cpu/prefill-v-time32-source/core.cpp": "74eb1275d11a166af91926a63e35404ad1c4564cce4467b6a04f156fcb44dd3b",
+    "build/native-cpu/prefill-v-time32-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "build/native-cpu/prefill-v-time32-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_sha256": {
+    "build/native-cpu/kv-head-major-time32-source/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "build/native-cpu/kv-head-major-time32-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "build/native-cpu/kv-head-major-time32-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/kv-head-major-time32-source/experiment.json",
+    "source_sha256": "37eb172678287a498ea84f4fe1f4926bb03253c835451c3ccf5747dee80009f7",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted; original hashes retained."
+  }
+}
