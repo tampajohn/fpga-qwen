@@ -18,7 +18,7 @@ chunk candidates. That absolute numerical gap remains unresolved.
 | Direct norm/QK division | Short boundaries pass, but 512/128/64 each independently fail the 2048 absolute gate. Rejected; no performance qualification. |
 | Split-K128 projections | Both 63/64 positions fail unchanged limits. Rejected before broader gates or timing. |
 | Original-arithmetic QK key pairing | 68 repeated full-logit arrays match build19 exactly. Completed shape timing shows selected long-prefix gains, with the inherited absolute gap explicitly retained. No release or whole-request/llama claim. |
-| Adjacent query-row pairing | 68 repeated arrays match build19 exactly; source and assembly reviews completed. Completed shape comparison improves fresh452 and long-prefix16/64/384 in this run; other intervals cross1. Conditional timing only; inherited absolute numerical gap remains. |
+| Adjacent query-row pairing | Exact68 and API/prefix/suffix/9+18 quality gates passed relatively. [First complete ten-pair request comparisons](native_query_row_pair.md#first-completed-whole-request-comparisons-against-build19) favor long-context TTFT and the3968 request in this run; short-request and all decode intervals include1. Every noisy sample retained; separate quiet repeat planned. Actual-boundary/seeded controls pending; no promotion or absolute numerical pass. |
 
 Arithmetic-changing experiments are not advanced to timing after failed gates.
 Separately authorized shape measurements of candidates with sampled byte identity
