@@ -1,0 +1,563 @@
+{
+  "completed": true,
+  "diagnostic_gates_passed": true,
+  "absolute_numerical_passed": false,
+  "release_eligible": false,
+  "performance_claim_eligible": false,
+  "inference_run": false,
+  "source_report": "$REPO/build/native-cpu/original-prefix-cache-gates-v1/report.json",
+  "source_report_sha256": "17d8dda36f96a74578c76b88ab00d62b7c6c80f7bb5437eb3424fb8e38314b24",
+  "inventory_sha256": "67308c316e6945edb4d08815e5b70d08992f1a884715953666ec291910ffd624",
+  "turns": [
+    {
+      "configuration": "canonical512-build19",
+      "chunk": 512,
+      "scenario": "short_correction",
+      "turn": 0,
+      "prompt_tokens": 89,
+      "reused_tokens": 0,
+      "evaluated_tokens": 89,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        33,
+        40615
+      ],
+      "text": "Bristol",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical512-build19",
+      "chunk": 512,
+      "scenario": "short_correction",
+      "turn": 1,
+      "prompt_tokens": 158,
+      "reused_tokens": 0,
+      "evaluated_tokens": 158,
+      "prediction_count_including_eos": 2,
+      "token_ids": [
+        98977
+      ],
+      "text": "York",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical512-build19",
+      "chunk": 512,
+      "scenario": "short_correction",
+      "turn": 2,
+      "prompt_tokens": 225,
+      "reused_tokens": 0,
+      "evaluated_tokens": 225,
+      "prediction_count_including_eos": 2,
+      "token_ids": [
+        21
+      ],
+      "text": "6",
+      "finish_reason": "eos",
+      "strict_rubric_passed": false,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical512-build19",
+      "chunk": 512,
+      "scenario": "long_inventory",
+      "turn": 0,
+      "prompt_tokens": 1523,
+      "reused_tokens": 0,
+      "evaluated_tokens": 1523,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        16,
+        16
+      ],
+      "text": "11",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical512-build19",
+      "chunk": 512,
+      "scenario": "long_inventory",
+      "turn": 1,
+      "prompt_tokens": 1596,
+      "reused_tokens": 1024,
+      "evaluated_tokens": 572,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        16,
+        19
+      ],
+      "text": "14",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical512-build19",
+      "chunk": 512,
+      "scenario": "long_inventory",
+      "turn": 2,
+      "prompt_tokens": 1657,
+      "reused_tokens": 1536,
+      "evaluated_tokens": 121,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        16,
+        19
+      ],
+      "text": "14",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical512-build19",
+      "chunk": 512,
+      "scenario": "longer_reading",
+      "turn": 0,
+      "prompt_tokens": 2701,
+      "reused_tokens": 0,
+      "evaluated_tokens": 2701,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        39,
+        3362
+      ],
+      "text": "Hana",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical512-build19",
+      "chunk": 512,
+      "scenario": "longer_reading",
+      "turn": 1,
+      "prompt_tokens": 2766,
+      "reused_tokens": 2560,
+      "evaluated_tokens": 206,
+      "prediction_count_including_eos": 2,
+      "token_ids": [
+        19
+      ],
+      "text": "4",
+      "finish_reason": "eos",
+      "strict_rubric_passed": false,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical512-build19",
+      "chunk": 512,
+      "scenario": "longer_reading",
+      "turn": 2,
+      "prompt_tokens": 2839,
+      "reused_tokens": 2560,
+      "evaluated_tokens": 279,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        36,
+        742
+      ],
+      "text": "Eli",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical128-v1",
+      "chunk": 128,
+      "scenario": "short_correction",
+      "turn": 0,
+      "prompt_tokens": 89,
+      "reused_tokens": 0,
+      "evaluated_tokens": 89,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        33,
+        40615
+      ],
+      "text": "Bristol",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical128-v1",
+      "chunk": 128,
+      "scenario": "short_correction",
+      "turn": 1,
+      "prompt_tokens": 158,
+      "reused_tokens": 0,
+      "evaluated_tokens": 158,
+      "prediction_count_including_eos": 2,
+      "token_ids": [
+        98977
+      ],
+      "text": "York",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical128-v1",
+      "chunk": 128,
+      "scenario": "short_correction",
+      "turn": 2,
+      "prompt_tokens": 225,
+      "reused_tokens": 128,
+      "evaluated_tokens": 97,
+      "prediction_count_including_eos": 2,
+      "token_ids": [
+        21
+      ],
+      "text": "6",
+      "finish_reason": "eos",
+      "strict_rubric_passed": false,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical128-v1",
+      "chunk": 128,
+      "scenario": "long_inventory",
+      "turn": 0,
+      "prompt_tokens": 1523,
+      "reused_tokens": 0,
+      "evaluated_tokens": 1523,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        16,
+        16
+      ],
+      "text": "11",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical128-v1",
+      "chunk": 128,
+      "scenario": "long_inventory",
+      "turn": 1,
+      "prompt_tokens": 1596,
+      "reused_tokens": 1408,
+      "evaluated_tokens": 188,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        16,
+        19
+      ],
+      "text": "14",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical128-v1",
+      "chunk": 128,
+      "scenario": "long_inventory",
+      "turn": 2,
+      "prompt_tokens": 1657,
+      "reused_tokens": 1536,
+      "evaluated_tokens": 121,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        16,
+        19
+      ],
+      "text": "14",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical128-v1",
+      "chunk": 128,
+      "scenario": "longer_reading",
+      "turn": 0,
+      "prompt_tokens": 2701,
+      "reused_tokens": 0,
+      "evaluated_tokens": 2701,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        39,
+        3362
+      ],
+      "text": "Hana",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical128-v1",
+      "chunk": 128,
+      "scenario": "longer_reading",
+      "turn": 1,
+      "prompt_tokens": 2766,
+      "reused_tokens": 2688,
+      "evaluated_tokens": 78,
+      "prediction_count_including_eos": 2,
+      "token_ids": [
+        19
+      ],
+      "text": "4",
+      "finish_reason": "eos",
+      "strict_rubric_passed": false,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical128-v1",
+      "chunk": 128,
+      "scenario": "longer_reading",
+      "turn": 2,
+      "prompt_tokens": 2839,
+      "reused_tokens": 2688,
+      "evaluated_tokens": 151,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        36,
+        742
+      ],
+      "text": "Eli",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical64-v1",
+      "chunk": 64,
+      "scenario": "short_correction",
+      "turn": 0,
+      "prompt_tokens": 89,
+      "reused_tokens": 0,
+      "evaluated_tokens": 89,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        33,
+        40615
+      ],
+      "text": "Bristol",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical64-v1",
+      "chunk": 64,
+      "scenario": "short_correction",
+      "turn": 1,
+      "prompt_tokens": 158,
+      "reused_tokens": 64,
+      "evaluated_tokens": 94,
+      "prediction_count_including_eos": 2,
+      "token_ids": [
+        98977
+      ],
+      "text": "York",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical64-v1",
+      "chunk": 64,
+      "scenario": "short_correction",
+      "turn": 2,
+      "prompt_tokens": 225,
+      "reused_tokens": 128,
+      "evaluated_tokens": 97,
+      "prediction_count_including_eos": 2,
+      "token_ids": [
+        21
+      ],
+      "text": "6",
+      "finish_reason": "eos",
+      "strict_rubric_passed": false,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical64-v1",
+      "chunk": 64,
+      "scenario": "long_inventory",
+      "turn": 0,
+      "prompt_tokens": 1523,
+      "reused_tokens": 0,
+      "evaluated_tokens": 1523,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        16,
+        16
+      ],
+      "text": "11",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical64-v1",
+      "chunk": 64,
+      "scenario": "long_inventory",
+      "turn": 1,
+      "prompt_tokens": 1596,
+      "reused_tokens": 1472,
+      "evaluated_tokens": 124,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        16,
+        19
+      ],
+      "text": "14",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical64-v1",
+      "chunk": 64,
+      "scenario": "long_inventory",
+      "turn": 2,
+      "prompt_tokens": 1657,
+      "reused_tokens": 1536,
+      "evaluated_tokens": 121,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        16,
+        19
+      ],
+      "text": "14",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical64-v1",
+      "chunk": 64,
+      "scenario": "longer_reading",
+      "turn": 0,
+      "prompt_tokens": 2701,
+      "reused_tokens": 0,
+      "evaluated_tokens": 2701,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        39,
+        3362
+      ],
+      "text": "Hana",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical64-v1",
+      "chunk": 64,
+      "scenario": "longer_reading",
+      "turn": 1,
+      "prompt_tokens": 2766,
+      "reused_tokens": 2688,
+      "evaluated_tokens": 78,
+      "prediction_count_including_eos": 2,
+      "token_ids": [
+        19
+      ],
+      "text": "4",
+      "finish_reason": "eos",
+      "strict_rubric_passed": false,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    },
+    {
+      "configuration": "canonical64-v1",
+      "chunk": 64,
+      "scenario": "longer_reading",
+      "turn": 2,
+      "prompt_tokens": 2839,
+      "reused_tokens": 2752,
+      "evaluated_tokens": 87,
+      "prediction_count_including_eos": 3,
+      "token_ids": [
+        36,
+        742
+      ],
+      "text": "Eli",
+      "finish_reason": "eos",
+      "strict_rubric_passed": true,
+      "cached_fresh_full_logit_equal": true,
+      "crossvariant_stream_equal": true
+    }
+  ],
+  "limitations": [
+    "Original64/128 absolute numerical inventory has76pass/4fail; matched baseline controls preserve failures.",
+    "No timing claim; gate wall times are deliberately not summarized.",
+    "Teacher-authored histories and finite9-turn rubric do not replace broad quality/lifecycle gates."
+  ],
+  "configurations": [
+    {
+      "name": "canonical512-build19",
+      "chunk": 512,
+      "binary": "$REPO/build/native-cpu/build-19/qwen_cpu"
+    },
+    {
+      "name": "canonical128-v1",
+      "chunk": 128,
+      "binary": "$REPO/build/native-cpu/prefix128-v1-build/qwen_cpu"
+    },
+    {
+      "name": "canonical64-v1",
+      "chunk": 64,
+      "binary": "$REPO/build/native-cpu/prefix64-v1-build/qwen_cpu"
+    }
+  ],
+  "summary": {
+    "canonical512-build19": {
+      "passed": 7,
+      "total": 9,
+      "reused_tokens_across_turns": 7680
+    },
+    "canonical128-v1": {
+      "passed": 7,
+      "total": 9,
+      "reused_tokens_across_turns": 8448
+    },
+    "canonical64-v1": {
+      "passed": 7,
+      "total": 9,
+      "reused_tokens_across_turns": 8640
+    }
+  },
+  "compared_turns": 27,
+  "request_visits": 54,
+  "archive_provenance": {
+    "source_report": "build/native-cpu/original-prefix-cache-gates-v1-analysis.json",
+    "source_sha256": "ea6a6cc1056b36d4899237c5f7ca5ea2188428931eb9e93386cc9fad7de075e3",
+    "sanitization": "Paths anonymized and process identifiers omitted; all observations including wrong answers retained."
+  }
+}

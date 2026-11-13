@@ -14,7 +14,7 @@ chunk candidates. That absolute numerical gap remains unresolved.
 
 | Workstream | Current evidence and disposition |
 |---|---|
-| Original 64/128 canonical chunks | Completed 80-position inventory fails four comparisons: prompts 63 and 64 in both variants. Matched baseline19 controls have identical full vectors on both failed trajectories. Old 28 positions pass per variant; cached/fresh qualification remains pending. Absolute failures remain unresolved. |
+| Original 64/128 canonical chunks | Completed 80-position inventory fails four comparisons: prompts 63 and 64 in both variants. Matched baseline19 controls have identical full vectors on both failed trajectories. Old 28 positions pass per variant; cached/fresh diagnostics now pass, with 7/9 rubric answers in every variant. Absolute failures remain unresolved. |
 | Direct norm/QK division | Short boundaries pass, but 512/128/64 each independently fail the 2048 absolute gate. Rejected; no performance qualification. |
 | Split-K128 projections | Both 63/64 positions fail unchanged limits. Rejected before broader gates or timing. |
 | B1-order batched projections | Pass 63/64 with sequential-control byte identity, then fail 2048 absolute error. Broader run stopped; 3968 not executed. No timing or release qualification. |
@@ -566,3 +566,32 @@ requires their fixed absolute gates before reported timing; inherited failures
 do not satisfy that prerequisite. This archive provides no confirmation-timing
 command or performance claim. The separate arithmetic-preserving release policy
 above does not extend to these candidates.
+
+
+## Original-prefix cache diagnostics completed
+
+The [completed gate report](../reports/native-cpu-original-prefix-cache-gates-v1.json)
+and [offline analysis](../reports/native-cpu-original-prefix-cache-gates-v1-analysis.json)
+cover 54 requests and 27 cached/fresh turn comparisons across original 512/128/64.
+Within each variant, every captured full-logit array and issued prediction,
+including EOS, matches fresh execution. Cross-variant generated IDs, rendered
+text and stop behavior also match on these teacher-authored histories.
+
+| Canonical chunk | Reused tokens across nine cached turns | Strict answer rubric |
+|---|---:|---:|
+| 512 | 7680 | 7/9 |
+| 128 | 8448 | 7/9 |
+| 64 | 8640 | 7/9 |
+
+The two wrong answers remain failures in all three configurations: the model
+answers `6` to 6+7 (expected 13), and `4` to 9−4 (expected 5). Exact baseline
+agreement does not make these answers correct. Finer blocks increase token reuse
+on these histories, but **no latency or throughput improvement is inferred**.
+The independent absolute inventory remains 76 passing and four failing numerical
+comparisons; these cache diagnostics do not qualify 64/128 for release or timing.
+
+The [archive provenance](../reports/native-cpu-original-prefix-cache-gates-v1-archive.json)
+binds executed reports to local originals and the prepared source archive.
+Raw float arrays remain local with their hashes retained. Original elapsed
+observations remain in the raw gate report for completeness; the offline summary
+omits them, and this publication makes no timing claim.

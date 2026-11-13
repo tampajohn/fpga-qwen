@@ -1,0 +1,25 @@
+{
+  "completed": true,
+  "diagnostic_gates_passed": true,
+  "absolute_numerical_passed": false,
+  "release_eligible": false,
+  "performance_claim_eligible": false,
+  "raw_float_arrays_archived": false,
+  "records": [
+    {
+      "source": "build/native-cpu/original-prefix-cache-gates-v1/report.json",
+      "source_sha256": "17d8dda36f96a74578c76b88ab00d62b7c6c80f7bb5437eb3424fb8e38314b24",
+      "archive": "reports/native-cpu-original-prefix-cache-gates-v1.json",
+      "archive_sha256": "340322bd385ab6ce9c571da354d54ab2d5b74f2df14535f6b0bf198222c82b85"
+    },
+    {
+      "source": "build/native-cpu/original-prefix-cache-gates-v1-analysis.json",
+      "source_sha256": "ea6a6cc1056b36d4899237c5f7ca5ea2188428931eb9e93386cc9fad7de075e3",
+      "archive": "reports/native-cpu-original-prefix-cache-gates-v1-analysis.json",
+      "archive_sha256": "019ecced8464d6d784dcd570f3c162e41d3d974d56b61d80b6b1cc85ad334eb9"
+    }
+  ],
+  "source_snapshot_manifest": "reports/native-cpu-prepared-seed-prefix-gates-v1.json",
+  "qualification": "54 requests;27 cached/fresh turn comparisons exact full logits includingEOS pervariant; crossvariant IDs/text/EOS identical. Each variant7/9rubrics, wronganswers preserved. Independent absolute80-position inventory remains76pass4fail. No timing conclusion.",
+  "limits": "Raw gate elapsed fields are retained as original observations, not performance evidence or claims. No confirmation timing eligible for original64/128 under failed absolute evidence."
+}
