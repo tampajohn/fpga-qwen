@@ -41,7 +41,8 @@ remain archived alongside this failure. Together these cover the original
 an aggregate pass. The additional63/64 fixture is separate coverage.
 
 The multi-candidate script stopped before beginning either128- or64-token
-variant's broad matrix. Their separate short-boundary results do not substitute
+variant's broad matrix. Later isolated2048 controls for both variants are
+recorded below; they do not complete the missing broad matrix. Their separate short-boundary results do not substitute
 for that missing qualification. No fresh9/18-case quality or performance run
 was authorized from this failed arithmetic. Earlier failures, including the
 norm-only direct-division RMS miss, remain immutable evidence.
@@ -126,3 +127,18 @@ and [observational patch](../tools/experiments/native-target62-trace.patch)
 are separate from the unchanged live engine. Fresh directories and a guarded,
 serialized run are required. None of these diagnostics claims timing or fixes
 the failed broad direct-division candidate.
+
+
+## Independent2048 controls for128/64: both fail
+
+After the serialized broad script stopped, root explicitly ran isolated2048/2049 controls for both finer candidates. The [128-token oracle gate](../reports/native-cpu-norm-attention-direct-div-prefix128-v2-context2048-oracle.json) and [64-token gate](../reports/native-cpu-norm-attention-direct-div-prefix64-v2-context2048-oracle.json) are terminal failures under the same unchanged limits.
+
+| Canonical chunk | Position2048 max absolute / RMS | Position2049 max absolute / RMS | Qualification |
+|---|---:|---:|---|
+| 512 | 0.012651443 /0.001877199 | 0.005335808 /0.001093468 | FAIL at2048 absolute error |
+| 128 | 0.012651443 /0.001877199 | 0.005335808 /0.001093468 | FAIL at2048 absolute error |
+| 64 | 0.012651443 /0.001877199 | 0.005335808 /0.001093468 | FAIL at2048 absolute error |
+
+All greedy IDs match, but that does not override the full-logit failure. The [128 capture](../reports/native-cpu-norm-attention-direct-div-prefix128-v2-context2048-capture.json) and [64 capture](../reports/native-cpu-norm-attention-direct-div-prefix64-v2-context2048-capture.json) record exactly the same full-vector SHA as512 at each position and both repeats: `7fb2ed2d82bc71b98f1e21a26416c5ade13d277bcef96f4be228d097052854b7` at2048 and `45293f163804f175c4cf40e67651043dcce703ed93bdb3f4c321b11f08a346ac` at2049. This is fixture-specific equality, not a general proof that granularity never affects arithmetic.
+
+None of the three direct-division variants qualifies for fresh quality or performance measurement. The128/64 full broad matrices remain incomplete; short-boundary successes and these isolated controls are preserved without an aggregate pass. Live build19 is unchanged, and no native source change is made from this publication.
