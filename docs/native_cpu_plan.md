@@ -1331,3 +1331,10 @@ with live build18 unchanged and no answer-quality or speed claim from acceptance
 The [complete eight-shape table](native_kv_layout.md#combined-candidate-completed-original-shape-comparison) and [all 80 pairs](../reports/native-cpu-kv-head-major-time32-original-shapes.json) are archived. Exact preflight passed; the two smallest fresh batches have intervals including1, while six other sampled append shapes favor the candidate. These are command-level observations against build18, not whole-request or llama claims. No component ratios are multiplied and no partial extended timing is published.
 
 The [browser restart record](../reports/native-cpu-browser-build18-restart-nov13.json) records overlapping router/tokenizer initialization during the later whole-request comparison. No browser inference was requested; the cause of the old server's empty responses remains undiagnosed. All timing samples must remain included, with no unsupported attribution of outliers. Build18 remains live pending complete results and release checks.
+
+
+### Combined long-prefill candidate selected for release19 evaluation
+
+The [complete direct-build18 whole-request table](native_kv_layout.md#combined-candidate-complete-whole-request-comparison-against-build18) now includes terminal standard32 and extended128 ten-pair runs. At1024/2048/3968, paired decode medians are1.11244/1.13528/1.26812 and TTFT speedups1.10507/1.14151/1.16738, with their intervals above1. Standard85 results and452 decode remain uncertain; all negative/outlier observations are retained. This supports selection for release19 evaluation, not a universal speed or llama claim.
+
+Artifact-bound68-array exactness and lifecycle/quality gates accompany the results. The server-restart host-activity caveat remains attached without causal attribution or discarded samples. Live promotion/browser acceptance and a fresh direct tuned-llama scoreboard remain separate pending work.

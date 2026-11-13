@@ -141,3 +141,26 @@ The [full combined shape report](../reports/native-cpu-kv-head-major-time32-orig
 All 80 pairs and outliers remain archived. The two smallest fresh batches have intervals including1; the other six sampled shapes favor the combined candidate. These observations do not establish general throughput, a direct llama advantage, or isolated causality for either component. No component ratios were multiplied. Whole-request results and release selection remain separate; no partial extended timing is published here.
 
 A [host-activity record](../reports/native-cpu-browser-build18-restart-nov13.json) documents a later build18 browser-server restart overlapping the ongoing whole-request comparison. The server accepted connections but returned empty responses; the cause was not diagnosed. Only the owned server was restarted, its stable build18 link stayed unchanged, and no browser model inference was requested. Router/tokenizer initialization still constitutes concurrent host activity. Preserve every timing sample and carry this caveat into whole-request reporting; do not attribute any outlier to the restart without evidence. This event is not retroactively attributed to the completed shape measurements.
+
+
+## Combined candidate: complete whole-request comparison against build18
+
+Both independent ten-pair suites are terminal: [standard32](../reports/native-cpu-kv-head-major-time32-standard-confirmation.json), [standard analysis](../reports/native-cpu-kv-head-major-time32-standard-analysis.json), [extended128](../reports/native-cpu-kv-head-major-time32-extended-confirmation.json) and [extended analysis](../reports/native-cpu-kv-head-major-time32-extended-analysis.json). Each used one warmup, alternating configuration order, 12 decode / 6 prefill threads, fresh logical prompts and natural EOS handling. Every scored visit preserved the required exact output trajectory. All20 visits per suite and every outlier remain included.
+
+Ratios above1 favor the combined candidate: decode is candidate/reference throughput; TTFT and request speedups are reference/candidate time. Intervals are95% paired bootstrap intervals, unadjusted across these multiple metrics and contexts. These are direct measured ratios, not products of component or previous llama comparisons.
+
+| Prompt tokens | Output cap | Decode ratio (95% interval) | TTFT speedup (95% interval) | Request speedup (95% interval) |
+|---|---:|---:|---:|---:|
+| 85 | 32 | 1.04555 (0.93644–1.08688) | 1.02452 (0.99744–1.05272) | 1.04422 (0.96676–1.06933) |
+| 452 | 32 | 1.05204 (0.96415–1.07854) | 1.04754 (1.02599–1.07566) | 1.04071 (1.00486–1.08032) |
+| 1024 | 128 | 1.11244 (1.01632–1.32652) | 1.10507 (1.06000–1.13554) | 1.10407 (1.04454–1.22201) |
+| 2048 | 128 | 1.13528 (1.04793–1.23997) | 1.14151 (1.09643–1.16479) | 1.14752 (1.08451–1.17413) |
+| 3968 | 128 | 1.26812 (1.13693–1.35084) | 1.16738 (1.15219–1.18233) | 1.18172 (1.16332–1.20352) |
+
+At85 tokens, all three intervals include1; neither benefit nor equivalence is established. At452, decode remains uncertain while TTFT and whole-request intervals favor the candidate. At1024/2048/3968, all three intervals favor the candidate in this run. These context-specific improvements support selecting the combined candidate for release19 evaluation; they are not a universal engine-speed claim or a direct llama result.
+
+Manual evidence review binds the timed executable SHA to the68-array exact matrix, API/prefix/suffix/CLI lifecycle gates and both unchanged quality suites. Build18's fixed-tolerance independent oracle qualification transfers at the sampled byte-identical positions; timing trajectory equality does not establish independent full-logit accuracy at every generated position. Quality remains4/9 and10/18, with historical wrong answers still wrong.
+
+The [concurrent browser restart](../reports/native-cpu-browser-build18-restart-nov13.json) is retained as a host-activity caveat: router/tokenizer initialization overlapped the whole-request comparison, though no browser inference was requested. No samples are removed or outliers causally assigned to it. Shared-host scheduling/background work remains uncontrolled.
+
+Root selected this candidate for release19 based on the complete direct-build18 evidence. It is not promoted by this publication: source/binary staging, browser gates and release operations remain separate. A fresh direct comparison with tuned llama is pending; no multiplication of historical ratios substitutes for it.
