@@ -16,4 +16,26 @@ Each cell is median paired speedup [95% paired bootstrap interval]. Higher than 
 
 The1024- and 2048-token TTFT intervals favor the candidate. The 3968-token TTFT interval includes 1, so a universal near-4K benefit is not established. All decode and complete-request intervals include 1, as do all short-context intervals. This does **not** establish a decode win, noninferiority, or an overall latency win. The limited positive evidence is 1K/2K TTFT.
 
-The selected kernel remains a sampled baseline-nonregression candidate: completed numerical/lifecycle/quality checks preserve the known baseline63/ 64 absolute oracle failures. Matching trajectories do not convert those failures into passes. Fresh tuned-llama comparison and actual release/browser verification remain separate pending evidence at this snapshot.
+The selected kernel remains a sampled baseline-nonregression candidate: completed numerical/lifecycle/quality checks preserve the known baseline63/ 64 absolute oracle failures. Matching trajectories do not convert those failures into passes. That snapshot preceded the fresh tuned-llama comparison below. Actual release/browser verification remains separate evidence.
+
+## Fresh matched comparison with tuned llama FP16
+
+Both engines use 12 decode / 6 prefill workers. Standard 85/452 contexts use 32 outputs; extended 1024/2048/3968 use 128. Each suite completed ten alternating pairs and one warmup per profile/visit. The [complete archive](../reports/native-cpu-prefill-query-row-pair-final-vsllama-archive-v1.json) links full reports and analyses, retaining every pair and outlier. This comparison is direct; no ratios are chained from older runs.
+
+Each cell is median paired speedup [95% paired bootstrap interval]; higher than 1 favors the original native engine.
+
+| Prompt tokens | Decode | TTFT | Complete request |
+|---:|---:|---:|---:|
+| 85 | 0.8561 [0.4897, 1.0001] | 1.6957 [1.4536, 2.1194] | 1.0277 [0.6928, 1.3344] |
+| 452 | 0.9493 [0.7861, 1.1613] | 1.1972 [1.0467, 1.4381] | 1.0313 [0.9896, 1.3142] |
+| 1024 | 1.0068 [0.7869, 1.2380] | 1.2260 [1.1363, 1.4069] | 1.1901 [0.9761, 1.2700] |
+| 2048 | 1.1906 [1.0876, 1.3003] | 1.1411 [1.0969, 1.2506] | 1.1397 [1.0682, 1.2756] |
+| 3968 | 1.2426 [1.0852, 1.4002] | 1.0433 [1.0052, 1.1635] | 1.0770 [1.0335, 1.1347] |
+
+Decode favors native at 2048, 3968 prompt tokens; remains uncertain at 85, 452, 1024 prompt tokens.
+
+TTFT favors native at 85, 452, 1024, 2048, 3968 prompt tokens.
+
+Complete request favors native at 2048, 3968 prompt tokens; remains uncertain at 85, 452, 1024 prompt tokens.
+
+These unadjusted paired intervals describe the sampled workloads on this host. They do not establish a universal win, noninferiority where an interval includes 1, or general model quality. The frozen 9/18 suites retain 4/9 and 10/18 rubric scores with matching trajectories; known absolute63/ 64 NumPy failures remain unresolved. Deployment authorization and browser evidence are recorded separately.
