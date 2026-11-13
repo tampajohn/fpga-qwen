@@ -18,7 +18,7 @@ chunk candidates. That absolute numerical gap remains unresolved.
 | Direct norm/QK division | Short boundaries pass, but 512/128/64 each independently fail the 2048 absolute gate. Rejected; no performance qualification. |
 | Split-K128 projections | Both 63/64 positions fail unchanged limits. Rejected before broader gates or timing. |
 | Original-arithmetic QK key pairing | 68 repeated full-logit arrays match build19 exactly. Completed shape timing shows selected long-prefix gains, with the inherited absolute gap explicitly retained. No release or whole-request/llama claim. |
-| Adjacent query-row pairing | 68 repeated arrays match build19 exactly; source and assembly reviews completed. Its separate shape comparison is pending at this document revision. No performance result asserted yet. |
+| Adjacent query-row pairing | 68 repeated arrays match build19 exactly; source and assembly reviews completed. Completed shape comparison improves fresh452 and long-prefix16/64/384 in this run; other intervals cross1. Conditional timing only; inherited absolute numerical gap remains. |
 
 Arithmetic-changing experiments are not advanced to timing after failed gates.
 Separately authorized shape measurements of candidates with sampled byte identity
@@ -342,8 +342,7 @@ no whole-function spill-free or performance claim follows.
 
 The baseline19 independent 63-token NumPy failure remains inherited and unresolved
 by byte identity. This is fixture-scoped arithmetic preservation, not absolute
-numerical qualification or promotion. Timing results are not included until the
-separate comparison completes; live build19 is unchanged.
+numerical qualification or promotion. The completed conditional shape comparison follows; live build19 is unchanged.
 
 
 ## Rejected arithmetic changes and the remaining numerical gap
@@ -389,3 +388,28 @@ chunks are not presumed arithmetic-preserving. Quality, cache lifecycle and
 complete-request measurements remain additional requirements before selection.
 No release, backend default change or browser performance claim is implied by
 preparing either runner.
+
+
+## Adjacent query-row pairing: completed conditional shape comparison
+
+The [full report](../reports/native-cpu-prefill-query-row-pair-original-shapes.json)
+retains all ten alternating pairs per shape, warmups and outliers. These are
+baseline19/candidate command-wall latency ratios, with paired bootstrap95%
+intervals; they do not measure whole-request or llama performance.
+
+| Shape (prefix/new tokens) | Median paired speedup | 95% interval |
+|---|---:|---|
+| P0-B2 | 0.99034 | [0.97666, 1.00506] |
+| P0-B16 | 1.00287 | [0.95795, 1.01924] |
+| P0-B85 | 1.01305 | [0.98472, 1.02884] |
+| P0-B452 | 1.02364 | [1.00341, 1.05576] |
+| P3584-B2 | 1.00128 | [0.98782, 1.01244] |
+| P3584-B16 | 1.09658 | [1.08407, 1.12121] |
+| P3584-B64 | 1.11242 | [1.08739, 1.13625] |
+| P3584-B384 | 1.14844 | [1.13424, 1.19119] |
+
+Fresh452 and long-prefix B16/B64/B384 intervals exceed1; the remaining shapes
+are uncertain in this run. No ratios are multiplied with the separate two-key
+QK experiment, and no selective pooling is used. The known baseline19 numerical
+gap remains inherited despite exactness on these fixtures; this conditional
+relative result is not an absolute gate waiver or release recommendation.

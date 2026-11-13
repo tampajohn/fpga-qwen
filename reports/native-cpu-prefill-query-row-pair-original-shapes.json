@@ -1,0 +1,7412 @@
+{
+  "completed": true,
+  "paired_sampling_complete": true,
+  "performance_claim_eligible": false,
+  "gpu": false,
+  "pytorch": false,
+  "diagnostic_only": true,
+  "rounds": 10,
+  "warmups": 2,
+  "suite": "original",
+  "declared_shapes": {
+    "0": [
+      2,
+      16,
+      85,
+      452
+    ],
+    "3584": [
+      2,
+      16,
+      64,
+      384
+    ]
+  },
+  "threads": 12,
+  "prefill_threads": 6,
+  "preflight": [
+    {
+      "shape": "P0-B2",
+      "prefix": 0,
+      "tail": 2,
+      "configurations": {
+        "reference": {
+          "token": 25811,
+          "position": 2,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B2-reference-logits.f32",
+              "sha256": "4382fa0332df0290e2ae735997e3b7b7faafa9e82d486d200f3143b3e38f3056",
+              "bytes": 607744,
+              "position": 2
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B2-reference-hidden.f32",
+              "sha256": "29eae0f3dec0955a839a277ad53c684fa119a6fc660d3d2015aad89420822f04",
+              "bytes": 4096,
+              "position": 2
+            }
+          }
+        },
+        "candidate": {
+          "token": 25811,
+          "position": 2,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B2-candidate-logits.f32",
+              "sha256": "4382fa0332df0290e2ae735997e3b7b7faafa9e82d486d200f3143b3e38f3056",
+              "bytes": 607744,
+              "position": 2
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B2-candidate-hidden.f32",
+              "sha256": "29eae0f3dec0955a839a277ad53c684fa119a6fc660d3d2015aad89420822f04",
+              "bytes": 4096,
+              "position": 2
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P0-B16",
+      "prefix": 0,
+      "tail": 16,
+      "configurations": {
+        "reference": {
+          "token": 4128,
+          "position": 16,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B16-reference-logits.f32",
+              "sha256": "2e440dd4e8530b78e6ed66d57da7bd2575b50c7e6a01bd09adaa7a909169e011",
+              "bytes": 607744,
+              "position": 16
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B16-reference-hidden.f32",
+              "sha256": "1ee68f296dbf8190d95c9da4925a1fa7225af6fdde3772e89dd376f077fecbde",
+              "bytes": 4096,
+              "position": 16
+            }
+          }
+        },
+        "candidate": {
+          "token": 4128,
+          "position": 16,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B16-candidate-logits.f32",
+              "sha256": "2e440dd4e8530b78e6ed66d57da7bd2575b50c7e6a01bd09adaa7a909169e011",
+              "bytes": 607744,
+              "position": 16
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B16-candidate-hidden.f32",
+              "sha256": "1ee68f296dbf8190d95c9da4925a1fa7225af6fdde3772e89dd376f077fecbde",
+              "bytes": 4096,
+              "position": 16
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P0-B85",
+      "prefix": 0,
+      "tail": 85,
+      "configurations": {
+        "reference": {
+          "token": 856,
+          "position": 85,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B85-reference-logits.f32",
+              "sha256": "5af4487f95c6411a8f890d240ccad67954f82cc430c92b450a53006a95a53f4f",
+              "bytes": 607744,
+              "position": 85
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B85-reference-hidden.f32",
+              "sha256": "65bfc5759e0ed4dc18654090f4c06adf4845d93e7a447ad547dc69ce958e055e",
+              "bytes": 4096,
+              "position": 85
+            }
+          }
+        },
+        "candidate": {
+          "token": 856,
+          "position": 85,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B85-candidate-logits.f32",
+              "sha256": "5af4487f95c6411a8f890d240ccad67954f82cc430c92b450a53006a95a53f4f",
+              "bytes": 607744,
+              "position": 85
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B85-candidate-hidden.f32",
+              "sha256": "65bfc5759e0ed4dc18654090f4c06adf4845d93e7a447ad547dc69ce958e055e",
+              "bytes": 4096,
+              "position": 85
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P0-B452",
+      "prefix": 0,
+      "tail": 452,
+      "configurations": {
+        "reference": {
+          "token": 856,
+          "position": 452,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B452-reference-logits.f32",
+              "sha256": "77752b739b2ae73d2a351527de1f85ad61c2edb89e58837d99dd2ed433e0e15a",
+              "bytes": 607744,
+              "position": 452
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B452-reference-hidden.f32",
+              "sha256": "bb5f97786192463ace021f6445e549b743b1f5904b528330fa959466ea0bb608",
+              "bytes": 4096,
+              "position": 452
+            }
+          }
+        },
+        "candidate": {
+          "token": 856,
+          "position": 452,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B452-candidate-logits.f32",
+              "sha256": "77752b739b2ae73d2a351527de1f85ad61c2edb89e58837d99dd2ed433e0e15a",
+              "bytes": 607744,
+              "position": 452
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B452-candidate-hidden.f32",
+              "sha256": "bb5f97786192463ace021f6445e549b743b1f5904b528330fa959466ea0bb608",
+              "bytes": 4096,
+              "position": 452
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P3584-B2",
+      "prefix": 3584,
+      "tail": 2,
+      "configurations": {
+        "reference": {
+          "token": 856,
+          "position": 3586,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B2-reference-logits.f32",
+              "sha256": "f8ce6a9db873569b0089a3a679696106e15d0e18d35c06a2aafe8e9192e24ce9",
+              "bytes": 607744,
+              "position": 3586
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B2-reference-hidden.f32",
+              "sha256": "d09217d695a92f387750de5111c1a7eb599d86f4f7c406013d757ab4ee2e9e13",
+              "bytes": 4096,
+              "position": 3586
+            }
+          }
+        },
+        "candidate": {
+          "token": 856,
+          "position": 3586,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B2-candidate-logits.f32",
+              "sha256": "f8ce6a9db873569b0089a3a679696106e15d0e18d35c06a2aafe8e9192e24ce9",
+              "bytes": 607744,
+              "position": 3586
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B2-candidate-hidden.f32",
+              "sha256": "d09217d695a92f387750de5111c1a7eb599d86f4f7c406013d757ab4ee2e9e13",
+              "bytes": 4096,
+              "position": 3586
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P3584-B16",
+      "prefix": 3584,
+      "tail": 16,
+      "configurations": {
+        "reference": {
+          "token": 856,
+          "position": 3600,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B16-reference-logits.f32",
+              "sha256": "79cb4183c21616012ecfbc7a02c0f1ed4d07727b71daf11230a1308d9b2d3eb0",
+              "bytes": 607744,
+              "position": 3600
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B16-reference-hidden.f32",
+              "sha256": "fc89af39912fdb83034bea9191a05c9ff08413ab1e17045b0040800153524dec",
+              "bytes": 4096,
+              "position": 3600
+            }
+          }
+        },
+        "candidate": {
+          "token": 856,
+          "position": 3600,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B16-candidate-logits.f32",
+              "sha256": "79cb4183c21616012ecfbc7a02c0f1ed4d07727b71daf11230a1308d9b2d3eb0",
+              "bytes": 607744,
+              "position": 3600
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B16-candidate-hidden.f32",
+              "sha256": "fc89af39912fdb83034bea9191a05c9ff08413ab1e17045b0040800153524dec",
+              "bytes": 4096,
+              "position": 3600
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P3584-B64",
+      "prefix": 3584,
+      "tail": 64,
+      "configurations": {
+        "reference": {
+          "token": 856,
+          "position": 3648,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B64-reference-logits.f32",
+              "sha256": "c3333a0e046a55aa01d6503c303f6711ee2d64d30704665b213abe598913c7f5",
+              "bytes": 607744,
+              "position": 3648
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B64-reference-hidden.f32",
+              "sha256": "e5ecddb66b0a3befa46929ac9c98025f879348a49b0c2af106526e42cc91a815",
+              "bytes": 4096,
+              "position": 3648
+            }
+          }
+        },
+        "candidate": {
+          "token": 856,
+          "position": 3648,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B64-candidate-logits.f32",
+              "sha256": "c3333a0e046a55aa01d6503c303f6711ee2d64d30704665b213abe598913c7f5",
+              "bytes": 607744,
+              "position": 3648
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B64-candidate-hidden.f32",
+              "sha256": "e5ecddb66b0a3befa46929ac9c98025f879348a49b0c2af106526e42cc91a815",
+              "bytes": 4096,
+              "position": 3648
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "shape": "P3584-B384",
+      "prefix": 3584,
+      "tail": 384,
+      "configurations": {
+        "reference": {
+          "token": 31615,
+          "position": 3968,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B384-reference-logits.f32",
+              "sha256": "7219b435bb3de631f6453fe941a6ab1cedd5725eb6e631004b8763f83c9ccf15",
+              "bytes": 607744,
+              "position": 3968
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B384-reference-hidden.f32",
+              "sha256": "d68e9b2488e05f583ca96e1146d86b21a31abe700c1b44554c2f29c7cde2d567",
+              "bytes": 4096,
+              "position": 3968
+            }
+          }
+        },
+        "candidate": {
+          "token": 31615,
+          "position": 3968,
+          "arrays": {
+            "logits": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B384-candidate-logits.f32",
+              "sha256": "7219b435bb3de631f6453fe941a6ab1cedd5725eb6e631004b8763f83c9ccf15",
+              "bytes": 607744,
+              "position": 3968
+            },
+            "hidden": {
+              "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B384-candidate-hidden.f32",
+              "sha256": "d68e9b2488e05f583ca96e1146d86b21a31abe700c1b44554c2f29c7cde2d567",
+              "bytes": 4096,
+              "position": 3968
+            }
+          }
+        }
+      },
+      "passed": true
+    }
+  ],
+  "priming": [
+    {
+      "phase": "preflight",
+      "configuration": "reference",
+      "prefix_tokens": 0,
+      "full_prefill_executed": false,
+      "outside_timing": true
+    },
+    {
+      "phase": "preflight",
+      "configuration": "candidate",
+      "prefix_tokens": 0,
+      "full_prefill_executed": false,
+      "outside_timing": true
+    },
+    {
+      "phase": "preflight",
+      "configuration": "reference",
+      "prefix_tokens": 3584,
+      "full_prefill_executed": true,
+      "outside_timing": true
+    },
+    {
+      "phase": "preflight",
+      "configuration": "candidate",
+      "prefix_tokens": 3584,
+      "full_prefill_executed": true,
+      "outside_timing": true
+    },
+    {
+      "phase": "timing",
+      "configuration": "reference",
+      "prefix_tokens": 0,
+      "full_prefill_executed": false,
+      "outside_timing": true
+    },
+    {
+      "phase": "timing",
+      "configuration": "candidate",
+      "prefix_tokens": 0,
+      "full_prefill_executed": false,
+      "outside_timing": true
+    },
+    {
+      "phase": "timing",
+      "configuration": "reference",
+      "prefix_tokens": 3584,
+      "full_prefill_executed": true,
+      "outside_timing": true
+    },
+    {
+      "phase": "timing",
+      "configuration": "candidate",
+      "prefix_tokens": 3584,
+      "full_prefill_executed": true,
+      "outside_timing": true
+    }
+  ],
+  "shapes": [
+    {
+      "shape": "P0-B2",
+      "prefix": 0,
+      "tail": 2,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.049236084,
+              "wall_seconds": 0.049306417000479996
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.04796275,
+              "wall_seconds": 0.048049042001366615
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.047632542,
+              "wall_seconds": 0.04770449997158721
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046087583,
+              "wall_seconds": 0.04615604196442291
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.045618458,
+              "wall_seconds": 0.04568662500241771
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046701708,
+              "wall_seconds": 0.04677837499184534
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 0.976804916856574,
+            "wall_seconds": 0.9766612245590415
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.04739825,
+              "wall_seconds": 0.04751200001919642
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.047016875,
+              "wall_seconds": 0.047085041005630046
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 0.991953816860327,
+            "wall_seconds": 0.9910136594251164
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.04529075,
+              "wall_seconds": 0.04535866598598659
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.04499875,
+              "wall_seconds": 0.04508333298144862
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.0064890691408095,
+            "wall_seconds": 1.0061072016270685
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.044470166,
+              "wall_seconds": 0.04453537502558902
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.04399375,
+              "wall_seconds": 0.044075499987229705
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 0.989286840080606,
+            "wall_seconds": 0.9896739381200881
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.043606666,
+              "wall_seconds": 0.04367304197512567
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.044720958,
+              "wall_seconds": 0.044784874946344644
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 0.9750834496881754,
+            "wall_seconds": 0.9751739181464495
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.045365584,
+              "wall_seconds": 0.04542908299481496
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.045601084,
+              "wall_seconds": 0.04565899999579415
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.005191159888959,
+            "wall_seconds": 1.005061009067813
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046083542,
+              "wall_seconds": 0.0461503749829717
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046122125,
+              "wall_seconds": 0.046194625028874725
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 0.9991634600530656,
+            "wall_seconds": 0.9990420953547006
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.045507042,
+              "wall_seconds": 0.04557262494927272
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.0488315,
+              "wall_seconds": 0.048894665960688144
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.073053704523357,
+            "wall_seconds": 1.0728955379487843
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.0546875,
+              "wall_seconds": 0.054792583046946675
+            },
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.057710583,
+              "wall_seconds": 0.05777499999385327
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 0.947616488296436,
+            "wall_seconds": 0.9483787633539784
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.047534333,
+              "wall_seconds": 0.04761183395748958
+            },
+            "reference": {
+              "token": 25811,
+              "position": 2,
+              "cli_seconds": 0.046633,
+              "wall_seconds": 0.04670308297500014
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 0.9810382739566368,
+            "wall_seconds": 0.9809133379886014
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 0.9906203284704664,
+            "percentile_95_ci": [
+              0.976804916856574,
+              1.005191159888959
+            ],
+            "minimum_observed_ratio": 0.947616488296436,
+            "maximum_observed_ratio": 1.073053704523357
+          },
+          "medians": {
+            "reference": 0.045851,
+            "candidate": 0.0458145835
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 0.9903437987726023,
+            "percentile_95_ci": [
+              0.9766612245590415,
+              1.005061009067813
+            ],
+            "minimum_observed_ratio": 0.9483787633539784,
+            "maximum_observed_ratio": 1.0728955379487843
+          },
+          "medians": {
+            "reference": 0.045918499992694706,
+            "candidate": 0.045883624989073724
+          }
+        }
+      }
+    },
+    {
+      "shape": "P0-B16",
+      "prefix": 0,
+      "tail": 16,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.046289333,
+              "wall_seconds": 0.04636770801153034
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.046101167,
+              "wall_seconds": 0.04617162502836436
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.046093209,
+              "wall_seconds": 0.04617479199077934
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.046171834,
+              "wall_seconds": 0.04625041701365262
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.045489208,
+              "wall_seconds": 0.045566209009848535
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044899291,
+              "wall_seconds": 0.044973833952099085
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.0131386707197672,
+            "wall_seconds": 1.0131715490029243
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044333833,
+              "wall_seconds": 0.0444104170310311
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044391625,
+              "wall_seconds": 0.04445016599493101
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.001303564255317,
+            "wall_seconds": 1.0008950369430698
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044699625,
+              "wall_seconds": 0.04477312503149733
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.048837333,
+              "wall_seconds": 0.0489322500070557
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 0.9152757174516472,
+            "wall_seconds": 0.9150023762455507
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.052004042,
+              "wall_seconds": 0.052093915990553796
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.046180667,
+              "wall_seconds": 0.046248374972492456
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 0.8880207234660722,
+            "wall_seconds": 0.8877884123911646
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.045599,
+              "wall_seconds": 0.04567070899065584
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044941125,
+              "wall_seconds": 0.045012625050731
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.0146385966083404,
+            "wall_seconds": 1.0146199858191596
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.045843833,
+              "wall_seconds": 0.04591374995652586
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.046063708,
+              "wall_seconds": 0.04613616596907377
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.0047961740022917,
+            "wall_seconds": 1.0048442136126652
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.045712583,
+              "wall_seconds": 0.04579195799306035
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044224834,
+              "wall_seconds": 0.044286334014032036
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.033640578503924,
+            "wall_seconds": 1.033997485060544
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044820541,
+              "wall_seconds": 0.04489741596626118
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044654125,
+              "wall_seconds": 0.04472641699248925
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 0.9962870595426325,
+            "wall_seconds": 0.9961913404125433
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.04415875,
+              "wall_seconds": 0.04423045803559944
+            },
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044507875,
+              "wall_seconds": 0.044575750012882054
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 0.9921558825264067,
+            "wall_seconds": 0.9922538156467849
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.044131709,
+              "wall_seconds": 0.04420550004579127
+            },
+            "reference": {
+              "token": 4128,
+              "position": 16,
+              "cli_seconds": 0.045251417,
+              "wall_seconds": 0.045324333012104034
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.0253719610088068,
+            "wall_seconds": 1.0253098136013346
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0030498691288043,
+            "percentile_95_ci": [
+              0.958289640853482,
+              1.019255315864287
+            ],
+            "minimum_observed_ratio": 0.8880207234660722,
+            "maximum_observed_ratio": 1.033640578503924
+          },
+          "medians": {
+            "reference": 0.0453703125,
+            "candidate": 0.044859916
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0028696252778675,
+            "percentile_95_ci": [
+              0.9579487065943102,
+              1.0192406813021293
+            ],
+            "minimum_observed_ratio": 0.8877884123911646,
+            "maximum_observed_ratio": 1.033997485060544
+          },
+          "medians": {
+            "reference": 0.045445271010976285,
+            "candidate": 0.04493562495918013
+          }
+        }
+      }
+    },
+    {
+      "shape": "P0-B85",
+      "prefix": 0,
+      "tail": 85,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.093122875,
+              "wall_seconds": 0.09321787499357015
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.094279375,
+              "wall_seconds": 0.0943722499650903
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.094774083,
+              "wall_seconds": 0.09486445802031085
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.09354725,
+              "wall_seconds": 0.0936442919773981
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.095776625,
+              "wall_seconds": 0.09587675001239404
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.094732292,
+              "wall_seconds": 0.09481987496837974
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.011024044472607,
+            "wall_seconds": 1.011146134123956
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.094013,
+              "wall_seconds": 0.09411508298944682
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.095430625,
+              "wall_seconds": 0.09552279202034697
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.0150790316232863,
+            "wall_seconds": 1.014957315939019
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.095045375,
+              "wall_seconds": 0.09514612500788644
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.0918995,
+              "wall_seconds": 0.09199666598578915
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.0342316878764304,
+            "wall_seconds": 1.034234490873656
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.093868917,
+              "wall_seconds": 0.09396337502403185
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.096066458,
+              "wall_seconds": 0.096166750008706
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.0234107420244338,
+            "wall_seconds": 1.0234492958997123
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.093634333,
+              "wall_seconds": 0.09373091702582315
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.095267083,
+              "wall_seconds": 0.09535754198441282
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 0.9828613415191898,
+            "wall_seconds": 0.9829418321326323
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.095738084,
+              "wall_seconds": 0.09583545802161098
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.094275375,
+              "wall_seconds": 0.09437116701155901
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 0.9847217644338903,
+            "wall_seconds": 0.984720780384628
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.091682,
+              "wall_seconds": 0.09177762496983632
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.092641333,
+              "wall_seconds": 0.09273529204074293
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 0.9896446546165305,
+            "wall_seconds": 0.989673110960972
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.094968084,
+              "wall_seconds": 0.0950839999713935
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.097346791,
+              "wall_seconds": 0.09744674997637048
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.0250474359364774,
+            "wall_seconds": 1.024849080872574
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.098550209,
+              "wall_seconds": 0.0986448330222629
+            },
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.093040667,
+              "wall_seconds": 0.09313087502960116
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.0592164929342134,
+            "wall_seconds": 1.0592065519722558
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.095656042,
+              "wall_seconds": 0.09574812499340624
+            },
+            "reference": {
+              "token": 856,
+              "position": 85,
+              "cli_seconds": 0.092645792,
+              "wall_seconds": 0.09273512498475611
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 0.9685304771443503,
+            "wall_seconds": 0.9685320207695177
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0130515380479466,
+            "percentile_95_ci": [
+              0.9847217644338903,
+              1.028821214950432
+            ],
+            "minimum_observed_ratio": 0.9685304771443503,
+            "maximum_observed_ratio": 1.0592164929342134
+          },
+          "medians": {
+            "reference": 0.095238,
+            "candidate": 0.094372646
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0130517250314877,
+            "percentile_95_ci": [
+              0.984720780384628,
+              1.028841893386684
+            ],
+            "minimum_observed_ratio": 0.9685320207695177,
+            "maximum_observed_ratio": 1.0592065519722558
+          },
+          "medians": {
+            "reference": 0.0953344585141167,
+            "candidate": 0.09446747897891328
+          }
+        }
+      }
+    },
+    {
+      "shape": "P0-B452",
+      "prefix": 0,
+      "tail": 452,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.410547042,
+              "wall_seconds": 0.41070783301256597
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.40067025,
+              "wall_seconds": 0.4008347920025699
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.401333541,
+              "wall_seconds": 0.40149775001918897
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.404357666,
+              "wall_seconds": 0.4045283329905942
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.411579042,
+              "wall_seconds": 0.41175195801770315
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.404628208,
+              "wall_seconds": 0.404780708020553
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.0171783228716471,
+            "wall_seconds": 1.017222288164969
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.400671542,
+              "wall_seconds": 0.4008280420093797
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.409734791,
+              "wall_seconds": 0.4098929580068216
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.0226201465538574,
+            "wall_seconds": 1.022615473588122
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.40852775,
+              "wall_seconds": 0.40867583302315325
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.411816917,
+              "wall_seconds": 0.41196895798202604
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 0.9920130357345179,
+            "wall_seconds": 0.9920063759779287
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.418950208,
+              "wall_seconds": 0.4191013340023346
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.419209459,
+              "wall_seconds": 0.4193680000025779
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.0006188110067724,
+            "wall_seconds": 1.0006362804854299
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.460139209,
+              "wall_seconds": 0.4602882079780102
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.418525916,
+              "wall_seconds": 0.41867362504126504
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.0994282346902504,
+            "wall_seconds": 1.0993962371827066
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.430173459,
+              "wall_seconds": 0.4303329170215875
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.431359792,
+              "wall_seconds": 0.4317995829624124
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.0027578014756138,
+            "wall_seconds": 1.0034082122998538
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.421740208,
+              "wall_seconds": 0.4219035000423901
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.40836725,
+              "wall_seconds": 0.40852404199540615
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.0327473811869095,
+            "wall_seconds": 1.0327507237557745
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.402883875,
+              "wall_seconds": 0.40305087500019
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.412842833,
+              "wall_seconds": 0.41299233300378546
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.0247191774552904,
+            "wall_seconds": 1.0246655164899239
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.420474416,
+              "wall_seconds": 0.4206442499998957
+            },
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.402869708,
+              "wall_seconds": 0.40302120900014415
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.0436982668351924,
+            "wall_seconds": 1.0437273289995646
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.40429125,
+              "wall_seconds": 0.4044487919891253
+            },
+            "reference": {
+              "token": 856,
+              "position": 452,
+              "cli_seconds": 0.436152583,
+              "wall_seconds": 0.4363079579779878
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.078807871800342,
+            "wall_seconds": 1.0787718164076483
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0236696620045738,
+            "percentile_95_ci": [
+              1.0027578014756138,
+              1.0557776264936258
+            ],
+            "minimum_observed_ratio": 0.9920130357345179,
+            "maximum_observed_ratio": 1.0994282346902504
+          },
+          "medians": {
+            "reference": 0.4198419375,
+            "candidate": 0.40649772900000003
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.023640495039023,
+            "percentile_95_ci": [
+              1.0034082122998538,
+              1.0557612700817114
+            ],
+            "minimum_observed_ratio": 0.9920063759779287,
+            "maximum_observed_ratio": 1.0993962371827066
+          },
+          "medians": {
+            "reference": 0.4200061250012368,
+            "candidate": 0.40665237500797957
+          }
+        }
+      }
+    },
+    {
+      "shape": "P3584-B2",
+      "prefix": 3584,
+      "tail": 2,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.064086041,
+              "wall_seconds": 0.06415408302564174
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.062598375,
+              "wall_seconds": 0.06266204197891057
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.063254541,
+              "wall_seconds": 0.06331704201875255
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.063998333,
+              "wall_seconds": 0.06406475004041567
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.060847792,
+              "wall_seconds": 0.060910125030204654
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.06010625,
+              "wall_seconds": 0.060162541980389506
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.0123371862327128,
+            "wall_seconds": 1.0124260549040436
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.059023208,
+              "wall_seconds": 0.05907416599802673
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.057278833,
+              "wall_seconds": 0.057328625000081956
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 0.9704459472958501,
+            "wall_seconds": 0.9704517030675799
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.05730125,
+              "wall_seconds": 0.05736650002654642
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.057116708,
+              "wall_seconds": 0.057166083017364144
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.0032309635212169,
+            "wall_seconds": 1.0035058726889055
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.056197334,
+              "wall_seconds": 0.056251667032483965
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.056149375,
+              "wall_seconds": 0.056198583042714745
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 0.9991465965271591,
+            "wall_seconds": 0.9990563125935705
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.056249375,
+              "wall_seconds": 0.05629908305127174
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.05704875,
+              "wall_seconds": 0.05710708297556266
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 0.9859878612590108,
+            "wall_seconds": 0.985851143462595
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.056908333,
+              "wall_seconds": 0.056958000001031905
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.057888125,
+              "wall_seconds": 0.05794029199751094
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.0172170216266923,
+            "wall_seconds": 1.0172459004259495
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.057516333,
+              "wall_seconds": 0.057576749997679144
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.05703625,
+              "wall_seconds": 0.05708595900796354
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.0084171557562078,
+            "wall_seconds": 1.0085974029033504
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.057362375,
+              "wall_seconds": 0.057407209009397775
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.056965291,
+              "wall_seconds": 0.05702466703951359
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 0.9930776227448742,
+            "wall_seconds": 0.9933363426565196
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.058805458,
+              "wall_seconds": 0.05887775000883266
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.057638417,
+              "wall_seconds": 0.05769179202616215
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.0202476240803073,
+            "wall_seconds": 1.0205567887739162
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.057534958,
+              "wall_seconds": 0.05759858398232609
+            },
+            "reference": {
+              "token": 856,
+              "position": 3586,
+              "cli_seconds": 0.056840834,
+              "wall_seconds": 0.056896833004429936
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 0.9879356129885417,
+            "wall_seconds": 0.9878165237862188
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0011887800241879,
+            "percentile_95_ci": [
+              0.9879356129885417,
+              1.0123491837941812
+            ],
+            "minimum_observed_ratio": 0.9704459472958501,
+            "maximum_observed_ratio": 1.0202476240803073
+          },
+          "medians": {
+            "reference": 0.0572900415,
+            "candidate": 0.057239541500000005
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0012810926412379,
+            "percentile_95_ci": [
+              0.9878165237862188,
+              1.0124384448230586
+            ],
+            "minimum_observed_ratio": 0.9704517030675799,
+            "maximum_observed_ratio": 1.0205567887739162
+          },
+          "medians": {
+            "reference": 0.05734756251331419,
+            "candidate": 0.05728664601338096
+          }
+        }
+      }
+    },
+    {
+      "shape": "P3584-B16",
+      "prefix": 3584,
+      "tail": 16,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.110996875,
+              "wall_seconds": 0.11105408298317343
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.094543708,
+              "wall_seconds": 0.09460745903197676
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.095306917,
+              "wall_seconds": 0.095376958954148
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.106507625,
+              "wall_seconds": 0.10656991699943319
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.106182625,
+              "wall_seconds": 0.1062478749663569
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.097690084,
+              "wall_seconds": 0.09775508299935609
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.0869335008453878,
+            "wall_seconds": 1.086878264601921
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.096610125,
+              "wall_seconds": 0.09667187498416752
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.108677167,
+              "wall_seconds": 0.10875058302190155
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.1249045273463831,
+            "wall_seconds": 1.124945420161885
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.108681417,
+              "wall_seconds": 0.108758750022389
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.099391291,
+              "wall_seconds": 0.09945487504592165
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.0934702216515126,
+            "wall_seconds": 1.093548707111355
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.1019695,
+              "wall_seconds": 0.10203691700007766
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.110698458,
+              "wall_seconds": 0.11076279100961983
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.085603616767759,
+            "wall_seconds": 1.0855168331824012
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.118121542,
+              "wall_seconds": 0.11820425000041723
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.105688166,
+              "wall_seconds": 0.10577783302869648
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.1176420830313205,
+            "wall_seconds": 1.1174765696736253
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.107646292,
+              "wall_seconds": 0.1077405409887433
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.122129292,
+              "wall_seconds": 0.12227608298417181
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.1345424884676938,
+            "wall_seconds": 1.1349124652803364
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.12062125,
+              "wall_seconds": 0.12072929198620841
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.11156675,
+              "wall_seconds": 0.11165666696615517
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.081157692592103,
+            "wall_seconds": 1.0812546645584835
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.106871917,
+              "wall_seconds": 0.10696087498217821
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.119666291,
+              "wall_seconds": 0.11975175002589822
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.1197168943830211,
+            "wall_seconds": 1.1195846148963462
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.120123625,
+              "wall_seconds": 0.12024133297381923
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.1186095,
+              "wall_seconds": 0.11871920904377475
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.0127656300717902,
+            "wall_seconds": 1.0128212101672882
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.105192542,
+              "wall_seconds": 0.10527716699289158
+            },
+            "reference": {
+              "token": 856,
+              "position": 3600,
+              "cli_seconds": 0.115697917,
+              "wall_seconds": 0.11576320801395923
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.0998680590873067,
+            "wall_seconds": 1.0996041337413238
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0966691403694098,
+            "percentile_95_ci": [
+              1.0840455967187452,
+              1.121273305188852
+            ],
+            "minimum_observed_ratio": 1.0127656300717902,
+            "maximum_observed_ratio": 1.1345424884676938
+          },
+          "medians": {
+            "reference": 0.1169097295,
+            "candidate": 0.105440354
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.0965764204263393,
+            "percentile_95_ci": [
+              1.0840664645802023,
+              1.121210994917755
+            ],
+            "minimum_observed_ratio": 1.0128212101672882,
+            "maximum_observed_ratio": 1.1349124652803364
+          },
+          "medians": {
+            "reference": 0.11698372900718823,
+            "candidate": 0.10552750001079403
+          }
+        }
+      }
+    },
+    {
+      "shape": "P3584-B64",
+      "prefix": 3584,
+      "tail": 64,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.2935985,
+              "wall_seconds": 0.2936856659944169
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.243291542,
+              "wall_seconds": 0.2433790829963982
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.251926375,
+              "wall_seconds": 0.2520191249786876
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.279341875,
+              "wall_seconds": 0.2794321660185233
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.286578458,
+              "wall_seconds": 0.28669500001706183
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.252227583,
+              "wall_seconds": 0.25231650000205263
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.1361900018682731,
+            "wall_seconds": 1.1362514937181258
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.266626292,
+              "wall_seconds": 0.26670758303953335
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.295181833,
+              "wall_seconds": 0.29526979196816683
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.1070994941489116,
+            "wall_seconds": 1.1070918516943697
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.283092833,
+              "wall_seconds": 0.2831864160252735
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.256923541,
+              "wall_seconds": 0.25700979196699336
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.1018563417666738,
+            "wall_seconds": 1.1018506877031435
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.260501834,
+              "wall_seconds": 0.2605944169918075
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.279517417,
+              "wall_seconds": 0.2796013749903068
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.0729959659324317,
+            "wall_seconds": 1.072936934788963
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.286210958,
+              "wall_seconds": 0.2863034170004539
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.246853917,
+              "wall_seconds": 0.24697179102804512
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.1594345411987124,
+            "wall_seconds": 1.1592555401112286
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.251751292,
+              "wall_seconds": 0.25184195797191933
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.286299583,
+              "wall_seconds": 0.28638658398995176
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.1372318319621573,
+            "wall_seconds": 1.1371678742343807
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.28017175,
+              "wall_seconds": 0.2802622080198489
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.271882583,
+              "wall_seconds": 0.27197737502865493
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.0304880397579568,
+            "wall_seconds": 1.0304614786076272
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.274398291,
+              "wall_seconds": 0.27449958299985155
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.299559375,
+              "wall_seconds": 0.29965620796428993
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.0916954836282124,
+            "wall_seconds": 1.0916454032079603
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.290600167,
+              "wall_seconds": 0.29071425000438467
+            },
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.259968584,
+              "wall_seconds": 0.26008754200302064
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.117828018019285,
+            "wall_seconds": 1.117755382535809
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.233747958,
+              "wall_seconds": 0.23384387500118464
+            },
+            "reference": {
+              "token": 856,
+              "position": 3648,
+              "cli_seconds": 0.2648645,
+              "wall_seconds": 0.2649705840158276
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.1331200591707415,
+            "wall_seconds": 1.1331089343883192
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.1124637560840984,
+            "percentile_95_ci": [
+              1.0874261538495529,
+              1.1361900018682731
+            ],
+            "minimum_observed_ratio": 1.0304880397579568,
+            "maximum_observed_ratio": 1.1594345411987124
+          },
+          "medians": {
+            "reference": 0.2862552705,
+            "candidate": 0.2584460625
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.1124236171150894,
+            "percentile_95_ci": [
+              1.0873938112460533,
+              1.1362514937181258
+            ],
+            "minimum_observed_ratio": 1.0304614786076272,
+            "maximum_observed_ratio": 1.1592555401112286
+          },
+          "medians": {
+            "reference": 0.28634500049520284,
+            "candidate": 0.258548666985007
+          }
+        }
+      }
+    },
+    {
+      "shape": "P3584-B384",
+      "prefix": 3584,
+      "tail": 384,
+      "warmups": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.644315875,
+              "wall_seconds": 1.6444789170054719
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.401359709,
+              "wall_seconds": 1.4015181660070084
+            }
+          },
+          "warmup": 0
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.387800416,
+              "wall_seconds": 1.3879718339885585
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.581853625,
+              "wall_seconds": 1.5820118749979883
+            }
+          },
+          "warmup": 1
+        }
+      ],
+      "pairs": [
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.567273708,
+              "wall_seconds": 1.5674305420252495
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.357553917,
+              "wall_seconds": 1.357715999998618
+            }
+          },
+          "round": 0,
+          "ratios": {
+            "cli_seconds": 1.1544835813692402,
+            "wall_seconds": 1.1544612732168178
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.383688375,
+              "wall_seconds": 1.3838424170389771
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.55339425,
+              "wall_seconds": 1.5535665409988724
+            }
+          },
+          "round": 1,
+          "ratios": {
+            "cli_seconds": 1.122647467497875,
+            "wall_seconds": 1.1226470021948423
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.541630417,
+              "wall_seconds": 1.5417949589900672
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.355693416,
+              "wall_seconds": 1.3558419580222107
+            }
+          },
+          "round": 2,
+          "ratios": {
+            "cli_seconds": 1.1371526916082624,
+            "wall_seconds": 1.1371494663279997
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.341771167,
+              "wall_seconds": 1.3419343329733238
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.598330541,
+              "wall_seconds": 1.598497667000629
+            }
+          },
+          "round": 3,
+          "ratios": {
+            "cli_seconds": 1.1912094851267585,
+            "wall_seconds": 1.191189186924548
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.524075833,
+              "wall_seconds": 1.5242311250185594
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.336244958,
+              "wall_seconds": 1.3364051669486798
+            }
+          },
+          "round": 4,
+          "ratios": {
+            "cli_seconds": 1.1405661992402443,
+            "wall_seconds": 1.1405456688698155
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.289304333,
+              "wall_seconds": 1.28948399994988
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.566664,
+              "wall_seconds": 1.5668295419891365
+            }
+          },
+          "round": 5,
+          "ratios": {
+            "cli_seconds": 1.215123504901771,
+            "wall_seconds": 1.2150825772557368
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.581309708,
+              "wall_seconds": 1.5814730409765616
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.279441625,
+              "wall_seconds": 1.2795953750028275
+            }
+          },
+          "round": 6,
+          "ratios": {
+            "cli_seconds": 1.235937362910168,
+            "wall_seconds": 1.2359165028812855
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.265564625,
+              "wall_seconds": 1.2657293329830281
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.454529792,
+              "wall_seconds": 1.454694708052557
+            }
+          },
+          "round": 7,
+          "ratios": {
+            "cli_seconds": 1.1493129337429133,
+            "wall_seconds": 1.1492936682001211
+          }
+        },
+        {
+          "order": [
+            "reference",
+            "candidate"
+          ],
+          "results": {
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.460853542,
+              "wall_seconds": 1.461022250005044
+            },
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.295154542,
+              "wall_seconds": 1.2953113749972545
+            }
+          },
+          "round": 8,
+          "ratios": {
+            "cli_seconds": 1.1279376280023887,
+            "wall_seconds": 1.1279313053265982
+          }
+        },
+        {
+          "order": [
+            "candidate",
+            "reference"
+          ],
+          "results": {
+            "candidate": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.271088334,
+              "wall_seconds": 1.2712478330358863
+            },
+            "reference": {
+              "token": 31615,
+              "position": 3968,
+              "cli_seconds": 1.458709375,
+              "wall_seconds": 1.4588717080187052
+            }
+          },
+          "round": 9,
+          "ratios": {
+            "cli_seconds": 1.1476066107927947,
+            "wall_seconds": 1.1475903203978342
+          }
+        }
+      ],
+      "analysis": {
+        "cli_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.148459772267854,
+            "percentile_95_ci": [
+              1.1342519136213165,
+              1.1912094851267585
+            ],
+            "minimum_observed_ratio": 1.122647467497875,
+            "maximum_observed_ratio": 1.235937362910168
+          },
+          "medians": {
+            "reference": 1.5475123334999998,
+            "candidate": 1.3156997499999998
+          }
+        },
+        "wall_seconds": {
+          "paired_speedup": {
+            "paired_observations": 10,
+            "median_paired_speedup": 1.1484419942989776,
+            "percentile_95_ci": [
+              1.134238487098207,
+              1.191189186924548
+            ],
+            "minimum_observed_ratio": 1.1226470021948423,
+            "maximum_observed_ratio": 1.2359165028812855
+          },
+          "medians": {
+            "reference": 1.5476807499944698,
+            "candidate": 1.3158582709729671
+          }
+        }
+      }
+    }
+  ],
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "query-row-pair-original-shapes",
+      "started_at": "2026-11-13T18:34:17.071439+00:00"
+    }
+  },
+  "host_before": {
+    "timestamp_utc": "2026-11-13T18:34:17Z",
+    "load_average": [
+      8.31982421875,
+      6.33984375,
+      5.9033203125
+    ],
+    "ps_command": [
+      "ps",
+      "-Ao",
+      "pid,ppid,pcpu,pmem,etime,comm"
+    ],
+    "busiest_processes": [
+      "  PID  PPID  %CPU %MEM     ELAPSED COMM",
+      "<PID> <PPID>  55.0 10.4 07-22:02:56 /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine",
+      "<PID> <PPID>  39.2  0.4 07-03:12:28 /Applications/Warp.app/Contents/MacOS/stable",
+      "  <PID> <PPID>  38.5  0.8 11-04:49:50 /Applications/zoom.us.app/Contents/MacOS/zoom.us",
+      "<PID> <PPID>  21.4  0.2 02-01:29:46 $HOME/Applications/Herdr.app/Contents/MacOS/Herdr",
+      "  <PID> <PPID>  14.1  0.0 11-04:49:51 /usr/libexec/trustd",
+      "  <PID> <PPID>  10.3  0.3 11-04:50:17 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer",
+      "<PID> <PPID>   8.5  0.3 07-03:12:03 codex",
+      " <PID> <PPID>   6.9  0.1 11-04:49:29 /Applications/EXO.app/Contents/Resources/exo/exo",
+      "<PID> <PPID>   6.5  0.5       02:27 /Applications/zoom.us.app/Contents/Frameworks/aomhost.app/Contents/MacOS/aomhost",
+      "<PID> <PPID>   5.1  0.4    02:41:59 $HOME/.local/share/claude/versions/2.1.323",
+      " <PID> <PPID>   4.9  0.1 02-01:19:05 codex",
+      "  <PID> <PPID>   4.5  0.1 11-04:50:10 /Library/Application Support/JAMF/Jamf.app/Contents/MacOS/JamfDaemon.app/Contents/MacOS/JamfDaemon",
+      " <PID> <PPID>   4.5  0.1 11-04:49:35 /Applications/EXO.app/Contents/MacOS/EXO",
+      "<PID> <PPID>   4.1  0.5    01:42:56 $HOME/.codex/packages/app-server-daemon/releases/0.169.0-aarch64-apple-darwin/bin/codex",
+      "<PID> <PPID>   3.1  0.4 10-21:17:16 claude",
+      "  <PID> <PPID>   3.0  0.1 11-04:49:50 /System/Applications/Utilities/Activity Monitor.app/Contents/MacOS/Activity Monitor",
+      "  <PID> <PPID>   2.9  0.0 11-04:50:18 /usr/sbin/bluetoothd",
+      " <PID> <PPID>   2.9  0.0 11-04:49:23 /Applications/EXO.app/Contents/Resources/exo/_internal/macmon",
+      "<PID> <PPID>   2.9  0.6 06-23:25:14 claude bg-spare",
+      "  <PID> <PPID>   2.7  0.0 11-04:50:08 /System/Library/DriverExtensions/AppleCentauriBeta.dext/AppleCentauriBeta"
+    ]
+  },
+  "timing_scope": "Only prefill tail command: CLI internal seconds and pipe round-trip wall seconds. Prefix priming, rewind, startup, dump IPC and validation are excluded.",
+  "limitations": [
+    "These token slices are numerical prefill-shape fixtures, not complete user messages or conversation quality tests.",
+    "Two processes remain resident; all priming and measured inference executes serially.",
+    "Each nonzero prefix is primed once per process per phase, then retained through rewind; this is not fresh-request TTFT.",
+    "Prefixes448/449 are numerical API fixtures, not canonical512-block browser prefix reuse. Both engines consume identical complete prefix IDs before tail execution.",
+    "Reference and candidate may differ in resident memory; OS activity/placement remain uncontrolled.",
+    "Separate shape intervals are unadjusted; no threshold is chosen from the fastest observed shape and no pooled/llama speed claim."
+  ],
+  "removed_environment_names": [],
+  "requested_veclib_maximum_threads": 6,
+  "source_fixture": {
+    "path": "$REPO/build/native-cpu/extended-tutorial-fixtures/context3968.json",
+    "ids": [
+      151644,
+      8948,
+      198,
+      2610,
+      525,
+      1207,
+      16948,
+      18,
+      12,
+      15,
+      13,
+      21,
+      33,
+      11,
+      264,
+      2613,
+      15235,
+      17847,
+      4303,
+      23490,
+      13,
+      21806,
+      279,
+      1196,
+      594,
+      5535,
+      3405,
+      5961,
+      13,
+      5443,
+      6788,
+      6605,
+      438,
+      2266,
+      11,
+      537,
+      438,
+      264,
+      5316,
+      311,
+      13153,
+      13,
+      1446,
+      1231,
+      12641,
+      6788,
+      30637,
+      979,
+      4588,
+      13,
+      1416,
+      498,
+      653,
+      537,
+      1414,
+      2494,
+      11,
+      1977,
+      773,
+      13,
+      151645,
+      198,
+      151644,
+      872,
+      198,
+      8706,
+      8388,
+      25,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      198,
+      12497,
+      279,
+      4004,
+      8388,
+      13,
+      9645,
+      264,
+      11682,
+      21514,
+      315,
+      518,
+      3245,
+      220,
+      21,
+      15,
+      15,
+      4244,
+      25021,
+      13940,
+      4938,
+      33394,
+      11,
+      6500,
+      5866,
+      11,
+      6500,
+      68087,
+      11,
+      323,
+      6172,
+      46444,
+      13,
+      5443,
+      5779,
+      48826,
+      42643,
+      448,
+      14175,
+      10295,
+      13,
+      18597,
+      448,
+      14311,
+      220,
+      16,
+      13,
+      151645,
+      198,
+      151644,
+      77091,
+      198,
+      151667,
+      271,
+      151668,
+      271
+    ],
+    "selection": "Tail IDs are source_ids[P:P+B], prefix IDs source_ids[:P], without token insertion."
+  },
+  "inputs": {
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$REPO/build/native-cpu/extended-tutorial-fixtures/context3968.json": "09efb528b8c9067981da834b757db999f83cab44a33960f5e32ff98863c82b9b",
+    "$REPO/build/native-cpu/build-19/qwen_cpu": "827b0694d8304282bb11186e86ef62169770a3aed409e3444f2ebdac2f4e09e6",
+    "$REPO/build/native-cpu/build-19/manifest.json": "bf06884120b0a4429b794e28b99e3c6d15743dc463124abfd7e57ed7b6b7f3b0",
+    "$REPO/build/native-cpu/prefill-query-row-pair-build/qwen_cpu": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+    "$REPO/build/native-cpu/prefill-query-row-pair-build/manifest.json": "e0954d18b281fb2652421daacc85b8247d930744d846247a359df220face8dc9",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B2-reference-logits.f32": "4382fa0332df0290e2ae735997e3b7b7faafa9e82d486d200f3143b3e38f3056",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B2-reference-hidden.f32": "29eae0f3dec0955a839a277ad53c684fa119a6fc660d3d2015aad89420822f04",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B2-candidate-logits.f32": "4382fa0332df0290e2ae735997e3b7b7faafa9e82d486d200f3143b3e38f3056",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B2-candidate-hidden.f32": "29eae0f3dec0955a839a277ad53c684fa119a6fc660d3d2015aad89420822f04",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B16-reference-logits.f32": "2e440dd4e8530b78e6ed66d57da7bd2575b50c7e6a01bd09adaa7a909169e011",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B16-reference-hidden.f32": "1ee68f296dbf8190d95c9da4925a1fa7225af6fdde3772e89dd376f077fecbde",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B16-candidate-logits.f32": "2e440dd4e8530b78e6ed66d57da7bd2575b50c7e6a01bd09adaa7a909169e011",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B16-candidate-hidden.f32": "1ee68f296dbf8190d95c9da4925a1fa7225af6fdde3772e89dd376f077fecbde",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B85-reference-logits.f32": "5af4487f95c6411a8f890d240ccad67954f82cc430c92b450a53006a95a53f4f",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B85-reference-hidden.f32": "65bfc5759e0ed4dc18654090f4c06adf4845d93e7a447ad547dc69ce958e055e",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B85-candidate-logits.f32": "5af4487f95c6411a8f890d240ccad67954f82cc430c92b450a53006a95a53f4f",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B85-candidate-hidden.f32": "65bfc5759e0ed4dc18654090f4c06adf4845d93e7a447ad547dc69ce958e055e",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B452-reference-logits.f32": "77752b739b2ae73d2a351527de1f85ad61c2edb89e58837d99dd2ed433e0e15a",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B452-reference-hidden.f32": "bb5f97786192463ace021f6445e549b743b1f5904b528330fa959466ea0bb608",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B452-candidate-logits.f32": "77752b739b2ae73d2a351527de1f85ad61c2edb89e58837d99dd2ed433e0e15a",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P0-B452-candidate-hidden.f32": "bb5f97786192463ace021f6445e549b743b1f5904b528330fa959466ea0bb608",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B2-reference-logits.f32": "f8ce6a9db873569b0089a3a679696106e15d0e18d35c06a2aafe8e9192e24ce9",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B2-reference-hidden.f32": "d09217d695a92f387750de5111c1a7eb599d86f4f7c406013d757ab4ee2e9e13",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B2-candidate-logits.f32": "f8ce6a9db873569b0089a3a679696106e15d0e18d35c06a2aafe8e9192e24ce9",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B2-candidate-hidden.f32": "d09217d695a92f387750de5111c1a7eb599d86f4f7c406013d757ab4ee2e9e13",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B16-reference-logits.f32": "79cb4183c21616012ecfbc7a02c0f1ed4d07727b71daf11230a1308d9b2d3eb0",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B16-reference-hidden.f32": "fc89af39912fdb83034bea9191a05c9ff08413ab1e17045b0040800153524dec",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B16-candidate-logits.f32": "79cb4183c21616012ecfbc7a02c0f1ed4d07727b71daf11230a1308d9b2d3eb0",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B16-candidate-hidden.f32": "fc89af39912fdb83034bea9191a05c9ff08413ab1e17045b0040800153524dec",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B64-reference-logits.f32": "c3333a0e046a55aa01d6503c303f6711ee2d64d30704665b213abe598913c7f5",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B64-reference-hidden.f32": "e5ecddb66b0a3befa46929ac9c98025f879348a49b0c2af106526e42cc91a815",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B64-candidate-logits.f32": "c3333a0e046a55aa01d6503c303f6711ee2d64d30704665b213abe598913c7f5",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B64-candidate-hidden.f32": "e5ecddb66b0a3befa46929ac9c98025f879348a49b0c2af106526e42cc91a815",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B384-reference-logits.f32": "7219b435bb3de631f6453fe941a6ab1cedd5725eb6e631004b8763f83c9ccf15",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B384-reference-hidden.f32": "d68e9b2488e05f583ca96e1146d86b21a31abe700c1b44554c2f29c7cde2d567",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B384-candidate-logits.f32": "7219b435bb3de631f6453fe941a6ab1cedd5725eb6e631004b8763f83c9ccf15",
+    "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/P3584-B384-candidate-hidden.f32": "d68e9b2488e05f583ca96e1146d86b21a31abe700c1b44554c2f29c7cde2d567"
+  },
+  "source_hashes": {
+    "$REPO/tools/benchmark_native_prefill_shapes.py": "d7cb1ab1d59820e324cfd3029be886c3575b0b5233b97b2331d14de332239f03",
+    "$REPO/tools/native_cpu_chat.py": "154729079992e9c8c0df6e43077789ea73b8f85decb0a000f40e4cc3853b5882",
+    "$REPO/tools/suffix.py": "06bd949ad8f1c4b96fa641b1bbde8a0e706519f26d4267e7e4e3342999a12ab7",
+    "$REPO/tools/benchmark_native_phase0.py": "2072dff376baf6e0476c7beddfae311483ea2a15a3af54af8622ad8bbbe17b7e",
+    "$REPO/tools/benchmark_guard.py": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7",
+    "$REPO/tools/analyze_native_phase0.py": "6e27a7964cb7475aca76f214bee152dc472bd6d8dcc4b2b75becf014a4ac89d6",
+    "$REPO/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713",
+    "$REPO/tools/benchmark_matched.py": "88627ed3b10440864d451d1d81bb72b08b62558737fe7bd968a4fb093f821fc6",
+    "$REPO/tools/chat_protocol.py": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e"
+  },
+  "builds": {
+    "reference": {
+      "completed": true,
+      "gpu": false,
+      "pytorch": false,
+      "guard": {
+        "directory": "$REPO/build/benchmark-status",
+        "metadata": {
+          "name": "Build combined contiguous-KV and bounded-time prefill candidate",
+          "started_at": "2026-11-13T16:42:09.461924+00:00"
+        }
+      },
+      "command": [
+        "/usr/bin/clang++",
+        "-std=c++20",
+        "-O3",
+        "-mcpu=native",
+        "-flto=thin",
+        "-ffp-contract=fast",
+        "-fno-math-errno",
+        "-pthread",
+        "$REPO/build/native-cpu/kv-head-major-time32-source/core.cpp",
+        "$REPO/build/native-cpu/kv-head-major-time32-source/main.cpp",
+        "-framework",
+        "Accelerate",
+        "-o",
+        "$REPO/build/native-cpu/kv-head-major-time32-build/qwen_cpu"
+      ],
+      "source_directory": "$REPO/build/native-cpu/kv-head-major-time32-source",
+      "source_sha256": {
+        "$REPO/build/native-cpu/kv-head-major-time32-source/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+        "$REPO/build/native-cpu/kv-head-major-time32-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+        "$REPO/build/native-cpu/kv-head-major-time32-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+        "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+      },
+      "removed_environment_keys": [],
+      "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+      "started_at": "2026-11-13T16:42:09Z",
+      "exit_code": 0,
+      "binary": "$REPO/build/native-cpu/build-19/qwen_cpu",
+      "binary_sha256": "827b0694d8304282bb11186e86ef62169770a3aed409e3444f2ebdac2f4e09e6",
+      "linked_libraries": "$REPO/build/native-cpu/kv-head-major-time32-build/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+      "copy_provenance": {
+        "operation": "Byte-identical copy, NOT a recompilation",
+        "original_binary": "$REPO/build/native-cpu/kv-head-major-time32-build/qwen_cpu",
+        "original_manifest": "$REPO/build/native-cpu/kv-head-major-time32-build/manifest.json",
+        "original_manifest_sha256": "23083524ca38febbe144d42826f83cc92b897fe1c2b9db931d5f81f48a38bf5d",
+        "original_binary_sha256": "827b0694d8304282bb11186e86ef62169770a3aed409e3444f2ebdac2f4e09e6",
+        "original_source_and_command_fields_preserved": true
+      }
+    },
+    "candidate": {
+      "completed": true,
+      "gpu": false,
+      "pytorch": false,
+      "guard": {
+        "directory": "$REPO/build/benchmark-status",
+        "metadata": {
+          "name": "query-row-pair-build",
+          "started_at": "2026-11-13T18:32:40.913061+00:00"
+        }
+      },
+      "command": [
+        "/usr/bin/clang++",
+        "-std=c++20",
+        "-O3",
+        "-mcpu=native",
+        "-flto=thin",
+        "-ffp-contract=fast",
+        "-fno-math-errno",
+        "-pthread",
+        "$REPO/build/native-cpu/prefill-query-row-pair-source/core.cpp",
+        "$REPO/build/native-cpu/prefill-query-row-pair-source/main.cpp",
+        "-framework",
+        "Accelerate",
+        "-o",
+        "$REPO/build/native-cpu/prefill-query-row-pair-build/qwen_cpu"
+      ],
+      "source_directory": "$REPO/build/native-cpu/prefill-query-row-pair-source",
+      "source_sha256": {
+        "$REPO/build/native-cpu/prefill-query-row-pair-source/core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+        "$REPO/build/native-cpu/prefill-query-row-pair-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+        "$REPO/build/native-cpu/prefill-query-row-pair-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+        "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+      },
+      "removed_environment_keys": [],
+      "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+      "started_at": "2026-11-13T18:32:41Z",
+      "exit_code": 0,
+      "binary": "$REPO/build/native-cpu/prefill-query-row-pair-build/qwen_cpu",
+      "binary_sha256": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+      "linked_libraries": "$REPO/build/native-cpu/prefill-query-row-pair-build/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+    }
+  },
+  "startup": {
+    "reference": {
+      "seconds": 0.39587850001407787,
+      "ready": {
+        "ready": true,
+        "protocol": 1,
+        "position": 0,
+        "decode_threads": 12,
+        "prefill_threads": 6,
+        "context": 4096,
+        "lossless_bf16_decode_cache_bytes": 0,
+        "gpu": false,
+        "pytorch": false,
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "norm_accumulator_precision": "f64",
+        "activation_precision": "f32",
+        "kv_precision": "f16",
+        "prefix_reuse": true,
+        "prefix_reuse_chunk": 512,
+        "suffix_drafting": false,
+        "verify_greedy_b2": true,
+        "max_verified_draft": 1
+      }
+    },
+    "candidate": {
+      "seconds": 0.4284315420081839,
+      "ready": {
+        "ready": true,
+        "protocol": 1,
+        "position": 0,
+        "decode_threads": 12,
+        "prefill_threads": 6,
+        "context": 4096,
+        "lossless_bf16_decode_cache_bytes": 0,
+        "gpu": false,
+        "pytorch": false,
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "norm_accumulator_precision": "f64",
+        "activation_precision": "f32",
+        "kv_precision": "f16",
+        "prefix_reuse": true,
+        "prefix_reuse_chunk": 512,
+        "suffix_drafting": false,
+        "verify_greedy_b2": true,
+        "max_verified_draft": 1
+      }
+    }
+  },
+  "all_shapes_exact_before_timing": true,
+  "bootstrap": {
+    "seed": 20261112,
+    "resamples": 10000,
+    "confidence_level": 0.95,
+    "method": "Paired-round percentile bootstrap of median reference/candidate command latency ratio"
+  },
+  "host_after": {
+    "timestamp_utc": "2026-11-13T18:35:54Z",
+    "load_average": [
+      9.19189453125,
+      7.0341796875,
+      6.20849609375
+    ],
+    "ps_command": [
+      "ps",
+      "-Ao",
+      "pid,ppid,pcpu,pmem,etime,comm"
+    ],
+    "busiest_processes": [
+      "  PID  PPID  %CPU %MEM     ELAPSED COMM",
+      "<PID> <PPID>  84.6  0.0       01:37 .venv/bin/python",
+      "<PID> <PPID>  74.7  2.6       01:36 $REPO/build/native-cpu/build-19/qwen_cpu",
+      "<PID> <PPID>  50.1 10.4 07-22:04:33 /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine",
+      "  <PID> <PPID>  32.7  0.3 11-04:51:54 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer",
+      "<PID> <PPID>  27.9  0.4 07-03:14:05 /Applications/Warp.app/Contents/MacOS/stable",
+      "  <PID> <PPID>  17.9  0.8 11-04:51:27 /Applications/zoom.us.app/Contents/MacOS/zoom.us",
+      "<PID> <PPID>  15.7  0.1 07-22:04:33 /Applications/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Frameworks/Docker Desktop Helper (Renderer).app/Contents/MacOS/Docker Desktop Helper (Renderer)",
+      "<PID> <PPID>   8.3  0.3 07-03:13:40 codex",
+      "<PID> <PPID>   8.2  0.4    02:43:36 $HOME/.local/share/claude/versions/2.1.323",
+      "<PID> <PPID>   7.8  0.6       04:04 /Applications/zoom.us.app/Contents/Frameworks/aomhost.app/Contents/MacOS/aomhost",
+      "<PID> <PPID>   7.8  0.2 02-01:31:23 $HOME/Applications/Herdr.app/Contents/MacOS/Herdr",
+      "  <PID> <PPID>   6.6  0.1 11-04:51:26 /System/Library/CoreServices/NotificationCenter.app/Contents/MacOS/NotificationCenter",
+      "<PID> <PPID>   6.1  0.4 10-21:18:53 claude",
+      "  <PID> <PPID>   5.6  0.4 11-04:51:28 /Applications/Slack.app/Contents/MacOS/Slack",
+      " <PID> <PPID>   5.1  0.1 02-01:20:42 codex",
+      "<PID> <PPID>   5.0  0.5 10-20:32:59 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.76/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)",
+      "  <PID> <PPID>   4.9  0.1 11-04:51:47 /Library/Application Support/JAMF/Jamf.app/Contents/MacOS/JamfDaemon.app/Contents/MacOS/JamfDaemon",
+      "  <PID> <PPID>   4.5  0.1 11-04:51:54 /System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow",
+      " <PID> <PPID>   4.3  0.0 11-04:51:00 /Applications/EXO.app/Contents/Resources/exo/_internal/macmon",
+      "<PID> <PPID>   3.7  0.5    01:44:33 $HOME/.codex/packages/app-server-daemon/releases/0.169.0-aarch64-apple-darwin/bin/codex"
+    ]
+  },
+  "guard_after": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "query-row-pair-original-shapes",
+      "started_at": "2026-11-13T18:34:17.071439+00:00"
+    }
+  },
+  "runtime_logs": {
+    "reference": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/reference.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "candidate": {
+      "path": "$REPO/build/native-cpu/prefill-query-row-pair-original-shapes/candidate.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefill-query-row-pair-original-shapes/report.json",
+    "source_sha256": "3ba8e7ab700edd7e7702aba46dff51e4020ce11c40ea302c3c5323c3cb6e833f",
+    "sanitization": "Repository/home paths replaced; process and host identifiers removed including ps IDs; all timing pairs retained."
+  },
+  "numerical_qualification": "Conditional arithmetic-preserving comparison to build19; inherited independent boundary63 oracle failure remains. No release qualification."
+}

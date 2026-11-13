@@ -1,0 +1,26 @@
+{
+  "prepared_only": true,
+  "built": false,
+  "diagnostic_only": true,
+  "performance_claim_eligible": false,
+  "baseline": "build19 original arithmetic",
+  "baseline_source_sha256": {
+    "$REPO/engine/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_source_sha256": {
+    "$REPO/build/native-cpu/prefill-b1-arithmetic-projection-diagnostic-source/core.cpp": "19aca5f3b9df8a52f2440fe35ed6882a539f9abdb6bf9a7d1b9e04f466cd69d1",
+    "$REPO/build/native-cpu/prefill-b1-arithmetic-projection-diagnostic-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/prefill-b1-arithmetic-projection-diagnostic-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "change": "B>1 layer matrix projections replace SGEMM with existing project_verify_range (two inputs x two output rows), preserving B1 per-output eight-lane FMA and reduction. One pool launch per projection flattens input-pair/output-row ownership, bounded per pair; odd input uses existing dot4/dot.",
+  "unchanged": "Baseline19 normalization, attention, canonical512chunk, FP16KV, B1decode, B2verification, output head. Existing F32 weight cache retained though unused by replaced projections to avoid unrelated storage change.",
+  "hypothesis": "Isolates projection arithmetic from the passing sequential-step control, which also changed attention. No prediction of oracle pass, canonical chunk identity or performance gain.",
+  "required_gates": "Root-owned fixed boundary63 oracle first, then other numerical fixtures if it passes. Do not infer baseline or sequential identity for whole model. No relaxed .01/.002 limits.",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefill-b1-arithmetic-projection-diagnostic-source/experiment.json",
+    "source_sha256": "3cb3bf5c35963df1ff2469836a3cf7938d02c13ed48091038b805b7f96805b36",
+    "sanitization": "Repository/home paths replaced; original hashes retained."
+  }
+}

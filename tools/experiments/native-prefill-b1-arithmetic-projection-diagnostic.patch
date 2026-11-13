@@ -1,0 +1,31 @@
+--- a/engine/core.cpp
++++ b/engine/core.cpp
+@@ -268,7 +268,27 @@
+     Tensor& tensor(const std::string& name){return tensors.at(name);}
+     void project(Tensor& w,const float* x,float* y,int batch,Pool& pool) {
+         if(batch>1&&!w.wide.empty()) {
+-            cblas_sgemm(CblasRowMajor,CblasNoTrans,CblasTrans,batch,w.rows,w.cols,1.0f,x,w.cols,w.wide.data(),w.cols,0.0f,y,w.rows);
++            // Diagnostic only: replace batched SGEMM with the existing
++            // B1-order verifier dots. Keep attention and all other math fixed.
++            // Each flattened item owns one output row for two input rows.
++            const size_t pairs=size_t((batch+1)/2);
++            pool.run(pairs*w.rows,[&](size_t begin,size_t end,int){
++                while(begin<end) {
++                    const size_t pair=begin/w.rows,row=begin%w.rows;
++                    const size_t segment_end=std::min(end,(pair+1)*size_t(w.rows));
++                    const size_t row_end=segment_end-pair*w.rows;
++                    const float* input=x+2*pair*w.cols;
++                    float* result=y+2*pair*w.rows;
++                    if(2*pair+1<size_t(batch)) {
++                        project_verify_range(w,input,result,row,row_end);
++                    } else {
++                        size_t i=row;
++                        for(;i+4<=row_end;i+=4)dot4(input,w.half+i*w.cols,w.cols,result+i);
++                        for(;i<row_end;++i)result[i]=dot(input,w.half+i*w.cols,w.cols);
++                    }
++                    begin=segment_end;
++                }
++            });
+         } else {
+             pool.run(size_t(batch)*w.rows,[&](size_t begin,size_t end,int){
+                 size_t i=begin;
