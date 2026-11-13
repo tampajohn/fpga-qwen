@@ -1,0 +1,33 @@
+{
+  "completed": true,
+  "selected_for_release19": true,
+  "promoted": false,
+  "performance_claim_eligible": false,
+  "decision": "Explicit orchestration selection after complete direct comparisons; not automatic threshold selection.",
+  "candidate_binary_sha256": "827b0694d8304282bb11186e86ef62169770a3aed409e3444f2ebdac2f4e09e6",
+  "candidate_manifest_sha256": "23083524ca38febbe144d42826f83cc92b897fe1c2b9db931d5f81f48a38bf5d",
+  "evidence_sha256": {
+    "build/native-cpu/kv-head-major-time32-standard-confirmation.json": "8f21199a509b9aa1a24cd701e9cf9cdbd9e66152ae80ad7983fc56201695d223",
+    "build/native-cpu/kv-head-major-time32-standard-analysis.json": "9cf454135cae01f3e9b8cd320b0d89fcb599426918b2de0c3c9690e2a1552992",
+    "build/native-cpu/kv-head-major-time32-extended-confirmation.json": "c98bf4f957ee6b4dc5eaeb947763224ff2d079d6fba28c71cea919a2534674c2",
+    "build/native-cpu/kv-head-major-time32-extended-analysis.json": "80b94d61053e10684ce7109a17b32c76711eaa1036c184256b962b5a26646e1d",
+    "build/native-cpu/kv-head-major-time32-exact-gate.json": "b24486066541982e18744a9f84f7fd3a3abc3315918edd1ef4d0b6154f4989dc",
+    "build/native-cpu/kv-head-major-time32-timeboundary-exact-gate.json": "ded291631f11ace54222a929ad08cbcbc7a125cf37a1948ead530517a46f02c7",
+    "build/native-cpu/kv-head-major-time32-verify-api/report.json": "fc0f04dce5f701d8bb1f443d4f3b299b79d2b4f474d68330c83cc128f2dd5287",
+    "build/native-cpu/kv-head-major-time32-prefix-check/report.json": "f2c277d8ae710e6bf245c40e9cfd03fe8b01478eea69caa7f6ef00048497cbad",
+    "build/native-cpu/kv-head-major-time32-suffix-trajectories.json": "a7649f598b663ddba5f0c4cc143323b9283551bea0b264292f9774a9586ef02f",
+    "build/native-cpu/kv-head-major-time32-suffix-cli/report.json": "7b3682ad293b58950cfe8fe743c150662958dc6dac96ca71f70893e2bb4a5416",
+    "build/native-cpu/kv-head-major-time32-quality.json": "f3b27ba6cd04c3efcd3bc3ad606aff9c8e4792cb41876753b09f0eef197f0e66",
+    "build/native-cpu/kv-head-major-time32-extended-quality.json": "c6b4c49f6b62ad397fe92412a3e2a67abe7a7d80fb1918a781a898607d029d50"
+  },
+  "reason": "Within the approved optimization scope: consistent long-context latency and decode benefits versus18 in completed ten-pair runs; short-context uncertainty with no established regression. Decode remains the primary priority.",
+  "limits": [
+    "All pairs/outliers retained; intervals are not multiplicity-adjusted.",
+    "No equivalence established where intervals include1.",
+    "Server restart/router initialization overlapped whole-request comparison; cause/outlier attribution unresolved.",
+    "No direct llama conclusion and no chained historical ratios.",
+    "Staging and actual isolated/live browser release gates remain separate."
+  ],
+  "host_activity_report": "reports/native-cpu-browser-build18-restart-nov13.json",
+  "fresh_direct_llama_scoreboard": "Pending; not used for this against18 decision."
+}

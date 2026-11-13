@@ -164,3 +164,5 @@ Manual evidence review binds the timed executable SHA to the68-array exact matri
 The [concurrent browser restart](../reports/native-cpu-browser-build18-restart-nov13.json) is retained as a host-activity caveat: router/tokenizer initialization overlapped the whole-request comparison, though no browser inference was requested. No samples are removed or outliers causally assigned to it. Shared-host scheduling/background work remains uncontrolled.
 
 Root selected this candidate for release19 based on the complete direct-build18 evidence. It is not promoted by this publication: source/binary staging, browser gates and release operations remain separate. A fresh direct comparison with tuned llama is pending; no multiplication of historical ratios substitutes for it.
+
+The [explicit selection record](../reports/native-cpu-kv-head-major-time32-selection.json) binds both complete confirmations/analyses and acceptance reports by SHA. It records `selected_for_release19=true` and `promoted=false`; decode is the primary priority, with long-context latency benefits and unresolved short-context uncertainty retained.
