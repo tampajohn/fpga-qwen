@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""Offline prefix gate summary; exact reuse evidence never waives absolute failures."""
+import argparse,hashlib,json
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[3]
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def signature(r):return r['prediction_ids_including_eos'],r['token_ids'],r['text'],r['finish_reason']
+def main():
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--report',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();assert not a.output.exists()
+ gate=json.loads(a.report.read_text());inventory_path=ROOT/'build/native-cpu/original-prefix-qualification-v2.json';inventory=json.loads(inventory_path.read_text())
+ out=dict(completed=False,diagnostic_gates_passed=False,absolute_numerical_passed=False,release_eligible=False,performance_claim_eligible=False,inference_run=False,source_report=str(a.report.resolve()),source_report_sha256=sha(a.report),inventory_sha256=sha(inventory_path),turns=[],limitations=['Original64/128 absolute numerical inventory has76pass/4fail; matched baseline controls preserve failures.','No timing claim; gate wall times are deliberately not summarized.','Teacher-authored histories and finite9-turn rubric do not replace broad quality/lifecycle gates.'])
+ try:
+  assert gate['completed'] is True and gate['passed'] is True and gate['mode']=='gates' and not gate.get('error')
+  assert gate['performance_claim_eligible'] is False
+  assert inventory['completed'] and inventory['passed'] is False and len(inventory['rows'])==30
+  expected_failures={(f'prefix{c}-v1',f'boundary{n}') for c in (128,64) for n in (63,64)}
+  assert {(x['candidate'],x['trajectory']) for x in inventory['rows'] if not x['absolute_passed']}==expected_failures
+  for path,digest in gate['inputs'].items():assert sha(path)==digest,path
+  configs=gate['configurations'];assert [c['chunk'] for c in configs]==[512,128,64]
+  wanted=['build-19','prefix128-v1-build','prefix64-v1-build']
+  for c,w in zip(configs,wanted):assert Path(c['binary']).resolve()==(ROOT/'build/native-cpu'/w/'qwen_cpu').resolve()
+  assert len(gate['visits'])==9
+  visits={(v['configuration'],v['scenario']):v for v in gate['visits']};assert len(visits)==9
+  baseline={};rubric={}
+  for c in configs:
+   score=0;reused=0
+   for fixture in gate['fixtures']:
+    v=visits[(c['name'],fixture['name'])];assert len(v['fresh'])==len(v['cached'])==3
+    for i,(fresh,cached) in enumerate(zip(v['fresh'],v['cached'])):
+     assert signature(fresh)==signature(cached)
+     assert fresh['metrics']['reused_prefix_tokens']==0
+     for arm in (fresh,cached):
+      assert arm['metrics']['evaluated_prompt_tokens']+arm['metrics']['reused_prefix_tokens']==len(fixture['turns'][i]['prompt_ids'])
+      assert len(arm['predictions'])==len(arm['prediction_ids_including_eos'])
+      for d in arm['predictions']:assert sha(d['path'])==d['sha256']
+     assert [(d['token'],d['position'],d['sha256']) for d in fresh['predictions']]==[(d['token'],d['position'],d['sha256']) for d in cached['predictions']]
+     key=(fixture['name'],i)
+     if c['chunk']==512:baseline[key]=signature(fresh)
+     else:assert signature(fresh)==baseline[key]
+     score+=bool(fresh['strict_rubric_passed']);reused+=cached['metrics']['reused_prefix_tokens']
+     out['turns'].append(dict(configuration=c['name'],chunk=c['chunk'],scenario=fixture['name'],turn=i,prompt_tokens=len(fixture['turns'][i]['prompt_ids']),reused_tokens=cached['metrics']['reused_prefix_tokens'],evaluated_tokens=cached['metrics']['evaluated_prompt_tokens'],prediction_count_including_eos=len(fresh['predictions']),token_ids=fresh['token_ids'],text=fresh['text'],finish_reason=fresh['finish_reason'],strict_rubric_passed=fresh['strict_rubric_passed'],cached_fresh_full_logit_equal=True,crossvariant_stream_equal=True))
+   rubric[c['name']]=dict(passed=score,total=9,reused_tokens_across_turns=reused)
+  assert {k:{'passed':v['passed'],'total':v['total']} for k,v in rubric.items()}==gate['strict_rubric_scores']
+  out.update(completed=True,diagnostic_gates_passed=True,configurations=configs,summary=rubric,compared_turns=27,request_visits=54)
+ except BaseException as e:out['error']=dict(type=type(e).__name__,message=str(e));raise
+ finally:a.output.write_text(json.dumps(out,indent=2)+'\n')
+ print(a.output)
+if __name__=='__main__':main()

@@ -1,0 +1,5 @@
+[
+  {"name":"canonical512-build19","chunk":512,"binary":"build/native-cpu/build-19/qwen_cpu"},
+  {"name":"canonical128-v1","chunk":128,"binary":"build/native-cpu/prefix128-v1-build/qwen_cpu"},
+  {"name":"canonical64-v1","chunk":64,"binary":"build/native-cpu/prefix64-v1-build/qwen_cpu"}
+]

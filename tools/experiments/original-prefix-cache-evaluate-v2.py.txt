@@ -1,0 +1,189 @@
+#!/usr/bin/env python3
+"""Isolated real-chat canonical granularity gates/paired diagnostic; root serializes execution."""
+import argparse,dataclasses,hashlib,json,os,re,sys,threading,time,types
+from pathlib import Path
+import numpy as np
+ROOT=Path(__file__).resolve().parents[3]
+sys.path.insert(0,str(ROOT/'tools'))
+from benchmark_native_phase0 import guard,sha
+from chat_protocol import ChatProtocol
+from experiment import locate_model
+
+
+def histories():
+    inventory='\n'.join(f'Inventory record {i}: blue folders are stored beside the oak desk.' for i in range(96))
+    notes='\n'.join(f'Reading note {i}: the archive lists maps and letters on separate shelves.' for i in range(160))
+    return [dict(name='short_correction',turns=[
+        ('The parcel goes to Bristol. Which city? Reply only with the city.','Bristol','Bristol'),
+        ('Correction: it goes to York instead. Which city now? Reply only with the city.','York','York'),
+        ('New question: what is 6 plus 7? Reply only with the number.','13','13')]),
+        dict(name='long_inventory',turns=[
+        (inventory+'\nThe requested quantity is 11. What quantity is requested? Reply only with the number.','11','11'),
+        ('Correction: the requested quantity is 14. What is the quantity now? Reply only with the number.','14','14'),
+        ('Quote your preceding reply exactly, with no explanation.','14','14')]),
+        dict(name='longer_reading',turns=[
+        (notes+'\nThe editor is Hana. Who is the editor? Reply only with the name.','Hana','Hana'),
+        ('Now calculate 9 minus 4. Reply only with the number.','5','5'),
+        ('Correction to the earlier editor detail: Eli is the editor. Who is the editor? Reply only with the name.','Eli','Eli')])]
+
+
+def adapter(chunk,out):
+    assert chunk in (64,128,512)
+    path=ROOT/'tools/native_cpu_chat.py';source=path.read_text()
+    # Exact isolated substitution: no production adapter file is mutated.
+    assert 'self.ready[\'prefix_reuse_chunk\'] == 512' in source
+    assert '// 512) * 512' in source and 'native_f16_prefill512_v1' in source
+    source=source.replace('512',str(chunk))
+    copied=out/f'adapter-{chunk}.py';copied.write_text(source)
+    module=types.ModuleType(f'isolated_prefix_{chunk}');module.__file__=str(path)
+    exec(compile(source,str(copied),'exec'),module.__dict__)
+    class Observed(module.NativeCPUChat):
+        def command(self,command,cancel,*args,**kwargs):
+            result=super().command(command,cancel,*args,**kwargs)
+            if command.startswith(('prefill ','step ')):
+                self.issued_prediction_ids.append(result['token'])
+            if command.startswith(('prefill ','step ')) and getattr(self,'capture',None) is not None:
+                dump=self.capture/f'prediction-{len(self.predictions)}.f32'
+                ack=super().command('dump '+str(dump),cancel)
+                assert ack.get('ok') is True and ack['count']==151936 and ack['position']==result['position']
+                assert dump.stat().st_size==151936*4 and np.isfinite(np.fromfile(dump,dtype='<f4')).all()
+                self.predictions.append(dict(token=result['token'],position=result['position'],path=str(dump),sha256=sha(dump)))
+            return result
+    return Observed,copied
+
+
+def signature(row):return row['prediction_ids_including_eos'],row['token_ids'],row['text'],row['finish_reason']
+def grade(text,expected):return re.sub(r'[\s.!]+$','',text.strip()).casefold()==expected.casefold()
+def bootstrap(values,seed):
+    a=np.asarray(values,dtype=np.float64);rng=np.random.default_rng(seed)
+    draws=np.median(a[rng.integers(0,len(a),size=(10000,len(a)))],axis=1)
+    return dict(raw_ratios=list(map(float,a)),median=float(np.median(a)),ci95=list(map(float,np.quantile(draws,[.025,.975]))))
+
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--configs',type=Path,required=True);p.add_argument('--directory',type=Path,required=True)
+    p.add_argument('--mode',choices=['gates','confirmation'],required=True);p.add_argument('--gate-report',type=Path)
+    p.add_argument('--weights',type=Path,default=ROOT/'build/native-cpu/weights.bin');p.add_argument('--checkpoint',type=Path)
+    p.add_argument('--guard-state-dir',type=Path,default=ROOT/'build/benchmark-status');a=p.parse_args()
+    guard(a.guard_state_dir);out=a.directory.resolve();out.mkdir(exist_ok=False)
+    report=dict(completed=False,passed=False,gpu=False,pytorch=False,performance_claim_eligible=False,mode=a.mode,visits=[],comparisons=[],limitations=['Teacher-authored assistant history, not autonomous generated-history conversations.','Finite predetermined rubric, no accuracy gain inferred from baseline agreement.','Cross-chunk SGEMM numerics require separate independent oracle and frozen9+18 quality gates.','No hard pinning; shared-host activity uncontrolled.','Within-binary cached/fresh full-logit equality required before timing; cross-binary IDs/text/EOS separate.','Original64/128 absolute oracle inventory remains failed at prompts63/64, inherited from baseline19; this diagnostic cannot waive those failures.'])
+    def save():(out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
+    original_env=dict(os.environ)
+    removed=[key for key in os.environ if key.startswith(('DYLD_','GGML_','LLAMA_ARG_')) or key=='VECLIB_MAXIMUM_THREADS']
+    for key in removed:os.environ.pop(key)
+    report['removed_environment_names']=sorted(removed)
+    try:
+        configs=json.loads(a.configs.read_text());assert len(configs)==3 and [c['chunk'] for c in configs]==[512,128,64]
+        assert len({c['name'] for c in configs})==3
+        model=locate_model(a.checkpoint);protocol=ChatProtocol(model);weights=a.weights.resolve()
+        paths=[a.configs.resolve(),weights,Path(str(weights)+'.index'),Path(str(weights)+'.manifest.json'),Path(__file__).resolve(),ROOT/'tools/native_cpu_chat.py',ROOT/'tools/chat_protocol.py',ROOT/'tools/benchmark_native_phase0.py',ROOT/'tools/experiment.py',ROOT/'tools/suffix.py',ROOT/'tools/benchmark_guard.py']+[model/n for n in ('tokenizer.json','tokenizer_config.json','config.json','model.safetensors')]
+        classes={}
+        for c in configs:
+            c['binary']=str(Path(c['binary']).resolve());b=Path(c['binary']);m=json.loads((b.parent/'manifest.json').read_text())
+            assert m['completed'] is True and m['binary_sha256']==sha(b)
+            paths += [b,b.parent/'manifest.json']
+            for source,digest in m['source_sha256'].items():
+                assert sha(Path(source))==digest
+                paths.append(Path(source))
+            classes[c['name']],copy=adapter(c['chunk'],out);paths.append(copy)
+        pack=json.loads(Path(str(weights)+'.manifest.json').read_text())
+        assert pack['completed'] is True and pack['binary']['sha256']==sha(weights) and pack['index']['sha256']==sha(Path(str(weights)+'.index'))
+        report['configurations']=configs;report['inputs']={str(path):sha(path) for path in paths}
+        fixtures=[]
+        for scenario in histories():
+            messages=[];turns=[]
+            for i,(user,teacher,expected) in enumerate(scenario['turns']):
+                messages.append(dict(role='user',content=user))
+                payload=dict(session=scenario['name'],messages=list(messages),max_new_tokens=32,max_draft=0,decoding='greedy')
+                request=protocol.prepare(payload);assert len(request.ids)+32<=4096
+                turns.append(dict(payload=payload,prompt_ids=request.ids,expected=expected))
+                messages.append(dict(role='assistant',content=teacher))
+            fixtures.append(dict(name=scenario['name'],turns=turns))
+        report['fixtures']=fixtures;report['fixture_sha256']=hashlib.sha256(json.dumps(fixtures,sort_keys=True).encode()).hexdigest();save()
+        def visit(c,cached,scenario,label,dumps=False,row_sink=None):
+            guard(a.guard_state_dir)
+            engine=classes[c['name']](protocol,binary=Path(c['binary']),weights=weights,threads=12,prefill_threads=6,reuse_prefix=cached)
+            rows=[] if row_sink is None else row_sink
+            try:
+                engine.start(threading.Event());assert engine.ready['prefix_reuse_chunk']==c['chunk'] and engine.prefix_reuse_supported()
+                for index,turn in enumerate(scenario['turns']):
+                    request=protocol.prepare(turn['payload']);assert request.ids==turn['prompt_ids']
+                    engine.capture=None;engine.predictions=[];engine.issued_prediction_ids=[]
+                    if dumps:
+                        engine.capture=out/f'{label}-turn{index}';engine.capture.mkdir()
+                    start=time.perf_counter();events=list(engine.stream(request,threading.Event()));wall=time.perf_counter()-start
+                    assert events and events[-1]['type']=='done';done=events[-1]
+                    assert done['finish_reason'] in ('eos','length')
+                    metrics=done['metrics'];assert metrics['evaluated_prompt_tokens']+metrics['reused_prefix_tokens']==len(request.ids)
+                    if not cached:assert metrics['reused_prefix_tokens']==0
+                    row=dict(prediction_ids_including_eos=list(engine.issued_prediction_ids),token_ids=done['token_ids'],text=done['text'],finish_reason=done['finish_reason'],metrics=metrics,wall_seconds=wall,strict_rubric_passed=grade(done['text'],turn['expected']),predictions=engine.predictions)
+                    rows.append(row)
+                    if row_sink is not None:save()
+                return rows
+            finally:engine.close()
+        expected={}
+        if a.mode=='gates':
+            baseline=None
+            for c in configs:
+                expected[c['name']]={}
+                for scenario in fixtures:
+                    pair={False:[],True:[]}
+                    evidence=dict(configuration=c['name'],scenario=scenario['name'],fresh=pair[False],cached=pair[True],completed=False)
+                    report['visits'].append(evidence);save()
+                    for cached in (False,True):
+                        label=f"gate-{c['name']}-{scenario['name']}-{'cached' if cached else 'fresh'}"
+                        visit(c,cached,scenario,label,True,row_sink=pair[cached]);save()
+                    assert [signature(r) for r in pair[False]]==[signature(r) for r in pair[True]],'Cached/fresh trajectory changed'
+                    for fresh,cached in zip(pair[False],pair[True]):
+                        assert [(p['token'],p['position'],p['sha256']) for p in fresh['predictions']]==[(p['token'],p['position'],p['sha256']) for p in cached['predictions']],'Cached full logits changed'
+                    expected[c['name']][scenario['name']]=pair[False]
+                    evidence['completed']=True;save()
+                if baseline is None:baseline=expected[c['name']]
+                else:
+                    for scenario in fixtures:assert [signature(r) for r in expected[c['name']][scenario['name']]]==[signature(r) for r in baseline[scenario['name']]],'Cross-granularity output IDs/text/EOS changed'
+            report['expected']=expected
+            report['strict_rubric_scores']={name:dict(passed=sum(r['strict_rubric_passed'] for rows in scenarios.values() for r in rows),total=9) for name,scenarios in expected.items()}
+            report['quality_scope']='Predetermined9 fixture turns; exact baseline agreement does not turn failed rubrics into passes.'
+        else:
+            assert a.gate_report is not None
+            gate=json.loads(a.gate_report.read_text());assert gate['completed'] is True and gate['passed'] is True and gate['mode']=='gates'
+            assert gate['configurations']==configs and gate['fixture_sha256']==report['fixture_sha256']
+            for path,digest in gate['inputs'].items():assert sha(Path(path))==digest
+            expected=gate['expected'];report['gate_report_sha256']=sha(a.gate_report)
+            # Three within-config cached/fresh comparisons and two finer-vs512 cached comparisons.
+            comparisons=[(dict(config=c,cached=False),dict(config=c,cached=True),f"{c['name']}-cache") for c in configs]
+            comparisons += [(dict(config=configs[0],cached=True),dict(config=c,cached=True),f"{c['name']}-versus512") for c in configs[1:]]
+            for left,right,name in comparisons:
+                for scenario in fixtures:
+                    pairs=[]
+                    summary=dict(name=name,scenario=scenario['name'],completed=False,pairs=pairs,warmups=[],turns=[])
+                    report['comparisons'].append(summary);save()
+                    for repeat in range(-1,10):
+                        results={};order=['left','right'] if repeat%2==0 else ['right','left']
+                        pair=dict(round=repeat,order=order,results=results,completed=False)
+                        (pairs if repeat>=0 else summary['warmups']).append(pair);save()
+                        for side in order:
+                            arm=left if side=='left' else right;c=arm['config']
+                            rows=visit(c,arm['cached'],scenario,f'{name}-{scenario["name"]}-{repeat}-{side}')
+                            assert [signature(r) for r in rows]==[signature(r) for r in expected[c['name']][scenario['name']]],'Scored trajectory changed'
+                            results[side]=rows;save()
+                        pair['completed']=True;save()
+                    assert len(pairs)==10 and all(p['completed'] for p in pairs)
+                    summary['whole_sequence']=bootstrap([sum(r['wall_seconds'] for r in p['results']['left'])/sum(r['wall_seconds'] for r in p['results']['right']) for p in pairs],20261113)
+                    for i in range(3):
+                        summary['turns'].append(dict(turn=i,request=bootstrap([p['results']['left'][i]['wall_seconds']/p['results']['right'][i]['wall_seconds'] for p in pairs],20261113+i),ttft=bootstrap([p['results']['left'][i]['metrics']['first_token_ms']/p['results']['right'][i]['metrics']['first_token_ms'] for p in pairs],20261123+i)))
+                    summary['completed']=True;save()
+        for visit_row in report['visits']:
+            for arm in ('fresh','cached'):
+                for turn in visit_row[arm]:
+                    for prediction in turn['predictions']:
+                        assert sha(Path(prediction['path']))==prediction['sha256'],'Recorded prediction changed'
+        assert all(sha(Path(path))==digest for path,digest in report['inputs'].items())
+        report.update(completed=True,passed=True)
+    except BaseException as error:
+        report['error']=dict(type=type(error).__name__,message=str(error));raise
+    finally:
+        os.environ.clear();os.environ.update(original_env)
+        save()
+if __name__=='__main__':main()

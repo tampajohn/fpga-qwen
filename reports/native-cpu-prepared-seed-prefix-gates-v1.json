@@ -1,0 +1,50 @@
+{
+  "prepared_only": true,
+  "syntax_checked": true,
+  "executed": false,
+  "completed_gate": false,
+  "passed": null,
+  "performance_claim_eligible": false,
+  "absolute_numerical_qualified": false,
+  "release_eligible": false,
+  "source_records": [
+    {
+      "original_path": "build/native-cpu/check-seeded-stream-regression-v1.py",
+      "archive_path": "tools/experiments/check-seeded-stream-regression-v1.py.txt",
+      "sha256": "d1a59bcb04d03936677d4dfa7bfe0f48281b642c8ab34e3b857f358298651a43",
+      "byte_identical": true
+    },
+    {
+      "original_path": "build/native-cpu/prefix-granularity-eval/evaluate.py",
+      "archive_path": "tools/experiments/original-prefix-cache-evaluate-v2.py.txt",
+      "sha256": "86408be08ef101865d72457841dcd587e9a115de97a6c6ab76f87a662e3747a4",
+      "byte_identical": true
+    },
+    {
+      "original_path": "build/native-cpu/prefix-granularity-eval/analyze-gates.py",
+      "archive_path": "tools/experiments/original-prefix-cache-analyze-gates-v1.py.txt",
+      "sha256": "2c7811756e150d31712bb97c9861d62d8ad8c210e732d879219a48e79342bcb8",
+      "byte_identical": true
+    },
+    {
+      "original_path": "build/native-cpu/prefix-granularity-eval/configs.json",
+      "archive_path": "tools/experiments/original-prefix-cache-configs-v1.json",
+      "sha256": "34c91af96e4801f6636d27264e0537971fe495c55aff36ae2539b2ea0be05c7b",
+      "byte_identical": true
+    }
+  ],
+  "independent_review": {
+    "reviewer": "dispatch_validation",
+    "scope": "Seed stream arguments/provenance and original prefix gate/analyzer hardening; read-only, no inference.",
+    "result": "No blocker for seeded stream regression or diagnostic prefix gates/analyzer. Original prefix confirmation timing is not eligible under current numerical evidence."
+  },
+  "unchanged_shared_helpers": true,
+  "known_limits": "Original prefix80-position inventory remains76pass/4fail inherited on baseline19 controls; no threshold waiver.",
+  "restore_instructions": "Restore each text snapshot to original_path under the repository; relative root resolution assumes that depth. configs use repository-relative binaries, run from repo root. Use fresh output directories.",
+  "allowed_modes": [
+    "seeded stream regression",
+    "original prefix mode=gates",
+    "offline gate analyzer"
+  ],
+  "unmet_numerical_prerequisite": "Original prefix confirmation mode and reported speed require independent absolute qualification; arithmetic-changing64/128 variants currently fail that prerequisite."
+}

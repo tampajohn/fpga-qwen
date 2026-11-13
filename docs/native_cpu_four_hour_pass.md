@@ -499,3 +499,47 @@ library defect, a general cause of network error or equivalence for every chunk.
 Broader fixed-oracle testing remains pending, beginning with2048/3968. No numerical
 limit changed. This diagnostic is not claimed faster or promoted, and its result
 does not erase the original build19 failure or qualify unrelated optimizations.
+
+
+## Prepared regression and prefix-diagnostic runners
+
+The [prepared-only source manifest](../reports/native-cpu-prepared-seed-prefix-gates-v1.json)
+archives the seeded-stream checker, hardened original-prefix evaluator, offline
+analyzer and three-config selection. Each snapshot is byte-identical to its
+local source and has passed syntax checking and independent read-only review.
+**No execution result is asserted by this archive.** Restore snapshots to the
+manifest's original paths before running, since repository-root resolution
+assumes their original directory depth; use fresh output directories.
+
+For the final selected arithmetic-preserving executable, the seeded check runs
+three contexts × two seeds × two repeats × baseline/candidate. It requests 20
+output tokens, respects EOS, requires at least two full 20-token contexts per
+seed, and compares full logits, IDs and termination. It freezes sources,
+executables, pack and fixtures, then rechecks inputs and generated dump hashes.
+Run from the repository root, replacing `CANDIDATE_BINARY` with the selected path:
+
+```sh
+.venv/bin/python tools/benchmark_guard.py --name 'Selected candidate seeded streams' -- .venv/bin/python build/native-cpu/check-seeded-stream-regression-v1.py --candidate CANDIDATE_BINARY --directory build/native-cpu/selected-seeded-streams-v1
+```
+
+Original 512/128/64 prefix **diagnostic gates** perform 54 requests across 18 process
+visits. They compare cached/fresh full logits including EOS, cross-variant
+IDs/text/termination, reuse counts and a fixed 9-turn rubric. Completed turns
+and arms survive a later failure; helpers, build sources and generated dumps
+are hash-bound. These are reuse/regression observations, not absolute numerical
+qualification. The offline summary deliberately excludes elapsed-time and
+throughput fields and retains `absolute_numerical_passed=false` and
+`release_eligible=false`.
+
+```sh
+.venv/bin/python tools/benchmark_guard.py --name 'Original prefix cache diagnostic gates' -- .venv/bin/python build/native-cpu/prefix-granularity-eval/evaluate.py --configs build/native-cpu/prefix-granularity-eval/configs.json --mode gates --directory build/native-cpu/original-prefix-cache-gates-v1
+.venv/bin/python build/native-cpu/prefix-granularity-eval/analyze-gates.py --report build/native-cpu/original-prefix-cache-gates-v1/report.json --output build/native-cpu/original-prefix-cache-gates-v1-summary.json
+```
+
+The evaluator retains its generic confirmation mode, but timing confirmation
+and reported speed for the arithmetic-changing 64/128 candidates are **not
+eligible under current numerical evidence**. The approved CPU-engine brief
+requires their fixed absolute gates before reported timing; inherited failures
+do not satisfy that prerequisite. This archive provides no confirmation-timing
+command or performance claim. The separate arithmetic-preserving release policy
+above does not extend to these candidates.
