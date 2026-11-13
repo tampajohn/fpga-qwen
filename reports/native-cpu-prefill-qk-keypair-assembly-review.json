@@ -1,0 +1,51 @@
+{
+  "diagnostic_only": true,
+  "scope": "Static inspection of the compiled paired-key QK inner channel loop, not runtime profiling or speed evidence.",
+  "inputs": {
+    "build/native-cpu/prefill-qk-keypair-assembly/disassembly.txt": "8f70766e661f1cf1dad282a08d8165ca09ff01df8992fb9352dcbb2f156bb381",
+    "build/native-cpu/prefill-qk-keypair-assembly/symbols.txt": "5fec64b0d402011c0b23cda78546644b07a76bef9ae4dc7eea4db8b1cb56bc08",
+    "build/native-cpu/prefill-qk-keypair-build/qwen_cpu": "c4be7b8e792a1dcf377364c1d8c90c0d85c5b655ebd0c1848064346cb3b03885",
+    "build/native-cpu/prefill-qk-keypair-source/core.cpp": "1bd483ba8a572e9b1298cfbff00d050dc628e80b71a6a2956806ba54a823a9a8"
+  },
+  "address_range": [
+    "0x10000bb04",
+    "0x10000bb50"
+  ],
+  "observations": {
+    "query_vector_loads_per_iteration": 4,
+    "half_key_vector_loads_per_iteration": 2,
+    "half_to_float_vector_conversions": 4,
+    "independent_vector_fma_accumulators": 8,
+    "fmla_instructions": 8,
+    "inner_loop_stores": 0,
+    "inner_loop_stack_references": 0,
+    "inner_loop_calls": 0
+  },
+  "instruction_excerpt": [
+    "10000bb04: ad404c32    \tldp\tq18, q19, [x1]",
+    "10000bb08: ad505434    \tldp\tq20, q21, [x1, #0x200]",
+    "10000bb0c: 3cd00016    \tldur\tq22, [x0, #-0x100]",
+    "10000bb10: 3cc10417    \tldr\tq23, [x0], #0x10",
+    "10000bb14: 0e217ad8    \tfcvtl\tv24.4s, v22.4h",
+    "10000bb18: 4e217ad6    \tfcvtl2\tv22.4s, v22.8h",
+    "10000bb1c: 0e217af9    \tfcvtl\tv25.4s, v23.4h",
+    "10000bb20: 4e217af7    \tfcvtl2\tv23.4s, v23.8h",
+    "10000bb24: 4e32cf02    \tfmla.4s\tv2, v24, v18",
+    "10000bb28: 4e33cec7    \tfmla.4s\tv7, v22, v19",
+    "10000bb2c: 4e34cf10    \tfmla.4s\tv16, v24, v20",
+    "10000bb30: 4e35ced1    \tfmla.4s\tv17, v22, v21",
+    "10000bb34: 4e32cf25    \tfmla.4s\tv5, v25, v18",
+    "10000bb38: 4e33cee6    \tfmla.4s\tv6, v23, v19",
+    "10000bb3c: 4e34cf23    \tfmla.4s\tv3, v25, v20",
+    "10000bb40: 4e35cee4    \tfmla.4s\tv4, v23, v21",
+    "10000bb44: 91002231    \tadd\tx17, x17, #0x8",
+    "10000bb48: 91008021    \tadd\tx1, x1, #0x20",
+    "10000bb4c: f101e23f    \tcmp\tx17, #0x78",
+    "10000bb50: 54fffda3    \tb.lo\t0x10000bb04"
+  ],
+  "limits": [
+    "Surrounding attention function stores pointers/state on the stack; no whole-function spill-free claim.",
+    "No measured load-traffic reduction against a compiled baseline or runtime speed claim.",
+    "68-array identity to build19 does not resolve baseline19 independent 63-token NumPy failure."
+  ]
+}

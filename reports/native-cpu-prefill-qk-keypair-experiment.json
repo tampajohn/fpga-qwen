@@ -1,0 +1,26 @@
+{
+  "diagnostic_only": true,
+  "promotion_allowed": false,
+  "build_run": false,
+  "inference_run": false,
+  "baseline": "build-19",
+  "change": "Ordinary B>1 QK: two causal key rows share query loads, eight independent FP32 vector accumulators; odd tail uses original helper.",
+  "unchanged": "Per-output increasing-j FMA order/two accumulators/final reduction, causal time max order, FP16 KV, PV time32, softmax lengths/sums, FP64 norm, B1/B2.",
+  "hypothesis": "Fewer query loads and more independent instruction chains; compiler may already optimize query loads. No claimed speed.",
+  "verification": "68 full-logit arrays, odd/even causal lengths, full B2 and prefix/lifecycle; assembly review then held-out paired shapes and whole requests. Root owns builds/runs.",
+  "source_sha256": {
+    "$REPO/engine/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_sha256": {
+    "$REPO/build/native-cpu/prefill-qk-keypair-source/core.cpp": "1bd483ba8a572e9b1298cfbff00d050dc628e80b71a6a2956806ba54a823a9a8",
+    "$REPO/build/native-cpu/prefill-qk-keypair-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/prefill-qk-keypair-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefill-qk-keypair-source/experiment.json",
+    "source_sha256": "c85a15a1e848e64e6a8db704d8c7b85a16c5ce6b0668df554b1788e481209d18",
+    "sanitization": "Repository/home paths replaced; process and host identifiers removed. Original evidence hashes preserved."
+  }
+}

@@ -84,3 +84,35 @@ investigation proceeds. No tolerance change, candidate promotion or broad gate
 pass is claimed. Remaining boundary-suite outputs are not aggregated or published
 as complete. The prior 28-position baseline evidence remains valid within its
 own fixtures; this newly tested prompt extends coverage and reveals its limit.
+
+## Isolated QK key-pair candidate: exactness only, performance held
+
+The [original source patch](../tools/experiments/native-prefill-qk-keypair.patch)
+processes two causal key rows together for the existing pair of query heads in
+ordinary batched prefill. Each of the four dot products keeps its own two FP32
+vector accumulators, ascending channel FMA order and final reduction. Query
+loads are shared; odd causal tails retain the original helper. B1 decode, B2
+verification, softmax, PV reduction and normalization are unchanged. See
+[source metadata](../reports/native-cpu-prefill-qk-keypair-experiment.json) and
+[executed build manifest](../reports/native-cpu-prefill-qk-keypair-manifest.json).
+The metadata's unexecuted flags describe source preparation, not the subsequent
+completed build and checks.
+
+The [56-array repeated trajectory gate](../reports/native-cpu-prefill-qk-keypair-exact-gate.json)
+and [12-array causal-boundary gate](../reports/native-cpu-prefill-qk-keypair-timeboundary-exact-gate.json)
+passed with full-logit byte identity against the prior combined candidate whose
+executable is byte-identical to released build19. These cover the existing tiny,
+85/452, 511/512/513, 1024/2048/3968 trajectories and causal lengths
+31/32/33/63/64/65. This is fixture-scoped equivalence, **not an independent NumPy
+pass**: the newly discovered baseline19 63-token numerical failure above remains
+unresolved. Identical causal lengths do not imply identical prompt fixtures.
+
+[Static assembly inspection](../reports/native-cpu-prefill-qk-keypair-assembly-review.json)
+confirms the intended inner channel loop: four FP32 query-vector loads, two
+FP16 key-vector loads, four widening conversions and eight independent vector
+FMAs per iteration. That loop has no stores, stack references or calls. The
+surrounding function does store pointer/state values on the stack, so this is
+not a whole-function spill-free claim. It establishes neither a measured load
+traffic reduction against baseline nor a performance gain. Timing and promotion
+remain held while the independent numerical gap is investigated; live build19
+is unchanged.

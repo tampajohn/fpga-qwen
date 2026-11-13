@@ -1,0 +1,50 @@
+--- a/engine/core.cpp
++++ b/engine/core.cpp
+@@ -157,6 +157,26 @@
+     }
+     out0=vaddvq_f32(vaddq_f32(a0,b0));out1=vaddvq_f32(vaddq_f32(a1,b1));
+ }
++// Two causal K rows share query loads. Every head/key output keeps its
++// original two accumulators, increasing-j FMA order and final reduction.
++void dot_query_key_pair(const float* q0,const float* q1,const Half* k0,const Half* k1,
++                        float& s00,float& s10,float& s01,float& s11) {
++    float32x4_t a00=vdupq_n_f32(0),b00=a00,a10=a00,b10=a00;
++    float32x4_t a01=a00,b01=a00,a11=a00,b11=a00;
++    for(int j=0;j<D;j+=8) {
++        const float32x4_t q0l=vld1q_f32(q0+j),q0h=vld1q_f32(q0+j+4);
++        const float32x4_t q1l=vld1q_f32(q1+j),q1h=vld1q_f32(q1+j+4);
++        const float16x8_t p0=vld1q_f16(k0+j),p1=vld1q_f16(k1+j);
++        const float32x4_t k0l=vcvt_f32_f16(vget_low_f16(p0)),k0h=vcvt_f32_f16(vget_high_f16(p0));
++        const float32x4_t k1l=vcvt_f32_f16(vget_low_f16(p1)),k1h=vcvt_f32_f16(vget_high_f16(p1));
++        a00=vfmaq_f32(a00,q0l,k0l);b00=vfmaq_f32(b00,q0h,k0h);
++        a10=vfmaq_f32(a10,q1l,k0l);b10=vfmaq_f32(b10,q1h,k0h);
++        a01=vfmaq_f32(a01,q0l,k1l);b01=vfmaq_f32(b01,q0h,k1h);
++        a11=vfmaq_f32(a11,q1l,k1l);b11=vfmaq_f32(b11,q1h,k1h);
++    }
++    s00=vaddvq_f32(vaddq_f32(a00,b00));s10=vaddvq_f32(vaddq_f32(a10,b10));
++    s01=vaddvq_f32(vaddq_f32(a01,b01));s11=vaddvq_f32(vaddq_f32(a11,b11));
++}
+ // Original B2 verifier tiles: share weight loads/conversion, never combine
+ // accumulators between positions. Each output retains B1's exact FMA sequence.
+ void dot_verify_pair(const float* x0,const float* x1,const Half* w,int n,float& y0,float& y1) {
+@@ -394,7 +414,19 @@
+                         const size_t head0=size_t(b)*Q+2*kh;
+                         const float* query0=q.data()+head0*D;const float* query1=query0+D;
+                         float maximum0=-std::numeric_limits<float>::infinity(),maximum1=maximum0;
+-                        for(int t=0;t<n;++t) {
++                        int t=0;
++                        for(;t+1<n;t+=2) {
++                            float score00,score10,score01,score11;
++                            dot_query_key_pair(query0,query1,keys.data()+cache_offset(layer,t,kh),
++                                keys.data()+cache_offset(layer,t+1,kh),score00,score10,score01,score11);
++                            score00*=1.0f/std::sqrt(float(D));score10*=1.0f/std::sqrt(float(D));
++                            scores0[t]=score00;scores1[t]=score10;
++                            maximum0=std::max(maximum0,score00);maximum1=std::max(maximum1,score10);
++                            score01*=1.0f/std::sqrt(float(D));score11*=1.0f/std::sqrt(float(D));
++                            scores0[t+1]=score01;scores1[t+1]=score11;
++                            maximum0=std::max(maximum0,score01);maximum1=std::max(maximum1,score11);
++                        }
++                        for(;t<n;++t) {
+                             float score0,score1;
+                             dot_query_pair(query0,query1,keys.data()+cache_offset(layer,t,kh),score0,score1);
+                             score0*=1.0f/std::sqrt(float(D));score1*=1.0f/std::sqrt(float(D));
