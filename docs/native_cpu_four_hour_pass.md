@@ -14,7 +14,7 @@ chunk candidates. That absolute numerical gap remains unresolved.
 
 | Workstream | Current evidence and disposition |
 |---|---|
-| Original 64/128 canonical chunks | Near-4K checks pass; both inherit the identical 63 failure. Remaining numerical inventory and cached/fresh qualification are pending. Smaller compute batches still require their own evidence. |
+| Original 64/128 canonical chunks | Completed 80-position inventory fails four comparisons: prompts 63 and 64 in both variants. Matched baseline19 controls have identical full vectors on both failed trajectories. Old 28 positions pass per variant; cached/fresh qualification remains pending. Absolute failures remain unresolved. |
 | Direct norm/QK division | Short boundaries pass, but 512/128/64 each independently fail the 2048 absolute gate. Rejected; no performance qualification. |
 | Split-K128 projections | Both 63/64 positions fail unchanged limits. Rejected before broader gates or timing. |
 | Original-arithmetic QK key pairing | 68 repeated full-logit arrays match build19 exactly. Completed shape timing shows selected long-prefix gains, with the inherited absolute gap explicitly retained. No release or whole-request/llama claim. |
@@ -206,7 +206,7 @@ max-absolute 0.01, RMS 0.002, relative tolerance zero, plus greedy identity.
 
 All eight constituent numerical reports are retained:
 
-- Prompt63: [512](../reports/native-cpu-norm-attention-direct-div-v1-boundary63-oracle.json),
+- Prompt 63: [512](../reports/native-cpu-norm-attention-direct-div-v1-boundary63-oracle.json),
   [128](../reports/native-cpu-div-prefix-v2-128-boundary63-oracle.json),
   [64](../reports/native-cpu-div-prefix-v2-64-boundary63-oracle.json).
 - All three chunks at prompt lengths
@@ -363,53 +363,50 @@ is preserved. Local projection accuracy did not predict a passing network gate.
 No broader qualification or timing followed, and no further arithmetic changes
 are justified solely by these measurements.
 
-## Next: original 64/128 qualification inventory
+## Original 64/128 numerical inventory: complete with inherited failures
 
-A source-only, syntax-checked local runner is prepared at
-`build/native-cpu/run-original-prefix-qualification-v2.py`; it has **not been
-executed** at this revision. It targets only the original 64/128 sources whose
-sole change from build19 is the canonical chunk constant. It does not use the
-rejected direct-division arithmetic.
+The [completed inventory](../reports/native-cpu-original-prefix-qualification-v2.json)
+contains 30 trajectories and 80 prediction positions across the original 128/64
+variants. Both variants pass their original 28-position matrix and the eight
+positions from new prompts 65/127/128/129. Each fails the first prediction on
+new prompt 63 and new prompt 64; their teacher-forced next predictions pass.
+That is 76 passing and **four failing comparisons**, not an aggregate pass.
+All greedy predictions agree with the independent oracle.
 
-The inventory covers the original 28 prediction positions plus two positions
-at each of 63/64/65/127/128/129: 40 positions per variant, 80 total. It reuses complete,
-hash-bound captures and gates, executes only missing outputs, and preserves
-all completed absolute failures rather than stopping at the inherited 63 miss.
-Incomplete or inconsistent evidence stops execution. The aggregate cannot be
-reported as passed if any absolute gate fails; completion and qualification are
-separate fields. The saved NumPy vectors from the division-boundary experiments
-remain unchanged independent reference values, not division-candidate logits.
+| Fixture, both variants | First prediction max absolute / RMS | Teacher step max absolute / RMS | Absolute result |
+|---|---:|---:|---|
+| Prompt 63 | 0.012255669 / 0.002722482 | 0.009222031 / 0.001818819 | First position fails both limits |
+| Prompt 64 | 0.009551048 / 0.002240883 | 0.004672050 / 0.001060937 | First position fails RMS |
 
-The separate isolated real-history harness can then evaluate original 512/128/64
-cached/fresh full-logit identity and cross-variant IDs/text/EOS. Its gates do not
-waive any absolute numerical failure. Newly failing positions require matched
-build19 controls to distinguish inherited gaps from new regressions; smaller
-chunks are not presumed arithmetic-preserving. Quality, cache lifecycle and
-complete-request measurements remain additional requirements before selection.
-No release, backend default change or browser performance claim is implied by
-preparing either runner.
+Prompt 64 is a fresh 64-token prefill, distinct from the teacher step after a
+63-token prefill. Their equal final context length does not imply identical
+prefill arithmetic. The new [baseline19 control](../reports/native-cpu-build19-original-prefix-control-boundary64-oracle.json)
+reproduces the prompt 64 failure. Its [capture](../reports/native-cpu-build19-original-prefix-control-boundary64-capture.json)
+and [control summary](../reports/native-cpu-original-prefix-baseline-controls-v1.json)
+show both original chunk variants' full trajectories are byte-identical to
+baseline19. Together with the earlier 63 control, every failing trajectory in
+this inventory has a matched inherited-failure control. This establishes the
+observed failures are shared; it does not waive them or prove equivalence on
+other inputs.
 
+The [archive manifest](../reports/native-cpu-original-prefix-qualification-v2-archive.json)
+indexes all 30 numerical reports, all 30 two-repeat captures, the summary and
+baseline controls. The [inventory runner snapshot](../tools/experiments/run-original-prefix-qualification-v2.py.txt)
+and [dynamic baseline-control runner snapshot](../tools/experiments/run-original-prefix-baseline-controls-v1.py.txt)
+are byte-identical text archives; restore their original `build/native-cpu/`
+locations before use. The inventory resumed only missing outputs, preserved
+completed failures, and returned `completed=true, passed=false`. The dynamic
+control selected newly failed trajectories except the already-controlled 63
+fixture. JSON archives anonymize local paths while preserving original hashes;
+raw full-vocabulary arrays remain local.
 
-## Adjacent query-row pairing: completed conditional shape comparison
+Only the original canonical-chunk constant changes are covered here; the rejected
+direct-division candidates are separate. Saved NumPy vectors from division
+boundary experiments remain unchanged independent references, not candidate
+logits. No threshold was relaxed.
 
-The [full report](../reports/native-cpu-prefill-query-row-pair-original-shapes.json)
-retains all ten alternating pairs per shape, warmups and outliers. These are
-baseline19/candidate command-wall latency ratios, with paired bootstrap95%
-intervals; they do not measure whole-request or llama performance.
-
-| Shape (prefix/new tokens) | Median paired speedup | 95% interval |
-|---|---:|---|
-| P0-B2 | 0.99034 | [0.97666, 1.00506] |
-| P0-B16 | 1.00287 | [0.95795, 1.01924] |
-| P0-B85 | 1.01305 | [0.98472, 1.02884] |
-| P0-B452 | 1.02364 | [1.00341, 1.05576] |
-| P3584-B2 | 1.00128 | [0.98782, 1.01244] |
-| P3584-B16 | 1.09658 | [1.08407, 1.12121] |
-| P3584-B64 | 1.11242 | [1.08739, 1.13625] |
-| P3584-B384 | 1.14844 | [1.13424, 1.19119] |
-
-Fresh452 and long-prefix B16/B64/B384 intervals exceed1; the remaining shapes
-are uncertain in this run. No ratios are multiplied with the separate two-key
-QK experiment, and no selective pooling is used. The known baseline19 numerical
-gap remains inherited despite exactness on these fixtures; this conditional
-relative result is not an absolute gate waiver or release recommendation.
+The isolated real-history harness can next evaluate original 512/128/64
+cached/fresh full-logit identity and cross-variant IDs/text/EOS. Quality, cache
+lifecycle and complete-request measurements remain additional requirements.
+Completing this numerical inventory does not authorize a release, backend default
+change or performance claim; the absolute numerical gap is still unresolved.

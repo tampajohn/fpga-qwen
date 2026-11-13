@@ -1,0 +1,413 @@
+{
+  "completed": true,
+  "inventory_completed": true,
+  "absolute_passed": false,
+  "release_eligible": false,
+  "positions": 80,
+  "failed_positions": 4,
+  "trajectories": 30,
+  "baseline_boundary64_control": "Completed; baseline19 fails first-position RMS, teacher step passes; both original chunk variants match baseline full trajectory bytes. Absolute failure retained.",
+  "records": [
+    {
+      "source": "$REPO/build/native-cpu/original-prefix-qualification-v2.json",
+      "source_sha256": "67308c316e6945edb4d08815e5b70d08992f1a884715953666ec291910ffd624",
+      "archive": "reports/native-cpu-original-prefix-qualification-v2.json",
+      "archive_sha256": "f108c408a7765382cdd73064d6f484b46e4b79cf6ec6852fffc09fe9940ff4b2"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-tiny-oracle.json",
+      "source_sha256": "da82bd596031b3213c477eb36d2e653521da4e028210229a5b825782b99028dc",
+      "archive": "reports/native-cpu-prefix128-v1-tiny-oracle.json",
+      "archive_sha256": "70e2d0c5c041c49acf90f88038df9e9fabaad678ab5cd643532d590079a99607"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-tiny-logits/report.json",
+      "source_sha256": "e2a6545525d545d7b166c68f18c8c7fd81b0212cfedd7585957fb5061696f214",
+      "archive": "reports/native-cpu-prefix128-v1-tiny-capture.json",
+      "archive_sha256": "93be06ce7579d98b63fb601a0234e95fe464e54a4e7f8fb3a7b6e6a1b71b8e71"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-short-oracle.json",
+      "source_sha256": "7fbdb23db1c9e2d6aaf1d024027fb9e0ea28c136fb303ee30ff2b21ad99a26f7",
+      "archive": "reports/native-cpu-prefix128-v1-short-oracle.json",
+      "archive_sha256": "9efb3b451b41c0894c16dc75a80a314f6ef9dbbd95c8c50184b250bcb040d5fa"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-short-logits/report.json",
+      "source_sha256": "94d7e7c118162736088138de5cef2653e12b43c0ed2ed58faa29a42277f27213",
+      "archive": "reports/native-cpu-prefix128-v1-short-capture.json",
+      "archive_sha256": "94e05ea23a456813407eb32732723699e65f902e4feaaf273ce7a83e082ae6b4"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-long-oracle.json",
+      "source_sha256": "44aa3265164ef9a544716aa831b922b21dd3f41316f3d182ef875b3a9ee256c3",
+      "archive": "reports/native-cpu-prefix128-v1-long-oracle.json",
+      "archive_sha256": "c3e687a8970a26a52701a6957657d130f84092543f181904beeca023663ce519"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-long-logits/report.json",
+      "source_sha256": "ffe556d2fbf01aea6326773f37f1d8b0060372c36a55ef050f0ff79a6b851ee8",
+      "archive": "reports/native-cpu-prefix128-v1-long-capture.json",
+      "archive_sha256": "94918cbeab57cba413e84038e73bcb6cc1dffbf82a2a23014c8064d0954fba49"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary511-oracle.json",
+      "source_sha256": "9fe19c19d3dac7b09a231d8f66f50738e7b3791ebd65c8ddae5c27434034997f",
+      "archive": "reports/native-cpu-prefix128-v1-boundary511-oracle.json",
+      "archive_sha256": "91e0fff5bd6f4fdebc53b3123b5f2a08f1ac6b8c46a7205716f24a5db0eedafc"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary511-logits/report.json",
+      "source_sha256": "8234f8203e9b3baf582d8194923023be21db0ace62cb070205674f7172b987f6",
+      "archive": "reports/native-cpu-prefix128-v1-boundary511-capture.json",
+      "archive_sha256": "fb53ff24ee936335e514136b6a4d1c22855d33a7e027c388d6fe398d4134c77e"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary512-oracle.json",
+      "source_sha256": "54c67cb23964e2937ae4b627b43aeb70b81f3466ad03b655c584ac1e92ca7110",
+      "archive": "reports/native-cpu-prefix128-v1-boundary512-oracle.json",
+      "archive_sha256": "b8e8e725c388310ff8034b6d0bfa0b4542aca11063d333b3d052ccd7e2ae47d3"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary512-logits/report.json",
+      "source_sha256": "ece11ac102abdfdeb592b7d64e881f8a4dae38e70f8c73bb2f87d20c2bb07998",
+      "archive": "reports/native-cpu-prefix128-v1-boundary512-capture.json",
+      "archive_sha256": "332d6d29a7cf25ee40653ce75507cb10df682e54406bb4b665d52155c8032536"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary513-oracle.json",
+      "source_sha256": "ed6ec61eba77d764d2588ef138de9462dc5115e61f35cdbaa46ab6d1607a1c68",
+      "archive": "reports/native-cpu-prefix128-v1-boundary513-oracle.json",
+      "archive_sha256": "64b7b9ee24735e174e3057d0652a1b6987b5eef0e65fc2479b5fe903ac91e991"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary513-logits/report.json",
+      "source_sha256": "2b60bbb9e0be0aeae86f5cb44cfee9b3368a34e2674dc547d172e5b69882aa3d",
+      "archive": "reports/native-cpu-prefix128-v1-boundary513-capture.json",
+      "archive_sha256": "1106b16613a7b30f2dee1b101f1f5ad840f5b52eb274152cf2cc79b9d566c28b"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-context1024-oracle.json",
+      "source_sha256": "b9d8dc1eb8e08802282890f3c92e0ff028f17801ea319c35ae9c6dd26465f5fb",
+      "archive": "reports/native-cpu-prefix128-v1-context1024-oracle.json",
+      "archive_sha256": "c8f3471d51bb2ae3bda96ecb73b34bc1a03d01c51ef599072b43cc0d2689da82"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-context1024-logits/report.json",
+      "source_sha256": "892d76ca30b89c7aa5ad9d56a944cf679fbb6b6df8306115c27b69f746eb9a4a",
+      "archive": "reports/native-cpu-prefix128-v1-context1024-capture.json",
+      "archive_sha256": "e760a98787d69fe069a5df7d08bd8b1d69ed1b4fb0b473d77fcf4f7108ac9316"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-context2048-oracle.json",
+      "source_sha256": "b2a000fee257e5eed32f04da3b17319ef527d7aac19d3a0f82fb8c47a0c98683",
+      "archive": "reports/native-cpu-prefix128-v1-context2048-oracle.json",
+      "archive_sha256": "6aabc1f403c337b94624cf4aeceff390b9d4a6bd70b5f77a51eaf15b57a17ac3"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-context2048-logits/report.json",
+      "source_sha256": "d76d759e2da3826c35c15bbee0ba36d70179a595d5caeb6d5a956fb1ddbb5870",
+      "archive": "reports/native-cpu-prefix128-v1-context2048-capture.json",
+      "archive_sha256": "75868f8fe3121a6ab6a70c54f8e84e8f16dbf5e28bb67dc9a160f479304bbb8e"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-context3968-oracle.json",
+      "source_sha256": "e4f4616e5a963de0c0c3e11d5ae99f409ee479a855fabeafa181825d046321ab",
+      "archive": "reports/native-cpu-prefix128-v1-context3968-oracle.json",
+      "archive_sha256": "5abc31b1189f7fb6c99a4110925a51ed198ca759507892a8f42cc88c3cd699d8"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-context3968-logits/report.json",
+      "source_sha256": "74ef7d168daae9f119dde1f0d480578d631f432d7d2e0ba7bcb4d88fa38adbd5",
+      "archive": "reports/native-cpu-prefix128-v1-context3968-capture.json",
+      "archive_sha256": "fb1d6040b23eabe73a676fb9d2dcff5a356de6594aa4ab187a03d0d057d5df15"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary63-oracle.json",
+      "source_sha256": "c9ef8e343d59188787fde10f4f3de3641c0d05308815394955b34a34b3dadfde",
+      "archive": "reports/native-cpu-prefix128-v1-boundary63-oracle.json",
+      "archive_sha256": "423f4f72165ef4d85388878fb211d517f60d2826034ec6767fc7cc7d4a465218"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary63-logits/report.json",
+      "source_sha256": "2f9def044f92466d987da1d3f43bbf819e6f8b1bca09f2fcbb16b273d7a1aadf",
+      "archive": "reports/native-cpu-prefix128-v1-boundary63-capture.json",
+      "archive_sha256": "62d62fdae805dd942fcafa65842533013e5adb236fc33510cc203c095f40cfe5"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary64-oracle.json",
+      "source_sha256": "40556ec504de09cf047764d037f233b151efdf850c21fc3db97e83a295af4fa1",
+      "archive": "reports/native-cpu-prefix128-v1-boundary64-oracle.json",
+      "archive_sha256": "7886a964f96e0ba468320e78941b7caa54a5d6de87be96f48cee5b1b5964a0f3"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary64-logits/report.json",
+      "source_sha256": "30b599bcd03b271f8c13f41f2a0a23fb5d1c0820a8ae910d1307efe1f06838dd",
+      "archive": "reports/native-cpu-prefix128-v1-boundary64-capture.json",
+      "archive_sha256": "73c49b1827734ba3ede4707b8f72e84eedb6daab0e64ce0d40f4dda56594679f"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary65-oracle.json",
+      "source_sha256": "cdcc2a7f301f6aa31d90e8270a6f9ee6001356e51b46a9575c9ed7ff79a18375",
+      "archive": "reports/native-cpu-prefix128-v1-boundary65-oracle.json",
+      "archive_sha256": "8d8a2c3d1d502bdb58ce3869a976a2854810414c2ae81ce31c637099bae6c914"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary65-logits/report.json",
+      "source_sha256": "2d8cc71a9a02689fe40b0e1866d017d34fd855eaa3a3a0ba261bd8d577376e52",
+      "archive": "reports/native-cpu-prefix128-v1-boundary65-capture.json",
+      "archive_sha256": "22cbdd926db21bd605136fcaa11711248c6a15919d82a766fdf4cce6be213b3b"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary127-oracle.json",
+      "source_sha256": "593ba75d9dc80ebb9b183152a14e086cbf8805d608610d8d234957dfa27e1e46",
+      "archive": "reports/native-cpu-prefix128-v1-boundary127-oracle.json",
+      "archive_sha256": "bfe2d699d38e1ac350348e8d73881abfa21ba4eefb50fe4538623e37eaeba312"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary127-logits/report.json",
+      "source_sha256": "3a19fde4d2c9cc68abb93c43bb76c2db3c605f2a6e281480ceb0f07aa91315c7",
+      "archive": "reports/native-cpu-prefix128-v1-boundary127-capture.json",
+      "archive_sha256": "a80850a03e2a3d1ea470df6874b4ac7b38ddfb379eb83b0e086b8b6ef56ce21b"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary128-oracle.json",
+      "source_sha256": "c136f6510088ac00cd64d0ab7c6741a8104e78be715e1fdff1e244823618b804",
+      "archive": "reports/native-cpu-prefix128-v1-boundary128-oracle.json",
+      "archive_sha256": "ea3d5badfd00d2014dbdafe23a5570dba47a7752fd3f4c0772271d0ae161875b"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary128-logits/report.json",
+      "source_sha256": "078abaa589ac6eeea0718963b790d9539fe85b5899f0029854c807f2367e94e7",
+      "archive": "reports/native-cpu-prefix128-v1-boundary128-capture.json",
+      "archive_sha256": "881559960309d61677db626b8bc37dbea1633225569c535de3dd20bd2a76555b"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary129-oracle.json",
+      "source_sha256": "cfc4ab897d7c199441f777bb9a7e9312991d4c94436ce5d64df40aaedcc8e3b2",
+      "archive": "reports/native-cpu-prefix128-v1-boundary129-oracle.json",
+      "archive_sha256": "125b12943506863af6a1085586ba909c737be76ffe2adbbda0fd73170de2bdde"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix128-v1-boundary129-logits/report.json",
+      "source_sha256": "c809b797f56efcc25a68649abfbbee1eb77caf4a0aa5bf3def3c59d24eb9e038",
+      "archive": "reports/native-cpu-prefix128-v1-boundary129-capture.json",
+      "archive_sha256": "fb065096c8badf88a3951897c991b17b3a09a77aaa4013e323f38bb9ecc83dbe"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-tiny-oracle.json",
+      "source_sha256": "013c4867d7d058362786258d8789c69b5f612cea4b4be3deb8e14a605b4b17d0",
+      "archive": "reports/native-cpu-prefix64-v1-tiny-oracle.json",
+      "archive_sha256": "2328c26587f2515092e5cdf39c2abd6ad8c556d9551b9cccf7d1d40a5c630e60"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-tiny-logits/report.json",
+      "source_sha256": "6c61383aed890f55428220c34edd07338a8f3d99407b572e0dc85dd9c6bbfe74",
+      "archive": "reports/native-cpu-prefix64-v1-tiny-capture.json",
+      "archive_sha256": "6ee01ca272e52e9decd5483da13968eaed667de5789e2c3ec8bc8c2582f22061"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-short-oracle.json",
+      "source_sha256": "f57d1aaa581f3767157900776e6552692f7696012b8a81622fc3eaa1ee8719cd",
+      "archive": "reports/native-cpu-prefix64-v1-short-oracle.json",
+      "archive_sha256": "b9e82f7ea1aa132056b563f404e22878f61b1ffa24b19c1fe08d6d6905529a70"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-short-logits/report.json",
+      "source_sha256": "9acd18dccbccc7cc48567b1ddbb8c7f8283b2db92d8531e8b2be77c08d2a3fb1",
+      "archive": "reports/native-cpu-prefix64-v1-short-capture.json",
+      "archive_sha256": "053aa4e826d8e00131fedca06ed194577397818178ef4a92bcc5c6aad36eee20"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-long-oracle.json",
+      "source_sha256": "847a8b762bf31d6bf01d46b6c7cef7798363da0b05534ee98280aafbc07954d3",
+      "archive": "reports/native-cpu-prefix64-v1-long-oracle.json",
+      "archive_sha256": "3bb2b86c619e29fd37f9cd0fb99c341fe75bcc254bdf9161051878dbfeaf40f8"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-long-logits/report.json",
+      "source_sha256": "fe06b1f94f54760e151c1f6da021f972bb51df78556bf61c99d58075ae380c49",
+      "archive": "reports/native-cpu-prefix64-v1-long-capture.json",
+      "archive_sha256": "c4e1edb2f24220ef85375b9d4371e678cf57402056b49d3666a94a6af0538fed"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary511-oracle.json",
+      "source_sha256": "c9c670b1082d55fa34bb3f1ca1617cf57be2594c9d68c676b8a1c4972461b74e",
+      "archive": "reports/native-cpu-prefix64-v1-boundary511-oracle.json",
+      "archive_sha256": "ad1dd7bb6afac9c92fafb45a7c1bb5e65f2dc547e168810b9c1acfa93230270e"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary511-logits/report.json",
+      "source_sha256": "ca49a3a134285c49107f3ac098c2608f93d6b5bcc626cd42e5f197bd8dbab2dd",
+      "archive": "reports/native-cpu-prefix64-v1-boundary511-capture.json",
+      "archive_sha256": "5571429e5450b0d361a04f67730b0934d435dbbfa79d41fbd35edc8922daec27"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary512-oracle.json",
+      "source_sha256": "e4321c1da0342b249bdf67dbfa21a50cc313b1709cb697285551fb64c3dec729",
+      "archive": "reports/native-cpu-prefix64-v1-boundary512-oracle.json",
+      "archive_sha256": "f46c4aea18de2b59f7fd7a59fb9d77c49f632c6f8fb4cab09452108d8a427ab2"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary512-logits/report.json",
+      "source_sha256": "ac16460e8fcc286a5891a63cd7f90fb6d58e3946108ad1174b06bad322661e79",
+      "archive": "reports/native-cpu-prefix64-v1-boundary512-capture.json",
+      "archive_sha256": "37cbd37e2d2dfa1039002a6b3860cca72b62ef34f5f208af7b7ed4245d3645fb"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary513-oracle.json",
+      "source_sha256": "074d5927d79ef5ed36208c96e406312ba214006a2e9dee0dd4145c89404d8e98",
+      "archive": "reports/native-cpu-prefix64-v1-boundary513-oracle.json",
+      "archive_sha256": "9ef709eb1fee87341349333bff4af30acf52db4fcaa6947b73a471cceef02ba1"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary513-logits/report.json",
+      "source_sha256": "4d4e0ad22de63cd3dcbe4e68d36e9036a41a0b8e670e7f72fca5036358035bc4",
+      "archive": "reports/native-cpu-prefix64-v1-boundary513-capture.json",
+      "archive_sha256": "ffd1f9e345c4916e02758e4a085a52878f2eac477229578cf8447eabdfb2715f"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-context1024-oracle.json",
+      "source_sha256": "61099fdeb857f95e7be1d67044b3520a504c0b330d29f0fcae8c5db856f5e97a",
+      "archive": "reports/native-cpu-prefix64-v1-context1024-oracle.json",
+      "archive_sha256": "4d2fc0cdf95e8df159d6df3239d8e8627fcbb65df493e693b4582015ebdf480d"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-context1024-logits/report.json",
+      "source_sha256": "52e498888322ec31e8e5ad0c9b40e0f43c2ceefa5b827e1c397b02d9b5207083",
+      "archive": "reports/native-cpu-prefix64-v1-context1024-capture.json",
+      "archive_sha256": "b43b1e02f9eeedd36e39b8169a1cb72efc692f672bec6f122edabb3d54e08302"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-context2048-oracle.json",
+      "source_sha256": "f87e73a10a165b4a754a0c05edd7e8f27cfd985cfa989e4d5cd2049fc6d2a61d",
+      "archive": "reports/native-cpu-prefix64-v1-context2048-oracle.json",
+      "archive_sha256": "1c0ac82c5faa01ff8f088e162ef81f561dd456c3ee3784dc7ff3adbfc0c8472c"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-context2048-logits/report.json",
+      "source_sha256": "6beb81b32a15d3561fd246bf2492f97bb506c030b7f65ba8c0f3de824d3d7a23",
+      "archive": "reports/native-cpu-prefix64-v1-context2048-capture.json",
+      "archive_sha256": "a121f2db37598153f77550712b6553a8528dd804a471338c7137cccdf873aec5"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-context3968-oracle.json",
+      "source_sha256": "fc5eeebbd90ed5021da4230d98792920b64c1172fb20aedfdad2c0cb87834ef0",
+      "archive": "reports/native-cpu-prefix64-v1-context3968-oracle.json",
+      "archive_sha256": "39acb90d7469fb637e27f43bcf6c95bfc726d865f65a28b9b752da3fbf0440a7"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-context3968-logits/report.json",
+      "source_sha256": "11b1275ad99e6a4762bdca1742327d2e8cb0bb7aead57a320140f1e6d87e8811",
+      "archive": "reports/native-cpu-prefix64-v1-context3968-capture.json",
+      "archive_sha256": "7f07d8cee2a20f1c51fdfe755a100b500e1a7b560ff4646dba1d1b7b46e3a8df"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary63-oracle.json",
+      "source_sha256": "5bee4670fa293434d7568fa87355e97ab58b1a2c7c29afe83ec5be9eafc561aa",
+      "archive": "reports/native-cpu-prefix64-v1-boundary63-oracle.json",
+      "archive_sha256": "a04ca710207cf8b181ac8a3f4e88f07ee509b4e2709217652937ca259b09cba4"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary63-logits/report.json",
+      "source_sha256": "d733205e8af1ccb2381fa605bc155f80951df710f040ecb2e682e7444dc1fe96",
+      "archive": "reports/native-cpu-prefix64-v1-boundary63-capture.json",
+      "archive_sha256": "070a2d8c8535c896b3a0e8734540de78e0efb15fd741e6e6d56f4d0f31a2b44f"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary64-oracle.json",
+      "source_sha256": "37b9f123ae33d11d3be9826a7631192cf1c4d4924eef087b9acb5b96f5521b54",
+      "archive": "reports/native-cpu-prefix64-v1-boundary64-oracle.json",
+      "archive_sha256": "06a950f69dbcbab2254546a381467f47a9c6a838d99ca9e3e1d09279698db225"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary64-logits/report.json",
+      "source_sha256": "f716d153f593f329bea4861a63b1656dd0150fa0eb8e5e5e04b23ae071885b19",
+      "archive": "reports/native-cpu-prefix64-v1-boundary64-capture.json",
+      "archive_sha256": "cbdae424d9f56d8aac8ac97f0861376bc85488a0f5cd3899f7e1adc5daa06237"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary65-oracle.json",
+      "source_sha256": "d8e4c505f3e788e5fe0c406d28a46689a417d916002d63f4f5b82ff6addc7201",
+      "archive": "reports/native-cpu-prefix64-v1-boundary65-oracle.json",
+      "archive_sha256": "b4919d962cc49bcff0ca6b1a3ac5cc2fa0c2bb4188523bae1725adf5b2dd1622"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary65-logits/report.json",
+      "source_sha256": "38b950565373e690026bfed48b6c94b3d6b90ab253e70d8f8a75f8317dba211d",
+      "archive": "reports/native-cpu-prefix64-v1-boundary65-capture.json",
+      "archive_sha256": "47b3acbb867cd08a561f408315509697bc35a8e8b767c8dec17a852c9202733c"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary127-oracle.json",
+      "source_sha256": "6c66cfb5d6f09f301e44db9fa8bc6250214eed09947126dfb10cb139b18a70cb",
+      "archive": "reports/native-cpu-prefix64-v1-boundary127-oracle.json",
+      "archive_sha256": "c9c434392f384aeb0783f87f26cf1917f0ce2934f305eb877068ceacaa6fa987"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary127-logits/report.json",
+      "source_sha256": "a97365d4e945070ca59e309c584b37f41132e6e5806d0678447e0e4c87658e26",
+      "archive": "reports/native-cpu-prefix64-v1-boundary127-capture.json",
+      "archive_sha256": "905bf763cc0f8031b52c903f59ca91458ef402a8d3464b14de42f77accd34803"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary128-oracle.json",
+      "source_sha256": "754a988ea4c9e56b68e744ba545c0de5dc3a97364ca3b5a5d7f9ee2ce6c8416e",
+      "archive": "reports/native-cpu-prefix64-v1-boundary128-oracle.json",
+      "archive_sha256": "03ac2ac6432edb7bbd2669c1fa63851c461addc0017722b5535957f68330f3d9"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary128-logits/report.json",
+      "source_sha256": "efc0c5d18c4101310e19803da35aa7711693eb3755262df8a91a4648651ab50f",
+      "archive": "reports/native-cpu-prefix64-v1-boundary128-capture.json",
+      "archive_sha256": "99a8650415f3e8a05492a2a27101bf22c58a73b35fd5540862c2e5cf2df388a6"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary129-oracle.json",
+      "source_sha256": "d2f2025f1d5d9e23cafdc2ed4451e0a0c9730266321a98ea25bf1d0f03a46b03",
+      "archive": "reports/native-cpu-prefix64-v1-boundary129-oracle.json",
+      "archive_sha256": "ed6b0ccc2b927fc9e8873432c87cc9b352b2ab327b69418caf13f80192557d32"
+    },
+    {
+      "source": "$REPO/build/native-cpu/prefix64-v1-boundary129-logits/report.json",
+      "source_sha256": "54d96e01d93e4b71f52b3aac9e1752edb80bbb59bfa378d3bb7397999c7dffd5",
+      "archive": "reports/native-cpu-prefix64-v1-boundary129-capture.json",
+      "archive_sha256": "5e93e6a281f7ae81acd161824db171c1accaa3f00cd970ceee85fa16bae20f9d"
+    },
+    {
+      "source": "$REPO/build/native-cpu/run-original-prefix-qualification-v2.py",
+      "source_sha256": "bc7c68bd00a81efde8e42b0683c62b89a7e884bdec87fc917f86bfba31ab3e22",
+      "archive": "tools/experiments/run-original-prefix-qualification-v2.py.txt",
+      "archive_sha256": "bc7c68bd00a81efde8e42b0683c62b89a7e884bdec87fc917f86bfba31ab3e22"
+    },
+    {
+      "source": "$REPO/build/native-cpu/run-original-prefix-baseline-controls-v1.py",
+      "source_sha256": "b947fd435dc4fd13aaa89a9405e70f710f56479af558e2a46fc94e22db1ded3c",
+      "archive": "tools/experiments/run-original-prefix-baseline-controls-v1.py.txt",
+      "archive_sha256": "b947fd435dc4fd13aaa89a9405e70f710f56479af558e2a46fc94e22db1ded3c"
+    },
+    {
+      "source": "$REPO/build/native-cpu/original-prefix-baseline-controls-v1.json",
+      "source_sha256": "d901a71bc5bf5c0a806d6d0dcbb975fe6eb1b84f96de1f778044b39d69c42f18",
+      "archive": "reports/native-cpu-original-prefix-baseline-controls-v1.json",
+      "archive_sha256": "d7ec067ba5c8737c556d611ccd4cc7fb3c809d258f4adfd885f846b7c8788f34"
+    },
+    {
+      "source": "$REPO/build/native-cpu/build19-original-prefix-control-boundary64/report.json",
+      "source_sha256": "f5db0ae22965e834cae3a61d38a881f2d04d254786527994ab39ebd04f52f55f",
+      "archive": "reports/native-cpu-build19-original-prefix-control-boundary64-capture.json",
+      "archive_sha256": "8377e272d1df1468f5de3afa21d47aef2b4c1cd32cf654777ce448048dc9989c"
+    },
+    {
+      "source": "$REPO/build/native-cpu/build19-original-prefix-control-boundary64-oracle.json",
+      "source_sha256": "91e9229e61a1805ca7fc827115f4ff3aec23dbb4d10b31b09669b2713cd463ec",
+      "archive": "reports/native-cpu-build19-original-prefix-control-boundary64-oracle.json",
+      "archive_sha256": "5f07c1e13ba25f7a055f7c71e34aa582ee02c33d70e082b8f1110c3ca582724a"
+    }
+  ],
+  "notes": [
+    "JSON path placeholders require local remapping; hashes bind original local evidence.",
+    "Runner snapshots are byte-identical text archives; restore original build/native-cpu location to preserve root resolution.",
+    "Raw full-vocabulary arrays remain local, with hashes and dimensions retained in captures."
+  ]
+}

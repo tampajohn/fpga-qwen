@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+"""Root-only guarded original64/128 numerical inventory; resumable, no promotion."""
+import hashlib,json,subprocess,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[2]; BASE=ROOT/'build/native-cpu'
+FIXTURES=[('tiny',4,ROOT/'build/native-phase0/prompt-oracle.json',ROOT/'build/native-phase0/continuation-oracle.json'),('short',8,ROOT/'build/native-phase0/prompt-short.json',BASE/'continuation-short.json'),('long',4,ROOT/'build/native-phase0/prompt-long.json',BASE/'continuation-long.json')]
+FIXTURES += [(f'boundary{n}',2,BASE/f'boundary-fixtures-v1/prompt-{n}.json',BASE/f'boundary-fixtures-v1/continuation-{n}.json') for n in (511,512,513)]
+FIXTURES += [(f'context{n}',2,BASE/f'extended-tutorial-fixtures/context{n}.json',BASE/f'extended-tutorial-fixtures/context{n}-continuation1.json') for n in (1024,2048,3968)]
+FIXTURES += [(f'boundary{n}',2,BASE/f'prefix-granularity-boundary-fixtures-v1/prompt-{n}.json',BASE/f'prefix-granularity-boundary-fixtures-v1/continuation-{n}.json') for n in (63,64,65,127,128,129)]
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def read(p):return json.loads(Path(p).read_text())
+def verified(p):
+ r=read(p);assert r.get('completed') is True and not r.get('error') and not r.get('cleanup_error'),p
+ for key in ('inputs','source_hashes'):
+  assert r.get(key), (p,key)
+  for name,digest in r[key].items():assert sha(name)==digest,(p,name)
+ return r
+
+def oracle_for(label):
+ if label=='context3968':return BASE/'context3968-native-llama-oracle-control.json'
+ if label=='boundary63':return BASE/'prefix-granularity-boundary63-oracle-v1.json'
+ if label in {f'boundary{n}' for n in (64,65,127,128,129)}:return BASE/f'div-prefix-v2-{label}-oracle.json'
+ return BASE/f'norm-f64-{label}-oracle.json'
+def guarded(name,*args):
+ return subprocess.run([sys.executable,str(ROOT/'tools/benchmark_guard.py'),'--name',name,'--',sys.executable,*map(str,args)],cwd=ROOT).returncode
+
+def main():
+ output=BASE/'original-prefix-qualification-v2.json'
+ summary=dict(completed=False,passed=False,absolute_numerical_passed=False,performance_claim_eligible=False,rows=[],known_inherited_failure='Original baseline19 and both chunk variants fail absolute oracle at context63. Preserved, never waived.',limitations=['Smaller canonical chunks can change SGEMM arithmetic; this inventory is not arithmetic-equivalence certification.','Saved NumPy vectors from division experiments remain the unchanged independent oracle, not division-model targets.','Cached/fresh equality, broad generation quality, lifecycle, and baseline19 controls for newly failing positions remain separate qualification requirements.'])
+ def save():
+  pending=output.with_suffix('.pending.json');pending.write_text(json.dumps(summary,indent=2)+'\n');pending.replace(output)
+ # Validate all immutable sources before any execution. Never edit or overwrite existing individual outputs.
+ for chunk in (128,64):
+  tag=f'prefix{chunk}-v1';binary=BASE/f'{tag}-build/qwen_cpu';m=read(binary.parent/'manifest.json')
+  assert m['completed'] and sha(binary)==m['binary_sha256']
+  for path,digest in m['source_sha256'].items():assert sha(path)==digest
+ for label,count,prompt,continuation in FIXTURES:
+  assert prompt.is_file() and continuation.is_file()
+  oracle=verified(oracle_for(label)); assert oracle['oracle_logits_storage']['dumps']
+ save()
+ try:
+  for chunk in (128,64):
+   tag=f'prefix{chunk}-v1';binary=BASE/f'{tag}-build/qwen_cpu'
+   for label,count,prompt,continuation in FIXTURES:
+    capture=BASE/f'{tag}-{label}-logits';report=capture/'report.json';gate=BASE/f'{tag}-{label}-oracle.json';oracle=oracle_for(label)
+    row=dict(candidate=tag,trajectory=label,capture=str(report),oracle=str(oracle),gate=str(gate),completed=False);summary['rows'].append(row);save()
+    if not capture.exists():
+     assert guarded(f'{tag} {label} remaining numerical capture',ROOT/'tools/capture_native_cpu_logits.py','--binary',binary,'--weights',BASE/'weights.bin','--prompt',prompt,'--continuation',continuation,'--tokens',count,'--threads',12,'--prefill-threads',6,'--directory',capture)==0
+    c=verified(report);assert c['inputs'][str(binary)]==sha(binary)
+    assert c['prompt_ids']==read(prompt) and c['requested_steps']==count
+    runs=c['runs'];assert len(runs)==2 and all(r['fixed_work_valid'] and r['own_repeat_ids_equal'] for r in runs)
+    assert [d['sha256'] for d in runs[0]['logit_dumps']]==[d['sha256'] for d in runs[1]['logit_dumps']]
+    if not gate.exists():
+     rc=guarded(f'{tag} {label} unchanged absolute oracle',ROOT/'tools/check_native_saved_oracle.py','--profile-report',report,'--oracle-report',oracle,'--run-index',0,'--experiment-note',f'Original baseline19 arithmetic, canonical chunk{chunk}. All absolute failures retained; no threshold waiver.','--output',gate)
+     assert rc in (0,1),rc
+    g=verified(gate);assert g['inputs'][str(binary)]==sha(binary)
+    assert g['provenance']['profile_report']==str(report) and g['provenance']['oracle_report']==str(oracle)
+    assert g['declared_tolerances']==dict(atol=.01,rtol=0.,rms_atol=.002,greedy_identity_required=True)
+    row.update(completed=True,absolute_passed=g['passed'],comparisons=g['comparisons'],gate_sha256=sha(gate));save()
+  summary.update(completed=True,absolute_numerical_passed=all(r['absolute_passed'] for r in summary['rows']))
+  summary['passed']=summary['absolute_numerical_passed'];summary['failed_trajectories']=[dict(candidate=r['candidate'],trajectory=r['trajectory']) for r in summary['rows'] if not r['absolute_passed']]
+ except BaseException as e:
+  summary['error']=dict(type=type(e).__name__,message=str(e));raise
+ finally:save()
+ print(output)
+ return 0 if summary['passed'] else 1
+if __name__=='__main__':sys.exit(main())

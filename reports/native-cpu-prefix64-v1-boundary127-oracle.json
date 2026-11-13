@@ -1,0 +1,404 @@
+{
+  "completed": true,
+  "passed": true,
+  "offline_only": true,
+  "inference_run": false,
+  "gpu": false,
+  "pytorch": false,
+  "performance_claim_eligible": false,
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "prefix64-v1 boundary127 unchanged absolute oracle",
+      "started_at": "2026-11-13T18:39:12.622598+00:00"
+    }
+  },
+  "declared_tolerances": {
+    "atol": 0.01,
+    "rtol": 0.0,
+    "rms_atol": 0.002,
+    "greedy_identity_required": true
+  },
+  "experiment_note": "Original baseline19 arithmetic, canonical chunk64. All absolute failures retained; no threshold waiver.",
+  "inputs": {
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-boundary127-oracle.json": "47c0fd0c3b6573fb0286c91c8470746eaffaa0b744b4abe3160d1da0885d734c",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/prefix64-v1-boundary127-logits/report.json": "a97365d4e945070ca59e309c584b37f41132e6e5806d0678447e0e4c87658e26",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-512-boundary127-logits/report.json": "8d835046fb5e207251e485d22d11f94b26b87fbb4a92fb86620377d73bf7df44",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-512-boundary127-logits/run0-step0.f32": "0a8dc3508ae60d5db77ed22be7a30fe98f909a17d444e4a5298b8e5e9c947cb3",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-512-boundary127-logits/run0-step1.f32": "21fe67e0127332dd755b0764607aeac592a251da913c3ae346da062a414c40fa",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/norm-attention-direct-div-v1-build/qwen_cpu": "8e83f164fc0defe8fb89102a5b2c0769eea083121c75a3adcc6bb2654f468df8",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/prefix-granularity-boundary-fixtures-v1/prompt-127.json": "ef87a803d0a6cfd96bd86e36fb2b3dc8b7533ea1c66ba2c0195ed7184f51e96a",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/prefix-granularity-boundary-fixtures-v1/continuation-127.json": "b185c5ea7a48b0bf67bf510cf5bbcecb025b82dd541869f56633b6a16739fa97",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-128-boundary127-logits/report.json": "48b86f285d22a5121ff8e54c3f68c1f96e3ea9689389c03753c5e3fa87b52340",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-128-boundary127-logits/run0-step0.f32": "0a8dc3508ae60d5db77ed22be7a30fe98f909a17d444e4a5298b8e5e9c947cb3",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-128-boundary127-logits/run0-step1.f32": "21fe67e0127332dd755b0764607aeac592a251da913c3ae346da062a414c40fa",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/norm-attention-direct-div-prefix128-v2-build/qwen_cpu": "a4dc92929520d9e36ab2685e69c1824a0575ff93bee2d78cc275e2d23be5cae9",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-64-boundary127-logits/report.json": "7f17b6cc0108d53eed810ac15ff7376321ce7781ba9eef79d583d54697373e53",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-64-boundary127-logits/run0-step0.f32": "0a8dc3508ae60d5db77ed22be7a30fe98f909a17d444e4a5298b8e5e9c947cb3",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-64-boundary127-logits/run0-step1.f32": "21fe67e0127332dd755b0764607aeac592a251da913c3ae346da062a414c40fa",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/norm-attention-direct-div-prefix64-v2-build/qwen_cpu": "1ce1f463ba36dbe0a1ea162e77fda54a2d341c5355fed82bdfaf72fcdfee51c0",
+    "/Users/jadams/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/blobs/f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/check_native_logits.py": "ef17d9762d2976d961701ef0415000db8e3e80c59b0d91c9931b8909619658d3",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tests/test_full_model.py": "5d56aa9784ec89a98f34cfdfd14aa7a0be9d356dd804754a8ec52c1b6e5fc439",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/prefix64-v1-build/qwen_cpu": "b7f95555879c15788210172c89ee043058715a70e1627a27be14cca63ac03597",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/capture_native_cpu_logits.py": "0734158bf38e8a8d34cc43655a58d56bc206f09ce2e8e569e2c14707232205de",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/native_cpu_chat.py": "154729079992e9c8c0df6e43077789ea73b8f85decb0a000f40e4cc3853b5882",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/engine/INTERFACE.md": "509db0a60c4ee0a7d8d235003bbe81c5ca77b695a44c5b79a8690bbe3b58b154",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/prefix64-v1-boundary127-logits/run0-step0.f32": "7997607c7c30a000b27b5d92da430c7c6c6781ac16df02ade208f603b1f235b1",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/prefix64-v1-boundary127-logits/run0-step1.f32": "45f4b3f918dc5a037cb1b42449ccded60f8779915bad26168d7c3835a0f1e2d3",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/prefix64-v1-build/manifest.json": "fe667b725b0e65415f4316bfa4f20acd10840a4a992dbf06dfc0f40f1ce461a9",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-boundary127-oracle-oracle-logits/step-000000-context-000127.f32": "f931873afae4062b8bea93f9db2103ffe0e0e9811644b6c7171d0f4ec468c063",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/div-prefix-v2-boundary127-oracle-oracle-logits/step-000001-context-000128.f32": "a0d7d142953c020a155076e6af99b21218d25a059811696e639c17a476c02ebb"
+  },
+  "comparisons": [
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.0021944046020507812,
+      "rms_error": 0.0004892630854571802,
+      "max_error_token_id": 24800,
+      "native_at_max_error": 4.421339988708496,
+      "oracle_at_max_error": 4.423534393310547,
+      "native_predicted_id": 856,
+      "native_argmax_id": 856,
+      "oracle_argmax_id": 856,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 856,
+          "logit": 21.553218841552734
+        },
+        {
+          "id": 198,
+          "logit": 16.849933624267578
+        },
+        {
+          "id": 271,
+          "logit": 13.273722648620605
+        },
+        {
+          "id": 13,
+          "logit": 12.784908294677734
+        },
+        {
+          "id": 2503,
+          "logit": 12.662856101989746
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 856,
+          "logit": 21.553070068359375
+        },
+        {
+          "id": 198,
+          "logit": 16.84941864013672
+        },
+        {
+          "id": 271,
+          "logit": 13.273490905761719
+        },
+        {
+          "id": 13,
+          "logit": 12.78539752960205
+        },
+        {
+          "id": 2503,
+          "logit": 12.662572860717773
+        }
+      ],
+      "native_top1_margin": 4.703285217285156,
+      "oracle_top1_margin": 4.703651428222656,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "step": 0,
+      "context_tokens": 127,
+      "native_logits_sha256": "7997607c7c30a000b27b5d92da430c7c6c6781ac16df02ade208f603b1f235b1",
+      "oracle_logits_sha256": "f931873afae4062b8bea93f9db2103ffe0e0e9811644b6c7171d0f4ec468c063"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.0027837753295898438,
+      "rms_error": 0.000495462188106476,
+      "max_error_token_id": 24800,
+      "native_at_max_error": 4.6059770584106445,
+      "oracle_at_max_error": 4.608760833740234,
+      "native_predicted_id": 856,
+      "native_argmax_id": 856,
+      "oracle_argmax_id": 856,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 856,
+          "logit": 21.66815185546875
+        },
+        {
+          "id": 198,
+          "logit": 16.834400177001953
+        },
+        {
+          "id": 271,
+          "logit": 13.280664443969727
+        },
+        {
+          "id": 13,
+          "logit": 12.89222240447998
+        },
+        {
+          "id": 2503,
+          "logit": 12.724175453186035
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 856,
+          "logit": 21.66815185546875
+        },
+        {
+          "id": 198,
+          "logit": 16.83391761779785
+        },
+        {
+          "id": 271,
+          "logit": 13.28048038482666
+        },
+        {
+          "id": 13,
+          "logit": 12.892619132995605
+        },
+        {
+          "id": 2503,
+          "logit": 12.724153518676758
+        }
+      ],
+      "native_top1_margin": 4.833751678466797,
+      "oracle_top1_margin": 4.834234237670898,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "step": 1,
+      "context_tokens": 128,
+      "native_logits_sha256": "45f4b3f918dc5a037cb1b42449ccded60f8779915bad26168d7c3835a0f1e2d3",
+      "oracle_logits_sha256": "a0d7d142953c020a155076e6af99b21218d25a059811696e639c17a476c02ebb"
+    }
+  ],
+  "limitations": [
+    "FP32 activation metadata describes stored outputs and does not certify internal accumulator precision; inspect the experiment note and build source hashes.",
+    "Only the selected saved oracle positions and one specified native capture run are compared.",
+    "No new numerical trajectory, inference, broad quality or performance evidence is generated."
+  ],
+  "native_build_manifest": {
+    "completed": true,
+    "gpu": false,
+    "pytorch": false,
+    "guard": {
+      "directory": "$REPO/build/benchmark-status",
+      "metadata": {
+        "name": "Build isolated canonical64 prefix candidate",
+        "started_at": "2026-11-13T17:50:18.258317+00:00"
+      }
+    },
+    "command": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-O3",
+      "-mcpu=native",
+      "-flto=thin",
+      "-ffp-contract=fast",
+      "-fno-math-errno",
+      "-pthread",
+      "$REPO/build/native-cpu/prefix64-v1-source/core.cpp",
+      "$REPO/build/native-cpu/prefix64-v1-source/main.cpp",
+      "-framework",
+      "Accelerate",
+      "-o",
+      "$REPO/build/native-cpu/prefix64-v1-build/qwen_cpu"
+    ],
+    "source_directory": "$REPO/build/native-cpu/prefix64-v1-source",
+    "source_sha256": {
+      "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/prefix64-v1-source/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+      "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/prefix64-v1-source/core.hpp": "b755b1b7f41c72922c45ae2a4ecfa80dac05672a81af95c24c39607559c9a8fb",
+      "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/prefix64-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+      "/Users/jadams/workspace/sandbox/fpga-qwen/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+    },
+    "removed_environment_keys": [],
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "started_at": "2026-11-13T17:50:18Z",
+    "exit_code": 0,
+    "binary": "$REPO/build/native-cpu/prefix64-v1-build/qwen_cpu",
+    "binary_sha256": "b7f95555879c15788210172c89ee043058715a70e1627a27be14cca63ac03597",
+    "linked_libraries": "$REPO/build/native-cpu/prefix64-v1-build/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+  },
+  "native_build_manifest_path": "$REPO/build/native-cpu/prefix64-v1-build/manifest.json",
+  "source_hashes": {
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/check_native_saved_oracle.py": "dd636c63d5733fc19be5f79ee5b675533ac29df20c5e294ede8ea1be341f6ed6",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/check_native_logits.py": "ef17d9762d2976d961701ef0415000db8e3e80c59b0d91c9931b8909619658d3",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/check_native_prefill_tail_oracle.py": "646d689fb6d4e1d5034fa4ccb86177e713c8d4f1a20a80eaa67672c4b8f400d2",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tests/test_full_model.py": "5d56aa9784ec89a98f34cfdfd14aa7a0be9d356dd804754a8ec52c1b6e5fc439",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/benchmark_native_phase0.py": "2072dff376baf6e0476c7beddfae311483ea2a15a3af54af8622ad8bbbe17b7e",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/tools/benchmark_guard.py": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7"
+  },
+  "provenance": {
+    "oracle_report": "$REPO/build/native-cpu/div-prefix-v2-boundary127-oracle.json",
+    "oracle_report_passed": true,
+    "profile_report": "$REPO/build/native-cpu/prefix64-v1-boundary127-logits/report.json",
+    "run_index": 0,
+    "binary": "$REPO/build/native-cpu/prefix64-v1-build/qwen_cpu",
+    "checkpoint_sha256": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b",
+    "pack_manifest": "$REPO/build/native-cpu/weights.bin.manifest.json",
+    "prompt_ids": [
+      151644,
+      8948,
+      198,
+      2610,
+      525,
+      1207,
+      16948,
+      18,
+      12,
+      15,
+      13,
+      21,
+      33,
+      11,
+      264,
+      2613,
+      15235,
+      17847,
+      4303,
+      23490,
+      13,
+      21806,
+      279,
+      1196,
+      594,
+      5535,
+      3405,
+      5961,
+      13,
+      5443,
+      6788,
+      6605,
+      438,
+      2266,
+      11,
+      537,
+      438,
+      264,
+      5316,
+      311,
+      13153,
+      13,
+      1446,
+      1231,
+      12641,
+      6788,
+      30637,
+      979,
+      4588,
+      13,
+      1416,
+      498,
+      653,
+      537,
+      1414,
+      2494,
+      11,
+      1977,
+      773,
+      13,
+      151645,
+      198,
+      151644,
+      872,
+      198,
+      8706,
+      8388,
+      25,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856,
+      856
+    ],
+    "consumed_continuation_ids": [
+      856
+    ]
+  },
+  "guard_after": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "prefix64-v1 boundary127 unchanged absolute oracle",
+      "started_at": "2026-11-13T18:39:12.622598+00:00"
+    }
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefix64-v1-boundary127-oracle.json",
+    "source_sha256": "6c66cfb5d6f09f301e44db9fa8bc6250214eed09947126dfb10cb139b18a70cb",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted. All comparisons and failed statuses preserved; original hashes retained."
+  }
+}

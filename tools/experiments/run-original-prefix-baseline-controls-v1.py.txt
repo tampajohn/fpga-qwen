@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+"""Root-only dynamic baseline controls after completed original-prefix inventory."""
+import importlib.util,json,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[2];BASE=ROOT/'build/native-cpu'
+helper=BASE/'run-original-prefix-qualification-v2.py'
+spec=importlib.util.spec_from_file_location('prefix_inventory',helper);q=importlib.util.module_from_spec(spec);spec.loader.exec_module(q)
+def main():
+ inventory=BASE/'original-prefix-qualification-v2.json';data=q.read(inventory)
+ assert data['completed'] is True and not data.get('error') and len(data['rows'])==30
+ fixtures={row[0]:row for row in q.FIXTURES}
+ failures={r['trajectory'] for r in data['rows'] if not r['absolute_passed']}
+ selected=sorted(failures-{'boundary63'})
+ binary=BASE/'build-19/qwen_cpu';m=q.read(binary.parent/'manifest.json')
+ assert m['completed'] and m['binary_sha256']==q.sha(binary)
+ # Released build manifests may bind historical paths: require the actual binary
+ # identity, and freeze that complete manifest; do not rewrite provenance.
+ known=q.verified(BASE/'build19-newboundary63-control-oracle.json')
+ assert known['passed'] is False and known['inputs'][str(binary)]==q.sha(binary)
+ out=BASE/'original-prefix-baseline-controls-v1.json';assert not out.exists() and not out.with_suffix('.pending.json').exists()
+ report=dict(completed=False,passed=False,performance_claim_eligible=False,inventory=str(inventory),inventory_sha256=q.sha(inventory),runner_sha256=q.sha(Path(__file__)),helper_sha256=q.sha(helper),baseline_manifest_sha256=q.sha(binary.parent/'manifest.json'),baseline63_existing_failure=str(BASE/'build19-newboundary63-control-oracle.json'),selected_trajectories=selected,rows=[],limitations=['Baseline agreement cannot waive a failed absolute oracle gate.','Controls cover only failed inventory trajectories, not untested inputs.'])
+ def save():
+  pending=out.with_suffix('.pending.json');pending.write_text(json.dumps(report,indent=2)+'\n');pending.replace(out)
+ for label in selected:
+  assert label in fixtures
+  for p in (BASE/f'build19-original-prefix-control-{label}',BASE/f'build19-original-prefix-control-{label}-oracle.json'):assert not p.exists(),p
+ save()
+ try:
+  for label in selected:
+   _,count,prompt,continuation=fixtures[label]
+   cap=BASE/f'build19-original-prefix-control-{label}';gate=BASE/f'build19-original-prefix-control-{label}-oracle.json';oracle=q.oracle_for(label)
+   row=dict(trajectory=label,prompt_sha256=q.sha(prompt),continuation_sha256=q.sha(continuation),capture=str(cap/'report.json'),gate=str(gate),completed=False);report['rows'].append(row);save()
+   assert q.guarded(f'Build19 {label} matched prefix failure control',ROOT/'tools/capture_native_cpu_logits.py','--binary',binary,'--weights',BASE/'weights.bin','--prompt',prompt,'--continuation',continuation,'--tokens',count,'--threads',12,'--prefill-threads',6,'--directory',cap)==0
+   c=q.verified(cap/'report.json');assert len(c['runs'])==2 and c['prompt_ids']==q.read(prompt)
+   assert all(r['fixed_work_valid'] and r['own_repeat_ids_equal'] for r in c['runs'])
+   signatures=[[d['sha256'] for d in r['logit_dumps']] for r in c['runs']];assert signatures[0]==signatures[1]
+   rc=q.guarded(f'Build19 {label} unchanged absolute oracle control',ROOT/'tools/check_native_saved_oracle.py','--profile-report',cap/'report.json','--oracle-report',oracle,'--run-index',0,'--experiment-note','Matched build19 control for failed original64/128 numerical inventory; no threshold waiver.','--output',gate)
+   assert rc in (0,1)
+   g=q.verified(gate);comparisons=[]
+   for r in data['rows']:
+    if r['trajectory']!=label:continue
+    candidate=q.verified(r['capture']);cg=q.verified(r['gate'])
+    assert cg['passed']==r['absolute_passed'] and q.sha(r['gate'])==r['gate_sha256']
+    same=[d['sha256'] for d in candidate['runs'][0]['logit_dumps']]==signatures[0]
+    comparisons.append(dict(candidate=r['candidate'],candidate_absolute_passed=r['absolute_passed'],full_trajectory_byte_identical_to_baseline=same))
+   row.update(completed=True,baseline_absolute_passed=g['passed'],baseline_comparisons=g['comparisons'],candidate_identity=comparisons,gate_sha256=q.sha(gate));save()
+  assert q.sha(inventory)==report['inventory_sha256'] and q.sha(helper)==report['helper_sha256']
+  report.update(completed=True,passed=False,selected_controls_absolute_passed=all(r['baseline_absolute_passed'] for r in report['rows']),known_absolute_failure_retained=True)
+ except BaseException as e:
+  report['error']=dict(type=type(e).__name__,message=str(e));raise
+ finally:save()
+ print(out)
+ return 0 if report['passed'] else 1
+if __name__=='__main__':sys.exit(main())

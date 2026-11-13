@@ -1,0 +1,187 @@
+{
+  "completed": true,
+  "passed": false,
+  "performance_claim_eligible": false,
+  "inventory": "$REPO/build/native-cpu/original-prefix-qualification-v2.json",
+  "inventory_sha256": "67308c316e6945edb4d08815e5b70d08992f1a884715953666ec291910ffd624",
+  "runner_sha256": "b947fd435dc4fd13aaa89a9405e70f710f56479af558e2a46fc94e22db1ded3c",
+  "helper_sha256": "bc7c68bd00a81efde8e42b0683c62b89a7e884bdec87fc917f86bfba31ab3e22",
+  "baseline_manifest_sha256": "bf06884120b0a4429b794e28b99e3c6d15743dc463124abfd7e57ed7b6b7f3b0",
+  "baseline63_existing_failure": "$REPO/build/native-cpu/build19-newboundary63-control-oracle.json",
+  "selected_trajectories": [
+    "boundary64"
+  ],
+  "rows": [
+    {
+      "trajectory": "boundary64",
+      "prompt_sha256": "175a98f3f9499aa857338eedd08e74b2fde8eade07c25bc949e2eae557460c7e",
+      "continuation_sha256": "e4cb23ed278a6c2b5b07f5a74299f2aea666176c7de6be28234390ff9973fc41",
+      "capture": "$REPO/build/native-cpu/build19-original-prefix-control-boundary64/report.json",
+      "gate": "$REPO/build/native-cpu/build19-original-prefix-control-boundary64-oracle.json",
+      "completed": true,
+      "baseline_absolute_passed": false,
+      "baseline_comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.009551048278808594,
+          "rms_error": 0.0022408825293632464,
+          "max_error_token_id": 75613,
+          "native_at_max_error": -10.143308639526367,
+          "oracle_at_max_error": -10.133757591247559,
+          "native_predicted_id": 25,
+          "native_argmax_id": 25,
+          "oracle_argmax_id": 25,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 25,
+              "logit": 22.900291442871094
+            },
+            {
+              "id": 510,
+              "logit": 19.040267944335938
+            },
+            {
+              "id": 198,
+              "logit": 18.141498565673828
+            },
+            {
+              "id": 2727,
+              "logit": 16.610485076904297
+            },
+            {
+              "id": 1943,
+              "logit": 14.983268737792969
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 25,
+              "logit": 22.903345108032227
+            },
+            {
+              "id": 510,
+              "logit": 19.046911239624023
+            },
+            {
+              "id": 198,
+              "logit": 18.139972686767578
+            },
+            {
+              "id": 2727,
+              "logit": 16.610366821289062
+            },
+            {
+              "id": 1943,
+              "logit": 14.986199378967285
+            }
+          ],
+          "native_top1_margin": 3.8600234985351562,
+          "oracle_top1_margin": 3.856433868408203,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": false,
+          "passed": false,
+          "step": 0,
+          "context_tokens": 64,
+          "native_logits_sha256": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88",
+          "oracle_logits_sha256": "195f34466bf2cdc07c942db6f95608add74a9f59d54a5783e41a4abefb0a18c8"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004672050476074219,
+          "rms_error": 0.0010609365305153634,
+          "max_error_token_id": 2054,
+          "native_at_max_error": 4.784998416900635,
+          "oracle_at_max_error": 4.789670467376709,
+          "native_predicted_id": 40,
+          "native_argmax_id": 40,
+          "oracle_argmax_id": 40,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 40,
+              "logit": 19.991622924804688
+            },
+            {
+              "id": 32313,
+              "logit": 19.229801177978516
+            },
+            {
+              "id": 13048,
+              "logit": 18.104175567626953
+            },
+            {
+              "id": 3838,
+              "logit": 18.081762313842773
+            },
+            {
+              "id": 12555,
+              "logit": 17.745697021484375
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 40,
+              "logit": 19.99185562133789
+            },
+            {
+              "id": 32313,
+              "logit": 19.229867935180664
+            },
+            {
+              "id": 13048,
+              "logit": 18.103984832763672
+            },
+            {
+              "id": 3838,
+              "logit": 18.081703186035156
+            },
+            {
+              "id": 12555,
+              "logit": 17.746292114257812
+            }
+          ],
+          "native_top1_margin": 0.7618217468261719,
+          "oracle_top1_margin": 0.7619876861572266,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 65,
+          "native_logits_sha256": "976b5815f8bd59eec608a8218d9607cd889b826065b8970fdca68f93e950c4fe",
+          "oracle_logits_sha256": "30275f3fb1c4cc58c6fead574bcd7ef4045c662a88a68b53fb87d6199b66bb73"
+        }
+      ],
+      "candidate_identity": [
+        {
+          "candidate": "prefix128-v1",
+          "candidate_absolute_passed": false,
+          "full_trajectory_byte_identical_to_baseline": true
+        },
+        {
+          "candidate": "prefix64-v1",
+          "candidate_absolute_passed": false,
+          "full_trajectory_byte_identical_to_baseline": true
+        }
+      ],
+      "gate_sha256": "91e9229e61a1805ca7fc827115f4ff3aec23dbb4d10b31b09669b2713cd463ec"
+    }
+  ],
+  "limitations": [
+    "Baseline agreement cannot waive a failed absolute oracle gate.",
+    "Controls cover only failed inventory trajectories, not untested inputs."
+  ],
+  "selected_controls_absolute_passed": false,
+  "known_absolute_failure_retained": true,
+  "archive_provenance": {
+    "source_report": "build/native-cpu/original-prefix-baseline-controls-v1.json",
+    "source_sha256": "d901a71bc5bf5c0a806d6d0dcbb975fe6eb1b84f96de1f778044b39d69c42f18",
+    "sanitization": "Repository/home prefixes anonymized; process identifiers omitted; all failures retained."
+  }
+}

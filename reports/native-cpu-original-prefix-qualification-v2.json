@@ -1,0 +1,5837 @@
+{
+  "completed": true,
+  "passed": false,
+  "absolute_numerical_passed": false,
+  "performance_claim_eligible": false,
+  "rows": [
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "tiny",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-tiny-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-tiny-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-tiny-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.00018787384033203125,
+          "rms_error": 4.8548981027757656e-05,
+          "max_error_token_id": 45716,
+          "native_at_max_error": 6.332477569580078,
+          "oracle_at_max_error": 6.332289695739746,
+          "native_predicted_id": 21806,
+          "native_argmax_id": 21806,
+          "oracle_argmax_id": 21806,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 21806,
+              "logit": 8.139313697814941
+            },
+            {
+              "id": 14582,
+              "logit": 8.077033042907715
+            },
+            {
+              "id": 15846,
+              "logit": 7.632211685180664
+            },
+            {
+              "id": 477,
+              "logit": 7.579107284545898
+            },
+            {
+              "id": 1957,
+              "logit": 7.344428539276123
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 21806,
+              "logit": 8.139236450195312
+            },
+            {
+              "id": 14582,
+              "logit": 8.076905250549316
+            },
+            {
+              "id": 15846,
+              "logit": 7.6321539878845215
+            },
+            {
+              "id": 477,
+              "logit": 7.578988552093506
+            },
+            {
+              "id": 1957,
+              "logit": 7.344333171844482
+            }
+          ],
+          "native_top1_margin": 0.06228065490722656,
+          "oracle_top1_margin": 0.062331199645996094,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 1,
+          "native_logits_sha256": "a409f068422c1715a5c4b3b865045186dfdf116b5b302e3e5e100f610bbf21cc",
+          "oracle_logits_sha256": "7134004998f4ecdc594ec9f16323172b90d7cecf3965abf9e56f91197f370d35"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0016551017761230469,
+          "rms_error": 0.0003603049653145386,
+          "max_error_token_id": 138643,
+          "native_at_max_error": -0.8641157150268555,
+          "oracle_at_max_error": -0.8657708168029785,
+          "native_predicted_id": 358,
+          "native_argmax_id": 358,
+          "oracle_argmax_id": 358,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 358,
+              "logit": 17.176725387573242
+            },
+            {
+              "id": 323,
+              "logit": 16.739744186401367
+            },
+            {
+              "id": 847,
+              "logit": 14.998039245605469
+            },
+            {
+              "id": 1052,
+              "logit": 14.108942031860352
+            },
+            {
+              "id": 5019,
+              "logit": 14.094305992126465
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 358,
+              "logit": 17.17696762084961
+            },
+            {
+              "id": 323,
+              "logit": 16.73945426940918
+            },
+            {
+              "id": 847,
+              "logit": 14.997673034667969
+            },
+            {
+              "id": 1052,
+              "logit": 14.109174728393555
+            },
+            {
+              "id": 5019,
+              "logit": 14.09486198425293
+            }
+          ],
+          "native_top1_margin": 0.436981201171875,
+          "oracle_top1_margin": 0.4375133514404297,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 2,
+          "native_logits_sha256": "d548bf0e5a85ac6df3c071557a4808013451cae56b3c1bb9850272562e215b4c",
+          "oracle_logits_sha256": "dd80d0184b327339fd17ce42e993d8f5d7e376c9a0fdd1c19e5ddc098c42d60d"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0019507408142089844,
+          "rms_error": 0.00041898108326116025,
+          "max_error_token_id": 3721,
+          "native_at_max_error": 0.8802714347839355,
+          "oracle_at_max_error": 0.8822221755981445,
+          "native_predicted_id": 11,
+          "native_argmax_id": 11,
+          "oracle_argmax_id": 11,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 11,
+              "logit": 14.922370910644531
+            },
+            {
+              "id": 0,
+              "logit": 14.446060180664062
+            },
+            {
+              "id": 13,
+              "logit": 13.93366813659668
+            },
+            {
+              "id": 323,
+              "logit": 13.527523040771484
+            },
+            {
+              "id": 2282,
+              "logit": 13.112082481384277
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 11,
+              "logit": 14.923208236694336
+            },
+            {
+              "id": 0,
+              "logit": 14.446864128112793
+            },
+            {
+              "id": 13,
+              "logit": 13.933691024780273
+            },
+            {
+              "id": 323,
+              "logit": 13.527902603149414
+            },
+            {
+              "id": 2282,
+              "logit": 13.11195182800293
+            }
+          ],
+          "native_top1_margin": 0.47631072998046875,
+          "oracle_top1_margin": 0.47634410858154297,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 2,
+          "context_tokens": 3,
+          "native_logits_sha256": "40744e47d98dcf5fd03f64d8686d99f1f42a20c4e839337320cf4f0c9d7cd569",
+          "oracle_logits_sha256": "a270a34f000ebccd3cea881c8ecad5326959872bae899574dfb0540847a07103"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0019311904907226562,
+          "rms_error": 0.00039328373307474416,
+          "max_error_token_id": 1634,
+          "native_at_max_error": 11.75033187866211,
+          "oracle_at_max_error": 11.748400688171387,
+          "native_predicted_id": 358,
+          "native_argmax_id": 358,
+          "oracle_argmax_id": 358,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 358,
+              "logit": 14.602472305297852
+            },
+            {
+              "id": 6771,
+              "logit": 13.307548522949219
+            },
+            {
+              "id": 1096,
+              "logit": 12.925565719604492
+            },
+            {
+              "id": 11201,
+              "logit": 12.754987716674805
+            },
+            {
+              "id": 576,
+              "logit": 12.691389083862305
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 358,
+              "logit": 14.601869583129883
+            },
+            {
+              "id": 6771,
+              "logit": 13.307380676269531
+            },
+            {
+              "id": 1096,
+              "logit": 12.925506591796875
+            },
+            {
+              "id": 11201,
+              "logit": 12.754122734069824
+            },
+            {
+              "id": 576,
+              "logit": 12.691120147705078
+            }
+          ],
+          "native_top1_margin": 1.2949237823486328,
+          "oracle_top1_margin": 1.2944889068603516,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 3,
+          "context_tokens": 4,
+          "native_logits_sha256": "9f490df824f248e2b29b74c8f97d680bc00790d9c80afa71998c5df25310feb0",
+          "oracle_logits_sha256": "ccfc3a8b8b1e772e5314f4c26adf3986199d1b454cbb9d60964787f36abd8bea"
+        }
+      ],
+      "gate_sha256": "da82bd596031b3213c477eb36d2e653521da4e028210229a5b825782b99028dc"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "short",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-short-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-short-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-short-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.007540464401245117,
+          "rms_error": 0.0017233430784430101,
+          "max_error_token_id": 90604,
+          "native_at_max_error": -2.814213275909424,
+          "oracle_at_max_error": -2.821753740310669,
+          "native_predicted_id": 10642,
+          "native_argmax_id": 10642,
+          "oracle_argmax_id": 10642,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 10642,
+              "logit": 27.50747299194336
+            },
+            {
+              "id": 334,
+              "logit": 21.373064041137695
+            },
+            {
+              "id": 12,
+              "logit": 21.347618103027344
+            },
+            {
+              "id": 18816,
+              "logit": 19.699438095092773
+            },
+            {
+              "id": 16,
+              "logit": 19.428234100341797
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 10642,
+              "logit": 27.509201049804688
+            },
+            {
+              "id": 334,
+              "logit": 21.377561569213867
+            },
+            {
+              "id": 12,
+              "logit": 21.348766326904297
+            },
+            {
+              "id": 18816,
+              "logit": 19.70138931274414
+            },
+            {
+              "id": 16,
+              "logit": 19.42438507080078
+            }
+          ],
+          "native_top1_margin": 6.134408950805664,
+          "oracle_top1_margin": 6.13163948059082,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 85,
+          "native_logits_sha256": "acd639690ee59561bba009dcbe1eb1602e497e1143930d0e64e3fff046d17446",
+          "oracle_logits_sha256": "c248d463d7e862fa096073e018d9c7d053942dfbd69f17bda3a9183e60dfc985"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005100250244140625,
+          "rms_error": 0.0012016547188754187,
+          "max_error_token_id": 78900,
+          "native_at_max_error": -8.532734870910645,
+          "oracle_at_max_error": -8.537835121154785,
+          "native_predicted_id": 33394,
+          "native_argmax_id": 33394,
+          "oracle_argmax_id": 33394,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 33394,
+              "logit": 30.148113250732422
+            },
+            {
+              "id": 16936,
+              "logit": 21.735368728637695
+            },
+            {
+              "id": 3070,
+              "logit": 20.028926849365234
+            },
+            {
+              "id": 4938,
+              "logit": 19.050554275512695
+            },
+            {
+              "id": 7055,
+              "logit": 18.633403778076172
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 33394,
+              "logit": 30.148435592651367
+            },
+            {
+              "id": 16936,
+              "logit": 21.733531951904297
+            },
+            {
+              "id": 3070,
+              "logit": 20.032390594482422
+            },
+            {
+              "id": 4938,
+              "logit": 19.051433563232422
+            },
+            {
+              "id": 7055,
+              "logit": 18.633834838867188
+            }
+          ],
+          "native_top1_margin": 8.412744522094727,
+          "oracle_top1_margin": 8.41490364074707,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 86,
+          "native_logits_sha256": "fb063d37170267e3739ddf4dbcfd542003cb7311f19864c91d6cd3d4ae32cc3e",
+          "oracle_logits_sha256": "592b1793aba67eaaaa33e25db4f2a601333e008abf7a8c3d60a2e27ab437cab1"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005147457122802734,
+          "rms_error": 0.0014980168405137682,
+          "max_error_token_id": 80792,
+          "native_at_max_error": -6.5334086418151855,
+          "oracle_at_max_error": -6.538556098937988,
+          "native_predicted_id": 19257,
+          "native_argmax_id": 19257,
+          "oracle_argmax_id": 19257,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 19257,
+              "logit": 25.42310333251953
+            },
+            {
+              "id": 374,
+              "logit": 23.09415626525879
+            },
+            {
+              "id": 35616,
+              "logit": 18.06975555419922
+            },
+            {
+              "id": 6147,
+              "logit": 17.877567291259766
+            },
+            {
+              "id": 26569,
+              "logit": 17.756885528564453
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 19257,
+              "logit": 25.424583435058594
+            },
+            {
+              "id": 374,
+              "logit": 23.09569549560547
+            },
+            {
+              "id": 35616,
+              "logit": 18.070653915405273
+            },
+            {
+              "id": 6147,
+              "logit": 17.877107620239258
+            },
+            {
+              "id": 26569,
+              "logit": 17.758291244506836
+            }
+          ],
+          "native_top1_margin": 2.328947067260742,
+          "oracle_top1_margin": 2.328887939453125,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 2,
+          "context_tokens": 87,
+          "native_logits_sha256": "9e175f7025bd6cda1b95c1e61dc97589957a57fef5ec6b435407f9ff7461055f",
+          "oracle_logits_sha256": "90ae785031bc45bc31cd666344f6794bd925c908355f431e3f4cbd9b3474fb90"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0036716461181640625,
+          "rms_error": 0.0008971669984500426,
+          "max_error_token_id": 59185,
+          "native_at_max_error": -7.6817731857299805,
+          "oracle_at_max_error": -7.6854448318481445,
+          "native_predicted_id": 311,
+          "native_argmax_id": 311,
+          "oracle_argmax_id": 311,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 311,
+              "logit": 28.678085327148438
+            },
+            {
+              "id": 279,
+              "logit": 13.616500854492188
+            },
+            {
+              "id": 3070,
+              "logit": 13.490982055664062
+            },
+            {
+              "id": 2346,
+              "logit": 13.188326835632324
+            },
+            {
+              "id": 5961,
+              "logit": 12.832754135131836
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 311,
+              "logit": 28.678924560546875
+            },
+            {
+              "id": 279,
+              "logit": 13.616162300109863
+            },
+            {
+              "id": 3070,
+              "logit": 13.491499900817871
+            },
+            {
+              "id": 2346,
+              "logit": 13.188787460327148
+            },
+            {
+              "id": 5961,
+              "logit": 12.831890106201172
+            }
+          ],
+          "native_top1_margin": 15.06158447265625,
+          "oracle_top1_margin": 15.062762260437012,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 3,
+          "context_tokens": 88,
+          "native_logits_sha256": "14eab836265c582f5b74a47695ae89560b4ede071658d41d72e064a9c2bed73c",
+          "oracle_logits_sha256": "87ac4bedb16aa025cfa59cc9f0fcf0cae083f5249cdefc6816b8e12f577c81f4"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0048313140869140625,
+          "rms_error": 0.0011904669447915714,
+          "max_error_token_id": 71086,
+          "native_at_max_error": -8.244609832763672,
+          "oracle_at_max_error": -8.249441146850586,
+          "native_predicted_id": 279,
+          "native_argmax_id": 279,
+          "oracle_argmax_id": 279,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 279,
+              "logit": 27.57369041442871
+            },
+            {
+              "id": 1246,
+              "logit": 25.0118465423584
+            },
+            {
+              "id": 264,
+              "logit": 16.288745880126953
+            },
+            {
+              "id": 3070,
+              "logit": 15.166321754455566
+            },
+            {
+              "id": 821,
+              "logit": 14.945716857910156
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 279,
+              "logit": 27.575027465820312
+            },
+            {
+              "id": 1246,
+              "logit": 25.01306915283203
+            },
+            {
+              "id": 264,
+              "logit": 16.28706932067871
+            },
+            {
+              "id": 3070,
+              "logit": 15.166439056396484
+            },
+            {
+              "id": 821,
+              "logit": 14.94610595703125
+            }
+          ],
+          "native_top1_margin": 2.5618438720703125,
+          "oracle_top1_margin": 2.5619583129882812,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 4,
+          "context_tokens": 89,
+          "native_logits_sha256": "09a07a8872288fda1659387b8c3dae7f6c4644b0341a4bd65fa547a5eab3676e",
+          "oracle_logits_sha256": "3011b5124b2b40a43771304616d1e6ab6bfde1d77c4cb7cc06039d3cc84ba922"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0051479339599609375,
+          "rms_error": 0.0010031297539157477,
+          "max_error_token_id": 71181,
+          "native_at_max_error": -8.520801544189453,
+          "oracle_at_max_error": -8.525949478149414,
+          "native_predicted_id": 4628,
+          "native_argmax_id": 4628,
+          "oracle_argmax_id": 4628,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 4628,
+              "logit": 22.813762664794922
+            },
+            {
+              "id": 4379,
+              "logit": 22.636295318603516
+            },
+            {
+              "id": 3311,
+              "logit": 21.001846313476562
+            },
+            {
+              "id": 7192,
+              "logit": 20.98900604248047
+            },
+            {
+              "id": 5726,
+              "logit": 19.17632293701172
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 4628,
+              "logit": 22.81277847290039
+            },
+            {
+              "id": 4379,
+              "logit": 22.636859893798828
+            },
+            {
+              "id": 3311,
+              "logit": 21.001867294311523
+            },
+            {
+              "id": 7192,
+              "logit": 20.989097595214844
+            },
+            {
+              "id": 5726,
+              "logit": 19.17633056640625
+            }
+          ],
+          "native_top1_margin": 0.17746734619140625,
+          "oracle_top1_margin": 0.1759185791015625,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 5,
+          "context_tokens": 90,
+          "native_logits_sha256": "a616c7e2572616dea2bc14530e6c75b9bdd7fb01ad2557acc166a72c4bb2caba",
+          "oracle_logits_sha256": "cd12cd98e0282cf2705ce6c4d7b1b732154a32298c469dbae563c51cea85a957"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0035266876220703125,
+          "rms_error": 0.000858557247951167,
+          "max_error_token_id": 24031,
+          "native_at_max_error": -9.678400039672852,
+          "oracle_at_max_error": -9.681926727294922,
+          "native_predicted_id": 518,
+          "native_argmax_id": 518,
+          "oracle_argmax_id": 518,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 518,
+              "logit": 25.881450653076172
+            },
+            {
+              "id": 315,
+              "logit": 20.44088363647461
+            },
+            {
+              "id": 323,
+              "logit": 20.269554138183594
+            },
+            {
+              "id": 448,
+              "logit": 19.37079620361328
+            },
+            {
+              "id": 476,
+              "logit": 15.728745460510254
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 518,
+              "logit": 25.882110595703125
+            },
+            {
+              "id": 315,
+              "logit": 20.44190216064453
+            },
+            {
+              "id": 323,
+              "logit": 20.268638610839844
+            },
+            {
+              "id": 448,
+              "logit": 19.370304107666016
+            },
+            {
+              "id": 476,
+              "logit": 15.728134155273438
+            }
+          ],
+          "native_top1_margin": 5.4405670166015625,
+          "oracle_top1_margin": 5.440208435058594,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 6,
+          "context_tokens": 91,
+          "native_logits_sha256": "b484b34e44665e0fb116f039a5586b421edaf06014168f19da13f6ba19e04419",
+          "oracle_logits_sha256": "373e398edeaa39c9d1edd2d204941152a12c42dc49b06d42c6d8de8e47b76e7f"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0031821727752685547,
+          "rms_error": 0.0007856780933097914,
+          "max_error_token_id": 33590,
+          "native_at_max_error": -3.666890859603882,
+          "oracle_at_max_error": -3.6700730323791504,
+          "native_predicted_id": 892,
+          "native_argmax_id": 892,
+          "oracle_argmax_id": 892,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 892,
+              "logit": 32.19642639160156
+            },
+            {
+              "id": 8206,
+              "logit": 19.972522735595703
+            },
+            {
+              "id": 15920,
+              "logit": 18.623695373535156
+            },
+            {
+              "id": 133669,
+              "logit": 16.072021484375
+            },
+            {
+              "id": 23085,
+              "logit": 15.599699974060059
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 892,
+              "logit": 32.19803237915039
+            },
+            {
+              "id": 8206,
+              "logit": 19.973716735839844
+            },
+            {
+              "id": 15920,
+              "logit": 18.62545394897461
+            },
+            {
+              "id": 133669,
+              "logit": 16.073867797851562
+            },
+            {
+              "id": 23085,
+              "logit": 15.601211547851562
+            }
+          ],
+          "native_top1_margin": 12.22390365600586,
+          "oracle_top1_margin": 12.224315643310547,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 7,
+          "context_tokens": 92,
+          "native_logits_sha256": "a064d8c2dc54dc07d1b1173b50b6a1e0758352f8d553208e64c7563e83e72eae",
+          "oracle_logits_sha256": "d87b1262b3a08e3a756900a9e9bd0731c17bc3974f71a781c107aa467e116a44"
+        }
+      ],
+      "gate_sha256": "7fbdb23db1c9e2d6aaf1d024027fb9e0ea28c136fb303ee30ff2b21ad99a26f7"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "long",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-long-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-long-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-long-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004469871520996094,
+          "rms_error": 0.0009802827841185757,
+          "max_error_token_id": 11535,
+          "native_at_max_error": -8.832680702209473,
+          "oracle_at_max_error": -8.828210830688477,
+          "native_predicted_id": 10642,
+          "native_argmax_id": 10642,
+          "oracle_argmax_id": 10642,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 10642,
+              "logit": 29.328493118286133
+            },
+            {
+              "id": 334,
+              "logit": 23.324665069580078
+            },
+            {
+              "id": 18816,
+              "logit": 21.991609573364258
+            },
+            {
+              "id": 12,
+              "logit": 20.783029556274414
+            },
+            {
+              "id": 13850,
+              "logit": 19.958450317382812
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 10642,
+              "logit": 29.326351165771484
+            },
+            {
+              "id": 334,
+              "logit": 23.32427406311035
+            },
+            {
+              "id": 18816,
+              "logit": 21.99089813232422
+            },
+            {
+              "id": 12,
+              "logit": 20.783573150634766
+            },
+            {
+              "id": 13850,
+              "logit": 19.956802368164062
+            }
+          ],
+          "native_top1_margin": 6.003828048706055,
+          "oracle_top1_margin": 6.002077102661133,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 452,
+          "native_logits_sha256": "2cf3996bbf64f1c64904e20fcccef47b780b9962e0f4db3a467d73854e4d819a",
+          "oracle_logits_sha256": "f8ec7971fe8d86be57cfe60ab6178132e0c39f29b8c90620749f8dedfd91d4a6"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005344390869140625,
+          "rms_error": 0.000998609473084422,
+          "max_error_token_id": 54212,
+          "native_at_max_error": -12.477973937988281,
+          "oracle_at_max_error": -12.47262954711914,
+          "native_predicted_id": 33394,
+          "native_argmax_id": 33394,
+          "oracle_argmax_id": 33394,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 33394,
+              "logit": 31.785568237304688
+            },
+            {
+              "id": 3070,
+              "logit": 21.41009521484375
+            },
+            {
+              "id": 16936,
+              "logit": 19.656036376953125
+            },
+            {
+              "id": 7055,
+              "logit": 19.258527755737305
+            },
+            {
+              "id": 4938,
+              "logit": 18.03801918029785
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 33394,
+              "logit": 31.781352996826172
+            },
+            {
+              "id": 3070,
+              "logit": 21.409709930419922
+            },
+            {
+              "id": 16936,
+              "logit": 19.652328491210938
+            },
+            {
+              "id": 7055,
+              "logit": 19.257164001464844
+            },
+            {
+              "id": 4938,
+              "logit": 18.04024314880371
+            }
+          ],
+          "native_top1_margin": 10.375473022460938,
+          "oracle_top1_margin": 10.37164306640625,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 453,
+          "native_logits_sha256": "73a0c34fc7ceb2947e0668d68f653b7775d2340cb81759c57d784af96c2cd967",
+          "oracle_logits_sha256": "b4bb4e23a73163fcbb0dfa8d8bc75682cc1a898c2f0e92ad3bc0cf9e05cb4f29"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.00403594970703125,
+          "rms_error": 0.0009494007564305412,
+          "max_error_token_id": 56928,
+          "native_at_max_error": -12.344837188720703,
+          "oracle_at_max_error": -12.340801239013672,
+          "native_predicted_id": 19257,
+          "native_argmax_id": 19257,
+          "oracle_argmax_id": 19257,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 19257,
+              "logit": 23.582454681396484
+            },
+            {
+              "id": 10953,
+              "logit": 23.534019470214844
+            },
+            {
+              "id": 374,
+              "logit": 21.920507431030273
+            },
+            {
+              "id": 26569,
+              "logit": 18.37209129333496
+            },
+            {
+              "id": 10868,
+              "logit": 18.19384002685547
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 19257,
+              "logit": 23.58112335205078
+            },
+            {
+              "id": 10953,
+              "logit": 23.53361701965332
+            },
+            {
+              "id": 374,
+              "logit": 21.91948127746582
+            },
+            {
+              "id": 26569,
+              "logit": 18.37127113342285
+            },
+            {
+              "id": 10868,
+              "logit": 18.19525909423828
+            }
+          ],
+          "native_top1_margin": 0.048435211181640625,
+          "oracle_top1_margin": 0.04750633239746094,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 2,
+          "context_tokens": 454,
+          "native_logits_sha256": "bfa4a35cbc39c9997514ccb78e0eb92b524ada75bc5521ef536e4752929e8538",
+          "oracle_logits_sha256": "966dee44f986a28228775e255332b7f811f62a128b7a9fdd5557bacc7a0bf4f1"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.003570556640625,
+          "rms_error": 0.0009888824233769081,
+          "max_error_token_id": 30029,
+          "native_at_max_error": -7.455475330352783,
+          "oracle_at_max_error": -7.451904773712158,
+          "native_predicted_id": 311,
+          "native_argmax_id": 311,
+          "oracle_argmax_id": 311,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 311,
+              "logit": 27.660940170288086
+            },
+            {
+              "id": 5961,
+              "logit": 13.454336166381836
+            },
+            {
+              "id": 3070,
+              "logit": 13.354654312133789
+            },
+            {
+              "id": 279,
+              "logit": 13.353796005249023
+            },
+            {
+              "id": 11689,
+              "logit": 13.195411682128906
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 311,
+              "logit": 27.658863067626953
+            },
+            {
+              "id": 5961,
+              "logit": 13.454795837402344
+            },
+            {
+              "id": 3070,
+              "logit": 13.354621887207031
+            },
+            {
+              "id": 279,
+              "logit": 13.354385375976562
+            },
+            {
+              "id": 11689,
+              "logit": 13.194819450378418
+            }
+          ],
+          "native_top1_margin": 14.20660400390625,
+          "oracle_top1_margin": 14.20406723022461,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 3,
+          "context_tokens": 455,
+          "native_logits_sha256": "221d9b37040313d17f60d18b267d8d01973c5df33bc1debe4a7e53f0bb510fc5",
+          "oracle_logits_sha256": "86537ba642f1e2ef4bbfe8560018b250737ec0d22deeef828bca3b5cb556cb55"
+        }
+      ],
+      "gate_sha256": "44aa3265164ef9a544716aa831b922b21dd3f41316f3d182ef875b3a9ee256c3"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary511",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-boundary511-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-boundary511-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-boundary511-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005377769470214844,
+          "rms_error": 0.0013245054413322278,
+          "max_error_token_id": 90555,
+          "native_at_max_error": -7.295082092285156,
+          "oracle_at_max_error": -7.289704322814941,
+          "native_predicted_id": 10642,
+          "native_argmax_id": 10642,
+          "oracle_argmax_id": 10642,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 10642,
+              "logit": 28.365921020507812
+            },
+            {
+              "id": 334,
+              "logit": 22.77294158935547
+            },
+            {
+              "id": 12,
+              "logit": 21.31489372253418
+            },
+            {
+              "id": 18816,
+              "logit": 21.283090591430664
+            },
+            {
+              "id": 13850,
+              "logit": 19.418079376220703
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 10642,
+              "logit": 28.363929748535156
+            },
+            {
+              "id": 334,
+              "logit": 22.773815155029297
+            },
+            {
+              "id": 12,
+              "logit": 21.31485366821289
+            },
+            {
+              "id": 18816,
+              "logit": 21.28240203857422
+            },
+            {
+              "id": 13850,
+              "logit": 19.41680335998535
+            }
+          ],
+          "native_top1_margin": 5.592979431152344,
+          "oracle_top1_margin": 5.590114593505859,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 511,
+          "native_logits_sha256": "172a347b48a3f30b089c8c95b165d01e922863f07ac1a2fc5f11b1b5e41708c2",
+          "oracle_logits_sha256": "b0a475b18c017cc83ee8d2d797c0206a92c0a51a001c99c2126019c44429c272"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005124568939208984,
+          "rms_error": 0.0009845900986988484,
+          "max_error_token_id": 98720,
+          "native_at_max_error": -7.504631519317627,
+          "oracle_at_max_error": -7.509756088256836,
+          "native_predicted_id": 33394,
+          "native_argmax_id": 33394,
+          "oracle_argmax_id": 33394,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 33394,
+              "logit": 31.839876174926758
+            },
+            {
+              "id": 3070,
+              "logit": 21.680309295654297
+            },
+            {
+              "id": 16936,
+              "logit": 20.003192901611328
+            },
+            {
+              "id": 7055,
+              "logit": 19.103595733642578
+            },
+            {
+              "id": 4938,
+              "logit": 18.0319766998291
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 33394,
+              "logit": 31.838348388671875
+            },
+            {
+              "id": 3070,
+              "logit": 21.678955078125
+            },
+            {
+              "id": 16936,
+              "logit": 20.003328323364258
+            },
+            {
+              "id": 7055,
+              "logit": 19.1041259765625
+            },
+            {
+              "id": 4938,
+              "logit": 18.032794952392578
+            }
+          ],
+          "native_top1_margin": 10.159566879272461,
+          "oracle_top1_margin": 10.159393310546875,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 512,
+          "native_logits_sha256": "9ec07ad90fca05adb4b40305040240a2c214cd7407ef0473fd7ae2923345be98",
+          "oracle_logits_sha256": "150e2261af83e831cc54d4a7be47d9ce7989c0025adc5eb6cc2cff27e3c0ca5d"
+        }
+      ],
+      "gate_sha256": "9fe19c19d3dac7b09a231d8f66f50738e7b3791ebd65c8ddae5c27434034997f"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary512",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-boundary512-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-boundary512-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-boundary512-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004810333251953125,
+          "rms_error": 0.001177334635692457,
+          "max_error_token_id": 87371,
+          "native_at_max_error": -3.0749387741088867,
+          "oracle_at_max_error": -3.0701284408569336,
+          "native_predicted_id": 10642,
+          "native_argmax_id": 10642,
+          "oracle_argmax_id": 10642,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 10642,
+              "logit": 28.324777603149414
+            },
+            {
+              "id": 334,
+              "logit": 22.785629272460938
+            },
+            {
+              "id": 18816,
+              "logit": 21.254623413085938
+            },
+            {
+              "id": 12,
+              "logit": 21.21857452392578
+            },
+            {
+              "id": 13850,
+              "logit": 19.399276733398438
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 10642,
+              "logit": 28.325298309326172
+            },
+            {
+              "id": 334,
+              "logit": 22.787498474121094
+            },
+            {
+              "id": 18816,
+              "logit": 21.25460433959961
+            },
+            {
+              "id": 12,
+              "logit": 21.216005325317383
+            },
+            {
+              "id": 13850,
+              "logit": 19.399202346801758
+            }
+          ],
+          "native_top1_margin": 5.539148330688477,
+          "oracle_top1_margin": 5.537799835205078,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 512,
+          "native_logits_sha256": "e29a922837ff999d6c0b360045a444ac13f49a6df98d93fae9d76b6982dae628",
+          "oracle_logits_sha256": "35191a607d5a723bd1c47afdd30dda65411bf186c80d2c6f69b0ccd5d028ead3"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005428314208984375,
+          "rms_error": 0.0010712144717405468,
+          "max_error_token_id": 86050,
+          "native_at_max_error": -11.725759506225586,
+          "oracle_at_max_error": -11.73118782043457,
+          "native_predicted_id": 33394,
+          "native_argmax_id": 33394,
+          "oracle_argmax_id": 33394,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 33394,
+              "logit": 31.84424591064453
+            },
+            {
+              "id": 3070,
+              "logit": 21.748836517333984
+            },
+            {
+              "id": 16936,
+              "logit": 19.94121551513672
+            },
+            {
+              "id": 7055,
+              "logit": 19.084875106811523
+            },
+            {
+              "id": 4938,
+              "logit": 18.055448532104492
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 33394,
+              "logit": 31.84334945678711
+            },
+            {
+              "id": 3070,
+              "logit": 21.752161026000977
+            },
+            {
+              "id": 16936,
+              "logit": 19.939674377441406
+            },
+            {
+              "id": 7055,
+              "logit": 19.085424423217773
+            },
+            {
+              "id": 4938,
+              "logit": 18.058822631835938
+            }
+          ],
+          "native_top1_margin": 10.095409393310547,
+          "oracle_top1_margin": 10.091188430786133,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 513,
+          "native_logits_sha256": "abb5282f3bdbfbf8423dc975439b49daa34b5c4052539b1f9c50276d713f6050",
+          "oracle_logits_sha256": "8735d74462a9c8535ff5cfd04ec1564d4ee4a6f2f0622064a4307add03a9365c"
+        }
+      ],
+      "gate_sha256": "54c67cb23964e2937ae4b627b43aeb70b81f3466ad03b655c584ac1e92ca7110"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary513",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-boundary513-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-boundary513-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-boundary513-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004644870758056641,
+          "rms_error": 0.0008821700855129732,
+          "max_error_token_id": 14929,
+          "native_at_max_error": 2.0663881301879883,
+          "oracle_at_max_error": 2.071033000946045,
+          "native_predicted_id": 10642,
+          "native_argmax_id": 10642,
+          "oracle_argmax_id": 10642,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 10642,
+              "logit": 28.292171478271484
+            },
+            {
+              "id": 334,
+              "logit": 22.80958366394043
+            },
+            {
+              "id": 18816,
+              "logit": 21.261215209960938
+            },
+            {
+              "id": 12,
+              "logit": 21.103904724121094
+            },
+            {
+              "id": 13850,
+              "logit": 19.37018394470215
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 10642,
+              "logit": 28.294570922851562
+            },
+            {
+              "id": 334,
+              "logit": 22.81064224243164
+            },
+            {
+              "id": 18816,
+              "logit": 21.263282775878906
+            },
+            {
+              "id": 12,
+              "logit": 21.103002548217773
+            },
+            {
+              "id": 13850,
+              "logit": 19.371416091918945
+            }
+          ],
+          "native_top1_margin": 5.482587814331055,
+          "oracle_top1_margin": 5.483928680419922,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 513,
+          "native_logits_sha256": "3628e9b8c02a363620c2b0f1b3a57f67dc9b76df8138771d95352b99f5e9e450",
+          "oracle_logits_sha256": "f93d59f0f59ae37624c65d733e460f4f13205d96d8beda302c89bb9d1461d7c9"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004481315612792969,
+          "rms_error": 0.000992683542171677,
+          "max_error_token_id": 30935,
+          "native_at_max_error": -6.1844377517700195,
+          "oracle_at_max_error": -6.1889190673828125,
+          "native_predicted_id": 33394,
+          "native_argmax_id": 33394,
+          "oracle_argmax_id": 33394,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 33394,
+              "logit": 31.872251510620117
+            },
+            {
+              "id": 3070,
+              "logit": 21.815536499023438
+            },
+            {
+              "id": 16936,
+              "logit": 19.89287567138672
+            },
+            {
+              "id": 7055,
+              "logit": 19.093400955200195
+            },
+            {
+              "id": 4938,
+              "logit": 18.094202041625977
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 33394,
+              "logit": 31.872926712036133
+            },
+            {
+              "id": 3070,
+              "logit": 21.8157958984375
+            },
+            {
+              "id": 16936,
+              "logit": 19.89237403869629
+            },
+            {
+              "id": 7055,
+              "logit": 19.09392547607422
+            },
+            {
+              "id": 4938,
+              "logit": 18.09612274169922
+            }
+          ],
+          "native_top1_margin": 10.05671501159668,
+          "oracle_top1_margin": 10.057130813598633,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 514,
+          "native_logits_sha256": "2654bd15714348a45203f0ca0a270dd9f261b4f5fd8b301fe7c58f7262b71be7",
+          "oracle_logits_sha256": "54cf80ef503bf9ac9a4a5369de704776d896a7d7284bbe76a8ffe19ec97aecd0"
+        }
+      ],
+      "gate_sha256": "ed6ec61eba77d764d2588ef138de9462dc5115e61f35cdbaa46ab6d1607a1c68"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "context1024",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-context1024-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-context1024-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-context1024-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.008427619934082031,
+          "rms_error": 0.0018418044318307093,
+          "max_error_token_id": 108995,
+          "native_at_max_error": -4.612926483154297,
+          "oracle_at_max_error": -4.604498863220215,
+          "native_predicted_id": 31615,
+          "native_argmax_id": 31615,
+          "oracle_argmax_id": 31615,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 31615,
+              "logit": 22.683502197265625
+            },
+            {
+              "id": 334,
+              "logit": 22.415985107421875
+            },
+            {
+              "id": 10642,
+              "logit": 21.787107467651367
+            },
+            {
+              "id": 14374,
+              "logit": 19.871036529541016
+            },
+            {
+              "id": 95456,
+              "logit": 19.332529067993164
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 31615,
+              "logit": 22.68614959716797
+            },
+            {
+              "id": 334,
+              "logit": 22.414112091064453
+            },
+            {
+              "id": 10642,
+              "logit": 21.784610748291016
+            },
+            {
+              "id": 14374,
+              "logit": 19.87226104736328
+            },
+            {
+              "id": 95456,
+              "logit": 19.328664779663086
+            }
+          ],
+          "native_top1_margin": 0.26751708984375,
+          "oracle_top1_margin": 0.2720375061035156,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 1024,
+          "native_logits_sha256": "4fac10f0e31e99bb04f6800c52d9e5f4785f64bcbc49e8cbba0a7a3efb1b4c53",
+          "oracle_logits_sha256": "b24f242f443f9725039a0533fa81346231dcb4a05e93bfba7115b9555ed1a06b"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005040168762207031,
+          "rms_error": 0.0010888538341734494,
+          "max_error_token_id": 82599,
+          "native_at_max_error": 6.121376037597656,
+          "oracle_at_max_error": 6.116335868835449,
+          "native_predicted_id": 4938,
+          "native_argmax_id": 4938,
+          "oracle_argmax_id": 4938,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 4938,
+              "logit": 23.735319137573242
+            },
+            {
+              "id": 13850,
+              "logit": 21.43484115600586
+            },
+            {
+              "id": 320,
+              "logit": 16.65292739868164
+            },
+            {
+              "id": 323,
+              "logit": 16.44754409790039
+            },
+            {
+              "id": 17646,
+              "logit": 15.688498497009277
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 4938,
+              "logit": 23.733680725097656
+            },
+            {
+              "id": 13850,
+              "logit": 21.434268951416016
+            },
+            {
+              "id": 320,
+              "logit": 16.654987335205078
+            },
+            {
+              "id": 323,
+              "logit": 16.448997497558594
+            },
+            {
+              "id": 17646,
+              "logit": 15.686847686767578
+            }
+          ],
+          "native_top1_margin": 2.300477981567383,
+          "oracle_top1_margin": 2.2994117736816406,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 1025,
+          "native_logits_sha256": "7f71a7418e7db783963bc7563be8551b71963a388ab4646507009746e8b48ce8",
+          "oracle_logits_sha256": "29df2ae09a5d32b079b273c2d916ef6ff6d32bba27296b294825f622ddf47e43"
+        }
+      ],
+      "gate_sha256": "b9d8dc1eb8e08802282890f3c92e0ff028f17801ea319c35ae9c6dd26465f5fb"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "context2048",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-context2048-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-context2048-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-context2048-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.008694648742675781,
+          "rms_error": 0.0014803020366098633,
+          "max_error_token_id": 6689,
+          "native_at_max_error": 15.757728576660156,
+          "oracle_at_max_error": 15.74903392791748,
+          "native_predicted_id": 31615,
+          "native_argmax_id": 31615,
+          "oracle_argmax_id": 31615,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 31615,
+              "logit": 23.249595642089844
+            },
+            {
+              "id": 334,
+              "logit": 22.236642837524414
+            },
+            {
+              "id": 10642,
+              "logit": 22.23573112487793
+            },
+            {
+              "id": 14374,
+              "logit": 20.122398376464844
+            },
+            {
+              "id": 95456,
+              "logit": 18.815866470336914
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 31615,
+              "logit": 23.252283096313477
+            },
+            {
+              "id": 334,
+              "logit": 22.237621307373047
+            },
+            {
+              "id": 10642,
+              "logit": 22.23453140258789
+            },
+            {
+              "id": 14374,
+              "logit": 20.12761688232422
+            },
+            {
+              "id": 95456,
+              "logit": 18.819252014160156
+            }
+          ],
+          "native_top1_margin": 1.0129528045654297,
+          "oracle_top1_margin": 1.0146617889404297,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 2048,
+          "native_logits_sha256": "f42add44dbd9726750dc973e82f1d59d0c5a82e3983bbac9c73f1a4ba38d4f1b",
+          "oracle_logits_sha256": "c8546bd4407f1f15102cdb0389bb13d429508effd76eb248dda77b1a876a0d7e"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005434989929199219,
+          "rms_error": 0.0010803190128985216,
+          "max_error_token_id": 58029,
+          "native_at_max_error": -1.431870937347412,
+          "oracle_at_max_error": -1.426435947418213,
+          "native_predicted_id": 4938,
+          "native_argmax_id": 4938,
+          "oracle_argmax_id": 4938,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 4938,
+              "logit": 24.24810028076172
+            },
+            {
+              "id": 13850,
+              "logit": 21.7561092376709
+            },
+            {
+              "id": 320,
+              "logit": 16.82666015625
+            },
+            {
+              "id": 323,
+              "logit": 16.01702308654785
+            },
+            {
+              "id": 17646,
+              "logit": 15.829058647155762
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 4938,
+              "logit": 24.248294830322266
+            },
+            {
+              "id": 13850,
+              "logit": 21.75643539428711
+            },
+            {
+              "id": 320,
+              "logit": 16.826969146728516
+            },
+            {
+              "id": 323,
+              "logit": 16.016130447387695
+            },
+            {
+              "id": 17646,
+              "logit": 15.831436157226562
+            }
+          ],
+          "native_top1_margin": 2.4919910430908203,
+          "oracle_top1_margin": 2.4918594360351562,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 2049,
+          "native_logits_sha256": "30682f97aa747c172e733f1a34ecb628cc0c015a95db6d36dea7c0bea8893a37",
+          "oracle_logits_sha256": "45675a577050bd3973f68e81dc5b0bd6ae21f878c9decb57e6eafbfe75787116"
+        }
+      ],
+      "gate_sha256": "b2a000fee257e5eed32f04da3b17319ef527d7aac19d3a0f82fb8c47a0c98683"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "context3968",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-context3968-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/context3968-native-llama-oracle-control.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-context3968-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.007285118103027344,
+          "rms_error": 0.0015124324342790272,
+          "max_error_token_id": 57720,
+          "native_at_max_error": -4.9440202713012695,
+          "oracle_at_max_error": -4.951305389404297,
+          "native_predicted_id": 31615,
+          "native_argmax_id": 31615,
+          "oracle_argmax_id": 31615,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 31615,
+              "logit": 23.217273712158203
+            },
+            {
+              "id": 334,
+              "logit": 22.089405059814453
+            },
+            {
+              "id": 10642,
+              "logit": 22.023521423339844
+            },
+            {
+              "id": 14374,
+              "logit": 20.14855194091797
+            },
+            {
+              "id": 95456,
+              "logit": 19.279455184936523
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 31615,
+              "logit": 23.21980094909668
+            },
+            {
+              "id": 334,
+              "logit": 22.088584899902344
+            },
+            {
+              "id": 10642,
+              "logit": 22.024192810058594
+            },
+            {
+              "id": 14374,
+              "logit": 20.14811897277832
+            },
+            {
+              "id": 95456,
+              "logit": 19.278549194335938
+            }
+          ],
+          "native_top1_margin": 1.12786865234375,
+          "oracle_top1_margin": 1.131216049194336,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 3968,
+          "native_logits_sha256": "7219b435bb3de631f6453fe941a6ab1cedd5725eb6e631004b8763f83c9ccf15",
+          "oracle_logits_sha256": "a205b8e4b25d109ace85dc17d9c2a008907c9dcbfe3fbdb73a24b99686037988"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.007415294647216797,
+          "rms_error": 0.0012230141073234205,
+          "max_error_token_id": 14431,
+          "native_at_max_error": 4.364777565002441,
+          "oracle_at_max_error": 4.357362270355225,
+          "native_predicted_id": 4938,
+          "native_argmax_id": 4938,
+          "oracle_argmax_id": 4938,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 4938,
+              "logit": 24.395416259765625
+            },
+            {
+              "id": 13850,
+              "logit": 21.612184524536133
+            },
+            {
+              "id": 320,
+              "logit": 17.027883529663086
+            },
+            {
+              "id": 17646,
+              "logit": 16.39426612854004
+            },
+            {
+              "id": 323,
+              "logit": 15.096248626708984
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 4938,
+              "logit": 24.3978214263916
+            },
+            {
+              "id": 13850,
+              "logit": 21.615201950073242
+            },
+            {
+              "id": 320,
+              "logit": 17.02661895751953
+            },
+            {
+              "id": 17646,
+              "logit": 16.38888168334961
+            },
+            {
+              "id": 323,
+              "logit": 15.093913078308105
+            }
+          ],
+          "native_top1_margin": 2.783231735229492,
+          "oracle_top1_margin": 2.7826194763183594,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 3969,
+          "native_logits_sha256": "ccd32f3d4748302c80931c2713dbf73db584e7c8b8679531a0e6bd8a3e465056",
+          "oracle_logits_sha256": "c73b82d178e297087ae03f9286b3bda68415165e04da62bdca1af3c5d2d34b06"
+        }
+      ],
+      "gate_sha256": "e4f4616e5a963de0c0c3e11d5ae99f409ee479a855fabeafa181825d046321ab"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary63",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-boundary63-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/prefix-granularity-boundary63-oracle-v1.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-boundary63-oracle.json",
+      "completed": true,
+      "absolute_passed": false,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.012255668640136719,
+          "rms_error": 0.0027224821976331603,
+          "max_error_token_id": 26861,
+          "native_at_max_error": 4.197259902954102,
+          "oracle_at_max_error": 4.185004234313965,
+          "native_predicted_id": 198,
+          "native_argmax_id": 198,
+          "oracle_argmax_id": 198,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 198,
+              "logit": 36.6028938293457
+            },
+            {
+              "id": 151645,
+              "logit": 21.81810188293457
+            },
+            {
+              "id": 151644,
+              "logit": 21.03191375732422
+            },
+            {
+              "id": 319,
+              "logit": 20.616056442260742
+            },
+            {
+              "id": 715,
+              "logit": 19.12754249572754
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 198,
+              "logit": 36.600669860839844
+            },
+            {
+              "id": 151645,
+              "logit": 21.812908172607422
+            },
+            {
+              "id": 151644,
+              "logit": 21.027538299560547
+            },
+            {
+              "id": 319,
+              "logit": 20.613319396972656
+            },
+            {
+              "id": 715,
+              "logit": 19.12399673461914
+            }
+          ],
+          "native_top1_margin": 14.784791946411133,
+          "oracle_top1_margin": 14.787761688232422,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": false,
+          "rms_limit_passed": false,
+          "passed": false,
+          "step": 0,
+          "context_tokens": 63,
+          "native_logits_sha256": "60c139268303c15a11a3280e46d92a94d1fca1d8f49d6a8bc365f9212109f423",
+          "oracle_logits_sha256": "2e6928c38470a69ce1a92aca21a270a4692b36754a144b3ff42639d94789a49a"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.009222030639648438,
+          "rms_error": 0.0018188192366271044,
+          "max_error_token_id": 47468,
+          "native_at_max_error": -3.213611602783203,
+          "oracle_at_max_error": -3.2043895721435547,
+          "native_predicted_id": 25,
+          "native_argmax_id": 25,
+          "oracle_argmax_id": 25,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 25,
+              "logit": 22.897729873657227
+            },
+            {
+              "id": 510,
+              "logit": 19.042949676513672
+            },
+            {
+              "id": 198,
+              "logit": 18.144746780395508
+            },
+            {
+              "id": 2727,
+              "logit": 16.611679077148438
+            },
+            {
+              "id": 1943,
+              "logit": 14.984382629394531
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 25,
+              "logit": 22.903345108032227
+            },
+            {
+              "id": 510,
+              "logit": 19.046911239624023
+            },
+            {
+              "id": 198,
+              "logit": 18.139972686767578
+            },
+            {
+              "id": 2727,
+              "logit": 16.610366821289062
+            },
+            {
+              "id": 1943,
+              "logit": 14.986199378967285
+            }
+          ],
+          "native_top1_margin": 3.8547801971435547,
+          "oracle_top1_margin": 3.856433868408203,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 64,
+          "native_logits_sha256": "119e1dcfb97a5c1533fa6879dc8178e54213879bc9a3f36152dfaed84312d4ef",
+          "oracle_logits_sha256": "195f34466bf2cdc07c942db6f95608add74a9f59d54a5783e41a4abefb0a18c8"
+        }
+      ],
+      "gate_sha256": "c9ef8e343d59188787fde10f4f3de3641c0d05308815394955b34a34b3dadfde"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary64",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-boundary64-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/div-prefix-v2-boundary64-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-boundary64-oracle.json",
+      "completed": true,
+      "absolute_passed": false,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.009551048278808594,
+          "rms_error": 0.0022408825293632464,
+          "max_error_token_id": 75613,
+          "native_at_max_error": -10.143308639526367,
+          "oracle_at_max_error": -10.133757591247559,
+          "native_predicted_id": 25,
+          "native_argmax_id": 25,
+          "oracle_argmax_id": 25,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 25,
+              "logit": 22.900291442871094
+            },
+            {
+              "id": 510,
+              "logit": 19.040267944335938
+            },
+            {
+              "id": 198,
+              "logit": 18.141498565673828
+            },
+            {
+              "id": 2727,
+              "logit": 16.610485076904297
+            },
+            {
+              "id": 1943,
+              "logit": 14.983268737792969
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 25,
+              "logit": 22.903345108032227
+            },
+            {
+              "id": 510,
+              "logit": 19.046911239624023
+            },
+            {
+              "id": 198,
+              "logit": 18.139972686767578
+            },
+            {
+              "id": 2727,
+              "logit": 16.610366821289062
+            },
+            {
+              "id": 1943,
+              "logit": 14.986199378967285
+            }
+          ],
+          "native_top1_margin": 3.8600234985351562,
+          "oracle_top1_margin": 3.856433868408203,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": false,
+          "passed": false,
+          "step": 0,
+          "context_tokens": 64,
+          "native_logits_sha256": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88",
+          "oracle_logits_sha256": "195f34466bf2cdc07c942db6f95608add74a9f59d54a5783e41a4abefb0a18c8"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004672050476074219,
+          "rms_error": 0.0010609365305153634,
+          "max_error_token_id": 2054,
+          "native_at_max_error": 4.784998416900635,
+          "oracle_at_max_error": 4.789670467376709,
+          "native_predicted_id": 40,
+          "native_argmax_id": 40,
+          "oracle_argmax_id": 40,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 40,
+              "logit": 19.991622924804688
+            },
+            {
+              "id": 32313,
+              "logit": 19.229801177978516
+            },
+            {
+              "id": 13048,
+              "logit": 18.104175567626953
+            },
+            {
+              "id": 3838,
+              "logit": 18.081762313842773
+            },
+            {
+              "id": 12555,
+              "logit": 17.745697021484375
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 40,
+              "logit": 19.99185562133789
+            },
+            {
+              "id": 32313,
+              "logit": 19.229867935180664
+            },
+            {
+              "id": 13048,
+              "logit": 18.103984832763672
+            },
+            {
+              "id": 3838,
+              "logit": 18.081703186035156
+            },
+            {
+              "id": 12555,
+              "logit": 17.746292114257812
+            }
+          ],
+          "native_top1_margin": 0.7618217468261719,
+          "oracle_top1_margin": 0.7619876861572266,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 65,
+          "native_logits_sha256": "976b5815f8bd59eec608a8218d9607cd889b826065b8970fdca68f93e950c4fe",
+          "oracle_logits_sha256": "30275f3fb1c4cc58c6fead574bcd7ef4045c662a88a68b53fb87d6199b66bb73"
+        }
+      ],
+      "gate_sha256": "40556ec504de09cf047764d037f233b151efdf850c21fc3db97e83a295af4fa1"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary65",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-boundary65-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/div-prefix-v2-boundary65-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-boundary65-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0049686431884765625,
+          "rms_error": 0.001056873435390028,
+          "max_error_token_id": 2054,
+          "native_at_max_error": 4.784701824188232,
+          "oracle_at_max_error": 4.789670467376709,
+          "native_predicted_id": 40,
+          "native_argmax_id": 40,
+          "oracle_argmax_id": 40,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 40,
+              "logit": 19.99182891845703
+            },
+            {
+              "id": 32313,
+              "logit": 19.23028564453125
+            },
+            {
+              "id": 13048,
+              "logit": 18.104446411132812
+            },
+            {
+              "id": 3838,
+              "logit": 18.08214569091797
+            },
+            {
+              "id": 12555,
+              "logit": 17.74579620361328
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 40,
+              "logit": 19.99185562133789
+            },
+            {
+              "id": 32313,
+              "logit": 19.229867935180664
+            },
+            {
+              "id": 13048,
+              "logit": 18.103984832763672
+            },
+            {
+              "id": 3838,
+              "logit": 18.081703186035156
+            },
+            {
+              "id": 12555,
+              "logit": 17.746292114257812
+            }
+          ],
+          "native_top1_margin": 0.7615432739257812,
+          "oracle_top1_margin": 0.7619876861572266,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 65,
+          "native_logits_sha256": "576e412cf06f6622f0d869409ce5fb80bde1d59e8f1dbe86256be51bba781440",
+          "oracle_logits_sha256": "30275f3fb1c4cc58c6fead574bcd7ef4045c662a88a68b53fb87d6199b66bb73"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.002718687057495117,
+          "rms_error": 0.0005982425538867863,
+          "max_error_token_id": 20187,
+          "native_at_max_error": -2.3628079891204834,
+          "oracle_at_max_error": -2.3600893020629883,
+          "native_predicted_id": 25,
+          "native_argmax_id": 25,
+          "oracle_argmax_id": 25,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 25,
+              "logit": 20.677248001098633
+            },
+            {
+              "id": 1995,
+              "logit": 16.037364959716797
+            },
+            {
+              "id": 510,
+              "logit": 16.033184051513672
+            },
+            {
+              "id": 198,
+              "logit": 15.877954483032227
+            },
+            {
+              "id": 323,
+              "logit": 15.77285385131836
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 25,
+              "logit": 20.677322387695312
+            },
+            {
+              "id": 1995,
+              "logit": 16.036746978759766
+            },
+            {
+              "id": 510,
+              "logit": 16.033557891845703
+            },
+            {
+              "id": 198,
+              "logit": 15.877155303955078
+            },
+            {
+              "id": 323,
+              "logit": 15.771751403808594
+            }
+          ],
+          "native_top1_margin": 4.639883041381836,
+          "oracle_top1_margin": 4.640575408935547,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 66,
+          "native_logits_sha256": "7679568602054fe333dc11cdbf03194916a7227861263398aab3325402dbf2a5",
+          "oracle_logits_sha256": "56132122e86161de242fe2bf1ace2d36a6b87a5ac116d5a47cab75e0135cb78d"
+        }
+      ],
+      "gate_sha256": "cdcc2a7f301f6aa31d90e8270a6f9ee6001356e51b46a9575c9ed7ff79a18375"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary127",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-boundary127-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/div-prefix-v2-boundary127-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-boundary127-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0021944046020507812,
+          "rms_error": 0.0004892630854571802,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.421339988708496,
+          "oracle_at_max_error": 4.423534393310547,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.553218841552734
+            },
+            {
+              "id": 198,
+              "logit": 16.849933624267578
+            },
+            {
+              "id": 271,
+              "logit": 13.273722648620605
+            },
+            {
+              "id": 13,
+              "logit": 12.784908294677734
+            },
+            {
+              "id": 2503,
+              "logit": 12.662856101989746
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.553070068359375
+            },
+            {
+              "id": 198,
+              "logit": 16.84941864013672
+            },
+            {
+              "id": 271,
+              "logit": 13.273490905761719
+            },
+            {
+              "id": 13,
+              "logit": 12.78539752960205
+            },
+            {
+              "id": 2503,
+              "logit": 12.662572860717773
+            }
+          ],
+          "native_top1_margin": 4.703285217285156,
+          "oracle_top1_margin": 4.703651428222656,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 127,
+          "native_logits_sha256": "7997607c7c30a000b27b5d92da430c7c6c6781ac16df02ade208f603b1f235b1",
+          "oracle_logits_sha256": "f931873afae4062b8bea93f9db2103ffe0e0e9811644b6c7171d0f4ec468c063"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0027837753295898438,
+          "rms_error": 0.000495462188106476,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.6059770584106445,
+          "oracle_at_max_error": 4.608760833740234,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.66815185546875
+            },
+            {
+              "id": 198,
+              "logit": 16.834400177001953
+            },
+            {
+              "id": 271,
+              "logit": 13.280664443969727
+            },
+            {
+              "id": 13,
+              "logit": 12.89222240447998
+            },
+            {
+              "id": 2503,
+              "logit": 12.724175453186035
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.66815185546875
+            },
+            {
+              "id": 198,
+              "logit": 16.83391761779785
+            },
+            {
+              "id": 271,
+              "logit": 13.28048038482666
+            },
+            {
+              "id": 13,
+              "logit": 12.892619132995605
+            },
+            {
+              "id": 2503,
+              "logit": 12.724153518676758
+            }
+          ],
+          "native_top1_margin": 4.833751678466797,
+          "oracle_top1_margin": 4.834234237670898,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 128,
+          "native_logits_sha256": "45f4b3f918dc5a037cb1b42449ccded60f8779915bad26168d7c3835a0f1e2d3",
+          "oracle_logits_sha256": "a0d7d142953c020a155076e6af99b21218d25a059811696e639c17a476c02ebb"
+        }
+      ],
+      "gate_sha256": "593ba75d9dc80ebb9b183152a14e086cbf8805d608610d8d234957dfa27e1e46"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary128",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-boundary128-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/div-prefix-v2-boundary128-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-boundary128-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.00267791748046875,
+          "rms_error": 0.000486916663169299,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.606082916259766,
+          "oracle_at_max_error": 4.608760833740234,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.668188095092773
+            },
+            {
+              "id": 198,
+              "logit": 16.834453582763672
+            },
+            {
+              "id": 271,
+              "logit": 13.280704498291016
+            },
+            {
+              "id": 13,
+              "logit": 12.892287254333496
+            },
+            {
+              "id": 2503,
+              "logit": 12.724174499511719
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.66815185546875
+            },
+            {
+              "id": 198,
+              "logit": 16.83391761779785
+            },
+            {
+              "id": 271,
+              "logit": 13.28048038482666
+            },
+            {
+              "id": 13,
+              "logit": 12.892619132995605
+            },
+            {
+              "id": 2503,
+              "logit": 12.724153518676758
+            }
+          ],
+          "native_top1_margin": 4.833734512329102,
+          "oracle_top1_margin": 4.834234237670898,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 128,
+          "native_logits_sha256": "554361043ece234ba3b95ab3306d32853f05121e4f2fc7995ae31ed1efcede07",
+          "oracle_logits_sha256": "a0d7d142953c020a155076e6af99b21218d25a059811696e639c17a476c02ebb"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0028772354125976562,
+          "rms_error": 0.000479152798161352,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.493922233581543,
+          "oracle_at_max_error": 4.496799468994141,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.98577880859375
+            },
+            {
+              "id": 198,
+              "logit": 16.982763290405273
+            },
+            {
+              "id": 271,
+              "logit": 13.429950714111328
+            },
+            {
+              "id": 2503,
+              "logit": 13.01291275024414
+            },
+            {
+              "id": 13,
+              "logit": 12.97525405883789
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.986042022705078
+            },
+            {
+              "id": 198,
+              "logit": 16.982454299926758
+            },
+            {
+              "id": 271,
+              "logit": 13.429841995239258
+            },
+            {
+              "id": 2503,
+              "logit": 13.013160705566406
+            },
+            {
+              "id": 13,
+              "logit": 12.975844383239746
+            }
+          ],
+          "native_top1_margin": 5.003015518188477,
+          "oracle_top1_margin": 5.00358772277832,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 129,
+          "native_logits_sha256": "f1dc87f46a3fb839663c7752048b0600bb235b71de62c4122d734d64322c74df",
+          "oracle_logits_sha256": "fd99460809b36c8024fb22bb6f298531f39766567af1e7640d0b6b6a83519342"
+        }
+      ],
+      "gate_sha256": "c136f6510088ac00cd64d0ab7c6741a8104e78be715e1fdff1e244823618b804"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary129",
+      "capture": "$REPO/build/native-cpu/prefix128-v1-boundary129-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/div-prefix-v2-boundary129-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix128-v1-boundary129-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0028772354125976562,
+          "rms_error": 0.000479152798161352,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.493922233581543,
+          "oracle_at_max_error": 4.496799468994141,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.98577880859375
+            },
+            {
+              "id": 198,
+              "logit": 16.982763290405273
+            },
+            {
+              "id": 271,
+              "logit": 13.429950714111328
+            },
+            {
+              "id": 2503,
+              "logit": 13.01291275024414
+            },
+            {
+              "id": 13,
+              "logit": 12.97525405883789
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.986042022705078
+            },
+            {
+              "id": 198,
+              "logit": 16.982454299926758
+            },
+            {
+              "id": 271,
+              "logit": 13.429841995239258
+            },
+            {
+              "id": 2503,
+              "logit": 13.013160705566406
+            },
+            {
+              "id": 13,
+              "logit": 12.975844383239746
+            }
+          ],
+          "native_top1_margin": 5.003015518188477,
+          "oracle_top1_margin": 5.00358772277832,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 129,
+          "native_logits_sha256": "f1dc87f46a3fb839663c7752048b0600bb235b71de62c4122d734d64322c74df",
+          "oracle_logits_sha256": "fd99460809b36c8024fb22bb6f298531f39766567af1e7640d0b6b6a83519342"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0030527114868164062,
+          "rms_error": 0.0005078690221271394,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.640447616577148,
+          "oracle_at_max_error": 4.643500328063965,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.9887638092041
+            },
+            {
+              "id": 198,
+              "logit": 17.065744400024414
+            },
+            {
+              "id": 271,
+              "logit": 13.493022918701172
+            },
+            {
+              "id": 2503,
+              "logit": 13.08057689666748
+            },
+            {
+              "id": 13,
+              "logit": 13.027212142944336
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.98872947692871
+            },
+            {
+              "id": 198,
+              "logit": 17.065519332885742
+            },
+            {
+              "id": 271,
+              "logit": 13.49312973022461
+            },
+            {
+              "id": 2503,
+              "logit": 13.080727577209473
+            },
+            {
+              "id": 13,
+              "logit": 13.02793025970459
+            }
+          ],
+          "native_top1_margin": 4.9230194091796875,
+          "oracle_top1_margin": 4.923210144042969,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 130,
+          "native_logits_sha256": "03a78a39d2023a419efa13733e9d0d0ac03f591be2b4b9067d993a237d491ee0",
+          "oracle_logits_sha256": "c6c8adaf2bcd9b4740a7fb3cac60159028469c106de320fcc66cbf24035dd5d3"
+        }
+      ],
+      "gate_sha256": "cfc4ab897d7c199441f777bb9a7e9312991d4c94436ce5d64df40aaedcc8e3b2"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "tiny",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-tiny-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-tiny-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-tiny-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.00018787384033203125,
+          "rms_error": 4.8548981027757656e-05,
+          "max_error_token_id": 45716,
+          "native_at_max_error": 6.332477569580078,
+          "oracle_at_max_error": 6.332289695739746,
+          "native_predicted_id": 21806,
+          "native_argmax_id": 21806,
+          "oracle_argmax_id": 21806,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 21806,
+              "logit": 8.139313697814941
+            },
+            {
+              "id": 14582,
+              "logit": 8.077033042907715
+            },
+            {
+              "id": 15846,
+              "logit": 7.632211685180664
+            },
+            {
+              "id": 477,
+              "logit": 7.579107284545898
+            },
+            {
+              "id": 1957,
+              "logit": 7.344428539276123
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 21806,
+              "logit": 8.139236450195312
+            },
+            {
+              "id": 14582,
+              "logit": 8.076905250549316
+            },
+            {
+              "id": 15846,
+              "logit": 7.6321539878845215
+            },
+            {
+              "id": 477,
+              "logit": 7.578988552093506
+            },
+            {
+              "id": 1957,
+              "logit": 7.344333171844482
+            }
+          ],
+          "native_top1_margin": 0.06228065490722656,
+          "oracle_top1_margin": 0.062331199645996094,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 1,
+          "native_logits_sha256": "a409f068422c1715a5c4b3b865045186dfdf116b5b302e3e5e100f610bbf21cc",
+          "oracle_logits_sha256": "7134004998f4ecdc594ec9f16323172b90d7cecf3965abf9e56f91197f370d35"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0016551017761230469,
+          "rms_error": 0.0003603049653145386,
+          "max_error_token_id": 138643,
+          "native_at_max_error": -0.8641157150268555,
+          "oracle_at_max_error": -0.8657708168029785,
+          "native_predicted_id": 358,
+          "native_argmax_id": 358,
+          "oracle_argmax_id": 358,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 358,
+              "logit": 17.176725387573242
+            },
+            {
+              "id": 323,
+              "logit": 16.739744186401367
+            },
+            {
+              "id": 847,
+              "logit": 14.998039245605469
+            },
+            {
+              "id": 1052,
+              "logit": 14.108942031860352
+            },
+            {
+              "id": 5019,
+              "logit": 14.094305992126465
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 358,
+              "logit": 17.17696762084961
+            },
+            {
+              "id": 323,
+              "logit": 16.73945426940918
+            },
+            {
+              "id": 847,
+              "logit": 14.997673034667969
+            },
+            {
+              "id": 1052,
+              "logit": 14.109174728393555
+            },
+            {
+              "id": 5019,
+              "logit": 14.09486198425293
+            }
+          ],
+          "native_top1_margin": 0.436981201171875,
+          "oracle_top1_margin": 0.4375133514404297,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 2,
+          "native_logits_sha256": "d548bf0e5a85ac6df3c071557a4808013451cae56b3c1bb9850272562e215b4c",
+          "oracle_logits_sha256": "dd80d0184b327339fd17ce42e993d8f5d7e376c9a0fdd1c19e5ddc098c42d60d"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0019507408142089844,
+          "rms_error": 0.00041898108326116025,
+          "max_error_token_id": 3721,
+          "native_at_max_error": 0.8802714347839355,
+          "oracle_at_max_error": 0.8822221755981445,
+          "native_predicted_id": 11,
+          "native_argmax_id": 11,
+          "oracle_argmax_id": 11,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 11,
+              "logit": 14.922370910644531
+            },
+            {
+              "id": 0,
+              "logit": 14.446060180664062
+            },
+            {
+              "id": 13,
+              "logit": 13.93366813659668
+            },
+            {
+              "id": 323,
+              "logit": 13.527523040771484
+            },
+            {
+              "id": 2282,
+              "logit": 13.112082481384277
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 11,
+              "logit": 14.923208236694336
+            },
+            {
+              "id": 0,
+              "logit": 14.446864128112793
+            },
+            {
+              "id": 13,
+              "logit": 13.933691024780273
+            },
+            {
+              "id": 323,
+              "logit": 13.527902603149414
+            },
+            {
+              "id": 2282,
+              "logit": 13.11195182800293
+            }
+          ],
+          "native_top1_margin": 0.47631072998046875,
+          "oracle_top1_margin": 0.47634410858154297,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 2,
+          "context_tokens": 3,
+          "native_logits_sha256": "40744e47d98dcf5fd03f64d8686d99f1f42a20c4e839337320cf4f0c9d7cd569",
+          "oracle_logits_sha256": "a270a34f000ebccd3cea881c8ecad5326959872bae899574dfb0540847a07103"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0019311904907226562,
+          "rms_error": 0.00039328373307474416,
+          "max_error_token_id": 1634,
+          "native_at_max_error": 11.75033187866211,
+          "oracle_at_max_error": 11.748400688171387,
+          "native_predicted_id": 358,
+          "native_argmax_id": 358,
+          "oracle_argmax_id": 358,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 358,
+              "logit": 14.602472305297852
+            },
+            {
+              "id": 6771,
+              "logit": 13.307548522949219
+            },
+            {
+              "id": 1096,
+              "logit": 12.925565719604492
+            },
+            {
+              "id": 11201,
+              "logit": 12.754987716674805
+            },
+            {
+              "id": 576,
+              "logit": 12.691389083862305
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 358,
+              "logit": 14.601869583129883
+            },
+            {
+              "id": 6771,
+              "logit": 13.307380676269531
+            },
+            {
+              "id": 1096,
+              "logit": 12.925506591796875
+            },
+            {
+              "id": 11201,
+              "logit": 12.754122734069824
+            },
+            {
+              "id": 576,
+              "logit": 12.691120147705078
+            }
+          ],
+          "native_top1_margin": 1.2949237823486328,
+          "oracle_top1_margin": 1.2944889068603516,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 3,
+          "context_tokens": 4,
+          "native_logits_sha256": "9f490df824f248e2b29b74c8f97d680bc00790d9c80afa71998c5df25310feb0",
+          "oracle_logits_sha256": "ccfc3a8b8b1e772e5314f4c26adf3986199d1b454cbb9d60964787f36abd8bea"
+        }
+      ],
+      "gate_sha256": "013c4867d7d058362786258d8789c69b5f612cea4b4be3deb8e14a605b4b17d0"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "short",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-short-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-short-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-short-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.007540464401245117,
+          "rms_error": 0.0017233430784430101,
+          "max_error_token_id": 90604,
+          "native_at_max_error": -2.814213275909424,
+          "oracle_at_max_error": -2.821753740310669,
+          "native_predicted_id": 10642,
+          "native_argmax_id": 10642,
+          "oracle_argmax_id": 10642,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 10642,
+              "logit": 27.50747299194336
+            },
+            {
+              "id": 334,
+              "logit": 21.373064041137695
+            },
+            {
+              "id": 12,
+              "logit": 21.347618103027344
+            },
+            {
+              "id": 18816,
+              "logit": 19.699438095092773
+            },
+            {
+              "id": 16,
+              "logit": 19.428234100341797
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 10642,
+              "logit": 27.509201049804688
+            },
+            {
+              "id": 334,
+              "logit": 21.377561569213867
+            },
+            {
+              "id": 12,
+              "logit": 21.348766326904297
+            },
+            {
+              "id": 18816,
+              "logit": 19.70138931274414
+            },
+            {
+              "id": 16,
+              "logit": 19.42438507080078
+            }
+          ],
+          "native_top1_margin": 6.134408950805664,
+          "oracle_top1_margin": 6.13163948059082,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 85,
+          "native_logits_sha256": "acd639690ee59561bba009dcbe1eb1602e497e1143930d0e64e3fff046d17446",
+          "oracle_logits_sha256": "c248d463d7e862fa096073e018d9c7d053942dfbd69f17bda3a9183e60dfc985"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005100250244140625,
+          "rms_error": 0.0012016547188754187,
+          "max_error_token_id": 78900,
+          "native_at_max_error": -8.532734870910645,
+          "oracle_at_max_error": -8.537835121154785,
+          "native_predicted_id": 33394,
+          "native_argmax_id": 33394,
+          "oracle_argmax_id": 33394,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 33394,
+              "logit": 30.148113250732422
+            },
+            {
+              "id": 16936,
+              "logit": 21.735368728637695
+            },
+            {
+              "id": 3070,
+              "logit": 20.028926849365234
+            },
+            {
+              "id": 4938,
+              "logit": 19.050554275512695
+            },
+            {
+              "id": 7055,
+              "logit": 18.633403778076172
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 33394,
+              "logit": 30.148435592651367
+            },
+            {
+              "id": 16936,
+              "logit": 21.733531951904297
+            },
+            {
+              "id": 3070,
+              "logit": 20.032390594482422
+            },
+            {
+              "id": 4938,
+              "logit": 19.051433563232422
+            },
+            {
+              "id": 7055,
+              "logit": 18.633834838867188
+            }
+          ],
+          "native_top1_margin": 8.412744522094727,
+          "oracle_top1_margin": 8.41490364074707,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 86,
+          "native_logits_sha256": "fb063d37170267e3739ddf4dbcfd542003cb7311f19864c91d6cd3d4ae32cc3e",
+          "oracle_logits_sha256": "592b1793aba67eaaaa33e25db4f2a601333e008abf7a8c3d60a2e27ab437cab1"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005147457122802734,
+          "rms_error": 0.0014980168405137682,
+          "max_error_token_id": 80792,
+          "native_at_max_error": -6.5334086418151855,
+          "oracle_at_max_error": -6.538556098937988,
+          "native_predicted_id": 19257,
+          "native_argmax_id": 19257,
+          "oracle_argmax_id": 19257,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 19257,
+              "logit": 25.42310333251953
+            },
+            {
+              "id": 374,
+              "logit": 23.09415626525879
+            },
+            {
+              "id": 35616,
+              "logit": 18.06975555419922
+            },
+            {
+              "id": 6147,
+              "logit": 17.877567291259766
+            },
+            {
+              "id": 26569,
+              "logit": 17.756885528564453
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 19257,
+              "logit": 25.424583435058594
+            },
+            {
+              "id": 374,
+              "logit": 23.09569549560547
+            },
+            {
+              "id": 35616,
+              "logit": 18.070653915405273
+            },
+            {
+              "id": 6147,
+              "logit": 17.877107620239258
+            },
+            {
+              "id": 26569,
+              "logit": 17.758291244506836
+            }
+          ],
+          "native_top1_margin": 2.328947067260742,
+          "oracle_top1_margin": 2.328887939453125,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 2,
+          "context_tokens": 87,
+          "native_logits_sha256": "9e175f7025bd6cda1b95c1e61dc97589957a57fef5ec6b435407f9ff7461055f",
+          "oracle_logits_sha256": "90ae785031bc45bc31cd666344f6794bd925c908355f431e3f4cbd9b3474fb90"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0036716461181640625,
+          "rms_error": 0.0008971669984500426,
+          "max_error_token_id": 59185,
+          "native_at_max_error": -7.6817731857299805,
+          "oracle_at_max_error": -7.6854448318481445,
+          "native_predicted_id": 311,
+          "native_argmax_id": 311,
+          "oracle_argmax_id": 311,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 311,
+              "logit": 28.678085327148438
+            },
+            {
+              "id": 279,
+              "logit": 13.616500854492188
+            },
+            {
+              "id": 3070,
+              "logit": 13.490982055664062
+            },
+            {
+              "id": 2346,
+              "logit": 13.188326835632324
+            },
+            {
+              "id": 5961,
+              "logit": 12.832754135131836
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 311,
+              "logit": 28.678924560546875
+            },
+            {
+              "id": 279,
+              "logit": 13.616162300109863
+            },
+            {
+              "id": 3070,
+              "logit": 13.491499900817871
+            },
+            {
+              "id": 2346,
+              "logit": 13.188787460327148
+            },
+            {
+              "id": 5961,
+              "logit": 12.831890106201172
+            }
+          ],
+          "native_top1_margin": 15.06158447265625,
+          "oracle_top1_margin": 15.062762260437012,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 3,
+          "context_tokens": 88,
+          "native_logits_sha256": "14eab836265c582f5b74a47695ae89560b4ede071658d41d72e064a9c2bed73c",
+          "oracle_logits_sha256": "87ac4bedb16aa025cfa59cc9f0fcf0cae083f5249cdefc6816b8e12f577c81f4"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0048313140869140625,
+          "rms_error": 0.0011904669447915714,
+          "max_error_token_id": 71086,
+          "native_at_max_error": -8.244609832763672,
+          "oracle_at_max_error": -8.249441146850586,
+          "native_predicted_id": 279,
+          "native_argmax_id": 279,
+          "oracle_argmax_id": 279,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 279,
+              "logit": 27.57369041442871
+            },
+            {
+              "id": 1246,
+              "logit": 25.0118465423584
+            },
+            {
+              "id": 264,
+              "logit": 16.288745880126953
+            },
+            {
+              "id": 3070,
+              "logit": 15.166321754455566
+            },
+            {
+              "id": 821,
+              "logit": 14.945716857910156
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 279,
+              "logit": 27.575027465820312
+            },
+            {
+              "id": 1246,
+              "logit": 25.01306915283203
+            },
+            {
+              "id": 264,
+              "logit": 16.28706932067871
+            },
+            {
+              "id": 3070,
+              "logit": 15.166439056396484
+            },
+            {
+              "id": 821,
+              "logit": 14.94610595703125
+            }
+          ],
+          "native_top1_margin": 2.5618438720703125,
+          "oracle_top1_margin": 2.5619583129882812,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 4,
+          "context_tokens": 89,
+          "native_logits_sha256": "09a07a8872288fda1659387b8c3dae7f6c4644b0341a4bd65fa547a5eab3676e",
+          "oracle_logits_sha256": "3011b5124b2b40a43771304616d1e6ab6bfde1d77c4cb7cc06039d3cc84ba922"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0051479339599609375,
+          "rms_error": 0.0010031297539157477,
+          "max_error_token_id": 71181,
+          "native_at_max_error": -8.520801544189453,
+          "oracle_at_max_error": -8.525949478149414,
+          "native_predicted_id": 4628,
+          "native_argmax_id": 4628,
+          "oracle_argmax_id": 4628,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 4628,
+              "logit": 22.813762664794922
+            },
+            {
+              "id": 4379,
+              "logit": 22.636295318603516
+            },
+            {
+              "id": 3311,
+              "logit": 21.001846313476562
+            },
+            {
+              "id": 7192,
+              "logit": 20.98900604248047
+            },
+            {
+              "id": 5726,
+              "logit": 19.17632293701172
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 4628,
+              "logit": 22.81277847290039
+            },
+            {
+              "id": 4379,
+              "logit": 22.636859893798828
+            },
+            {
+              "id": 3311,
+              "logit": 21.001867294311523
+            },
+            {
+              "id": 7192,
+              "logit": 20.989097595214844
+            },
+            {
+              "id": 5726,
+              "logit": 19.17633056640625
+            }
+          ],
+          "native_top1_margin": 0.17746734619140625,
+          "oracle_top1_margin": 0.1759185791015625,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 5,
+          "context_tokens": 90,
+          "native_logits_sha256": "a616c7e2572616dea2bc14530e6c75b9bdd7fb01ad2557acc166a72c4bb2caba",
+          "oracle_logits_sha256": "cd12cd98e0282cf2705ce6c4d7b1b732154a32298c469dbae563c51cea85a957"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0035266876220703125,
+          "rms_error": 0.000858557247951167,
+          "max_error_token_id": 24031,
+          "native_at_max_error": -9.678400039672852,
+          "oracle_at_max_error": -9.681926727294922,
+          "native_predicted_id": 518,
+          "native_argmax_id": 518,
+          "oracle_argmax_id": 518,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 518,
+              "logit": 25.881450653076172
+            },
+            {
+              "id": 315,
+              "logit": 20.44088363647461
+            },
+            {
+              "id": 323,
+              "logit": 20.269554138183594
+            },
+            {
+              "id": 448,
+              "logit": 19.37079620361328
+            },
+            {
+              "id": 476,
+              "logit": 15.728745460510254
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 518,
+              "logit": 25.882110595703125
+            },
+            {
+              "id": 315,
+              "logit": 20.44190216064453
+            },
+            {
+              "id": 323,
+              "logit": 20.268638610839844
+            },
+            {
+              "id": 448,
+              "logit": 19.370304107666016
+            },
+            {
+              "id": 476,
+              "logit": 15.728134155273438
+            }
+          ],
+          "native_top1_margin": 5.4405670166015625,
+          "oracle_top1_margin": 5.440208435058594,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 6,
+          "context_tokens": 91,
+          "native_logits_sha256": "b484b34e44665e0fb116f039a5586b421edaf06014168f19da13f6ba19e04419",
+          "oracle_logits_sha256": "373e398edeaa39c9d1edd2d204941152a12c42dc49b06d42c6d8de8e47b76e7f"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0031821727752685547,
+          "rms_error": 0.0007856780933097914,
+          "max_error_token_id": 33590,
+          "native_at_max_error": -3.666890859603882,
+          "oracle_at_max_error": -3.6700730323791504,
+          "native_predicted_id": 892,
+          "native_argmax_id": 892,
+          "oracle_argmax_id": 892,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 892,
+              "logit": 32.19642639160156
+            },
+            {
+              "id": 8206,
+              "logit": 19.972522735595703
+            },
+            {
+              "id": 15920,
+              "logit": 18.623695373535156
+            },
+            {
+              "id": 133669,
+              "logit": 16.072021484375
+            },
+            {
+              "id": 23085,
+              "logit": 15.599699974060059
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 892,
+              "logit": 32.19803237915039
+            },
+            {
+              "id": 8206,
+              "logit": 19.973716735839844
+            },
+            {
+              "id": 15920,
+              "logit": 18.62545394897461
+            },
+            {
+              "id": 133669,
+              "logit": 16.073867797851562
+            },
+            {
+              "id": 23085,
+              "logit": 15.601211547851562
+            }
+          ],
+          "native_top1_margin": 12.22390365600586,
+          "oracle_top1_margin": 12.224315643310547,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 7,
+          "context_tokens": 92,
+          "native_logits_sha256": "a064d8c2dc54dc07d1b1173b50b6a1e0758352f8d553208e64c7563e83e72eae",
+          "oracle_logits_sha256": "d87b1262b3a08e3a756900a9e9bd0731c17bc3974f71a781c107aa467e116a44"
+        }
+      ],
+      "gate_sha256": "f57d1aaa581f3767157900776e6552692f7696012b8a81622fc3eaa1ee8719cd"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "long",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-long-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-long-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-long-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004469871520996094,
+          "rms_error": 0.0009802827841185757,
+          "max_error_token_id": 11535,
+          "native_at_max_error": -8.832680702209473,
+          "oracle_at_max_error": -8.828210830688477,
+          "native_predicted_id": 10642,
+          "native_argmax_id": 10642,
+          "oracle_argmax_id": 10642,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 10642,
+              "logit": 29.328493118286133
+            },
+            {
+              "id": 334,
+              "logit": 23.324665069580078
+            },
+            {
+              "id": 18816,
+              "logit": 21.991609573364258
+            },
+            {
+              "id": 12,
+              "logit": 20.783029556274414
+            },
+            {
+              "id": 13850,
+              "logit": 19.958450317382812
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 10642,
+              "logit": 29.326351165771484
+            },
+            {
+              "id": 334,
+              "logit": 23.32427406311035
+            },
+            {
+              "id": 18816,
+              "logit": 21.99089813232422
+            },
+            {
+              "id": 12,
+              "logit": 20.783573150634766
+            },
+            {
+              "id": 13850,
+              "logit": 19.956802368164062
+            }
+          ],
+          "native_top1_margin": 6.003828048706055,
+          "oracle_top1_margin": 6.002077102661133,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 452,
+          "native_logits_sha256": "2cf3996bbf64f1c64904e20fcccef47b780b9962e0f4db3a467d73854e4d819a",
+          "oracle_logits_sha256": "f8ec7971fe8d86be57cfe60ab6178132e0c39f29b8c90620749f8dedfd91d4a6"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005344390869140625,
+          "rms_error": 0.000998609473084422,
+          "max_error_token_id": 54212,
+          "native_at_max_error": -12.477973937988281,
+          "oracle_at_max_error": -12.47262954711914,
+          "native_predicted_id": 33394,
+          "native_argmax_id": 33394,
+          "oracle_argmax_id": 33394,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 33394,
+              "logit": 31.785568237304688
+            },
+            {
+              "id": 3070,
+              "logit": 21.41009521484375
+            },
+            {
+              "id": 16936,
+              "logit": 19.656036376953125
+            },
+            {
+              "id": 7055,
+              "logit": 19.258527755737305
+            },
+            {
+              "id": 4938,
+              "logit": 18.03801918029785
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 33394,
+              "logit": 31.781352996826172
+            },
+            {
+              "id": 3070,
+              "logit": 21.409709930419922
+            },
+            {
+              "id": 16936,
+              "logit": 19.652328491210938
+            },
+            {
+              "id": 7055,
+              "logit": 19.257164001464844
+            },
+            {
+              "id": 4938,
+              "logit": 18.04024314880371
+            }
+          ],
+          "native_top1_margin": 10.375473022460938,
+          "oracle_top1_margin": 10.37164306640625,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 453,
+          "native_logits_sha256": "73a0c34fc7ceb2947e0668d68f653b7775d2340cb81759c57d784af96c2cd967",
+          "oracle_logits_sha256": "b4bb4e23a73163fcbb0dfa8d8bc75682cc1a898c2f0e92ad3bc0cf9e05cb4f29"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.00403594970703125,
+          "rms_error": 0.0009494007564305412,
+          "max_error_token_id": 56928,
+          "native_at_max_error": -12.344837188720703,
+          "oracle_at_max_error": -12.340801239013672,
+          "native_predicted_id": 19257,
+          "native_argmax_id": 19257,
+          "oracle_argmax_id": 19257,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 19257,
+              "logit": 23.582454681396484
+            },
+            {
+              "id": 10953,
+              "logit": 23.534019470214844
+            },
+            {
+              "id": 374,
+              "logit": 21.920507431030273
+            },
+            {
+              "id": 26569,
+              "logit": 18.37209129333496
+            },
+            {
+              "id": 10868,
+              "logit": 18.19384002685547
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 19257,
+              "logit": 23.58112335205078
+            },
+            {
+              "id": 10953,
+              "logit": 23.53361701965332
+            },
+            {
+              "id": 374,
+              "logit": 21.91948127746582
+            },
+            {
+              "id": 26569,
+              "logit": 18.37127113342285
+            },
+            {
+              "id": 10868,
+              "logit": 18.19525909423828
+            }
+          ],
+          "native_top1_margin": 0.048435211181640625,
+          "oracle_top1_margin": 0.04750633239746094,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 2,
+          "context_tokens": 454,
+          "native_logits_sha256": "bfa4a35cbc39c9997514ccb78e0eb92b524ada75bc5521ef536e4752929e8538",
+          "oracle_logits_sha256": "966dee44f986a28228775e255332b7f811f62a128b7a9fdd5557bacc7a0bf4f1"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.003570556640625,
+          "rms_error": 0.0009888824233769081,
+          "max_error_token_id": 30029,
+          "native_at_max_error": -7.455475330352783,
+          "oracle_at_max_error": -7.451904773712158,
+          "native_predicted_id": 311,
+          "native_argmax_id": 311,
+          "oracle_argmax_id": 311,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 311,
+              "logit": 27.660940170288086
+            },
+            {
+              "id": 5961,
+              "logit": 13.454336166381836
+            },
+            {
+              "id": 3070,
+              "logit": 13.354654312133789
+            },
+            {
+              "id": 279,
+              "logit": 13.353796005249023
+            },
+            {
+              "id": 11689,
+              "logit": 13.195411682128906
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 311,
+              "logit": 27.658863067626953
+            },
+            {
+              "id": 5961,
+              "logit": 13.454795837402344
+            },
+            {
+              "id": 3070,
+              "logit": 13.354621887207031
+            },
+            {
+              "id": 279,
+              "logit": 13.354385375976562
+            },
+            {
+              "id": 11689,
+              "logit": 13.194819450378418
+            }
+          ],
+          "native_top1_margin": 14.20660400390625,
+          "oracle_top1_margin": 14.20406723022461,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 3,
+          "context_tokens": 455,
+          "native_logits_sha256": "221d9b37040313d17f60d18b267d8d01973c5df33bc1debe4a7e53f0bb510fc5",
+          "oracle_logits_sha256": "86537ba642f1e2ef4bbfe8560018b250737ec0d22deeef828bca3b5cb556cb55"
+        }
+      ],
+      "gate_sha256": "847a8b762bf31d6bf01d46b6c7cef7798363da0b05534ee98280aafbc07954d3"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary511",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-boundary511-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-boundary511-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-boundary511-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005377769470214844,
+          "rms_error": 0.0013245054413322278,
+          "max_error_token_id": 90555,
+          "native_at_max_error": -7.295082092285156,
+          "oracle_at_max_error": -7.289704322814941,
+          "native_predicted_id": 10642,
+          "native_argmax_id": 10642,
+          "oracle_argmax_id": 10642,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 10642,
+              "logit": 28.365921020507812
+            },
+            {
+              "id": 334,
+              "logit": 22.77294158935547
+            },
+            {
+              "id": 12,
+              "logit": 21.31489372253418
+            },
+            {
+              "id": 18816,
+              "logit": 21.283090591430664
+            },
+            {
+              "id": 13850,
+              "logit": 19.418079376220703
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 10642,
+              "logit": 28.363929748535156
+            },
+            {
+              "id": 334,
+              "logit": 22.773815155029297
+            },
+            {
+              "id": 12,
+              "logit": 21.31485366821289
+            },
+            {
+              "id": 18816,
+              "logit": 21.28240203857422
+            },
+            {
+              "id": 13850,
+              "logit": 19.41680335998535
+            }
+          ],
+          "native_top1_margin": 5.592979431152344,
+          "oracle_top1_margin": 5.590114593505859,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 511,
+          "native_logits_sha256": "172a347b48a3f30b089c8c95b165d01e922863f07ac1a2fc5f11b1b5e41708c2",
+          "oracle_logits_sha256": "b0a475b18c017cc83ee8d2d797c0206a92c0a51a001c99c2126019c44429c272"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005124568939208984,
+          "rms_error": 0.0009845900986988484,
+          "max_error_token_id": 98720,
+          "native_at_max_error": -7.504631519317627,
+          "oracle_at_max_error": -7.509756088256836,
+          "native_predicted_id": 33394,
+          "native_argmax_id": 33394,
+          "oracle_argmax_id": 33394,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 33394,
+              "logit": 31.839876174926758
+            },
+            {
+              "id": 3070,
+              "logit": 21.680309295654297
+            },
+            {
+              "id": 16936,
+              "logit": 20.003192901611328
+            },
+            {
+              "id": 7055,
+              "logit": 19.103595733642578
+            },
+            {
+              "id": 4938,
+              "logit": 18.0319766998291
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 33394,
+              "logit": 31.838348388671875
+            },
+            {
+              "id": 3070,
+              "logit": 21.678955078125
+            },
+            {
+              "id": 16936,
+              "logit": 20.003328323364258
+            },
+            {
+              "id": 7055,
+              "logit": 19.1041259765625
+            },
+            {
+              "id": 4938,
+              "logit": 18.032794952392578
+            }
+          ],
+          "native_top1_margin": 10.159566879272461,
+          "oracle_top1_margin": 10.159393310546875,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 512,
+          "native_logits_sha256": "9ec07ad90fca05adb4b40305040240a2c214cd7407ef0473fd7ae2923345be98",
+          "oracle_logits_sha256": "150e2261af83e831cc54d4a7be47d9ce7989c0025adc5eb6cc2cff27e3c0ca5d"
+        }
+      ],
+      "gate_sha256": "c9c670b1082d55fa34bb3f1ca1617cf57be2594c9d68c676b8a1c4972461b74e"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary512",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-boundary512-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-boundary512-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-boundary512-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004810333251953125,
+          "rms_error": 0.001177334635692457,
+          "max_error_token_id": 87371,
+          "native_at_max_error": -3.0749387741088867,
+          "oracle_at_max_error": -3.0701284408569336,
+          "native_predicted_id": 10642,
+          "native_argmax_id": 10642,
+          "oracle_argmax_id": 10642,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 10642,
+              "logit": 28.324777603149414
+            },
+            {
+              "id": 334,
+              "logit": 22.785629272460938
+            },
+            {
+              "id": 18816,
+              "logit": 21.254623413085938
+            },
+            {
+              "id": 12,
+              "logit": 21.21857452392578
+            },
+            {
+              "id": 13850,
+              "logit": 19.399276733398438
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 10642,
+              "logit": 28.325298309326172
+            },
+            {
+              "id": 334,
+              "logit": 22.787498474121094
+            },
+            {
+              "id": 18816,
+              "logit": 21.25460433959961
+            },
+            {
+              "id": 12,
+              "logit": 21.216005325317383
+            },
+            {
+              "id": 13850,
+              "logit": 19.399202346801758
+            }
+          ],
+          "native_top1_margin": 5.539148330688477,
+          "oracle_top1_margin": 5.537799835205078,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 512,
+          "native_logits_sha256": "e29a922837ff999d6c0b360045a444ac13f49a6df98d93fae9d76b6982dae628",
+          "oracle_logits_sha256": "35191a607d5a723bd1c47afdd30dda65411bf186c80d2c6f69b0ccd5d028ead3"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005428314208984375,
+          "rms_error": 0.0010712144717405468,
+          "max_error_token_id": 86050,
+          "native_at_max_error": -11.725759506225586,
+          "oracle_at_max_error": -11.73118782043457,
+          "native_predicted_id": 33394,
+          "native_argmax_id": 33394,
+          "oracle_argmax_id": 33394,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 33394,
+              "logit": 31.84424591064453
+            },
+            {
+              "id": 3070,
+              "logit": 21.748836517333984
+            },
+            {
+              "id": 16936,
+              "logit": 19.94121551513672
+            },
+            {
+              "id": 7055,
+              "logit": 19.084875106811523
+            },
+            {
+              "id": 4938,
+              "logit": 18.055448532104492
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 33394,
+              "logit": 31.84334945678711
+            },
+            {
+              "id": 3070,
+              "logit": 21.752161026000977
+            },
+            {
+              "id": 16936,
+              "logit": 19.939674377441406
+            },
+            {
+              "id": 7055,
+              "logit": 19.085424423217773
+            },
+            {
+              "id": 4938,
+              "logit": 18.058822631835938
+            }
+          ],
+          "native_top1_margin": 10.095409393310547,
+          "oracle_top1_margin": 10.091188430786133,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 513,
+          "native_logits_sha256": "abb5282f3bdbfbf8423dc975439b49daa34b5c4052539b1f9c50276d713f6050",
+          "oracle_logits_sha256": "8735d74462a9c8535ff5cfd04ec1564d4ee4a6f2f0622064a4307add03a9365c"
+        }
+      ],
+      "gate_sha256": "e4321c1da0342b249bdf67dbfa21a50cc313b1709cb697285551fb64c3dec729"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary513",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-boundary513-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-boundary513-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-boundary513-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004644870758056641,
+          "rms_error": 0.0008821700855129732,
+          "max_error_token_id": 14929,
+          "native_at_max_error": 2.0663881301879883,
+          "oracle_at_max_error": 2.071033000946045,
+          "native_predicted_id": 10642,
+          "native_argmax_id": 10642,
+          "oracle_argmax_id": 10642,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 10642,
+              "logit": 28.292171478271484
+            },
+            {
+              "id": 334,
+              "logit": 22.80958366394043
+            },
+            {
+              "id": 18816,
+              "logit": 21.261215209960938
+            },
+            {
+              "id": 12,
+              "logit": 21.103904724121094
+            },
+            {
+              "id": 13850,
+              "logit": 19.37018394470215
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 10642,
+              "logit": 28.294570922851562
+            },
+            {
+              "id": 334,
+              "logit": 22.81064224243164
+            },
+            {
+              "id": 18816,
+              "logit": 21.263282775878906
+            },
+            {
+              "id": 12,
+              "logit": 21.103002548217773
+            },
+            {
+              "id": 13850,
+              "logit": 19.371416091918945
+            }
+          ],
+          "native_top1_margin": 5.482587814331055,
+          "oracle_top1_margin": 5.483928680419922,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 513,
+          "native_logits_sha256": "3628e9b8c02a363620c2b0f1b3a57f67dc9b76df8138771d95352b99f5e9e450",
+          "oracle_logits_sha256": "f93d59f0f59ae37624c65d733e460f4f13205d96d8beda302c89bb9d1461d7c9"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004481315612792969,
+          "rms_error": 0.000992683542171677,
+          "max_error_token_id": 30935,
+          "native_at_max_error": -6.1844377517700195,
+          "oracle_at_max_error": -6.1889190673828125,
+          "native_predicted_id": 33394,
+          "native_argmax_id": 33394,
+          "oracle_argmax_id": 33394,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 33394,
+              "logit": 31.872251510620117
+            },
+            {
+              "id": 3070,
+              "logit": 21.815536499023438
+            },
+            {
+              "id": 16936,
+              "logit": 19.89287567138672
+            },
+            {
+              "id": 7055,
+              "logit": 19.093400955200195
+            },
+            {
+              "id": 4938,
+              "logit": 18.094202041625977
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 33394,
+              "logit": 31.872926712036133
+            },
+            {
+              "id": 3070,
+              "logit": 21.8157958984375
+            },
+            {
+              "id": 16936,
+              "logit": 19.89237403869629
+            },
+            {
+              "id": 7055,
+              "logit": 19.09392547607422
+            },
+            {
+              "id": 4938,
+              "logit": 18.09612274169922
+            }
+          ],
+          "native_top1_margin": 10.05671501159668,
+          "oracle_top1_margin": 10.057130813598633,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 514,
+          "native_logits_sha256": "2654bd15714348a45203f0ca0a270dd9f261b4f5fd8b301fe7c58f7262b71be7",
+          "oracle_logits_sha256": "54cf80ef503bf9ac9a4a5369de704776d896a7d7284bbe76a8ffe19ec97aecd0"
+        }
+      ],
+      "gate_sha256": "074d5927d79ef5ed36208c96e406312ba214006a2e9dee0dd4145c89404d8e98"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "context1024",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-context1024-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-context1024-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-context1024-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.008427619934082031,
+          "rms_error": 0.0018418044318307093,
+          "max_error_token_id": 108995,
+          "native_at_max_error": -4.612926483154297,
+          "oracle_at_max_error": -4.604498863220215,
+          "native_predicted_id": 31615,
+          "native_argmax_id": 31615,
+          "oracle_argmax_id": 31615,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 31615,
+              "logit": 22.683502197265625
+            },
+            {
+              "id": 334,
+              "logit": 22.415985107421875
+            },
+            {
+              "id": 10642,
+              "logit": 21.787107467651367
+            },
+            {
+              "id": 14374,
+              "logit": 19.871036529541016
+            },
+            {
+              "id": 95456,
+              "logit": 19.332529067993164
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 31615,
+              "logit": 22.68614959716797
+            },
+            {
+              "id": 334,
+              "logit": 22.414112091064453
+            },
+            {
+              "id": 10642,
+              "logit": 21.784610748291016
+            },
+            {
+              "id": 14374,
+              "logit": 19.87226104736328
+            },
+            {
+              "id": 95456,
+              "logit": 19.328664779663086
+            }
+          ],
+          "native_top1_margin": 0.26751708984375,
+          "oracle_top1_margin": 0.2720375061035156,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 1024,
+          "native_logits_sha256": "4fac10f0e31e99bb04f6800c52d9e5f4785f64bcbc49e8cbba0a7a3efb1b4c53",
+          "oracle_logits_sha256": "b24f242f443f9725039a0533fa81346231dcb4a05e93bfba7115b9555ed1a06b"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005040168762207031,
+          "rms_error": 0.0010888538341734494,
+          "max_error_token_id": 82599,
+          "native_at_max_error": 6.121376037597656,
+          "oracle_at_max_error": 6.116335868835449,
+          "native_predicted_id": 4938,
+          "native_argmax_id": 4938,
+          "oracle_argmax_id": 4938,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 4938,
+              "logit": 23.735319137573242
+            },
+            {
+              "id": 13850,
+              "logit": 21.43484115600586
+            },
+            {
+              "id": 320,
+              "logit": 16.65292739868164
+            },
+            {
+              "id": 323,
+              "logit": 16.44754409790039
+            },
+            {
+              "id": 17646,
+              "logit": 15.688498497009277
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 4938,
+              "logit": 23.733680725097656
+            },
+            {
+              "id": 13850,
+              "logit": 21.434268951416016
+            },
+            {
+              "id": 320,
+              "logit": 16.654987335205078
+            },
+            {
+              "id": 323,
+              "logit": 16.448997497558594
+            },
+            {
+              "id": 17646,
+              "logit": 15.686847686767578
+            }
+          ],
+          "native_top1_margin": 2.300477981567383,
+          "oracle_top1_margin": 2.2994117736816406,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 1025,
+          "native_logits_sha256": "7f71a7418e7db783963bc7563be8551b71963a388ab4646507009746e8b48ce8",
+          "oracle_logits_sha256": "29df2ae09a5d32b079b273c2d916ef6ff6d32bba27296b294825f622ddf47e43"
+        }
+      ],
+      "gate_sha256": "61099fdeb857f95e7be1d67044b3520a504c0b330d29f0fcae8c5db856f5e97a"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "context2048",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-context2048-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/norm-f64-context2048-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-context2048-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.008694648742675781,
+          "rms_error": 0.0014803020366098633,
+          "max_error_token_id": 6689,
+          "native_at_max_error": 15.757728576660156,
+          "oracle_at_max_error": 15.74903392791748,
+          "native_predicted_id": 31615,
+          "native_argmax_id": 31615,
+          "oracle_argmax_id": 31615,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 31615,
+              "logit": 23.249595642089844
+            },
+            {
+              "id": 334,
+              "logit": 22.236642837524414
+            },
+            {
+              "id": 10642,
+              "logit": 22.23573112487793
+            },
+            {
+              "id": 14374,
+              "logit": 20.122398376464844
+            },
+            {
+              "id": 95456,
+              "logit": 18.815866470336914
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 31615,
+              "logit": 23.252283096313477
+            },
+            {
+              "id": 334,
+              "logit": 22.237621307373047
+            },
+            {
+              "id": 10642,
+              "logit": 22.23453140258789
+            },
+            {
+              "id": 14374,
+              "logit": 20.12761688232422
+            },
+            {
+              "id": 95456,
+              "logit": 18.819252014160156
+            }
+          ],
+          "native_top1_margin": 1.0129528045654297,
+          "oracle_top1_margin": 1.0146617889404297,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 2048,
+          "native_logits_sha256": "f42add44dbd9726750dc973e82f1d59d0c5a82e3983bbac9c73f1a4ba38d4f1b",
+          "oracle_logits_sha256": "c8546bd4407f1f15102cdb0389bb13d429508effd76eb248dda77b1a876a0d7e"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.005434989929199219,
+          "rms_error": 0.0010803190128985216,
+          "max_error_token_id": 58029,
+          "native_at_max_error": -1.431870937347412,
+          "oracle_at_max_error": -1.426435947418213,
+          "native_predicted_id": 4938,
+          "native_argmax_id": 4938,
+          "oracle_argmax_id": 4938,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 4938,
+              "logit": 24.24810028076172
+            },
+            {
+              "id": 13850,
+              "logit": 21.7561092376709
+            },
+            {
+              "id": 320,
+              "logit": 16.82666015625
+            },
+            {
+              "id": 323,
+              "logit": 16.01702308654785
+            },
+            {
+              "id": 17646,
+              "logit": 15.829058647155762
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 4938,
+              "logit": 24.248294830322266
+            },
+            {
+              "id": 13850,
+              "logit": 21.75643539428711
+            },
+            {
+              "id": 320,
+              "logit": 16.826969146728516
+            },
+            {
+              "id": 323,
+              "logit": 16.016130447387695
+            },
+            {
+              "id": 17646,
+              "logit": 15.831436157226562
+            }
+          ],
+          "native_top1_margin": 2.4919910430908203,
+          "oracle_top1_margin": 2.4918594360351562,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 2049,
+          "native_logits_sha256": "30682f97aa747c172e733f1a34ecb628cc0c015a95db6d36dea7c0bea8893a37",
+          "oracle_logits_sha256": "45675a577050bd3973f68e81dc5b0bd6ae21f878c9decb57e6eafbfe75787116"
+        }
+      ],
+      "gate_sha256": "f87e73a10a165b4a754a0c05edd7e8f27cfd985cfa989e4d5cd2049fc6d2a61d"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "context3968",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-context3968-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/context3968-native-llama-oracle-control.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-context3968-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.007285118103027344,
+          "rms_error": 0.0015124324342790272,
+          "max_error_token_id": 57720,
+          "native_at_max_error": -4.9440202713012695,
+          "oracle_at_max_error": -4.951305389404297,
+          "native_predicted_id": 31615,
+          "native_argmax_id": 31615,
+          "oracle_argmax_id": 31615,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 31615,
+              "logit": 23.217273712158203
+            },
+            {
+              "id": 334,
+              "logit": 22.089405059814453
+            },
+            {
+              "id": 10642,
+              "logit": 22.023521423339844
+            },
+            {
+              "id": 14374,
+              "logit": 20.14855194091797
+            },
+            {
+              "id": 95456,
+              "logit": 19.279455184936523
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 31615,
+              "logit": 23.21980094909668
+            },
+            {
+              "id": 334,
+              "logit": 22.088584899902344
+            },
+            {
+              "id": 10642,
+              "logit": 22.024192810058594
+            },
+            {
+              "id": 14374,
+              "logit": 20.14811897277832
+            },
+            {
+              "id": 95456,
+              "logit": 19.278549194335938
+            }
+          ],
+          "native_top1_margin": 1.12786865234375,
+          "oracle_top1_margin": 1.131216049194336,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 3968,
+          "native_logits_sha256": "7219b435bb3de631f6453fe941a6ab1cedd5725eb6e631004b8763f83c9ccf15",
+          "oracle_logits_sha256": "a205b8e4b25d109ace85dc17d9c2a008907c9dcbfe3fbdb73a24b99686037988"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.007415294647216797,
+          "rms_error": 0.0012230141073234205,
+          "max_error_token_id": 14431,
+          "native_at_max_error": 4.364777565002441,
+          "oracle_at_max_error": 4.357362270355225,
+          "native_predicted_id": 4938,
+          "native_argmax_id": 4938,
+          "oracle_argmax_id": 4938,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 4938,
+              "logit": 24.395416259765625
+            },
+            {
+              "id": 13850,
+              "logit": 21.612184524536133
+            },
+            {
+              "id": 320,
+              "logit": 17.027883529663086
+            },
+            {
+              "id": 17646,
+              "logit": 16.39426612854004
+            },
+            {
+              "id": 323,
+              "logit": 15.096248626708984
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 4938,
+              "logit": 24.3978214263916
+            },
+            {
+              "id": 13850,
+              "logit": 21.615201950073242
+            },
+            {
+              "id": 320,
+              "logit": 17.02661895751953
+            },
+            {
+              "id": 17646,
+              "logit": 16.38888168334961
+            },
+            {
+              "id": 323,
+              "logit": 15.093913078308105
+            }
+          ],
+          "native_top1_margin": 2.783231735229492,
+          "oracle_top1_margin": 2.7826194763183594,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 3969,
+          "native_logits_sha256": "ccd32f3d4748302c80931c2713dbf73db584e7c8b8679531a0e6bd8a3e465056",
+          "oracle_logits_sha256": "c73b82d178e297087ae03f9286b3bda68415165e04da62bdca1af3c5d2d34b06"
+        }
+      ],
+      "gate_sha256": "fc5eeebbd90ed5021da4230d98792920b64c1172fb20aedfdad2c0cb87834ef0"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary63",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-boundary63-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/prefix-granularity-boundary63-oracle-v1.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-boundary63-oracle.json",
+      "completed": true,
+      "absolute_passed": false,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.012255668640136719,
+          "rms_error": 0.0027224821976331603,
+          "max_error_token_id": 26861,
+          "native_at_max_error": 4.197259902954102,
+          "oracle_at_max_error": 4.185004234313965,
+          "native_predicted_id": 198,
+          "native_argmax_id": 198,
+          "oracle_argmax_id": 198,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 198,
+              "logit": 36.6028938293457
+            },
+            {
+              "id": 151645,
+              "logit": 21.81810188293457
+            },
+            {
+              "id": 151644,
+              "logit": 21.03191375732422
+            },
+            {
+              "id": 319,
+              "logit": 20.616056442260742
+            },
+            {
+              "id": 715,
+              "logit": 19.12754249572754
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 198,
+              "logit": 36.600669860839844
+            },
+            {
+              "id": 151645,
+              "logit": 21.812908172607422
+            },
+            {
+              "id": 151644,
+              "logit": 21.027538299560547
+            },
+            {
+              "id": 319,
+              "logit": 20.613319396972656
+            },
+            {
+              "id": 715,
+              "logit": 19.12399673461914
+            }
+          ],
+          "native_top1_margin": 14.784791946411133,
+          "oracle_top1_margin": 14.787761688232422,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": false,
+          "rms_limit_passed": false,
+          "passed": false,
+          "step": 0,
+          "context_tokens": 63,
+          "native_logits_sha256": "60c139268303c15a11a3280e46d92a94d1fca1d8f49d6a8bc365f9212109f423",
+          "oracle_logits_sha256": "2e6928c38470a69ce1a92aca21a270a4692b36754a144b3ff42639d94789a49a"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.009222030639648438,
+          "rms_error": 0.0018188192366271044,
+          "max_error_token_id": 47468,
+          "native_at_max_error": -3.213611602783203,
+          "oracle_at_max_error": -3.2043895721435547,
+          "native_predicted_id": 25,
+          "native_argmax_id": 25,
+          "oracle_argmax_id": 25,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 25,
+              "logit": 22.897729873657227
+            },
+            {
+              "id": 510,
+              "logit": 19.042949676513672
+            },
+            {
+              "id": 198,
+              "logit": 18.144746780395508
+            },
+            {
+              "id": 2727,
+              "logit": 16.611679077148438
+            },
+            {
+              "id": 1943,
+              "logit": 14.984382629394531
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 25,
+              "logit": 22.903345108032227
+            },
+            {
+              "id": 510,
+              "logit": 19.046911239624023
+            },
+            {
+              "id": 198,
+              "logit": 18.139972686767578
+            },
+            {
+              "id": 2727,
+              "logit": 16.610366821289062
+            },
+            {
+              "id": 1943,
+              "logit": 14.986199378967285
+            }
+          ],
+          "native_top1_margin": 3.8547801971435547,
+          "oracle_top1_margin": 3.856433868408203,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 64,
+          "native_logits_sha256": "119e1dcfb97a5c1533fa6879dc8178e54213879bc9a3f36152dfaed84312d4ef",
+          "oracle_logits_sha256": "195f34466bf2cdc07c942db6f95608add74a9f59d54a5783e41a4abefb0a18c8"
+        }
+      ],
+      "gate_sha256": "5bee4670fa293434d7568fa87355e97ab58b1a2c7c29afe83ec5be9eafc561aa"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary64",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-boundary64-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/div-prefix-v2-boundary64-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-boundary64-oracle.json",
+      "completed": true,
+      "absolute_passed": false,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.009551048278808594,
+          "rms_error": 0.0022408825293632464,
+          "max_error_token_id": 75613,
+          "native_at_max_error": -10.143308639526367,
+          "oracle_at_max_error": -10.133757591247559,
+          "native_predicted_id": 25,
+          "native_argmax_id": 25,
+          "oracle_argmax_id": 25,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 25,
+              "logit": 22.900291442871094
+            },
+            {
+              "id": 510,
+              "logit": 19.040267944335938
+            },
+            {
+              "id": 198,
+              "logit": 18.141498565673828
+            },
+            {
+              "id": 2727,
+              "logit": 16.610485076904297
+            },
+            {
+              "id": 1943,
+              "logit": 14.983268737792969
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 25,
+              "logit": 22.903345108032227
+            },
+            {
+              "id": 510,
+              "logit": 19.046911239624023
+            },
+            {
+              "id": 198,
+              "logit": 18.139972686767578
+            },
+            {
+              "id": 2727,
+              "logit": 16.610366821289062
+            },
+            {
+              "id": 1943,
+              "logit": 14.986199378967285
+            }
+          ],
+          "native_top1_margin": 3.8600234985351562,
+          "oracle_top1_margin": 3.856433868408203,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": false,
+          "passed": false,
+          "step": 0,
+          "context_tokens": 64,
+          "native_logits_sha256": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88",
+          "oracle_logits_sha256": "195f34466bf2cdc07c942db6f95608add74a9f59d54a5783e41a4abefb0a18c8"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004672050476074219,
+          "rms_error": 0.0010609365305153634,
+          "max_error_token_id": 2054,
+          "native_at_max_error": 4.784998416900635,
+          "oracle_at_max_error": 4.789670467376709,
+          "native_predicted_id": 40,
+          "native_argmax_id": 40,
+          "oracle_argmax_id": 40,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 40,
+              "logit": 19.991622924804688
+            },
+            {
+              "id": 32313,
+              "logit": 19.229801177978516
+            },
+            {
+              "id": 13048,
+              "logit": 18.104175567626953
+            },
+            {
+              "id": 3838,
+              "logit": 18.081762313842773
+            },
+            {
+              "id": 12555,
+              "logit": 17.745697021484375
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 40,
+              "logit": 19.99185562133789
+            },
+            {
+              "id": 32313,
+              "logit": 19.229867935180664
+            },
+            {
+              "id": 13048,
+              "logit": 18.103984832763672
+            },
+            {
+              "id": 3838,
+              "logit": 18.081703186035156
+            },
+            {
+              "id": 12555,
+              "logit": 17.746292114257812
+            }
+          ],
+          "native_top1_margin": 0.7618217468261719,
+          "oracle_top1_margin": 0.7619876861572266,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 65,
+          "native_logits_sha256": "976b5815f8bd59eec608a8218d9607cd889b826065b8970fdca68f93e950c4fe",
+          "oracle_logits_sha256": "30275f3fb1c4cc58c6fead574bcd7ef4045c662a88a68b53fb87d6199b66bb73"
+        }
+      ],
+      "gate_sha256": "37b9f123ae33d11d3be9826a7631192cf1c4d4924eef087b9acb5b96f5521b54"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary65",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-boundary65-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/div-prefix-v2-boundary65-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-boundary65-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.004672050476074219,
+          "rms_error": 0.0010609365305153634,
+          "max_error_token_id": 2054,
+          "native_at_max_error": 4.784998416900635,
+          "oracle_at_max_error": 4.789670467376709,
+          "native_predicted_id": 40,
+          "native_argmax_id": 40,
+          "oracle_argmax_id": 40,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 40,
+              "logit": 19.991622924804688
+            },
+            {
+              "id": 32313,
+              "logit": 19.229801177978516
+            },
+            {
+              "id": 13048,
+              "logit": 18.104175567626953
+            },
+            {
+              "id": 3838,
+              "logit": 18.081762313842773
+            },
+            {
+              "id": 12555,
+              "logit": 17.745697021484375
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 40,
+              "logit": 19.99185562133789
+            },
+            {
+              "id": 32313,
+              "logit": 19.229867935180664
+            },
+            {
+              "id": 13048,
+              "logit": 18.103984832763672
+            },
+            {
+              "id": 3838,
+              "logit": 18.081703186035156
+            },
+            {
+              "id": 12555,
+              "logit": 17.746292114257812
+            }
+          ],
+          "native_top1_margin": 0.7618217468261719,
+          "oracle_top1_margin": 0.7619876861572266,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 65,
+          "native_logits_sha256": "976b5815f8bd59eec608a8218d9607cd889b826065b8970fdca68f93e950c4fe",
+          "oracle_logits_sha256": "30275f3fb1c4cc58c6fead574bcd7ef4045c662a88a68b53fb87d6199b66bb73"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.002498626708984375,
+          "rms_error": 0.0005159952396800553,
+          "max_error_token_id": 32671,
+          "native_at_max_error": 4.374700546264648,
+          "oracle_at_max_error": 4.372201919555664,
+          "native_predicted_id": 25,
+          "native_argmax_id": 25,
+          "oracle_argmax_id": 25,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 25,
+              "logit": 20.677276611328125
+            },
+            {
+              "id": 1995,
+              "logit": 16.0379581451416
+            },
+            {
+              "id": 510,
+              "logit": 16.03325080871582
+            },
+            {
+              "id": 198,
+              "logit": 15.877490043640137
+            },
+            {
+              "id": 323,
+              "logit": 15.773385047912598
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 25,
+              "logit": 20.677322387695312
+            },
+            {
+              "id": 1995,
+              "logit": 16.036746978759766
+            },
+            {
+              "id": 510,
+              "logit": 16.033557891845703
+            },
+            {
+              "id": 198,
+              "logit": 15.877155303955078
+            },
+            {
+              "id": 323,
+              "logit": 15.771751403808594
+            }
+          ],
+          "native_top1_margin": 4.639318466186523,
+          "oracle_top1_margin": 4.640575408935547,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 66,
+          "native_logits_sha256": "34f665a26267a184145ec18f83aeaac2bc114621fa68fa6b8a06f07396798dad",
+          "oracle_logits_sha256": "56132122e86161de242fe2bf1ace2d36a6b87a5ac116d5a47cab75e0135cb78d"
+        }
+      ],
+      "gate_sha256": "d8e4c505f3e788e5fe0c406d28a46689a417d916002d63f4f5b82ff6addc7201"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary127",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-boundary127-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/div-prefix-v2-boundary127-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-boundary127-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0021944046020507812,
+          "rms_error": 0.0004892630854571802,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.421339988708496,
+          "oracle_at_max_error": 4.423534393310547,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.553218841552734
+            },
+            {
+              "id": 198,
+              "logit": 16.849933624267578
+            },
+            {
+              "id": 271,
+              "logit": 13.273722648620605
+            },
+            {
+              "id": 13,
+              "logit": 12.784908294677734
+            },
+            {
+              "id": 2503,
+              "logit": 12.662856101989746
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.553070068359375
+            },
+            {
+              "id": 198,
+              "logit": 16.84941864013672
+            },
+            {
+              "id": 271,
+              "logit": 13.273490905761719
+            },
+            {
+              "id": 13,
+              "logit": 12.78539752960205
+            },
+            {
+              "id": 2503,
+              "logit": 12.662572860717773
+            }
+          ],
+          "native_top1_margin": 4.703285217285156,
+          "oracle_top1_margin": 4.703651428222656,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 127,
+          "native_logits_sha256": "7997607c7c30a000b27b5d92da430c7c6c6781ac16df02ade208f603b1f235b1",
+          "oracle_logits_sha256": "f931873afae4062b8bea93f9db2103ffe0e0e9811644b6c7171d0f4ec468c063"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0027837753295898438,
+          "rms_error": 0.000495462188106476,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.6059770584106445,
+          "oracle_at_max_error": 4.608760833740234,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.66815185546875
+            },
+            {
+              "id": 198,
+              "logit": 16.834400177001953
+            },
+            {
+              "id": 271,
+              "logit": 13.280664443969727
+            },
+            {
+              "id": 13,
+              "logit": 12.89222240447998
+            },
+            {
+              "id": 2503,
+              "logit": 12.724175453186035
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.66815185546875
+            },
+            {
+              "id": 198,
+              "logit": 16.83391761779785
+            },
+            {
+              "id": 271,
+              "logit": 13.28048038482666
+            },
+            {
+              "id": 13,
+              "logit": 12.892619132995605
+            },
+            {
+              "id": 2503,
+              "logit": 12.724153518676758
+            }
+          ],
+          "native_top1_margin": 4.833751678466797,
+          "oracle_top1_margin": 4.834234237670898,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 128,
+          "native_logits_sha256": "45f4b3f918dc5a037cb1b42449ccded60f8779915bad26168d7c3835a0f1e2d3",
+          "oracle_logits_sha256": "a0d7d142953c020a155076e6af99b21218d25a059811696e639c17a476c02ebb"
+        }
+      ],
+      "gate_sha256": "6c66cfb5d6f09f301e44db9fa8bc6250214eed09947126dfb10cb139b18a70cb"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary128",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-boundary128-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/div-prefix-v2-boundary128-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-boundary128-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.00267791748046875,
+          "rms_error": 0.000486916663169299,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.606082916259766,
+          "oracle_at_max_error": 4.608760833740234,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.668188095092773
+            },
+            {
+              "id": 198,
+              "logit": 16.834453582763672
+            },
+            {
+              "id": 271,
+              "logit": 13.280704498291016
+            },
+            {
+              "id": 13,
+              "logit": 12.892287254333496
+            },
+            {
+              "id": 2503,
+              "logit": 12.724174499511719
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.66815185546875
+            },
+            {
+              "id": 198,
+              "logit": 16.83391761779785
+            },
+            {
+              "id": 271,
+              "logit": 13.28048038482666
+            },
+            {
+              "id": 13,
+              "logit": 12.892619132995605
+            },
+            {
+              "id": 2503,
+              "logit": 12.724153518676758
+            }
+          ],
+          "native_top1_margin": 4.833734512329102,
+          "oracle_top1_margin": 4.834234237670898,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 128,
+          "native_logits_sha256": "554361043ece234ba3b95ab3306d32853f05121e4f2fc7995ae31ed1efcede07",
+          "oracle_logits_sha256": "a0d7d142953c020a155076e6af99b21218d25a059811696e639c17a476c02ebb"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0028772354125976562,
+          "rms_error": 0.000479152798161352,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.493922233581543,
+          "oracle_at_max_error": 4.496799468994141,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.98577880859375
+            },
+            {
+              "id": 198,
+              "logit": 16.982763290405273
+            },
+            {
+              "id": 271,
+              "logit": 13.429950714111328
+            },
+            {
+              "id": 2503,
+              "logit": 13.01291275024414
+            },
+            {
+              "id": 13,
+              "logit": 12.97525405883789
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.986042022705078
+            },
+            {
+              "id": 198,
+              "logit": 16.982454299926758
+            },
+            {
+              "id": 271,
+              "logit": 13.429841995239258
+            },
+            {
+              "id": 2503,
+              "logit": 13.013160705566406
+            },
+            {
+              "id": 13,
+              "logit": 12.975844383239746
+            }
+          ],
+          "native_top1_margin": 5.003015518188477,
+          "oracle_top1_margin": 5.00358772277832,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 129,
+          "native_logits_sha256": "f1dc87f46a3fb839663c7752048b0600bb235b71de62c4122d734d64322c74df",
+          "oracle_logits_sha256": "fd99460809b36c8024fb22bb6f298531f39766567af1e7640d0b6b6a83519342"
+        }
+      ],
+      "gate_sha256": "754a988ea4c9e56b68e744ba545c0de5dc3a97364ca3b5a5d7f9ee2ce6c8416e"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary129",
+      "capture": "$REPO/build/native-cpu/prefix64-v1-boundary129-logits/report.json",
+      "oracle": "$REPO/build/native-cpu/div-prefix-v2-boundary129-oracle.json",
+      "gate": "$REPO/build/native-cpu/prefix64-v1-boundary129-oracle.json",
+      "completed": true,
+      "absolute_passed": true,
+      "comparisons": [
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0028772354125976562,
+          "rms_error": 0.000479152798161352,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.493922233581543,
+          "oracle_at_max_error": 4.496799468994141,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.98577880859375
+            },
+            {
+              "id": 198,
+              "logit": 16.982763290405273
+            },
+            {
+              "id": 271,
+              "logit": 13.429950714111328
+            },
+            {
+              "id": 2503,
+              "logit": 13.01291275024414
+            },
+            {
+              "id": 13,
+              "logit": 12.97525405883789
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.986042022705078
+            },
+            {
+              "id": 198,
+              "logit": 16.982454299926758
+            },
+            {
+              "id": 271,
+              "logit": 13.429841995239258
+            },
+            {
+              "id": 2503,
+              "logit": 13.013160705566406
+            },
+            {
+              "id": 13,
+              "logit": 12.975844383239746
+            }
+          ],
+          "native_top1_margin": 5.003015518188477,
+          "oracle_top1_margin": 5.00358772277832,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 0,
+          "context_tokens": 129,
+          "native_logits_sha256": "f1dc87f46a3fb839663c7752048b0600bb235b71de62c4122d734d64322c74df",
+          "oracle_logits_sha256": "fd99460809b36c8024fb22bb6f298531f39766567af1e7640d0b6b6a83519342"
+        },
+        {
+          "finite": true,
+          "vocabulary": 151936,
+          "max_absolute_error": 0.0030527114868164062,
+          "rms_error": 0.0005078690221271394,
+          "max_error_token_id": 24800,
+          "native_at_max_error": 4.640447616577148,
+          "oracle_at_max_error": 4.643500328063965,
+          "native_predicted_id": 856,
+          "native_argmax_id": 856,
+          "oracle_argmax_id": 856,
+          "greedy_equal": true,
+          "native_top": [
+            {
+              "id": 856,
+              "logit": 21.9887638092041
+            },
+            {
+              "id": 198,
+              "logit": 17.065744400024414
+            },
+            {
+              "id": 271,
+              "logit": 13.493022918701172
+            },
+            {
+              "id": 2503,
+              "logit": 13.08057689666748
+            },
+            {
+              "id": 13,
+              "logit": 13.027212142944336
+            }
+          ],
+          "oracle_top": [
+            {
+              "id": 856,
+              "logit": 21.98872947692871
+            },
+            {
+              "id": 198,
+              "logit": 17.065519332885742
+            },
+            {
+              "id": 271,
+              "logit": 13.49312973022461
+            },
+            {
+              "id": 2503,
+              "logit": 13.080727577209473
+            },
+            {
+              "id": 13,
+              "logit": 13.02793025970459
+            }
+          ],
+          "native_top1_margin": 4.9230194091796875,
+          "oracle_top1_margin": 4.923210144042969,
+          "oracle_preference_over_native_id": 0.0,
+          "native_preference_over_oracle_id": 0.0,
+          "allclose_passed": true,
+          "rms_limit_passed": true,
+          "passed": true,
+          "step": 1,
+          "context_tokens": 130,
+          "native_logits_sha256": "03a78a39d2023a419efa13733e9d0d0ac03f591be2b4b9067d993a237d491ee0",
+          "oracle_logits_sha256": "c6c8adaf2bcd9b4740a7fb3cac60159028469c106de320fcc66cbf24035dd5d3"
+        }
+      ],
+      "gate_sha256": "d2f2025f1d5d9e23cafdc2ed4451e0a0c9730266321a98ea25bf1d0f03a46b03"
+    }
+  ],
+  "known_inherited_failure": "Original baseline19 and both chunk variants fail absolute oracle at context63. Preserved, never waived.",
+  "limitations": [
+    "Smaller canonical chunks can change SGEMM arithmetic; this inventory is not arithmetic-equivalence certification.",
+    "Saved NumPy vectors from division experiments remain the unchanged independent oracle, not division-model targets.",
+    "Cached/fresh equality, broad generation quality, lifecycle, and baseline19 controls for newly failing positions remain separate qualification requirements."
+  ],
+  "failed_trajectories": [
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary63"
+    },
+    {
+      "candidate": "prefix128-v1",
+      "trajectory": "boundary64"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary63"
+    },
+    {
+      "candidate": "prefix64-v1",
+      "trajectory": "boundary64"
+    }
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/original-prefix-qualification-v2.json",
+    "source_sha256": "67308c316e6945edb4d08815e5b70d08992f1a884715953666ec291910ffd624",
+    "sanitization": "Repository/home prefixes anonymized; process/host/user identifiers omitted. All comparisons and failed statuses preserved; original hashes retained."
+  }
+}
