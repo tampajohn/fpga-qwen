@@ -1,0 +1,78 @@
+{
+  "completed": true,
+  "selected_for_release": false,
+  "promoted": false,
+  "reason": "All15 metric confidence intervals cross1. No established benefit justifies extra296.75MiB; not a universal slowdown conclusion.",
+  "actual_extra_cache_bytes": 311164928,
+  "reports": [
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-exact-gate.json",
+      "raw_sha256": "ef75e7eba4960c3276d111dc2feb0defbbc4da206fc00196af809b01bc81c76b"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-timeboundary-exact-gate.json",
+      "raw_sha256": "021bd1c13971d4b3a4858311dad931effca202da23ece60da5df8413e29cb6f9"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-worker-boundaries-exact-gate.json",
+      "raw_sha256": "1c8d0a7237fd3c589eb961acb1ed7d0ec4bb690c767ba36339d5759911072c06"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-newboundary-relative-exact-gate.json",
+      "raw_sha256": "fa7370ffad9781bb115796ccbca76341e36bc43ca7f8cf8d094d82dcd56dfb11"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-assembly-review.json",
+      "raw_sha256": "2f4404136cf084734fe90eeb3cadb881c5314f541d772ed00a0b6692dc08a41b"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-verify-api.json",
+      "raw_sha256": "693db0594f3d9c874d6cfe398782ae1f954ed0f4137bd2351f2eb40fc6b3ad16"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-prefix-check.json",
+      "raw_sha256": "db09bf69e9a2640ddb76633154afbae22bfb5eb2e0993196071b087227d26616"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-suffix-trajectories.json",
+      "raw_sha256": "9bf140457eca2fd851c60308453367facf6cbc975f4563bc373945936f0d6412"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-suffix-cli.json",
+      "raw_sha256": "ed49c9bac6537c01ca9cc69220285e92f7dec63f8e2cdbc7d7cdf7fcdb3cf9e3"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-quality.json",
+      "raw_sha256": "61265d553cf51cb06f42193a3c7c60ff83c81066ce0527c0ae087c2287991da1"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-extended-quality.json",
+      "raw_sha256": "01488f5d0c1c67bf307ea802110a85433a3db0fb3c07a6b235ace7392d0363a5"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-standard-confirmation.json",
+      "raw_sha256": "0cec7e15cef300a91dcc66b77aac926dc94a89406e4f2c6c2b2d8174b9bd5008"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-standard-analysis.json",
+      "raw_sha256": "4beb8b499b6749d42ca46ef2a1267d8d50e666425bc889e1ac48f3c6d892a40d"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-extended-confirmation.json",
+      "raw_sha256": "decd1dbf9e989d6b92f20c1e412961fb591d7ce8e4461ce8d5eba7afde479532"
+    },
+    {
+      "report": "reports/native-cpu-head-rowpack4-v1-extended-analysis.json",
+      "raw_sha256": "7a6288b11461c608d7bdb780f19715dd229748ccba9f9dfa6f481f05f00cdc37"
+    }
+  ],
+  "composition": {
+    "prepared_only": true,
+    "built": false,
+    "timed": false,
+    "selected": false,
+    "reason": "Isolated head benefit unproven; component qualification would not transfer anyway."
+  },
+  "absolute_numerical_claim": false,
+  "baseline_gap": "Known baseline63/64 independent oracle failures retained."
+}
