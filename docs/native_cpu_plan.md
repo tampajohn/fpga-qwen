@@ -10,12 +10,26 @@ fixes. Existing experimental code and artifacts are preserved; no pending
 simulator experiment is a new release. Native implementation will live in
 `engine/`, with existing tools, quality gates, server and browser reused.
 
-## Current release: build18
+## Current release: build19 — November13 optimization pass delivered
 
-Build18 is live on localhost, CPU-only, with the sampled numerical fix and all
-release acceptance checks passed. The [current follow-on audit](#current-follow-on-acceptance-audit--build18)
-records completion evidence and limits; the final scoreboard shows mixed
-performance rather than a general win over llama.cpp.
+Build19 is live at localhost:8765, first/default in browser chat, CPU-only and
+idle with the benchmark lock released. It combines head-major KV storage and
+fixed time32/channel32 value tiling without reducing the448 MiB full-history
+cache. The [deployment record](../reports/native-cpu-build-19-deployment.json) and
+[live browser gate](../reports/native-cpu-build-19-browser-live.json) bind the
+byte-identical selected executable; build18 is preserved for rollback.
+
+The reopened long-prompt/memory optimization pass is delivered: complete
+correctness/lifecycle/quality gates, direct ten-pair comparisons against18 and
+tuned llama, and isolated/live browser acceptance are archived. Against18,
+long-context latency/decode improved; against llama, outcomes remain mixed,
+including worse near4K TTFT/request time. The broader ambition to beat llama
+across workloads remains unproven; this completion does not claim that goal.
+See the [current scoreboard](native_kv_layout.md#fresh-direct-tuned-llama-extended-comparison-completed).
+
+Entries below are chronological evidence snapshots. Earlier statements such as
+“pending,” “unpromoted,” or “live build18 unchanged” describe their entry's time,
+not current release status. Failures and unsuccessful experiments are preserved.
 
 ## Historical decision: BLAS attention rejected
 
@@ -766,7 +780,7 @@ Source review of commit 0880a99, whose core hash matches binary 14's build manif
 
 The experiment is rejected under the predeclared numerical contract. Its source remains reverted, binary 14 was never live, and no timing or promotion follows. The serialized script stopped at the failed 1024 gate; **2048 and 3968 captures/gates were not run**. Earlier passes and the favorable 1025 row remain published together with the failure; no tolerance change or selective performance claim is made.
 
-## Current follow-on acceptance audit — build18
+## Historical follow-on acceptance audit — build18
 
 Build18 is now the selected live CPU browser release. The [deployment record](../reports/native-cpu-build-18-deployment.json)
 binds its binary and manifest, and the [actual live browser gate](../reports/native-cpu-build-18-browser-live.json)
@@ -1214,7 +1228,7 @@ CPU-only live service. This closes the approved follow-on work at its stated
 experimental scope.
 
 
-## Reopened CPU optimization pass — November 13
+## Reopened CPU optimization pass — November 13 (completed by build19 release below)
 
 After the prior finite follow-on and build18 release, the user reopened work
 focused on long-prompt prefill. The completed historical scope above remains
@@ -1350,3 +1364,12 @@ The [complete standard table](native_kv_layout.md#fresh-direct-tuned-llama-stand
 The [full three-context extended table](native_kv_layout.md#fresh-direct-tuned-llama-extended-comparison-completed) completes both direct suites without exclusions. At1024, TTFT/request favor native and decode is uncertain; at2048, decode favors native with TTFT/request uncertain; at3968, decode is uncertain while TTFT0.88624 (0.85978–0.92284) and request0.94601 (0.89803–0.97925) favor llama. No overall llama win or universal within10% claim follows.
 
 Release19 remains selected for its measured improvements over18 with preserved numerical/quality gates. This is distinct from the broader ambition to beat llama generally. Both complete scoreboards and unfavorable results remain published; staging and browser/live deployment are the next separate requirements.
+
+
+### Final build19 acceptance and delivery
+
+Build19 is a [byte-identical staged copy](../reports/native-cpu-build-19-staging.json) of the measured combined candidate, not a recompilation. The [release manifest](../reports/native-cpu-build-19-manifest.json) retains original command/source provenance and points to the [original manifest](../reports/native-cpu-build-19-original-manifest.json). Reviewed source integration preserves candidate core bytes; no extra arithmetic change was introduced at release.
+
+The [isolated browser](../reports/native-cpu-build-19-browser-isolated.json), [promotion record](../reports/native-cpu-build-19-promotion.json), [actual live browser](../reports/native-cpu-build-19-browser-live.json) and [deployment binding](../reports/native-cpu-build-19-deployment.json) completed. Latest/default selection, focused polling, FP64 accumulator disclosure,512-token prefix reuse, actual greedy suffix-on equivalence, cancellation/fresh requests, backend switching and benchmark banner/server rejection passed. Final status is build19, CPU/noGPU/noPyTorch, idle and unlocked; build18 remains the rollback artifact.
+
+This completes the reopened long-prompt/memory optimization pass at its stated measured scope. All68 exact arrays, API36, prefix28, suffix35+7/CLI5, unchanged9/18-case quality and both complete direct scoreboards remain visible. Negative and uncertain results are not discarded. The broader aspiration of a general llama-performance win remains unmet: near4K native first-token/request latency still loses in the fresh comparison, and several decode intervals include1. No new model-quality or universal numerical guarantee is claimed. Final repository publication follows the committed evidence.

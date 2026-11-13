@@ -14,59 +14,75 @@ timing does not predict FPGA performance. Current work lives in [`engine/`](engi
 
 ## Current result
 
-**Build-18 is the current local browser release**, with 12 decode / 6
-prefill threads. Its [live browser check](reports/native-cpu-build-18-browser-live.json)
-passed, including prefix reuse, opt-in drafting, precision disclosure,
-cancellation, backend switching, and benchmark-lock visibility. It fixes the sampled
-near-4K numerical failure by accumulating FP32 normalization square products in
-FP64, then rounding the sum to FP32 before scaling. Matrix weights and KV remain
-FP16; normalization weights and stored activations remain FP32. This is an
-explicit arithmetic change, not an unchanged all-FP32 implementation.
+**Build-19 is the current localhost browser release**, listed first and selected
+by default at `http://127.0.0.1:8765`. Its [live browser check](reports/native-cpu-build-19-browser-live.json)
+and [deployment record](reports/native-cpu-build-19-deployment.json) bind the
+running executable. Build18 remains available as a rollback artifact. The engine
+uses 12 decode/6 prefill threads, no GPU and no PyTorch.
 
-The [56-array binding gate](reports/native-cpu-build-18-exact-gate.json) matches
-the tested norm candidate exactly at 28 positions. Those independent numerical
-checks cover tiny/short/452-token prompts, 511/512/513 boundaries, and
-1024/2048/3968-token contexts, using unchanged maximum absolute error ≤0.01
-and RMS ≤0.002. See the [numerical evidence](docs/native_cpu_plan.md).
-These are selected-position checks, not full-context or full-generation proof.
-The [nine-case](reports/native-cpu-build-18-quality.json) and
-[18-case conversation gates](reports/native-cpu-build-18-extended-quality.json)
-retain scoped tuned-llama agreement; they do not establish improved answer accuracy.
+Build19 combines head-major physical KV storage with fixed time32/channel32
+attention value tiling. It retains the same 448 MiB FP16 KV allocation, full 4096-token
+history and tested per-output arithmetic: no token eviction, attention-window
+reduction or adaptive context threshold. FP16 matrices/KV, FP32 norm weights and
+stored activations, and FP64 normalization-square accumulation remain explicit.
+The [release manifest](reports/native-cpu-build-19-manifest.json) records a
+byte-identical copy of the tested candidate, **not a recompilation**.
 
-Build-18 retains canonical 512-token prefix reuse and adds optional one-token
-n-gram drafting in Greedy mode. Drafting is **off by default**; prior suffix
-measurements established no request-speed gain. Its
-[28-case prefix check](reports/native-cpu-build-18-prefix-check.json),
-[B2 API checks](reports/native-cpu-build-18-verify-api.json),
-[suffix trajectory/lifecycle checks](reports/native-cpu-build-18-suffix-trajectories.json),
-and [isolated browser check](reports/native-cpu-build-18-browser-isolated.json)
-passed. Partial tails are recomputed, and decoded/verified KV is not reused as
-a canonical prefill block.
+The [56-array gate](reports/native-cpu-kv-head-major-time32-exact-gate.json) and
+[12-array time-boundary gate](reports/native-cpu-kv-head-major-time32-timeboundary-exact-gate.json)
+match build18. This transfers its unchanged-limit independent NumPy qualification
+(maximum absolute error≤0.01, RMS≤0.002) at 28 sampled positions, including
+511/512/513 boundaries and 1024/2048/3968 contexts. It is not a full-generation or
+universal numerical proof. The [nine-case](reports/native-cpu-kv-head-major-time32-quality.json)
+and [18-case](reports/native-cpu-kv-head-major-time32-extended-quality.json) suites
+retain identical baseline trajectories and scores 4/9 and 10/18; incorrect answers
+remain incorrect, not quality gains.
 
-Fresh direct comparisons against tuned KleidiAI-ON/LTO-ON llama FP16 use the
-same requested 12 decode / 6 prefill threads and identical prompt/output IDs.
+Canonical 512-token prefix reuse remains enabled; partial tails are recomputed,
+and decoded/verified KV is not reused as canonical prefill. One-token n-gram
+suffix drafting is opt-in, Greedy-only and **off by default**: prior measurements
+established no request-speed gain. [Prefix28](reports/native-cpu-kv-head-major-time32-prefix-check.json),
+[B2 API36](reports/native-cpu-kv-head-major-time32-verify-api.json),
+[suffix lifecycle](reports/native-cpu-kv-head-major-time32-suffix-trajectories.json),
+[CLI](reports/native-cpu-kv-head-major-time32-suffix-cli.json) and actual browser
+checks passed, including cancellation, backend switching and benchmark locking.
+
+Against build18, the completed direct ten-pair runs improved long-context
+prefill and decode. At 1K/2K/3968 tokens, median paired TTFT speedups were
+1.105/1.142/1.167 and decode ratios 1.112/1.135/1.268, with corresponding intervals
+above 1. Short 85-token results and 452-token decode remain uncertain. The
+[complete table](docs/native_kv_layout.md#combined-candidate-complete-whole-request-comparison-against-build18)
+retains every pair, uncertainty interval and the concurrent server-restart caveat.
+Those measured improvements support release19 selection; they do not establish
+general superiority to llama.
+
+Fresh **direct** comparisons against tuned KleidiAI-ON/LTO-ON llama FP16 use the
+same requested 12 decode/6 prefill threads and identical prompt/output IDs.
 Each workload has ten alternating pairs and one unscored warmup per visit.
-The [standard run](reports/native-cpu-build-18-final-standard-confirmation.json)
-uses 32 output tokens; the [extended run](reports/native-cpu-build-18-final-extended-confirmation.json)
-uses 128. Natural EOS remains enabled. Ratios above 1 favor this engine:
+The [standard run](reports/native-cpu-kv-head-major-time32-vs-llama-standard-confirmation.json)
+uses 32 outputs; the [extended run](reports/native-cpu-kv-head-major-time32-vs-llama-extended-confirmation.json)
+uses 128, with natural EOS enabled. All visits/outliers remain included.
+Ratios above 1 favor this engine; parentheses are 95% paired bootstrap intervals:
 
-| Prompt tokens | Decode throughput ratio (95% interval) | TTFT speedup (95% interval) | Request-time speedup (95% interval) |
+| Prompt tokens | Decode throughput ratio | TTFT speedup | Request-time speedup |
 | --- | ---: | ---: | ---: |
-| 85 | 0.944× (0.915–0.979) | 1.395× (1.333–1.540) | 1.102× (1.058–1.132) |
-| 452 | 0.949× (0.852–0.997) | 1.080× (1.008–1.179) | 1.029× (0.963–1.091) |
-| 1,024 | 1.000× (0.981–1.027) | 0.987× (0.955–1.113) | 0.993× (0.966–1.068) |
-| 2,048 | 1.017× (0.900–1.047) | 0.846× (0.821–1.002) | 0.888× (0.859–1.010) |
-| 3,968 | 1.119× (1.030–1.143) | 0.748× (0.698–0.810) | 0.805× (0.758–0.875) |
+| 85 | 1.019× (0.928–1.127) | 1.593× (1.433–1.851) | 1.195× (1.155–1.295) |
+| 452 | 0.982× (0.786–1.099) | 1.122× (1.053–1.196) | 1.072× (0.979–1.148) |
+| 1,024 | 1.047× (0.948–1.154) | 1.063× (1.022–1.133) | 1.071× (1.024–1.092) |
+| 2,048 | 1.205× (1.056–1.400) | 0.990× (0.950–1.089) | 1.048× (0.991–1.162) |
+| 3,968 | 1.215× (0.953–1.420) | 0.886× (0.860–0.923) | 0.946× (0.898–0.979) |
 
-The [standard analysis](reports/native-cpu-build-18-final-standard-analysis.json)
-shows decode about 5–6% slower at both short prompts, with both intervals below
-1. First-token latency is about 28% and 7% lower. The
-[extended analysis](reports/native-cpu-build-18-final-extended-analysis.json)
-shows no established decode difference at 1K or 2K. Near 4K, decode is about
-11.9% faster, but first-token latency is about 34% higher and the whole request
-about 24% slower. **There is no overall performance win over llama.cpp.**
-Percentages use median paired ratios; these separate intervals are unadjusted
-and must not be pooled or chained through earlier comparisons.
+**There is no overall performance win over llama.cpp.** At 2K, decode favors
+native; at 85/452/1K/3968 its interval includes 1. The 452-token lower bound 0.786
+does not establish a universal within 10% guarantee or equivalence. TTFT favors
+native at 85/452/1K; 2K is uncertain. Near4K, native TTFT is about 12.8% longer and
+the whole request about 5.7% slower, despite a positive but uncertain decode
+median. Request latency favors native at 85 and 1K, is uncertain at 452 and 2K,
+and favors llama near4K. [Standard](reports/native-cpu-kv-head-major-time32-vs-llama-standard-analysis.json)
+and [extended](reports/native-cpu-kv-head-major-time32-vs-llama-extended-analysis.json)
+analyses preserve all observations. Intervals are unadjusted across metrics;
+shared-host background activity and pipe-versus-HTTP transport remain part of
+the measurement. No historical ratios are multiplied or pooled.
 
 Historical failures remain part of the evidence. Build-12's
 [3968/3969 NumPy control](reports/native-cpu-build-12-context3968-oracle-control.json)
@@ -79,7 +95,7 @@ failure or establish correctness at every position. Build-12's
 [earlier unfavorable comparison](reports/native-cpu-build-12-standard-confirmation-analysis.json)
 remain archived. Its [cache-on/off comparison](reports/native-cpu-build-12-prefix-confirmation.json)
 showed scoped TTFT benefits after untimed priming, without an established decode
-benefit; those measurements are not new build-18 results. Build-10's
+benefit; those measurements are not new build19 results. Build-10's
 [30-pair confirmation](reports/native-cpu-build-10-confirmation.json) also remains
 historical evidence. The [vocabulary-routing prototype](docs/native_head_probe.md)
 was slower than the dense head, and [suffix timing](docs/native_suffix_b2.md)
@@ -111,7 +127,7 @@ make setup
 ```
 
 Open **http://127.0.0.1:8765**. The installed native release appears first and
-is selected automatically. The local deployment uses **build-18**, with 12
+is selected automatically. The local deployment uses **build-19**, with 12
 decode / 6 prefill threads; simulator worker controls do not apply. The
 `--native-only` launcher needs no simulator binary or simulator imports. Omit
 that flag to include any installed legacy simulator choices. Starting the
@@ -171,7 +187,7 @@ ln -s my-build/qwen_cpu build/native-cpu/qwen_cpu
 ```
 
 This command expects no existing stable path. On the development machine the
-stable link currently points to `build-18/qwen_cpu`; preserve immutable
+stable link currently points to `build-19/qwen_cpu`; preserve immutable
 build directories when changing releases.
 
 ## Validation and development

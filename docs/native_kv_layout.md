@@ -2,8 +2,12 @@
 
 This isolated candidate changes the original native engine's physical KV
 layout from `[layer][position][head][channel]` to
-`[layer][head][position][channel]`. Live build18 remains unchanged. There is no
-release decision; the completed shape timings below are scoped evidence.
+`[layer][head][position][channel]`. The combined head-major/time32 implementation
+is now the live build19 release; build18 is preserved for rollback. The
+[deployment](../reports/native-cpu-build-19-deployment.json) and
+[live browser gate](../reports/native-cpu-build-19-browser-live.json) bind the
+selected byte-identical binary. Earlier pending/not-live statements below are
+chronological experiment snapshots, not current status.
 
 For one attention head, consecutive positions move 256 bytes instead of 2048
 bytes. This changes address strides; it is not a relevance index or sparse
@@ -195,3 +199,10 @@ The terminal [extended128 report](../reports/native-cpu-kv-head-major-time32-vs-
 At1024, TTFT and whole-request intervals favor native while decode remains uncertain. At2048, decode favors native; TTFT and whole-request intervals include1. At3968, decode is uncertain despite its positive median, while **TTFT and whole-request latency favor llama**. The latter median speedups correspond to approximately12.8% longer native TTFT and5.7% longer native request time. The shorter-context standard decode uncertainty also remains part of the same scoreboard. There is no overall llama win or universal within10% guarantee.
 
 The original selection for release19 remains supported by complete improvements against build18, not by claiming superiority to llama. It is not reversed or justified by multiplying ratios. Candidate SHA matches the68-array exact/lifecycle/quality evidence; oracle qualification is sampled, and matching baseline grades4/9 and10/18 are not accuracy gains. Host activity was uncontrolled; all observations remain included. The restart caveat is attached to its actual earlier against18 run rather than asserted for this fresh direct comparison. Staging, isolated/browser checks and live promotion remain separate pending release work at this entry.
+
+
+## Release19 delivered
+
+The candidate was copied byte-identically into immutable build19, integrated into engine sources, and passed isolated plus actual live browser acceptance. It is now first/default at localhost:8765. [Staging](../reports/native-cpu-build-19-staging.json), [manifest](../reports/native-cpu-build-19-manifest.json), [live browser](../reports/native-cpu-build-19-browser-live.json) and [deployment](../reports/native-cpu-build-19-deployment.json) preserve the executable/evidence bindings. Build18 remains available for rollback.
+
+The release delivers the measured improvement over18 while preserving all direct-llama deficits and uncertainty above. It does not establish an overall llama win. Canonical prefix reuse is enabled; greedy suffix drafting remains opt-in/off by default. Final status is idle CPU-only with GPU/PyTorch false and no active benchmark lock.
