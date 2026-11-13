@@ -1,0 +1,52 @@
+{
+  "completed": true,
+  "static_only": true,
+  "model_run": false,
+  "performance_claim_eligible": false,
+  "binary_sha256": "3a4475048e320d3213884b1c5dbf1bd8ba8ef03fd2bccfc9e4643825c0b7de69",
+  "source_sha256": {
+    "$REPO/build/native-cpu/queryrow-b1-headpair-v1-source/core.cpp": "a78d10bd5fb76a6a59c9af6c4158ff4ae13458c384a4f6ec7b7a719bff574490",
+    "$REPO/build/native-cpu/queryrow-b1-headpair-v1-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/queryrow-b1-headpair-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+    "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+  },
+  "assembly_sha256": "cf7d31ee1a5e016fe89a9b25bcebafc1cf3908bb329aa2f14d407f8be913f587",
+  "loops": [
+    {
+      "name": "pairedQK_unrolled_channels",
+      "start": "0x10000bc50",
+      "end_inclusive": "0x10000bec4",
+      "instruction_bytes_identical_to_parent": true,
+      "fma_count": 64,
+      "stack_accesses": 0,
+      "calls": 0,
+      "output_store_instructions": [
+        "10000bea4: bc0045c2    \tstr\ts2, [x14], #0x4",
+        "10000bea8: bc0045e3    \tstr\ts3, [x15], #0x4"
+      ]
+    },
+    {
+      "name": "pairedPV_time",
+      "start": "0x10000cc00",
+      "end_inclusive": "0x10000cc7c",
+      "instruction_bytes_identical_to_parent": true,
+      "fma_count": 16,
+      "stack_accesses": 0,
+      "calls": 0,
+      "output_store_instructions": []
+    }
+  ],
+  "interpretation": "Existing odd-token GQAheadpair callback is reusedforB1. QK fullyunrolls128channels withfourindependentaccumulators andsharedHalfkeyconversions; PV time32/channel32 uses16independentaccumulators for2heads sharing4Halfvectors+8widenings perkey. Both compiledregions arebyteidenticaltoqueryrowparent ataddressshift-32. QKscorestores areoutputs,notspills; PVloop hasnostores.",
+  "routing": "Sourceonly2positivebatchpredicateschanged; positiveappendguard/weighted8items reviewedseparately. Completed100arraygate includesordinaryB1STEPcoverage. Staticcallbackidentity alone isnotruntimebranchtrace.",
+  "B2_source_unchanged": true,
+  "limitations": [
+    "FullAPI/lifecycle/quality/seed gates andperformance remainseparate.",
+    "No benefitinferredfrominstructioncounts;8taskparallelism couldoffsetsharing.",
+    "Absoluteoracle failures remaininherited ifexact."
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/queryrow-b1-headpair-v1-assembly-review.json",
+    "source_sha256": "3d3c6c7d02c33a93b0ef22aef7364bad142e4f5564232dba144eb570c78b97e5",
+    "sanitization": "Paths anonymized;process identifiers omitted;qualification scopes retained."
+  }
+}

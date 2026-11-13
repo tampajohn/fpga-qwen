@@ -1,0 +1,20 @@
+--- a/engine/core.cpp
++++ b/engine/core.cpp
+@@ -358,7 +358,7 @@
+         // cost map balances those lengths while preserving contiguous, disjoint
+         // query ownership and each query's arithmetic/reduction order.
+         std::array<size_t,65> attention_ranges{};
+-        if(batch>1) {
++        if(batch>0) {
+             const size_t items=size_t((batch+1)/2)*K;
+             const int workers=pool.worker_count();
+             auto prefix_cost=[&](size_t item)->uint64_t {
+@@ -404,7 +404,7 @@
+                     for(int j=0;j<D;++j){keys[dst+j]=Half(k[src+j]);values[dst+j]=Half(v[src+j]);}
+                 }
+             }
+-            if(batch>1) {
++            if(batch>0) {
+                 // One item owns two adjacent token rows and their GQA head pair.
+                 // A final odd row uses the unchanged original paired-head path.
+                 pool.run(size_t((batch+1)/2)*K,[&](size_t,size_t,int worker){

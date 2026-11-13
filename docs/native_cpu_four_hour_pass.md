@@ -637,3 +637,39 @@ The executed variant is preserved rather than attributing later checks to it.
 Restore these text snapshots to their original `build/native-cpu/` locations
 for reproduction. Neither the filename correction nor the original 68-array
 result is a substitute for the remaining final-binary gates.
+
+
+## Final kernel candidate: ordinary B1 GQA head pairing
+
+The [head-pair source patch](../tools/experiments/native-queryrow-b1-headpair-v1.patch)
+changes only two attention-routing predicates in the query-row time32 parent,
+including weighted-range initialization, so positive batch 1 uses the existing
+odd-row GQA head-pair path. Each of eight items owns two query heads and shares
+K/V FP16 widening. This is separate from the ordinary B1 PV-blocking candidate;
+it includes no packed head or time128 prefill change. Private scratch and B2
+verification source remain unchanged. The
+[source metadata](../reports/native-cpu-queryrow-b1-headpair-v1-experiment.json)
+records 768 integer ownership cases over all worker counts 1–64; nonempty append
+validation prevents zero-batch entry. Reducing sixteen tasks to eight can offset
+conversion savings, so no performance benefit is presumed.
+
+The [executed build](../reports/native-cpu-queryrow-b1-headpair-v1-manifest.json)
+and [compiled review](../reports/native-cpu-queryrow-b1-headpair-v1-assembly-review.json)
+show paired QK/PV regions byte-identical to the parent's odd-row implementation,
+at relocated addresses. QK fully unrolls 128 channels into 64 vector FMAs with
+four independent accumulators and shared key conversions. PV keeps sixteen
+accumulators for two heads, sharing four FP16 value vectors and eight widenings
+per causal key. Neither inspected region accesses stack or makes calls; QK
+stores its resulting scores, while the PV inner loop has no stores. This is
+static evidence, not a branch trace or a speed claim.
+
+Initial full-logit identity coverage totals 100 arrays:
+[56 existing-trajectory arrays](../reports/native-cpu-queryrow-b1-headpair-v1-exact-gate.json),
+[12 causal-boundary arrays](../reports/native-cpu-queryrow-b1-headpair-v1-timeboundary-exact-gate.json),
+[8 actual newly failing 63/64-fixture arrays](../reports/native-cpu-queryrow-b1-headpair-v1-newboundary-relative-exact-gate.json),
+and [24 STEP-edge arrays](../reports/native-cpu-queryrow-b1-headpair-v1-step-edge-exact-gate.json).
+The STEP comparison reuses immutable build19 controls and writes only fresh
+candidate captures. All 100 match their references exactly; the independent
+absolute failures remain failed. API, cache/suffix lifecycle, quality, seeded
+streams and complete-request measurements remain separate, with no completion
+or release claim inferred here. This is the final kernel hypothesis in this pass.

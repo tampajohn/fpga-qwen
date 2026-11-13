@@ -1,0 +1,52 @@
+{
+  "prepared_only": true,
+  "built": false,
+  "executed": false,
+  "performance_claim_eligible": false,
+  "promotion_allowed": false,
+  "parent": "build/native-cpu/prefill-query-row-pair-source",
+  "parent_sha256": {
+    "core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+    "core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_sha256": {
+    "core.cpp": "a78d10bd5fb76a6a59c9af6c4158ff4ae13458c384a4f6ec7b7a719bff574490",
+    "core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "scope": "Exactly two attention routing conditions batch>1 become batch>0, including weighted-range preparation. OrdinaryB1 uses existing odd-token GQA pair path. Not based on separateB1PV tile candidate; no time128/headpack/other math changes.",
+  "arithmetic": "Existing dot_query_pair maintains eachquery two-vector increasingjFMA+reduction; eachhead ownsame-length vvexpf,ascendingmax/sum,FP32division; pairedPV time32/channel32 keeps eachoutput ascendingtFMA withF32boundary stores. Binary exactness still required.",
+  "ownership": {
+    "batch1_items": 8,
+    "heads_per_item": 2,
+    "weighted_total": "8*(pos+1)",
+    "integer_cases": 768,
+    "worker_counts": "All1..64",
+    "positions": [
+      0,
+      30,
+      31,
+      32,
+      62,
+      63,
+      64,
+      127,
+      511,
+      2047,
+      3967,
+      4095
+    ],
+    "complete_unique_items": true,
+    "empty_ranges_safe": true
+  },
+  "bounds": "append rejects emptyinput; chunk isprivate and called only positive min(prefill_chunk,remaining). batch1 b=0,kh0..7,queryheads0..15,n=pos+1<=context; b+1<batch false so fourqueryrow2/3 access never occurs. Scratch sizedmax(decode,prefill)*context already; no allocationchange. B2verify entirefunction unchanged.",
+  "prior_search": "No previous original-native B1headpair experiment located in experimentmetadata/docs. Earlier RTL hybrid used scalar pairedhead operation6; distinct FP64hybrid stack, not a failed trial of this original-native candidate.",
+  "risks": "Only8attentiontasks versus16previous tasks; sharingHalfconversion may be offset by reducedparallelism or registerpressure. No speedpresumption, no arithmeticfix claim.",
+  "required": "Rootdecisiontobuild aftercurrentquiettiming; compiledFDIV/FMA inspection, old68+actual63/64+stepedges, B2vsB1,suffix,prefix,API,quality,seed andmatchedfullrequest evidence. Knownabsolute failures stayfailed.",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/queryrow-b1-headpair-v1-source/experiment.json",
+    "source_sha256": "3a45fd5b02c667d68f9957675c397305e828d01e4d13553442820d88bcf92865",
+    "sanitization": "Paths anonymized;process identifiers omitted;qualification scopes retained."
+  }
+}
