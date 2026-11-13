@@ -324,7 +324,9 @@ struct Model::Impl {
             }
         });
     }
-    size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*options.context+position)*K+head)*D;}
+    // Full retained FP16 KV, laid out [layer][head][position][channel].
+    // Logical positions and visible context are unchanged; there is no eviction.
+    size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*K+head)*options.context+position)*D;}
     void chunk(const int* ids,int batch,Pool& pool) {
         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
         attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
@@ -370,7 +372,13 @@ struct Model::Impl {
             for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
                 for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
                 for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
-                size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
+                // Heads are no longer adjacent for a single token. Convert
+                // canonical K/V once at their original logical head/position.
+                for(int head=0;head<K;++head) {
+                    const size_t dst=cache_offset(layer,pos+b,head);
+                    const size_t src=(size_t(b)*K+head)*D;
+                    for(int j=0;j<D;++j){keys[dst+j]=Half(k[src+j]);values[dst+j]=Half(v[src+j]);}
+                }
             }
             if(batch>1) {
                 // One item owns both query heads for one KV head. The factor
@@ -401,17 +409,60 @@ struct Model::Impl {
                         float sum0=0;for(int t=0;t<n;++t)sum0+=probs0[t];
                         float sum1=0;for(int t=0;t<n;++t)sum1+=probs1[t];
                         float* dest0=attended.data()+head0*D;float* dest1=dest0+D;
-                        std::fill(dest0,dest0+D,0.0f);std::fill(dest1,dest1+D,0.0f);
-                        for(int t=0;t<n;++t) {
-                            const float prob0=probs0[t]/sum0,prob1=probs1[t]/sum1;
-                            const Half* val=values.data()+cache_offset(layer,t,kh);
-                            for(int j=0;j<D;j+=8) {
-                                const float16x8_t packed=vld1q_f16(val+j);
-                                const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
-                                vst1q_f32(dest0+j,vfmaq_n_f32(vld1q_f32(dest0+j),lo,prob0));
-                                vst1q_f32(dest0+j+4,vfmaq_n_f32(vld1q_f32(dest0+j+4),hi,prob0));
-                                vst1q_f32(dest1+j,vfmaq_n_f32(vld1q_f32(dest1+j),lo,prob1));
-                                vst1q_f32(dest1+j+4,vfmaq_n_f32(vld1q_f32(dest1+j+4),hi,prob1));
+                        // Fixed 32-time/32-channel blocking bounds the active KV
+                        // span without changing any output's ascending-t FMAs.
+                        // Each boundary stores/reloads FP32 accumulators exactly.
+                        for(int t=0;t<n;++t)probs0[t]=probs0[t]/sum0;
+                        for(int t=0;t<n;++t)probs1[t]=probs1[t]/sum1;
+                        for(int time_begin=0;time_begin<n;time_begin+=32) {
+                            const int time_end=std::min(n,time_begin+32);
+                            for(int j=0;j<D;j+=32) {
+                                float32x4_t a00=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+0),a01=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+4),a02=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+8),a03=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+12),a04=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+16),a05=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+20),a06=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+24),a07=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+28);
+                                float32x4_t a10=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+0),a11=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+4),a12=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+8),a13=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+12),a14=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+16),a15=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+20),a16=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+24),a17=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+28);
+                                for(int t=time_begin;t<time_end;++t) {
+                                    const float prob0=probs0[t],prob1=probs1[t];
+                                    const Half* val=values.data()+cache_offset(layer,t,kh)+j;
+                                    {
+                                        const float16x8_t packed=vld1q_f16(val+0);
+                                        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                        a00=vfmaq_n_f32(a00,lo,prob0);a01=vfmaq_n_f32(a01,hi,prob0);
+                                        a10=vfmaq_n_f32(a10,lo,prob1);a11=vfmaq_n_f32(a11,hi,prob1);
+                                    }
+                                    {
+                                        const float16x8_t packed=vld1q_f16(val+8);
+                                        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                        a02=vfmaq_n_f32(a02,lo,prob0);a03=vfmaq_n_f32(a03,hi,prob0);
+                                        a12=vfmaq_n_f32(a12,lo,prob1);a13=vfmaq_n_f32(a13,hi,prob1);
+                                    }
+                                    {
+                                        const float16x8_t packed=vld1q_f16(val+16);
+                                        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                        a04=vfmaq_n_f32(a04,lo,prob0);a05=vfmaq_n_f32(a05,hi,prob0);
+                                        a14=vfmaq_n_f32(a14,lo,prob1);a15=vfmaq_n_f32(a15,hi,prob1);
+                                    }
+                                    {
+                                        const float16x8_t packed=vld1q_f16(val+24);
+                                        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                        a06=vfmaq_n_f32(a06,lo,prob0);a07=vfmaq_n_f32(a07,hi,prob0);
+                                        a16=vfmaq_n_f32(a16,lo,prob1);a17=vfmaq_n_f32(a17,hi,prob1);
+                                    }
+                                }
+                                vst1q_f32(dest0+j+0,a00);
+                                vst1q_f32(dest0+j+4,a01);
+                                vst1q_f32(dest0+j+8,a02);
+                                vst1q_f32(dest0+j+12,a03);
+                                vst1q_f32(dest0+j+16,a04);
+                                vst1q_f32(dest0+j+20,a05);
+                                vst1q_f32(dest0+j+24,a06);
+                                vst1q_f32(dest0+j+28,a07);
+                                vst1q_f32(dest1+j+0,a10);
+                                vst1q_f32(dest1+j+4,a11);
+                                vst1q_f32(dest1+j+8,a12);
+                                vst1q_f32(dest1+j+12,a13);
+                                vst1q_f32(dest1+j+16,a14);
+                                vst1q_f32(dest1+j+20,a15);
+                                vst1q_f32(dest1+j+24,a16);
+                                vst1q_f32(dest1+j+28,a17);
                             }
                         }
                     }
@@ -473,7 +524,13 @@ struct Model::Impl {
             for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
                 for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
                 for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
-                size_t dst=cache_offset(layer,pos+b);for(int j=0;j<K*D;++j){keys[dst+j]=Half(k[b*K*D+j]);values[dst+j]=Half(v[b*K*D+j]);}
+                // Heads are no longer adjacent for a single token. Convert
+                // canonical K/V once at their original logical head/position.
+                for(int head=0;head<K;++head) {
+                    const size_t dst=cache_offset(layer,pos+b,head);
+                    const size_t src=(size_t(b)*K+head)*D;
+                    for(int j=0;j<D;++j){keys[dst+j]=Half(k[src+j]);values[dst+j]=Half(v[src+j]);}
+                }
             }
             pool.run(size_t(batch)*Q,[&](size_t begin,size_t end,int worker){
                 float* scores=attention_scores.data()+size_t(worker)*options.context;
