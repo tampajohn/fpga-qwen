@@ -1,0 +1,48 @@
+{
+  "completed": true,
+  "selected_for_release": false,
+  "promoted": false,
+  "full_request_tested": false,
+  "reason": "Fixed-shape screen shows regressions; largest retained-prefix tail has no established benefit. Stop without full-request measurements.",
+  "reference": "tested query-row time32; not original build19 for shape timing",
+  "relative_exact_arrays": 92,
+  "known_absolute_failures_retained": true,
+  "reports": [
+    {
+      "report": "reports/native-cpu-prefill-query-row-pair-time128-experiment.json",
+      "raw_sha256": "04c41b3e08e483b255903618423e618a2ce99eb5bda6e441a9a623cabac165df"
+    },
+    {
+      "report": "reports/native-cpu-prefill-query-row-pair-time128-source-review.json",
+      "raw_sha256": "767b6ebb0016474883869f01819d4e96f69c0ebb6f8678408890bf095c6d9646"
+    },
+    {
+      "report": "reports/native-cpu-prefill-query-row-pair-time128-build.json",
+      "raw_sha256": "4f35ccb8244d46294ddaa4cad1f0c3f2633f718d7a92c1cba1d66751bc3460fb"
+    },
+    {
+      "report": "reports/native-cpu-prefill-query-row-pair-time128-assembly-review.json",
+      "raw_sha256": "2f0d2c29f32954b20e52f8bf36d96b05fedd7ba24d3e2b878016f116cfd0b248"
+    },
+    {
+      "report": "reports/native-cpu-prefill-query-row-pair-time128-exact-gate.json",
+      "raw_sha256": "7c29344494eaf55bc08833951bead3bed8cf018117221f85c027cb3826532ced"
+    },
+    {
+      "report": "reports/native-cpu-prefill-query-row-pair-time128-timeboundary-exact-gate.json",
+      "raw_sha256": "83189f71d603f6a1dd34601ecf6b7b3c4c6e0cf08f8ed6da80eeb0ba2e78f638"
+    },
+    {
+      "report": "reports/native-cpu-prefill-query-row-pair-time128-newboundary-relative-exact-gate.json",
+      "raw_sha256": "56c02c48346fc43c0ea2c2146f133386ab2b75de6995a4b140dead68e427ed89"
+    },
+    {
+      "report": "reports/native-cpu-prefill-query-row-pair-time128-explicit-edge-exact-gate.json",
+      "raw_sha256": "7a9b70a58d63d55d93d5722f0f0a88bf74b1f15f45b9e3d799d68ad65b56fdaa"
+    },
+    {
+      "report": "reports/native-cpu-prefill-query-row-pair-time128-vs-time32-original-shapes.json",
+      "raw_sha256": "9fd2659be05226d62b44fce5d0d4b37335de7568b2c547d32cb76eaca64d9765"
+    }
+  ]
+}

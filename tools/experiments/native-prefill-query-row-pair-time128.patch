@@ -1,0 +1,16 @@
+--- query-row-time32/core.cpp
++++ query-row-time128/core.cpp
+@@ -455,10 +455,10 @@
+                             for(int t=0;t<n1;++t)probs3[t]=probs3[t]/sum3;
+                             float* dest0=attended.data()+head0*D;float* dest1=dest0+D;
+                             float* dest2=dest0+Q*D;float* dest3=dest2+D;
+-                            // Common causal prefix: time32/channel16, sixteen
++                            // Common causal prefix: time128/channel16, sixteen
+                             // independent vector accumulators for four queries.
+-                            for(int time_begin=0;time_begin<n0;time_begin+=32) {
+-                                const int time_end=std::min(n0,time_begin+32);
++                            for(int time_begin=0;time_begin<n0;time_begin+=128) {
++                                const int time_end=std::min(n0,time_begin+128);
+                                 for(int j=0;j<D;j+=16) {
+                                     float32x4_t a00=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+0);
+                                     float32x4_t a01=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+4);

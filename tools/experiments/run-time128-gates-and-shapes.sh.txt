@@ -1,0 +1,22 @@
+#!/bin/bash
+# Root-run only. No shared runtime edits or promotion.
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+bash build/native-cpu/run-prefill-query-row-pair-time128-exact-gates.sh
+.venv/bin/python build/native-cpu/run-time128-newboundary-relative-exact.py
+.venv/bin/python build/native-cpu/run-time128-explicit-edges.py
+.venv/bin/python - <<'PY'
+import hashlib,json
+from pathlib import Path
+b=Path('build/native-cpu');binary=(b/'prefill-query-row-pair-time128-build/qwen_cpu').resolve()
+with binary.open('rb') as f:digest=hashlib.file_digest(f,'sha256').hexdigest()
+for name,count in [('prefill-query-row-pair-time128-exact-gate',56),('prefill-query-row-pair-time128-timeboundary-exact-gate',12),('prefill-query-row-pair-time128-newboundary-relative-exact-gate',8),('prefill-query-row-pair-time128-explicit-edge-exact-gate',16)]:
+ g=json.loads((b/(name+'.json')).read_text());assert g['completed'] and g['passed'] and g['compared_arrays']==count and g['inputs'][str(binary)]==digest
+assert not (b/'prefill-query-row-pair-time128-vs-time32-original-shapes').exists()
+PY
+.venv/bin/python tools/benchmark_guard.py --name 'Query-row time128 versus time32 original8shapes ten pairs' -- \
+ .venv/bin/python tools/benchmark_native_prefill_shapes.py \
+ --reference-binary build/native-cpu/prefill-query-row-pair-build/qwen_cpu \
+ --binary build/native-cpu/prefill-query-row-pair-time128-build/qwen_cpu \
+ --weights build/native-cpu/weights.bin --suite original --rounds 10 --warmups 2 \
+ --threads 12 --prefill-threads 6 --directory build/native-cpu/prefill-query-row-pair-time128-vs-time32-original-shapes
