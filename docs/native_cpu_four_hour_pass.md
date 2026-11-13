@@ -595,3 +595,45 @@ binds executed reports to local originals and the prepared source archive.
 Raw float arrays remain local with their hashes retained. Original elapsed
 observations remain in the raw gate report for completeness; the offline summary
 omits them, and this publication makes no timing claim.
+
+
+## Ordinary B1 attention PV blocking: source, compiled code and initial exactness
+
+This separate experiment builds on query-row pairing with its original time32
+prefill layout. It changes only ordinary single-token attention PV: divide each
+probability by the unchanged softmax sum, then retain eight FP32 vectors over
+fixed 32-key/channel32 tiles. Every output retains its ascending-time FMA order.
+The B2 verification function and subsequent source are byte-identical to the
+query-row reference; no new allocation, head packing or time128 prefill change
+is included. See [patch](../tools/experiments/native-queryrow-b1-pv-time32.patch),
+[source metadata](../reports/native-cpu-queryrow-b1-pv-time32-experiment.json) and
+[executed build](../reports/native-cpu-queryrow-b1-pv-time32-manifest.json).
+
+[Compiled inspection](../reports/native-cpu-queryrow-b1-pv-time32-assembly-review.json)
+finds vector and scalar **FDIV**, with no reciprocal approximation, in the
+probability prepass. Four unrolled channel tiles each have eight independent
+FP32 FMA accumulators and ascending-time traversal. Their inner loops contain
+no stores, stack accesses or calls; output stores/reloads occur at block
+boundaries. The surrounding function still uses stack state. The
+[targeted disassembly](../tools/experiments/native-queryrow-b1-pv-time32-assembly.txt)
+is archived; no speed conclusion follows from this inspection.
+
+The completed [56-array gate](../reports/native-cpu-queryrow-b1-pv-time32-exact-gate.json)
+and [12-array boundary gate](../reports/native-cpu-queryrow-b1-pv-time32-timeboundary-exact-gate.json)
+pass exact full-logit comparison against captures bound to build19. Additional
+new-boundary, B1/B2, lifecycle, quality and sampled-stream gates are separate;
+this publication does not assert their completion. Known absolute numerical
+failures remain unresolved, and there is no performance or release claim here.
+
+A controller filename was overwritten after launch. The
+[provenance note](../reports/native-cpu-queryrow-b1-pv-time32-controller-provenance.json)
+identifies the [executed controller snapshot](../tools/experiments/run-queryrow-b1-pv-time32-exact-gates-executed.sh.txt)
+from its active guard label, alongside the
+[later hardened controller](../tools/experiments/run-queryrow-b1-pv-time32-exact-gates-hardened.sh.txt).
+Independent diff inspection confirms the latter adds source/helper hash checks
+and changes human-readable guard names; dispatched capture/comparison arguments
+are unchanged. Model sources, binaries and execution helpers were untouched.
+The executed variant is preserved rather than attributing later checks to it.
+Restore these text snapshots to their original `build/native-cpu/` locations
+for reproduction. Neither the filename correction nor the original 68-array
+result is a substitute for the remaining final-binary gates.

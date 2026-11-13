@@ -1,0 +1,25 @@
+{
+  "prepared_only": true,
+  "built": false,
+  "baseline": "tested query-row-pair time32 with original build19 arithmetic",
+  "baseline_source_sha256": {
+    "$REPO/build/native-cpu/prefill-query-row-pair-source/core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+    "$REPO/build/native-cpu/prefill-query-row-pair-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/prefill-query-row-pair-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_source_sha256": {
+    "$REPO/build/native-cpu/queryrow-b1-pv-time32-source/core.cpp": "c03089471ec4c762116740519b3c7c5b28f2db87541e170afbde6bec48d5ec80",
+    "$REPO/build/native-cpu/queryrow-b1-pv-time32-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/queryrow-b1-pv-time32-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "change": "Only ordinary B1 attention PV: ascending-t probability division prepass, time32/channel32 tiles, eight independent FP32vector accumulators, +0initial then FP32boundaryreload/store.",
+  "unchanged": "pool(batch*Q16), QK dot/scales/max, vvexpf causal length, ascending softmaxsum, scratch sizes, allprefillpairedpaths, B2verify PV, norm/projections/head. No new memory allocation.",
+  "rationale": "Reduce intermediate attended-outputloads/stores from eachcausalkey to each32-keyblock; lowerinstructionpressure. Compiledspill/loadinspection and runtimegates required; no speed claim.",
+  "prior_review": "No completed original-native B1PV register/time32 trial located in native experiment docs; prior time32experiments explicitly changedbatched prefill only.",
+  "required_gates": "Root exactfullarray comparison acrossold68+actualnew63/64; B2versusB1fullmatrix nowessential becauseB1sourcechanged; prefix/suffix/seed/quality gates; timeblocktails1/31/32/33/63/64/65 andlongcontext. Baselineabsoluteoraclefailures remain inherited ifbitexact.",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/queryrow-b1-pv-time32-source/experiment.json",
+    "source_sha256": "300203ac879d2e10789fc20e58f567db1c286c26358a2e5e40abaaee2410e59f",
+    "sanitization": "Paths anonymized; process identifiers omitted; execution and failed qualification distinctions retained."
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "completed": true,
+  "executed_controller": "$REPO/build/native-cpu/run-queryrow-b1-pv-time32-exact-gates-executed.sh",
+  "executed_sha256": "32eddde1c691df42fe4c2cb604f8fd714c90e2226782a4f662cb7f6577b40485",
+  "identified_by_running_guard_name": "Compare Query-row pair timeboundary-exact-gate",
+  "shared_name_overwritten_after_launch": true,
+  "current_controller": "run-queryrow-b1-pv-time32-exact-gates.sh",
+  "difference": "Additional controller hash assertions and human-readable guard labels only; dispatched model/compare arguments identical. Capture/comparator/runtime tools and model source/binaries were untouched.",
+  "rerun_required": false,
+  "archive_provenance": {
+    "source_report": "build/native-cpu/queryrow-b1-pv-time32-controller-provenance.json",
+    "source_sha256": "90ff75bb6ab579b0af180fa850c6977ef243af1cc39f3f89a10c283f744c8438",
+    "sanitization": "Paths anonymized; process identifiers omitted; execution and failed qualification distinctions retained."
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "completed": true,
+  "static_only": true,
+  "model_run": false,
+  "performance_claim_eligible": false,
+  "binary_sha256": "46fae8b78c42b6f3ed20ac43df5a539584c757645a9faa0d453fdf2ce6cb0d5d",
+  "source_sha256": {
+    "$REPO/build/native-cpu/queryrow-b1-pv-time32-source/core.cpp": "c03089471ec4c762116740519b3c7c5b28f2db87541e170afbde6bec48d5ec80",
+    "$REPO/build/native-cpu/queryrow-b1-pv-time32-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/queryrow-b1-pv-time32-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+    "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+  },
+  "assembly_sha256": "93b95656e5e4cecd21cf40a7d523954e9bb78aafb388758675a48e8a4fca9cbe",
+  "division_prepass": {
+    "vector_fdiv_sites": 5,
+    "scalar_fdiv_sites": 1,
+    "reciprocal_estimate_sites": 0,
+    "scope": "Fourvector16element loop, onevector4element tail, scalar remaining tail; denominatorbroadcast exactF32sum. No reciprocal approximation."
+  },
+  "pv_loops": [
+    {
+      "start": "0x10000de7c",
+      "end_inclusive": "0x10000ded4",
+      "fma_count": 8,
+      "independent_accumulators": 8,
+      "stack_access": 0,
+      "stores": 0,
+      "calls": 0
+    },
+    {
+      "start": "0x10000df44",
+      "end_inclusive": "0x10000dfa0",
+      "fma_count": 8,
+      "independent_accumulators": 8,
+      "stack_access": 0,
+      "stores": 0,
+      "calls": 0
+    },
+    {
+      "start": "0x10000e010",
+      "end_inclusive": "0x10000e06c",
+      "fma_count": 8,
+      "independent_accumulators": 8,
+      "stack_access": 0,
+      "stores": 0,
+      "calls": 0
+    },
+    {
+      "start": "0x10000e0d8",
+      "end_inclusive": "0x10000e134",
+      "fma_count": 8,
+      "independent_accumulators": 8,
+      "stack_access": 0,
+      "stores": 0,
+      "calls": 0
+    }
+  ],
+  "interpretation": "Compiler unrolls four32channel tiles. Each loop traverses t ascending with eight independentF32accumulators, fourHalfvectors/eightwidenings/oneprobabilityscalar perkey. Timeblock bound min(n,start+32), outputstore/reload onlybetweenblocks; keystride256bytes. No innerloopspills, surroundingfunction usesstack.",
+  "source_scope": "Only ordinaryB1PV changed from queryrowtime32 source; B2verifier entire function text unchanged. Norm/QK/softmaxsum/projections remain source-identical.",
+  "limitations": [
+    "Compiled static evidence is not performance or absoluteoracle qualification.",
+    "Known inherited numerical failures remain unresolved; runtime exactness/lifecycle/seed evidence is separate."
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/queryrow-b1-pv-time32-assembly-review.json",
+    "source_sha256": "97695b60a0ed850d09c4b59cb08952d347f7b81e173b7489d6a2c50a7a0dd195",
+    "sanitization": "Paths anonymized; process identifiers omitted; execution and failed qualification distinctions retained."
+  }
+}

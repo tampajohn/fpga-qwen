@@ -1,0 +1,60 @@
+--- query-row-pair/core.cpp
++++ queryrow-b1-pv-time32/core.cpp
+@@ -616,9 +616,54 @@
+                     for(int t=0;t<n;++t)shifted[t]=scores[t]-maximum;
+                     vvexpf(probs,shifted,&n);
+                     float sum=0;for(int t=0;t<n;++t)sum+=probs[t];
+-                    float* dest=attended.data()+item*D;std::fill(dest,dest+D,0.0f);
+-                    for(int t=0;t<n;++t){float prob=probs[t]/sum;const Half* val=values.data()+cache_offset(layer,t,kh);
+-                        for(int j=0;j<D;j+=8){float16x8_t vv=vld1q_f16(val+j);vst1q_f32(dest+j,vfmaq_n_f32(vld1q_f32(dest+j),vcvt_f32_f16(vget_low_f16(vv)),prob));vst1q_f32(dest+j+4,vfmaq_n_f32(vld1q_f32(dest+j+4),vcvt_f32_f16(vget_high_f16(vv)),prob));}
++                    float* dest=attended.data()+item*D;
++                    // Ordinary B1 only: normalize in original ascending-t order,
++                    // retain each output in registers over fixed32-key blocks.
++                    for(int t=0;t<n;++t)probs[t]=probs[t]/sum;
++                    for(int time_begin=0;time_begin<n;time_begin+=32) {
++                        const int time_end=std::min(n,time_begin+32);
++                        for(int j=0;j<D;j+=32) {
++                            float32x4_t a0=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest+j+0);
++                            float32x4_t a1=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest+j+4);
++                            float32x4_t a2=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest+j+8);
++                            float32x4_t a3=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest+j+12);
++                            float32x4_t a4=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest+j+16);
++                            float32x4_t a5=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest+j+20);
++                            float32x4_t a6=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest+j+24);
++                            float32x4_t a7=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest+j+28);
++                            for(int t=time_begin;t<time_end;++t) {
++                                const float prob=probs[t];
++                                const Half* val=values.data()+cache_offset(layer,t,kh)+j;
++                                {
++                                    const float16x8_t packed=vld1q_f16(val+0);
++                                    const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
++                                    a0=vfmaq_n_f32(a0,lo,prob);a1=vfmaq_n_f32(a1,hi,prob);
++                                }
++                                {
++                                    const float16x8_t packed=vld1q_f16(val+8);
++                                    const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
++                                    a2=vfmaq_n_f32(a2,lo,prob);a3=vfmaq_n_f32(a3,hi,prob);
++                                }
++                                {
++                                    const float16x8_t packed=vld1q_f16(val+16);
++                                    const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
++                                    a4=vfmaq_n_f32(a4,lo,prob);a5=vfmaq_n_f32(a5,hi,prob);
++                                }
++                                {
++                                    const float16x8_t packed=vld1q_f16(val+24);
++                                    const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
++                                    a6=vfmaq_n_f32(a6,lo,prob);a7=vfmaq_n_f32(a7,hi,prob);
++                                }
++                            }
++                            vst1q_f32(dest+j+0,a0);
++                            vst1q_f32(dest+j+4,a1);
++                            vst1q_f32(dest+j+8,a2);
++                            vst1q_f32(dest+j+12,a3);
++                            vst1q_f32(dest+j+16,a4);
++                            vst1q_f32(dest+j+20,a5);
++                            vst1q_f32(dest+j+24,a6);
++                            vst1q_f32(dest+j+28,a7);
++                        }
+                     }
+                 }
+             });
