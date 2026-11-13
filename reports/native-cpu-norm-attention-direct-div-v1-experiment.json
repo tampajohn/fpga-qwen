@@ -1,0 +1,34 @@
+{
+  "prepared_only": true,
+  "built": false,
+  "baseline": "norm-direct-div-v1-source",
+  "baseline_numerical_status": "63-token maxerror passes but RMS0.002047516 exceeds unchanged0.002; preserved failure, not qualified.",
+  "baseline_source_sha256": {
+    "$REPO/build/native-cpu/norm-direct-div-v1-source/core.cpp": "eb1e1411c45b4f44e8d2e9fd6119bf3436d8fe344443923ac2009d005ac94df6",
+    "$REPO/build/native-cpu/norm-direct-div-v1-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/norm-direct-div-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_source_sha256": {
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/core.cpp": "f36af9310aa7c32cd0c7a90806ab80d43ea4f11ef3b2fb01826fb59ccd5174fc",
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "change": "Only QK score scaling uses direct FP32 division by sqrt(float(D)) instead of multiply by rounded FP32 reciprocal.",
+  "coverage": [
+    "Ordinary paired-head B>1 QK",
+    "Ordinary B1 QK",
+    "B2 verification QK"
+  ],
+  "unchanged": "All QK dot products/FMA/reduction ordering, softmax, PV, projections, RoPE, canonical512, FP16weight/KV; RMSNormdirectdivision+FP64sum inherited unchanged.",
+  "hypothesis": "Align score-normalization operation with stated independent NumPy equation. No heuristic or tolerance adjustment; correctness and performance unproven.",
+  "required_gates": [
+    "Preserved63-token fixedoracle tripwire first, then3968 and broadnumerics ifpasses.",
+    "All B2 API/suffix equivalence gates because allscorepaths changed together.",
+    "Compiled FDIV inspection: no fast-math/reciprocal-math enabled by current build flags."
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/norm-attention-direct-div-v1-source/experiment.json",
+    "source_sha256": "5ed2e598a68e5322534ded162a63ed3d0d511d53b3af577554591645863971e0",
+    "sanitization": "Repository/home paths replaced; process and host identifiers removed; original evidence hashes preserved."
+  }
+}

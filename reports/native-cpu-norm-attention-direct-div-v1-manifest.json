@@ -1,0 +1,47 @@
+{
+  "completed": true,
+  "gpu": false,
+  "pytorch": false,
+  "guard": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Build direct norm and attention division diagnostic",
+      "started_at": "2026-11-13T17:58:54.675117+00:00"
+    }
+  },
+  "command": [
+    "/usr/bin/clang++",
+    "-std=c++20",
+    "-O3",
+    "-mcpu=native",
+    "-flto=thin",
+    "-ffp-contract=fast",
+    "-fno-math-errno",
+    "-pthread",
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/core.cpp",
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/main.cpp",
+    "-framework",
+    "Accelerate",
+    "-o",
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-build/qwen_cpu"
+  ],
+  "source_directory": "$REPO/build/native-cpu/norm-attention-direct-div-v1-source",
+  "source_sha256": {
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/core.cpp": "f36af9310aa7c32cd0c7a90806ab80d43ea4f11ef3b2fb01826fb59ccd5174fc",
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+    "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+  },
+  "removed_environment_keys": [],
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "started_at": "2026-11-13T17:58:55Z",
+  "exit_code": 0,
+  "binary": "$REPO/build/native-cpu/norm-attention-direct-div-v1-build/qwen_cpu",
+  "binary_sha256": "8e83f164fc0defe8fb89102a5b2c0769eea083121c75a3adcc6bb2654f468df8",
+  "linked_libraries": "$REPO/build/native-cpu/norm-attention-direct-div-v1-build/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/norm-attention-direct-div-v1-build/manifest.json",
+    "source_sha256": "c3a7575b2164bdba5c36ec454bd59ff03357323f5a72b225e62a7807303fb2f0",
+    "sanitization": "Repository/home paths replaced; process and host identifiers removed; original evidence hashes preserved."
+  }
+}

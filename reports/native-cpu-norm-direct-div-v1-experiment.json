@@ -1,0 +1,41 @@
+{
+  "prepared_only": true,
+  "built": false,
+  "baseline": "build-19",
+  "baseline_binary_sha256": "827b0694d8304282bb11186e86ef62169770a3aed409e3444f2ebdac2f4e09e6",
+  "baseline_source_sha256": {
+    "$REPO/engine/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_source_sha256": {
+    "$REPO/build/native-cpu/norm-direct-div-v1-source/core.cpp": "eb1e1411c45b4f44e8d2e9fd6119bf3436d8fe344443923ac2009d005ac94df6",
+    "$REPO/build/native-cpu/norm-direct-div-v1-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/norm-direct-div-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "change": "Only RMSNorm final operation sequence: direct FP32 division by sqrt denominator, then FP32 weight multiplication, instead of rounded reciprocal multiply.",
+  "unchanged": "FP32-rounded squares, FP64 sum, one sum rounding toFP32, FP32 mean/epsilon/sqrt denominator; all attention/projection/RoPE/SwiGLU code, FP16 weights/KV, canonical512, B2 structure unchanged.",
+  "hypothesis": "Closer RMSNorm operation sequence to stated independent NumPy formula; not a claim that this fixes63-token failure or improves performance.",
+  "compiler_review": {
+    "flags": [
+      "-std=c++20",
+      "-O3",
+      "-mcpu=native",
+      "-flto=thin",
+      "-ffp-contract=fast",
+      "-fno-math-errno",
+      "-pthread"
+    ],
+    "reciprocal_math_enabled": false,
+    "reason": "Currentflags include -ffp-contract=fast and -fno-math-errno, but not -ffast-math/-freciprocal-math/-funsafe-math-optimizations. FMAcontraction does not authorize replacing variable FP32 x/denominator with x*(1/denominator). Confirm FDIV and absent reciprocal estimates in built assembly before claiming actual compiledsequence."
+  },
+  "required_gates": [
+    "Root63-token preservedfailingfixture and3968 numericaltripwires atunchangedmax.01 RMS.002 rtol0 greedyidentity.",
+    "Iftripwirespass, broadfixednumericalgates pluscache/API/suffix/quality andperformance; arithmeticchange mustnotinherit build19exactness."
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/norm-direct-div-v1-source/experiment.json",
+    "source_sha256": "9161dab68274a48716547f8a33e4c4020c2d2985513885deffd7583455277cbc",
+    "sanitization": "Repository/home paths replaced; process and host identifiers removed; original evidence hashes preserved."
+  }
+}

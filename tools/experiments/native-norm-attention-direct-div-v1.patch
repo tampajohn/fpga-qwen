@@ -1,0 +1,47 @@
+--- a/engine/core.cpp
++++ b/engine/core.cpp
+@@ -186,12 +186,14 @@
+ }
+ void norm(const float* x,const float* w,float* out,int n) {
+     // Accumulate FP32-rounded squares in FP64, then round the sum once
+-    // before the existing FP32 scale and output operations.
++    // before FP32 square root and direct per-element division. Keep
++    // division and weight multiplication separate, matching RMSNorm's
++    // x / sqrt(mean(square(x)) + epsilon) * weight operation sequence.
+     double precise_sum=0;
+     for(int j=0;j<n;++j){const float square=x[j]*x[j];precise_sum+=static_cast<double>(square);}
+     const float sum=static_cast<float>(precise_sum);
+-    const float inv=1.0f/std::sqrt(sum/n+1e-6f);
+-    for(int j=0;j<n;++j)out[j]=(x[j]*inv)*w[j];
++    const float denominator=std::sqrt(sum/n+1e-6f);
++    for(int j=0;j<n;++j)out[j]=(x[j]/denominator)*w[j];
+ }
+ void rope(float* x,const float* cs,const float* sn) {
+     for(int j=0;j<64;++j){float a=x[j],b=x[j+64];x[j]=a*cs[j]-b*sn[j];x[j+64]=b*cs[j]+a*sn[j];}
+@@ -397,7 +399,7 @@
+                         for(int t=0;t<n;++t) {
+                             float score0,score1;
+                             dot_query_pair(query0,query1,keys.data()+cache_offset(layer,t,kh),score0,score1);
+-                            score0*=1.0f/std::sqrt(float(D));score1*=1.0f/std::sqrt(float(D));
++                            score0/=std::sqrt(float(D));score1/=std::sqrt(float(D));
+                             scores0[t]=score0;scores1[t]=score1;
+                             maximum0=std::max(maximum0,score0);maximum1=std::max(maximum1,score1);
+                         }
+@@ -473,7 +475,7 @@
+                 float* probs=probabilities.data()+size_t(worker)*options.context;
+                 for(size_t item=begin;item<end;++item){int b=item/Q,head=item%Q,kh=head/2,n=pos+b+1;
+                     const float* query=q.data()+item*D;float maximum=-std::numeric_limits<float>::infinity();
+-                    for(int t=0;t<n;++t){float s=dot(query,keys.data()+cache_offset(layer,t,kh),D)*(1.0f/std::sqrt(float(D)));scores[t]=s;maximum=std::max(maximum,s);}
++                    for(int t=0;t<n;++t){float s=dot(query,keys.data()+cache_offset(layer,t,kh),D)/std::sqrt(float(D));scores[t]=s;maximum=std::max(maximum,s);}
+                     // Keep causal length, maximum subtraction, and sequential
+                     // normalization sum; only scalar libm becomes vector libm.
+                     // vForce.h allows denormal/result differences, requiring gates.
+@@ -538,7 +540,7 @@
+                 float* probs=probabilities.data()+size_t(worker)*options.context;
+                 for(size_t item=begin;item<end;++item){int b=item/Q,head=item%Q,kh=head/2,n=pos+b+1;
+                     const float* query=q.data()+item*D;float maximum=-std::numeric_limits<float>::infinity();
+-                    for(int t=0;t<n;++t){float s=dot(query,keys.data()+cache_offset(layer,t,kh),D)*(1.0f/std::sqrt(float(D)));scores[t]=s;maximum=std::max(maximum,s);}
++                    for(int t=0;t<n;++t){float s=dot(query,keys.data()+cache_offset(layer,t,kh),D)/std::sqrt(float(D));scores[t]=s;maximum=std::max(maximum,s);}
+                     // Keep causal length, maximum subtraction, and sequential
+                     // normalization sum; only scalar libm becomes vector libm.
+                     // vForce.h allows denormal/result differences, requiring gates.

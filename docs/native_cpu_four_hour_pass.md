@@ -116,3 +116,42 @@ not a whole-function spill-free claim. It establishes neither a measured load
 traffic reduction against baseline nor a performance gain. Timing and promotion
 remain held while the independent numerical gap is investigated; live build19
 is unchanged.
+
+## Direct division diagnostics: four selected positions pass only in combined variant
+
+Two isolated arithmetic diagnostics retain FP64 accumulation of FP32-rounded
+squares and unchanged tolerances. Neither is deployed or performance-qualified.
+Both patches below are relative to build19, not cumulative patches.
+
+- **Norm only:** [patch](../tools/experiments/native-norm-direct-div-v1.patch),
+  [source metadata](../reports/native-cpu-norm-direct-div-v1-experiment.json),
+  [build](../reports/native-cpu-norm-direct-div-v1-manifest.json). RMSNorm divides
+  each FP32 activation by the rounded FP32 square-root denominator before the
+  separate weight multiply, replacing multiplication by its rounded reciprocal.
+- **Norm plus attention:** [patch](../tools/experiments/native-norm-attention-direct-div-v1.patch),
+  [source metadata](../reports/native-cpu-norm-attention-direct-div-v1-experiment.json),
+  [build](../reports/native-cpu-norm-attention-direct-div-v1-manifest.json).
+  Additionally, all three QK score paths—ordinary paired-head prefill, B1 decode,
+  and B2 verification—divide directly by FP32 `sqrt(D)`. Dot-product order,
+  causal bounds, softmax, PV and history semantics are unchanged. Source review
+  confirmed all three paths and the recorded source hashes; this review does
+  not independently certify emitted machine instructions.
+
+| Diagnostic | Position | Maximum absolute error | RMS error | Fixed gate |
+|---|---:|---:|---:|---|
+| Norm only | 63 | 0.009491801 | 0.002047516 | **Fail: RMS** |
+| Norm only | 64 | 0.009421587 | 0.001981484 | Pass |
+| Norm + attention | 63 | 0.008892775 | 0.001824594 | Pass |
+| Norm + attention | 64 | 0.009775162 | 0.001842675 | Pass |
+| Norm + attention | 3968 | 0.008239746 | 0.001451200 | Pass |
+| Norm + attention | 3969 | 0.005151749 | 0.001036625 | Pass |
+
+All listed greedy predictions match. The completed
+[norm-only boundary report](../reports/native-cpu-norm-direct-div-v1-boundary63-oracle.json)
+preserves its failure. The combined variant passes the same
+[boundary fixture](../reports/native-cpu-norm-attention-direct-div-v1-boundary63-oracle.json)
+and two [saved near-4K positions](../reports/native-cpu-norm-attention-direct-div-v1-context3968-oracle.json).
+These finite observations do not prove a general root cause, broad numerical
+qualification, better answers or speed. Broad numerical, B2, prefix/lifecycle,
+quality and performance acceptance remain required. Earlier build19 and
+norm-only failures remain part of the record; no tolerance was relaxed.
