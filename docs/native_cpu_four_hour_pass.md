@@ -410,3 +410,28 @@ cached/fresh full-logit identity and cross-variant IDs/text/EOS. Quality, cache
 lifecycle and complete-request measurements remain additional requirements.
 Completing this numerical inventory does not authorize a release, backend default
 change or performance claim; the absolute numerical gap is still unresolved.
+
+## B1-order batched projection diagnostic: first fixture passes
+
+The [isolated patch](../tools/experiments/native-prefill-b1-arithmetic-projection-diagnostic.patch)
+replaces only batched layer SGEMM projections with the existing two-input,
+two-output-row verifier dot kernels. Worker ownership is bounded to each input
+pair; an odd input uses original dot4/dot. Attention, normalization, canonical512,
+B1 decode, B2 verification and output-head computation retain build19 arithmetic.
+The existing FP32 weight cache is intentionally retained to avoid a storage change.
+See [preparation metadata](../reports/native-cpu-prefill-b1-arithmetic-projection-diagnostic-experiment.json),
+[independent source/integer-boundary review](../reports/native-cpu-prefill-b1-arithmetic-projection-diagnostic-source-review.json),
+and [executed build](../reports/native-cpu-prefill-b1-arithmetic-projection-diagnostic-manifest.json).
+
+The completed [63-token capture](../reports/native-cpu-prefill-b1-arithmetic-projection-diagnostic-boundary63-capture.json)
+has two exact repeats. Both full-vocabulary outputs at positions63/64 are
+byte-identical to the earlier sequential-step diagnostic, despite retaining the
+batched attention path. Its [fixed-oracle gate](../reports/native-cpu-prefill-b1-arithmetic-projection-diagnostic-boundary63-oracle.json)
+passes: maximum absolute errors0.007441878 /0.008217812, RMS0.001454748 /0.001817284,
+and greedy identity. This isolates the projection-path change on this fixture
+more narrowly than the earlier all-sequential control; it does not prove a
+library defect, a general cause of network error or equivalence for every chunk.
+
+Broader fixed-oracle testing remains pending, beginning with2048/3968. No numerical
+limit changed. This diagnostic is not claimed faster or promoted, and its result
+does not erase the original build19 failure or qualify unrelated optimizations.

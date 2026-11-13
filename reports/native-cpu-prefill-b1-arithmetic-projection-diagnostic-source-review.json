@@ -1,0 +1,20 @@
+{
+  "completed": true,
+  "source_only": true,
+  "build_run": false,
+  "inference_run": false,
+  "source_sha256": "19aca5f3b9df8a52f2440fe35ed6882a539f9abdb6bf9a7d1b9e04f466cd69d1",
+  "integer_mapping_cases": 336,
+  "integer_mapping_passed": true,
+  "findings": [
+    "No source correctness issue found. Existing dot, dot4, dot_verify_pair and dot_verify_two_rows use independent +0 accumulators, identical ascending j+=8 FMA operands and vaddvq(vaddq(a,b)) reduction for every output.",
+    "Flattened pair/row ranges clip to one input pair before calling verifier; arbitrary worker boundaries, odd output counts and odd final input are bounded. Complete unique output coverage checked with integer intervals.",
+    "For canonical batch<=512 and maximum layer rows3072, flattened count<=786432; output<=1572864 floats. No new scratch or pool launch count; synchronous pool lifetime retains captured pointers.",
+    "Projection arithmetic equivalence to B1 on identical inputs is source-level only, not whole-model sequential equivalence or oracle qualification. SGEMM replacement can substantially increase weight traffic; no performance prediction."
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefill-b1-arithmetic-projection-diagnostic-source-review.json",
+    "source_sha256": "bbce5ba6df3d82740da86d2a4d51854fe7ffa5ce5e5779834bc69167ab1daa24",
+    "sanitization": "Repository/home paths replaced; process/host identifiers removed; original hashes retained."
+  }
+}
