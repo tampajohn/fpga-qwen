@@ -1,0 +1,30 @@
+{
+  "prepared_only": true,
+  "built": false,
+  "arithmetic_component": "$REPO/build/native-cpu/norm-attention-direct-div-v1-source",
+  "arithmetic_source_sha256": {
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/core.cpp": "f36af9310aa7c32cd0c7a90806ab80d43ea4f11ef3b2fb01826fb59ccd5174fc",
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "granularity_component": "$REPO/build/native-cpu/prefix128-v1-source",
+  "granularity_source_sha256": {
+    "$REPO/build/native-cpu/prefix128-v1-source/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "$REPO/build/native-cpu/prefix128-v1-source/core.hpp": "f7997e566b44f148cbdf1968cb1bf00d6d4e603063a48c64943dc7929406a1cf",
+    "$REPO/build/native-cpu/prefix128-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_source_sha256": {
+    "$REPO/build/native-cpu/norm-attention-direct-div-prefix128-v2-source/core.cpp": "f36af9310aa7c32cd0c7a90806ab80d43ea4f11ef3b2fb01826fb59ccd5174fc",
+    "$REPO/build/native-cpu/norm-attention-direct-div-prefix128-v2-source/core.hpp": "f7997e566b44f148cbdf1968cb1bf00d6d4e603063a48c64943dc7929406a1cf",
+    "$REPO/build/native-cpu/norm-attention-direct-div-prefix128-v2-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "canonical_chunk": 128,
+  "change": "Exactcomposition: directnorm+attentionscaling arithmetic and fixedcanonicalchunk; no QKkeypair or otherchanges.",
+  "qualification": "Root63gate passesfor512arithmeticcomponent; thiscomposedchunkcandidate isunbuilt/untested. Requiresfixednumericalcached/freshquality andperformancegates; no inheritedexactness.",
+  "preserved_negative_evidence": "Originalprefix64/128v1 andbaseline19 fail63oracle; normdirectdivalonefailsRMS. No failures overwritten.",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/norm-attention-direct-div-prefix128-v2-source/experiment.json",
+    "source_sha256": "d91b88cac9a7b2eae9b0a5e4921cdde288fd87b2bbe86d84829d77358e5b9b91",
+    "sanitization": "Repository/home paths replaced; process and host identifiers removed; original evidence hashes preserved."
+  }
+}

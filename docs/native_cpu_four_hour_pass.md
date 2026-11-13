@@ -155,3 +155,41 @@ These finite observations do not prove a general root cause, broad numerical
 qualification, better answers or speed. Broad numerical, B2, prefix/lifecycle,
 quality and performance acceptance remain required. Earlier build19 and
 norm-only failures remain part of the record; no tolerance was relaxed.
+
+## Direct-division composition: short boundary matrix completed
+
+The direct norm/QK division arithmetic was composed with canonical chunks 64 and
+128, alongside its original chunk512 variant. The 64/128 source metadata binds
+both the arithmetic and granularity components; no QK key-pair optimization was
+included. Prepared-only flags remain historical; executed builds and terminal
+gates below supersede them for these specific checks.
+
+| Chunk | Composed source provenance | Executed build |
+|---|---|---|
+| 64 | [Metadata](../reports/native-cpu-norm-attention-direct-div-prefix64-v2-experiment.json) | [Manifest](../reports/native-cpu-norm-attention-direct-div-prefix64-v2-manifest.json) |
+| 128 | [Metadata](../reports/native-cpu-norm-attention-direct-div-prefix128-v2-experiment.json) | [Manifest](../reports/native-cpu-norm-attention-direct-div-prefix128-v2-manifest.json) |
+| 512 | [Arithmetic metadata](../reports/native-cpu-norm-attention-direct-div-v1-experiment.json) | [Manifest](../reports/native-cpu-norm-attention-direct-div-v1-manifest.json) |
+
+The completed [boundary matrix](../reports/native-cpu-div-prefix-v2-boundary-gate.json)
+passes all **36 comparisons**: six prompt lengths (63, 64, 65, 127, 128, 129),
+two teacher-forced positions each, across three chunk configurations. Native
+captures repeat twice with exact repeat identity. The fixed limits remain
+max-absolute 0.01, RMS 0.002, relative tolerance zero, plus greedy identity.
+
+All eight constituent numerical reports are retained:
+
+- Prompt63: [512](../reports/native-cpu-norm-attention-direct-div-v1-boundary63-oracle.json),
+  [128](../reports/native-cpu-div-prefix-v2-128-boundary63-oracle.json),
+  [64](../reports/native-cpu-div-prefix-v2-64-boundary63-oracle.json).
+- All three chunks at prompt lengths
+  [64](../reports/native-cpu-div-prefix-v2-boundary64-oracle.json),
+  [65](../reports/native-cpu-div-prefix-v2-boundary65-oracle.json),
+  [127](../reports/native-cpu-div-prefix-v2-boundary127-oracle.json),
+  [128](../reports/native-cpu-div-prefix-v2-boundary128-oracle.json), and
+  [129](../reports/native-cpu-div-prefix-v2-boundary129-oracle.json).
+
+This qualifies only the listed boundary fixtures. The original v1 chunk
+candidates, baseline19 and norm-only failures remain unchanged above. Broad
+numerical and quality checks, cached/fresh lifecycle equivalence and performance
+remain separate requirements; no partial broad-suite outputs are archived here.
+No speed claim or promotion follows from this matrix. Live build19 is unchanged.

@@ -1,0 +1,923 @@
+{
+  "completed": true,
+  "calibration_only": false,
+  "passed": true,
+  "timing_claim": false,
+  "gpu": false,
+  "pytorch": false,
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Joint512/128/64 directdiv fixed NumPy boundary64",
+      "started_at": "2026-11-13T18:03:01.018502+00:00"
+    }
+  },
+  "declared_tolerances": {
+    "atol": 0.01,
+    "rtol": 0.0,
+    "rms_atol": 0.002,
+    "greedy_identity_required": true
+  },
+  "inputs": {
+    "$REPO/build/native-cpu/div-prefix-v2-512-boundary64-logits/report.json": "6d55add394b232cf8d618b1523077b3ca697b56e232c98f98ed70caa014647b9",
+    "$REPO/build/native-cpu/div-prefix-v2-512-boundary64-logits/run0-step0.f32": "479d503a1803d8a26d88be0162a57c7192ccb1cd8a1bf3ef5b51ec684fe89f9c",
+    "$REPO/build/native-cpu/div-prefix-v2-512-boundary64-logits/run0-step1.f32": "f9f313f4e006b372bcb3ce887bdd04d5051a7bd34843562e13c4a6e9174fbeb9",
+    "$REPO/build/native-cpu/norm-attention-direct-div-v1-build/qwen_cpu": "8e83f164fc0defe8fb89102a5b2c0769eea083121c75a3adcc6bb2654f468df8",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$REPO/build/native-cpu/prefix-granularity-boundary-fixtures-v1/prompt-64.json": "175a98f3f9499aa857338eedd08e74b2fde8eade07c25bc949e2eae557460c7e",
+    "$REPO/build/native-cpu/prefix-granularity-boundary-fixtures-v1/continuation-64.json": "e4cb23ed278a6c2b5b07f5a74299f2aea666176c7de6be28234390ff9973fc41",
+    "$REPO/build/native-cpu/div-prefix-v2-128-boundary64-logits/report.json": "b24bfc773f1a79e00dc6ae1e1e60e8bc96900cd68379515d05ad73f182066779",
+    "$REPO/build/native-cpu/div-prefix-v2-128-boundary64-logits/run0-step0.f32": "479d503a1803d8a26d88be0162a57c7192ccb1cd8a1bf3ef5b51ec684fe89f9c",
+    "$REPO/build/native-cpu/div-prefix-v2-128-boundary64-logits/run0-step1.f32": "f9f313f4e006b372bcb3ce887bdd04d5051a7bd34843562e13c4a6e9174fbeb9",
+    "$REPO/build/native-cpu/norm-attention-direct-div-prefix128-v2-build/qwen_cpu": "a4dc92929520d9e36ab2685e69c1824a0575ff93bee2d78cc275e2d23be5cae9",
+    "$REPO/build/native-cpu/div-prefix-v2-64-boundary64-logits/report.json": "a0a42152a539042cfc5bee951a13c7b4f074abc480d838483370db71549a479f",
+    "$REPO/build/native-cpu/div-prefix-v2-64-boundary64-logits/run0-step0.f32": "479d503a1803d8a26d88be0162a57c7192ccb1cd8a1bf3ef5b51ec684fe89f9c",
+    "$REPO/build/native-cpu/div-prefix-v2-64-boundary64-logits/run0-step1.f32": "f9f313f4e006b372bcb3ce887bdd04d5051a7bd34843562e13c4a6e9174fbeb9",
+    "$REPO/build/native-cpu/norm-attention-direct-div-prefix64-v2-build/qwen_cpu": "1ce1f463ba36dbe0a1ea162e77fda54a2d341c5355fed82bdfaf72fcdfee51c0",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/model.safetensors": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+  },
+  "source_hashes": {
+    "$REPO/tools/check_native_logits.py": "ef17d9762d2976d961701ef0415000db8e3e80c59b0d91c9931b8909619658d3",
+    "$REPO/tests/test_full_model.py": "5d56aa9784ec89a98f34cfdfd14aa7a0be9d356dd804754a8ec52c1b6e5fc439",
+    "$REPO/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713"
+  },
+  "oracle": {
+    "checkpoint": "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca",
+    "weight_precision": "f16",
+    "kv_precision": "f16",
+    "arithmetic": "NumPy FP32 network math; existing FP64 RoPE angle generation then FP32 sine/cosine.",
+    "kv_representation": "FP16-rounded values widened to FP32 before attention and cached as FP32",
+    "matrix_weight_rounding_only": true,
+    "norm_weights": "Original BF16 checkpoint values widened to FP32 without FP16 rounding",
+    "numpy_version": "2.5.4",
+    "library_threads": {
+      "VECLIB_MAXIMUM_THREADS": "4",
+      "OPENBLAS_NUM_THREADS": "4"
+    }
+  },
+  "captures": [
+    {
+      "path": "$REPO/build/native-cpu/div-prefix-v2-512-boundary64-logits/report.json",
+      "wrapped_provenance": false,
+      "configuration": {
+        "architecture": "qwen3",
+        "layers": 28,
+        "hidden": 1024,
+        "query_heads": 16,
+        "kv_heads": 8,
+        "vocabulary": 151936,
+        "weight_format": "QWCPU01",
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_type": "f16",
+        "gpu": false,
+        "pytorch": false,
+        "decode_threads": 12,
+        "prefill_threads": 6
+      },
+      "run_index": 0,
+      "warmup": false,
+      "native_mode": "teacher_forced",
+      "prompt": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872
+      ],
+      "consumed": [
+        198
+      ],
+      "predictions": [
+        25,
+        40
+      ],
+      "eog_prediction_steps": [],
+      "client_manifest": null,
+      "precision_matched": true
+    },
+    {
+      "path": "$REPO/build/native-cpu/div-prefix-v2-128-boundary64-logits/report.json",
+      "wrapped_provenance": false,
+      "configuration": {
+        "architecture": "qwen3",
+        "layers": 28,
+        "hidden": 1024,
+        "query_heads": 16,
+        "kv_heads": 8,
+        "vocabulary": 151936,
+        "weight_format": "QWCPU01",
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_type": "f16",
+        "gpu": false,
+        "pytorch": false,
+        "decode_threads": 12,
+        "prefill_threads": 6
+      },
+      "run_index": 0,
+      "warmup": false,
+      "native_mode": "teacher_forced",
+      "prompt": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872
+      ],
+      "consumed": [
+        198
+      ],
+      "predictions": [
+        25,
+        40
+      ],
+      "eog_prediction_steps": [],
+      "client_manifest": null,
+      "precision_matched": true
+    },
+    {
+      "path": "$REPO/build/native-cpu/div-prefix-v2-64-boundary64-logits/report.json",
+      "wrapped_provenance": false,
+      "configuration": {
+        "architecture": "qwen3",
+        "layers": 28,
+        "hidden": 1024,
+        "query_heads": 16,
+        "kv_heads": 8,
+        "vocabulary": 151936,
+        "weight_format": "QWCPU01",
+        "weight_precision": "f16",
+        "norm_precision": "f32",
+        "activation_precision": "f32",
+        "kv_type": "f16",
+        "gpu": false,
+        "pytorch": false,
+        "decode_threads": 12,
+        "prefill_threads": 6
+      },
+      "run_index": 0,
+      "warmup": false,
+      "native_mode": "teacher_forced",
+      "prompt": [
+        151644,
+        8948,
+        198,
+        2610,
+        525,
+        1207,
+        16948,
+        18,
+        12,
+        15,
+        13,
+        21,
+        33,
+        11,
+        264,
+        2613,
+        15235,
+        17847,
+        4303,
+        23490,
+        13,
+        21806,
+        279,
+        1196,
+        594,
+        5535,
+        3405,
+        5961,
+        13,
+        5443,
+        6788,
+        6605,
+        438,
+        2266,
+        11,
+        537,
+        438,
+        264,
+        5316,
+        311,
+        13153,
+        13,
+        1446,
+        1231,
+        12641,
+        6788,
+        30637,
+        979,
+        4588,
+        13,
+        1416,
+        498,
+        653,
+        537,
+        1414,
+        2494,
+        11,
+        1977,
+        773,
+        13,
+        151645,
+        198,
+        151644,
+        872
+      ],
+      "consumed": [
+        198
+      ],
+      "predictions": [
+        25,
+        40
+      ],
+      "eog_prediction_steps": [],
+      "client_manifest": null,
+      "precision_matched": true
+    }
+  ],
+  "selected_steps": [
+    0,
+    1
+  ],
+  "comparisons": [
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.008610010147094727,
+      "rms_error": 0.0018081813316111349,
+      "max_error_token_id": 4099,
+      "native_at_max_error": -1.561326026916504,
+      "oracle_at_max_error": -1.5699360370635986,
+      "native_predicted_id": 25,
+      "native_argmax_id": 25,
+      "oracle_argmax_id": 25,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 25,
+          "logit": 22.896808624267578
+        },
+        {
+          "id": 510,
+          "logit": 19.04107666015625
+        },
+        {
+          "id": 198,
+          "logit": 18.143327713012695
+        },
+        {
+          "id": 2727,
+          "logit": 16.61227798461914
+        },
+        {
+          "id": 1943,
+          "logit": 14.982633590698242
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 25,
+          "logit": 22.903345108032227
+        },
+        {
+          "id": 510,
+          "logit": 19.046911239624023
+        },
+        {
+          "id": 198,
+          "logit": 18.139972686767578
+        },
+        {
+          "id": 2727,
+          "logit": 16.610366821289062
+        },
+        {
+          "id": 1943,
+          "logit": 14.986199378967285
+        }
+      ],
+      "native_top1_margin": 3.855731964111328,
+      "oracle_top1_margin": 3.856433868408203,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 0,
+      "context_tokens": 64,
+      "oracle_logits_sha256": "195f34466bf2cdc07c942db6f95608add74a9f59d54a5783e41a4abefb0a18c8",
+      "native_logits_sha256": "479d503a1803d8a26d88be0162a57c7192ccb1cd8a1bf3ef5b51ec684fe89f9c"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.008610010147094727,
+      "rms_error": 0.0018081813316111349,
+      "max_error_token_id": 4099,
+      "native_at_max_error": -1.561326026916504,
+      "oracle_at_max_error": -1.5699360370635986,
+      "native_predicted_id": 25,
+      "native_argmax_id": 25,
+      "oracle_argmax_id": 25,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 25,
+          "logit": 22.896808624267578
+        },
+        {
+          "id": 510,
+          "logit": 19.04107666015625
+        },
+        {
+          "id": 198,
+          "logit": 18.143327713012695
+        },
+        {
+          "id": 2727,
+          "logit": 16.61227798461914
+        },
+        {
+          "id": 1943,
+          "logit": 14.982633590698242
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 25,
+          "logit": 22.903345108032227
+        },
+        {
+          "id": 510,
+          "logit": 19.046911239624023
+        },
+        {
+          "id": 198,
+          "logit": 18.139972686767578
+        },
+        {
+          "id": 2727,
+          "logit": 16.610366821289062
+        },
+        {
+          "id": 1943,
+          "logit": 14.986199378967285
+        }
+      ],
+      "native_top1_margin": 3.855731964111328,
+      "oracle_top1_margin": 3.856433868408203,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 1,
+      "step": 0,
+      "context_tokens": 64,
+      "oracle_logits_sha256": "195f34466bf2cdc07c942db6f95608add74a9f59d54a5783e41a4abefb0a18c8",
+      "native_logits_sha256": "479d503a1803d8a26d88be0162a57c7192ccb1cd8a1bf3ef5b51ec684fe89f9c"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.008610010147094727,
+      "rms_error": 0.0018081813316111349,
+      "max_error_token_id": 4099,
+      "native_at_max_error": -1.561326026916504,
+      "oracle_at_max_error": -1.5699360370635986,
+      "native_predicted_id": 25,
+      "native_argmax_id": 25,
+      "oracle_argmax_id": 25,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 25,
+          "logit": 22.896808624267578
+        },
+        {
+          "id": 510,
+          "logit": 19.04107666015625
+        },
+        {
+          "id": 198,
+          "logit": 18.143327713012695
+        },
+        {
+          "id": 2727,
+          "logit": 16.61227798461914
+        },
+        {
+          "id": 1943,
+          "logit": 14.982633590698242
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 25,
+          "logit": 22.903345108032227
+        },
+        {
+          "id": 510,
+          "logit": 19.046911239624023
+        },
+        {
+          "id": 198,
+          "logit": 18.139972686767578
+        },
+        {
+          "id": 2727,
+          "logit": 16.610366821289062
+        },
+        {
+          "id": 1943,
+          "logit": 14.986199378967285
+        }
+      ],
+      "native_top1_margin": 3.855731964111328,
+      "oracle_top1_margin": 3.856433868408203,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 2,
+      "step": 0,
+      "context_tokens": 64,
+      "oracle_logits_sha256": "195f34466bf2cdc07c942db6f95608add74a9f59d54a5783e41a4abefb0a18c8",
+      "native_logits_sha256": "479d503a1803d8a26d88be0162a57c7192ccb1cd8a1bf3ef5b51ec684fe89f9c"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.006764411926269531,
+      "rms_error": 0.0016456006554509731,
+      "max_error_token_id": 126326,
+      "native_at_max_error": 6.076506614685059,
+      "oracle_at_max_error": 6.069742202758789,
+      "native_predicted_id": 40,
+      "native_argmax_id": 40,
+      "oracle_argmax_id": 40,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 40,
+          "logit": 19.99510955810547
+        },
+        {
+          "id": 32313,
+          "logit": 19.234256744384766
+        },
+        {
+          "id": 13048,
+          "logit": 18.106136322021484
+        },
+        {
+          "id": 3838,
+          "logit": 18.084203720092773
+        },
+        {
+          "id": 12555,
+          "logit": 17.749515533447266
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 40,
+          "logit": 19.99185562133789
+        },
+        {
+          "id": 32313,
+          "logit": 19.229867935180664
+        },
+        {
+          "id": 13048,
+          "logit": 18.103984832763672
+        },
+        {
+          "id": 3838,
+          "logit": 18.081703186035156
+        },
+        {
+          "id": 12555,
+          "logit": 17.746292114257812
+        }
+      ],
+      "native_top1_margin": 0.7608528137207031,
+      "oracle_top1_margin": 0.7619876861572266,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 0,
+      "step": 1,
+      "context_tokens": 65,
+      "oracle_logits_sha256": "30275f3fb1c4cc58c6fead574bcd7ef4045c662a88a68b53fb87d6199b66bb73",
+      "native_logits_sha256": "f9f313f4e006b372bcb3ce887bdd04d5051a7bd34843562e13c4a6e9174fbeb9"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.006764411926269531,
+      "rms_error": 0.0016456006554509731,
+      "max_error_token_id": 126326,
+      "native_at_max_error": 6.076506614685059,
+      "oracle_at_max_error": 6.069742202758789,
+      "native_predicted_id": 40,
+      "native_argmax_id": 40,
+      "oracle_argmax_id": 40,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 40,
+          "logit": 19.99510955810547
+        },
+        {
+          "id": 32313,
+          "logit": 19.234256744384766
+        },
+        {
+          "id": 13048,
+          "logit": 18.106136322021484
+        },
+        {
+          "id": 3838,
+          "logit": 18.084203720092773
+        },
+        {
+          "id": 12555,
+          "logit": 17.749515533447266
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 40,
+          "logit": 19.99185562133789
+        },
+        {
+          "id": 32313,
+          "logit": 19.229867935180664
+        },
+        {
+          "id": 13048,
+          "logit": 18.103984832763672
+        },
+        {
+          "id": 3838,
+          "logit": 18.081703186035156
+        },
+        {
+          "id": 12555,
+          "logit": 17.746292114257812
+        }
+      ],
+      "native_top1_margin": 0.7608528137207031,
+      "oracle_top1_margin": 0.7619876861572266,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 1,
+      "step": 1,
+      "context_tokens": 65,
+      "oracle_logits_sha256": "30275f3fb1c4cc58c6fead574bcd7ef4045c662a88a68b53fb87d6199b66bb73",
+      "native_logits_sha256": "f9f313f4e006b372bcb3ce887bdd04d5051a7bd34843562e13c4a6e9174fbeb9"
+    },
+    {
+      "finite": true,
+      "vocabulary": 151936,
+      "max_absolute_error": 0.006764411926269531,
+      "rms_error": 0.0016456006554509731,
+      "max_error_token_id": 126326,
+      "native_at_max_error": 6.076506614685059,
+      "oracle_at_max_error": 6.069742202758789,
+      "native_predicted_id": 40,
+      "native_argmax_id": 40,
+      "oracle_argmax_id": 40,
+      "greedy_equal": true,
+      "native_top": [
+        {
+          "id": 40,
+          "logit": 19.99510955810547
+        },
+        {
+          "id": 32313,
+          "logit": 19.234256744384766
+        },
+        {
+          "id": 13048,
+          "logit": 18.106136322021484
+        },
+        {
+          "id": 3838,
+          "logit": 18.084203720092773
+        },
+        {
+          "id": 12555,
+          "logit": 17.749515533447266
+        }
+      ],
+      "oracle_top": [
+        {
+          "id": 40,
+          "logit": 19.99185562133789
+        },
+        {
+          "id": 32313,
+          "logit": 19.229867935180664
+        },
+        {
+          "id": 13048,
+          "logit": 18.103984832763672
+        },
+        {
+          "id": 3838,
+          "logit": 18.081703186035156
+        },
+        {
+          "id": 12555,
+          "logit": 17.746292114257812
+        }
+      ],
+      "native_top1_margin": 0.7608528137207031,
+      "oracle_top1_margin": 0.7619876861572266,
+      "oracle_preference_over_native_id": 0.0,
+      "native_preference_over_oracle_id": 0.0,
+      "allclose_passed": true,
+      "rms_limit_passed": true,
+      "passed": true,
+      "capture": 2,
+      "step": 1,
+      "context_tokens": 65,
+      "oracle_logits_sha256": "30275f3fb1c4cc58c6fead574bcd7ef4045c662a88a68b53fb87d6199b66bb73",
+      "native_logits_sha256": "f9f313f4e006b372bcb3ce887bdd04d5051a7bd34843562e13c4a6e9174fbeb9"
+    }
+  ],
+  "limitations": [
+    "Oracle replays native consumed IDs, including supplied teacher forcing after an EOS prediction; this is not an autonomous conversation-quality test.",
+    "Native mixed-precision kernels and reduction orders differ from independent NumPy FP32 math. Calibration reports errors and never declares a tolerance pass.",
+    "A gate applies only supplied limits at selected positions; tolerances must be justified before a separate validation run, not fitted retrospectively to these measurements.",
+    "One-dimensional norm tensors stay FP32; f16 rounds only two-dimensional checkpoint matrices. No quantized-weight oracle is provided."
+  ],
+  "oracle_logits_storage": {
+    "directory": "$REPO/build/native-cpu/div-prefix-v2-boundary64-oracle-oracle-logits",
+    "report": "$REPO/build/native-cpu/div-prefix-v2-boundary64-oracle.json",
+    "dtype": "float32",
+    "byte_order": "little",
+    "shape": [
+      151936
+    ],
+    "prompt_ids": [
+      151644,
+      8948,
+      198,
+      2610,
+      525,
+      1207,
+      16948,
+      18,
+      12,
+      15,
+      13,
+      21,
+      33,
+      11,
+      264,
+      2613,
+      15235,
+      17847,
+      4303,
+      23490,
+      13,
+      21806,
+      279,
+      1196,
+      594,
+      5535,
+      3405,
+      5961,
+      13,
+      5443,
+      6788,
+      6605,
+      438,
+      2266,
+      11,
+      537,
+      438,
+      264,
+      5316,
+      311,
+      13153,
+      13,
+      1446,
+      1231,
+      12641,
+      6788,
+      30637,
+      979,
+      4588,
+      13,
+      1416,
+      498,
+      653,
+      537,
+      1414,
+      2494,
+      11,
+      1977,
+      773,
+      13,
+      151645,
+      198,
+      151644,
+      872
+    ],
+    "consumed_continuation_ids": [
+      198
+    ],
+    "provenance_fields": {
+      "input_hashes": "inputs",
+      "oracle_source_hashes": "source_hashes",
+      "capture_configuration": "captures",
+      "oracle_configuration": "oracle"
+    },
+    "provenance": "Inputs and source_hashes in this report bind checkpoint, native capture/pack evidence and oracle implementation. Each dump step consumes prompt_ids plus consumed_continuation_ids[:step].",
+    "numerical_conversion": false,
+    "cache_consumption": false,
+    "dumps": [
+      {
+        "completed": true,
+        "step": 0,
+        "context_tokens": 64,
+        "path": "$REPO/build/native-cpu/div-prefix-v2-boundary64-oracle-oracle-logits/step-000000-context-000064.f32",
+        "shape": [
+          151936
+        ],
+        "dtype": "float32",
+        "byte_order": "little",
+        "consumed_continuation_count": 0,
+        "bytes": 607744,
+        "sha256": "195f34466bf2cdc07c942db6f95608add74a9f59d54a5783e41a4abefb0a18c8"
+      },
+      {
+        "completed": true,
+        "step": 1,
+        "context_tokens": 65,
+        "path": "$REPO/build/native-cpu/div-prefix-v2-boundary64-oracle-oracle-logits/step-000001-context-000065.f32",
+        "shape": [
+          151936
+        ],
+        "dtype": "float32",
+        "byte_order": "little",
+        "consumed_continuation_count": 1,
+        "bytes": 607744,
+        "sha256": "30275f3fb1c4cc58c6fead574bcd7ef4045c662a88a68b53fb87d6199b66bb73"
+      }
+    ]
+  },
+  "summary": {
+    "compared_positions": 6,
+    "max_absolute_error": 0.008610010147094727,
+    "max_position_rms_error": 0.0018081813316111349,
+    "greedy_mismatches": 0
+  },
+  "guard_after": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Joint512/128/64 directdiv fixed NumPy boundary64",
+      "started_at": "2026-11-13T18:03:01.018502+00:00"
+    }
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/div-prefix-v2-boundary64-oracle.json",
+    "source_sha256": "db5b855cae15ece248b506b7ad40256dadc11e3b9f167be1415c47e49a32a591",
+    "sanitization": "Repository/home paths replaced; process and host identifiers removed; original evidence hashes preserved."
+  }
+}
