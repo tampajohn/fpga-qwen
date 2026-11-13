@@ -180,3 +180,18 @@ The terminal [standard32 report](../reports/native-cpu-kv-head-major-time32-vs-l
 Both decode intervals include1. In particular, the452-token interval extends down to0.78595: this does not establish a within10% decode guarantee or equivalence. TTFT intervals favor native at both contexts. Whole-request latency favors native at85 tokens, while the452-token request interval includes1. There is no general winner. Pipe versus HTTP transport remains part of the measured serving setups.
 
 The timed binary matches the candidate's68-array exact gates and lifecycle/quality evidence; numerical qualification remains sampled, and grades remain4/9 and10/18. This fresh comparison uses no multiplied historical ratios. The earlier browser-restart caveat belongs to the separate against18 run and is not asserted to have overlapped this run; shared-host background activity remains uncontrolled. Extended direct timing is still running and no partial results are published. Release19 has not been staged or promoted at this entry.
+
+
+## Fresh direct tuned-llama extended comparison completed
+
+The terminal [extended128 report](../reports/native-cpu-kv-head-major-time32-vs-llama-extended-confirmation.json) and [analysis](../reports/native-cpu-kv-head-major-time32-vs-llama-extended-analysis.json) complete the direct scoreboard. All20 visits, exact128-output trajectories, warmups and outliers are retained. Protocol remains ten alternating pairs, one warmup,12 decode/6 prefill threads and fresh logical prompts. Ratios above1 favor native; parentheses are95% paired bootstrap intervals, not multiplicity-adjusted.
+
+| Prompt tokens | Decode ratio | TTFT speedup | Request speedup |
+|---|---:|---:|---:|
+| 1024 | 1.04739 (0.94801–1.15366) | 1.06333 (1.02175–1.13267) | 1.07134 (1.02387–1.09171) |
+| 2048 | 1.20472 (1.05610–1.39994) | 0.98966 (0.95017–1.08921) | 1.04804 (0.99107–1.16191) |
+| 3968 | 1.21477 (0.95310–1.42007) | 0.88624 (0.85978–0.92284) | 0.94601 (0.89803–0.97925) |
+
+At1024, TTFT and whole-request intervals favor native while decode remains uncertain. At2048, decode favors native; TTFT and whole-request intervals include1. At3968, decode is uncertain despite its positive median, while **TTFT and whole-request latency favor llama**. The latter median speedups correspond to approximately12.8% longer native TTFT and5.7% longer native request time. The shorter-context standard decode uncertainty also remains part of the same scoreboard. There is no overall llama win or universal within10% guarantee.
+
+The original selection for release19 remains supported by complete improvements against build18, not by claiming superiority to llama. It is not reversed or justified by multiplying ratios. Candidate SHA matches the68-array exact/lifecycle/quality evidence; oracle qualification is sampled, and matching baseline grades4/9 and10/18 are not accuracy gains. Host activity was uncontrolled; all observations remain included. The restart caveat is attached to its actual earlier against18 run rather than asserted for this fresh direct comparison. Staging, isolated/browser checks and live promotion remain separate pending release work at this entry.

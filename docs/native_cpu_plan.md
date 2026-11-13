@@ -1343,3 +1343,10 @@ Artifact-bound68-array exactness and lifecycle/quality gates accompany the resul
 ### Fresh combined-versus-llama standard result
 
 The [complete standard table](native_kv_layout.md#fresh-direct-tuned-llama-standard-comparison) retains all20 visits. Both decode intervals include1; the452-token interval0.78595–1.09905 does not establish equivalence or a within10% guarantee. TTFT favors native at85/452; request latency favors native at85 but remains uncertain at452. These are direct tuned-llama measurements, not chained ratios or a broad win. Extended timing and release staging remain pending; no partial extended results are published.
+
+
+### Fresh direct tuned-llama extended scoreboard completed
+
+The [full three-context extended table](native_kv_layout.md#fresh-direct-tuned-llama-extended-comparison-completed) completes both direct suites without exclusions. At1024, TTFT/request favor native and decode is uncertain; at2048, decode favors native with TTFT/request uncertain; at3968, decode is uncertain while TTFT0.88624 (0.85978–0.92284) and request0.94601 (0.89803–0.97925) favor llama. No overall llama win or universal within10% claim follows.
+
+Release19 remains selected for its measured improvements over18 with preserved numerical/quality gates. This is distinct from the broader ambition to beat llama generally. Both complete scoreboards and unfavorable results remain published; staging and browser/live deployment are the next separate requirements.
