@@ -3,7 +3,7 @@
 The reopened CPU optimization pass targets long-prompt prefill. Live build18
 remains unchanged. This isolated candidate changes only the paired GQA
 probability–V reduction for ordinary prefill batches larger than one; it has
-not been promoted and has no published timing result yet.
+been rejected for general prefill after the shape comparison below; live code is unchanged.
 
 The baseline traverses causal time first and repeatedly loads/stores both
 128-channel output vectors. The candidate first divides each probability by
@@ -50,5 +50,41 @@ including vector FDIV and scalar tails, rather than reciprocal estimates.
 
 The surrounding function still has stack bookkeeping. This review establishes
 the intended register schedule in these loops, not zero stack traffic throughout
-the function or measured speed. The first guarded eight-shape comparison remains
-in progress at publication; partial samples are not archived or interpreted.
+the function or measured speed. The completed eight-shape comparison is recorded below; no partial-run
+selection was used.
+
+
+## Completed shape comparison: reject general prefill use
+
+The [full ten-pair eight-shape report](../reports/native-cpu-prefill-v-register-tile-original-shapes.json)
+compares the immutable candidate against build18. Each shape passed exactness
+before timing. The table reports median paired wall-time speedup, reference /
+candidate, with 95% paired bootstrap intervals. Prefix priming is outside the
+measured tail append; this is not full fresh-request timing for retained-prefix
+shapes. All raw rounds, warmups and outliers remain in the archive.
+
+| Retained prefix | Appended batch | Wall-time speedup (95% interval) |
+|---|---:|---:|
+| 0 | 2 | 1.01343 (1.00033–1.01545) |
+| 0 | 16 | 1.00419 (0.98341–1.01066) |
+| 0 | 85 | 1.01636 (0.99636–1.03413) |
+| 0 | 452 | 1.03586 (1.00958–1.06462) |
+| 3584 | 2 | 1.04936 (0.97191–1.11396) |
+| 3584 | 16 | 1.23446 (1.06784–1.25202) |
+| 3584 | 64 | 0.93035 (0.86238–1.01881) |
+| 3584 | 384 | 0.85104 (0.83773–0.92053) |
+
+The target long tail, 3584 retained tokens plus 384 appended tokens, regressed:
+0.85104× means approximately 17.5% longer candidate latency, with its entire
+interval below 1. The 64-token tail was uncertain and also had a slower median.
+The 16-token tail and fresh 452-token append improved on these runs; fresh 2
+barely excludes 1. Other intervals include 1. These unadjusted shape-specific
+findings do not establish an overall benefit.
+
+The candidate is rejected for general prefill use. Its exact 56-array result
+remains valid, but exact arithmetic and spill-free inner loops did not establish
+speed. No threshold is selected post hoc from the favorable shapes, and no
+causal claim attributes the regression specifically to cache locality or
+register pressure without further evidence. Live build18 remains unchanged.
+The next investigation is baseline phase attribution, not promotion of this
+candidate.

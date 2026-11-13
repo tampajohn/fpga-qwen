@@ -1225,6 +1225,23 @@ The first isolated experiment [tiles paired probability–V reduction into
 registers](native_prefill_register_tiling.md), preserving per-output arithmetic
 order. Its 56-array exact gate passed, and static compiled-loop review confirms
 sixteen accumulator registers with no stores/spills inside each causal tile
-loop. Neither result establishes speed. The initial guarded eight-shape timing
-run is still in progress; no partial results are published. Source, build,
+loop. Neither result establishes speed. The completed guarded eight-shape timing
+run rejects general prefill use, as recorded below. Source, build,
 exactness and static-review evidence are linked in the experiment document.
+
+
+### November13 tile32 result: negative long-tail timing
+
+The [completed ten-pair shape comparison](../reports/native-cpu-prefill-v-register-tile-original-shapes.json)
+retains all eight shapes and all rounds. The 3584-prefix/384-token tail slowed
+to 0.85104× paired wall-time speedup (95% interval 0.83773–0.92053), approximately
+17.5% longer latency. The 64-token long tail was uncertain, 0.93035×
+(0.86238–1.01881). Smaller retained 16-token tails improved 1.23446×
+(1.06784–1.25202), and fresh 452 improved 1.03586× (1.00958–1.06462), but those
+shape-specific results do not rescue the target long-tail regression.
+
+The [experiment document](native_prefill_register_tiling.md) includes the full
+table and interpretation. Reject tile32 for general prefill; choose no new
+threshold from this data. Exact 56-array and static register evidence remain
+archived, live build18 is unchanged, and baseline phase attribution is the next
+pending diagnostic. The reopened optimization pass remains active.
