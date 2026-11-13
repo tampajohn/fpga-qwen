@@ -157,6 +157,26 @@ void dot_query_pair(const float* q0,const float* q1,const Half* key,float& out0,
     }
     out0=vaddvq_f32(vaddq_f32(a0,b0));out1=vaddvq_f32(vaddq_f32(a1,b1));
 }
+// Four queries share one canonical Half key, each retaining two accumulators.
+void dot_query_four(const float* q0,const float* q1,const float* q2,const float* q3,
+                    const Half* key,float& s0,float& s1,float& s2,float& s3) {
+    float32x4_t a0=vdupq_n_f32(0.0f),b0=a0;
+    float32x4_t a1=vdupq_n_f32(0.0f),b1=a1;
+    float32x4_t a2=vdupq_n_f32(0.0f),b2=a2;
+    float32x4_t a3=vdupq_n_f32(0.0f),b3=a3;
+    for(int j=0;j<D;j+=8) {
+        const float16x8_t packed=vld1q_f16(key+j);
+        const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+        a0=vfmaq_f32(a0,vld1q_f32(q0+j),lo);b0=vfmaq_f32(b0,vld1q_f32(q0+j+4),hi);
+        a1=vfmaq_f32(a1,vld1q_f32(q1+j),lo);b1=vfmaq_f32(b1,vld1q_f32(q1+j+4),hi);
+        a2=vfmaq_f32(a2,vld1q_f32(q2+j),lo);b2=vfmaq_f32(b2,vld1q_f32(q2+j+4),hi);
+        a3=vfmaq_f32(a3,vld1q_f32(q3+j),lo);b3=vfmaq_f32(b3,vld1q_f32(q3+j+4),hi);
+    }
+    s0=vaddvq_f32(vaddq_f32(a0,b0));
+    s1=vaddvq_f32(vaddq_f32(a1,b1));
+    s2=vaddvq_f32(vaddq_f32(a2,b2));
+    s3=vaddvq_f32(vaddq_f32(a3,b3));
+}
 // Original B2 verifier tiles: share weight loads/conversion, never combine
 // accumulators between positions. Each output retains B1's exact FMA sequence.
 void dot_verify_pair(const float* x0,const float* x1,const Half* w,int n,float& y0,float& y1) {
@@ -207,6 +227,7 @@ struct Model::Impl {
     std::vector<float> half_gate,tanh_gate;
     std::vector<float> shifted_scores,probabilities;
     std::vector<float> pair_scores,pair_shifted,pair_probabilities;
+    std::vector<float> row2_scores,row2_shifted,row2_probabilities,row3_scores,row3_shifted,row3_probabilities;
     std::array<float,H> last_hidden{};
     int pos=0;
     bool verification_pending=false;
@@ -257,6 +278,8 @@ struct Model::Impl {
         attention_scores.resize(size_t(std::max(opt.decode_threads,opt.prefill_threads))*opt.context);
         shifted_scores.resize(attention_scores.size());probabilities.resize(attention_scores.size());
         pair_scores.resize(attention_scores.size());pair_shifted.resize(attention_scores.size());pair_probabilities.resize(attention_scores.size());
+        row2_scores.resize(attention_scores.size());row2_shifted.resize(attention_scores.size());row2_probabilities.resize(attention_scores.size());
+        row3_scores.resize(attention_scores.size());row3_shifted.resize(attention_scores.size());row3_probabilities.resize(attention_scores.size());
         x.reserve(prefill_chunk*H);h.reserve(prefill_chunk*H);q.reserve(prefill_chunk*Q*D);k.reserve(prefill_chunk*K*D);v.reserve(prefill_chunk*K*D);
         attended.reserve(prefill_chunk*Q*D);residual.reserve(prefill_chunk*H);gate.reserve(prefill_chunk*F);up.reserve(prefill_chunk*F);
         half_gate.reserve(prefill_chunk*F);tanh_gate.reserve(prefill_chunk*F);
@@ -336,12 +359,13 @@ struct Model::Impl {
         // query ownership and each query's arithmetic/reduction order.
         std::array<size_t,65> attention_ranges{};
         if(batch>1) {
-            const size_t items=size_t(batch)*K;
+            const size_t items=size_t((batch+1)/2)*K;
             const int workers=pool.worker_count();
             auto prefix_cost=[&](size_t item)->uint64_t {
-                const uint64_t b=item/K,head=item%K;
+                const uint64_t b=std::min(uint64_t(batch),uint64_t(2)*(item/K)),head=item%K;
                 const uint64_t preceding=b*(uint64_t(2)*pos+b+1)/2;
-                return K*preceding+head*(pos+b+1);
+                const uint64_t cost=pos+b+1+(b+1<uint64_t(batch)?pos+b+2:0);
+                return K*preceding+head*cost;
             };
             const uint64_t total=prefix_cost(items);
             attention_ranges[0]=0;attention_ranges[workers]=items;
@@ -381,18 +405,130 @@ struct Model::Impl {
                 }
             }
             if(batch>1) {
-                // One item owns both query heads for one KV head. The factor
-                // two cancels in the cumulative-cost scheduling targets.
-                pool.run(size_t(batch)*K,[&](size_t,size_t,int worker){
+                // One item owns two adjacent token rows and their GQA head pair.
+                // A final odd row uses the unchanged original paired-head path.
+                pool.run(size_t((batch+1)/2)*K,[&](size_t,size_t,int worker){
                     const size_t begin=attention_ranges[worker],end=attention_ranges[worker+1];
                     const size_t scratch=size_t(worker)*options.context;
                     float* scores0=attention_scores.data()+scratch;float* scores1=pair_scores.data()+scratch;
                     float* shifted0=shifted_scores.data()+scratch;float* shifted1=pair_shifted.data()+scratch;
                     float* probs0=probabilities.data()+scratch;float* probs1=pair_probabilities.data()+scratch;
                     for(size_t item=begin;item<end;++item) {
-                        const int b=item/K,kh=item%K,n=pos+b+1;
+                        const int b=2*(item/K),kh=item%K,n=pos+b+1;
                         const size_t head0=size_t(b)*Q+2*kh;
                         const float* query0=q.data()+head0*D;const float* query1=query0+D;
+                        if(b+1<batch) {
+                            const int n0=n,n1=n+1;
+                            const float* query2=query0+Q*D;const float* query3=query2+D;
+                            float* scores2=row2_scores.data()+scratch;float* scores3=row3_scores.data()+scratch;
+                            float* shifted2=row2_shifted.data()+scratch;float* shifted3=row3_shifted.data()+scratch;
+                            float* probs2=row2_probabilities.data()+scratch;float* probs3=row3_probabilities.data()+scratch;
+                            float maximum0=-std::numeric_limits<float>::infinity(),maximum1=maximum0,maximum2=maximum0,maximum3=maximum0;
+                            for(int t=0;t<n0;++t) {
+                                float s0,s1,s2,s3;
+                                dot_query_four(query0,query1,query2,query3,keys.data()+cache_offset(layer,t,kh),s0,s1,s2,s3);
+                                s0*=1.0f/std::sqrt(float(D));scores0[t]=s0;maximum0=std::max(maximum0,s0);
+                                s1*=1.0f/std::sqrt(float(D));scores1[t]=s1;maximum1=std::max(maximum1,s1);
+                                s2*=1.0f/std::sqrt(float(D));scores2[t]=s2;maximum2=std::max(maximum2,s2);
+                                s3*=1.0f/std::sqrt(float(D));scores3[t]=s3;maximum3=std::max(maximum3,s3);
+                            }
+                            float extra2,extra3;
+                            dot_query_pair(query2,query3,keys.data()+cache_offset(layer,n0,kh),extra2,extra3);
+                            extra2*=1.0f/std::sqrt(float(D));extra3*=1.0f/std::sqrt(float(D));
+                            scores2[n0]=extra2;scores3[n0]=extra3;
+                            maximum2=std::max(maximum2,extra2);maximum3=std::max(maximum3,extra3);
+                            for(int t=0;t<n0;++t)shifted0[t]=scores0[t]-maximum0;
+                            vvexpf(probs0,shifted0,&n0);
+                            float sum0=0;for(int t=0;t<n0;++t)sum0+=probs0[t];
+                            for(int t=0;t<n0;++t)probs0[t]=probs0[t]/sum0;
+                            for(int t=0;t<n0;++t)shifted1[t]=scores1[t]-maximum1;
+                            vvexpf(probs1,shifted1,&n0);
+                            float sum1=0;for(int t=0;t<n0;++t)sum1+=probs1[t];
+                            for(int t=0;t<n0;++t)probs1[t]=probs1[t]/sum1;
+                            for(int t=0;t<n1;++t)shifted2[t]=scores2[t]-maximum2;
+                            vvexpf(probs2,shifted2,&n1);
+                            float sum2=0;for(int t=0;t<n1;++t)sum2+=probs2[t];
+                            for(int t=0;t<n1;++t)probs2[t]=probs2[t]/sum2;
+                            for(int t=0;t<n1;++t)shifted3[t]=scores3[t]-maximum3;
+                            vvexpf(probs3,shifted3,&n1);
+                            float sum3=0;for(int t=0;t<n1;++t)sum3+=probs3[t];
+                            for(int t=0;t<n1;++t)probs3[t]=probs3[t]/sum3;
+                            float* dest0=attended.data()+head0*D;float* dest1=dest0+D;
+                            float* dest2=dest0+Q*D;float* dest3=dest2+D;
+                            // Common causal prefix: time32/channel16, sixteen
+                            // independent vector accumulators for four queries.
+                            for(int time_begin=0;time_begin<n0;time_begin+=32) {
+                                const int time_end=std::min(n0,time_begin+32);
+                                for(int j=0;j<D;j+=16) {
+                                    float32x4_t a00=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+0);
+                                    float32x4_t a01=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+4);
+                                    float32x4_t a02=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+8);
+                                    float32x4_t a03=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest0+j+12);
+                                    float32x4_t a10=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+0);
+                                    float32x4_t a11=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+4);
+                                    float32x4_t a12=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+8);
+                                    float32x4_t a13=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest1+j+12);
+                                    float32x4_t a20=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest2+j+0);
+                                    float32x4_t a21=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest2+j+4);
+                                    float32x4_t a22=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest2+j+8);
+                                    float32x4_t a23=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest2+j+12);
+                                    float32x4_t a30=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest3+j+0);
+                                    float32x4_t a31=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest3+j+4);
+                                    float32x4_t a32=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest3+j+8);
+                                    float32x4_t a33=time_begin==0?vdupq_n_f32(0.0f):vld1q_f32(dest3+j+12);
+                                    for(int t=time_begin;t<time_end;++t) {
+                                        const float p0=probs0[t];
+                                        const float p1=probs1[t];
+                                        const float p2=probs2[t];
+                                        const float p3=probs3[t];
+                                        const Half* val=values.data()+cache_offset(layer,t,kh)+j;
+                                        {
+                                            const float16x8_t packed=vld1q_f16(val+0);
+                                            const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                            a00=vfmaq_n_f32(a00,lo,p0);a01=vfmaq_n_f32(a01,hi,p0);
+                                            a10=vfmaq_n_f32(a10,lo,p1);a11=vfmaq_n_f32(a11,hi,p1);
+                                            a20=vfmaq_n_f32(a20,lo,p2);a21=vfmaq_n_f32(a21,hi,p2);
+                                            a30=vfmaq_n_f32(a30,lo,p3);a31=vfmaq_n_f32(a31,hi,p3);
+                                        }
+                                        {
+                                            const float16x8_t packed=vld1q_f16(val+8);
+                                            const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                            a02=vfmaq_n_f32(a02,lo,p0);a03=vfmaq_n_f32(a03,hi,p0);
+                                            a12=vfmaq_n_f32(a12,lo,p1);a13=vfmaq_n_f32(a13,hi,p1);
+                                            a22=vfmaq_n_f32(a22,lo,p2);a23=vfmaq_n_f32(a23,hi,p2);
+                                            a32=vfmaq_n_f32(a32,lo,p3);a33=vfmaq_n_f32(a33,hi,p3);
+                                        }
+                                    }
+                                    vst1q_f32(dest0+j+0,a00);
+                                    vst1q_f32(dest0+j+4,a01);
+                                    vst1q_f32(dest0+j+8,a02);
+                                    vst1q_f32(dest0+j+12,a03);
+                                    vst1q_f32(dest1+j+0,a10);
+                                    vst1q_f32(dest1+j+4,a11);
+                                    vst1q_f32(dest1+j+8,a12);
+                                    vst1q_f32(dest1+j+12,a13);
+                                    vst1q_f32(dest2+j+0,a20);
+                                    vst1q_f32(dest2+j+4,a21);
+                                    vst1q_f32(dest2+j+8,a22);
+                                    vst1q_f32(dest2+j+12,a23);
+                                    vst1q_f32(dest3+j+0,a30);
+                                    vst1q_f32(dest3+j+4,a31);
+                                    vst1q_f32(dest3+j+8,a32);
+                                    vst1q_f32(dest3+j+12,a33);
+                                }
+                            }
+                            // Only the second token sees this final key/value.
+                            const Half* extra=values.data()+cache_offset(layer,n0,kh);
+                            for(int j=0;j<D;j+=8) {
+                                const float16x8_t packed=vld1q_f16(extra+j);
+                                const float32x4_t lo=vcvt_f32_f16(vget_low_f16(packed)),hi=vcvt_f32_f16(vget_high_f16(packed));
+                                vst1q_f32(dest2+j,vfmaq_n_f32(vld1q_f32(dest2+j),lo,probs2[n0]));
+                                vst1q_f32(dest2+j+4,vfmaq_n_f32(vld1q_f32(dest2+j+4),hi,probs2[n0]));
+                                vst1q_f32(dest3+j,vfmaq_n_f32(vld1q_f32(dest3+j),lo,probs3[n0]));
+                                vst1q_f32(dest3+j+4,vfmaq_n_f32(vld1q_f32(dest3+j+4),hi,probs3[n0]));
+                            }
+                            continue;
+                        }
                         float maximum0=-std::numeric_limits<float>::infinity(),maximum1=maximum0;
                         for(int t=0;t<n;++t) {
                             float score0,score1;
