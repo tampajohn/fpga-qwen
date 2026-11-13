@@ -1,0 +1,91 @@
+{
+  "completed": true,
+  "functional_reports": 8,
+  "timing_reports": 4,
+  "raw_float_arrays_archived": false,
+  "absolute_numerical_qualified": false,
+  "release_eligible": false,
+  "selection_pending": false,
+  "runner_sha256": "9e8341884b5995bf65bd2675e3926309b46374e1f088157e9320edeb36014486",
+  "records": [
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-verify-api/report.json",
+      "source_sha256": "a1f9a9568b1a7a305931bcf4d7a240e27b9b4ad5173aa3953237f82cb44c30e4",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-verify-api.json",
+      "archive_sha256": "01af7e74aa939512dfdf495ba46335eb9da9eef28c702212c8a0ab0d1bba53f3"
+    },
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-prefix-check/report.json",
+      "source_sha256": "114c56576d744159ec7943306048025ec9846e42ff971bd79adcea931dffa7b8",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-prefix-check.json",
+      "archive_sha256": "f780bcabb3b3e627382ba602720a63a5782b4673aa19aaf3f5d23291f03c06fd"
+    },
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-suffix-trajectories.json",
+      "source_sha256": "a8d9a1cb74f178200294979c52318c897bdb6e747d8013b8a20f357393fdf098",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-suffix-trajectories.json",
+      "archive_sha256": "57cf368bade0814934b179f43148343f9a3bb02d4adff81a54cb5a9dac73d929"
+    },
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-suffix-cli/report.json",
+      "source_sha256": "0200a481bf5616c4d668b34718ebf1107c2d5cd407bf987c0c99779dd1f0628d",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-suffix-cli.json",
+      "archive_sha256": "224ab994d7e54f05c01dd1c3b37a270abdeaa6adf5b30ba92cca44c7241aaf52"
+    },
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-quality.json",
+      "source_sha256": "a29ee70de131033b808e5faa4854f6dc695ba8c1e1125e48130326fe04eb19f2",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-quality.json",
+      "archive_sha256": "8a3d521ba0eb19467210d6c34e2c76427e1f371d4a01bc76cf1fecde7a1e1c60"
+    },
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-extended-quality.json",
+      "source_sha256": "02902729ddebb43af478b596d1af4ed0367ebaa2a10951f9d3915ccc2674655b",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-extended-quality.json",
+      "archive_sha256": "f2f47696d8e7d0d01d9a122500201da02e7bc3d73643f1a658d6d5c7d89e47b8"
+    },
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-seeded-stream/report.json",
+      "source_sha256": "d6497aa410b417c06ac23a0551f9b12a2bec3d7360f28528b9421a1d749a124c",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-seeded-stream.json",
+      "archive_sha256": "010836327af46aa1bf0d0c2d440372e02ff1baf8a0124308d8df8ef92c72d832"
+    },
+    {
+      "source": "build/native-cpu/prefill-query-row-pair-seeded-stream/report.json",
+      "source_sha256": "2fd1ba51cdcaae7ec98bcbc44f86706fe441580a708f638c7007f1e62a1faf48",
+      "archive": "reports/native-cpu-prefill-query-row-pair-seeded-stream.json",
+      "archive_sha256": "94b01dbfe51fb00798da46f0bfa6f2e8208e748dca8dd00e77c577412051cfe7"
+    },
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-vs-queryrow-standard-confirmation.json",
+      "source_sha256": "f12c50f4e2358ab2255ce6b2370ab45ffba7fc631e072bb21f1a8818c0d740ce",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-vs-queryrow-standard-confirmation.json",
+      "archive_sha256": "ec4073266276d044ba8701c29f450b13dced1b586eb94d0ef1b9dcbe44a726b5"
+    },
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-vs-queryrow-standard-analysis.json",
+      "source_sha256": "ca0823f64984b5b6b95e6ce444ef585d701e416cfedc0def45fe80c7537efd9f",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-vs-queryrow-standard-analysis.json",
+      "archive_sha256": "c32660f9dca92357fb44cc55fc8714f5f7b4402a4689f0b0e90b7c2c0beed2b4"
+    },
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-vs-queryrow-extended-confirmation.json",
+      "source_sha256": "1abb9a342cd950c377c2ebdc04223db49508d3d37804840bf01a63468b6361b5",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-vs-queryrow-extended-confirmation.json",
+      "archive_sha256": "325bad17849641e3d6f6aa3a71f8cd2eb89268cdcf80b1aec819cdcc3f9252bb"
+    },
+    {
+      "source": "build/native-cpu/queryrow-b1-headpair-v1-vs-queryrow-extended-analysis.json",
+      "source_sha256": "7c09a09b8dbb4784e44db5095cd6fe3ebd0715b2e5c996c2a6c6e26bc9a75bbb",
+      "archive": "reports/native-cpu-queryrow-b1-headpair-v1-vs-queryrow-extended-analysis.json",
+      "archive_sha256": "6a56109e7c440e7ea3acbdc94f73dd0f755e6854eeece12c1f4325fbbea8c9f2"
+    }
+  ],
+  "limitations": [
+    "Functional regression evidence does not waive inherited absolute63/64 failures.",
+    "Headpair incremental timing compares12decode/6prefill to plainqueryrow, not build19 or llama.",
+    "Full-request intervals includingone do not establish an improvement; retain allsamples and avoid pooled claims.",
+    "No candidate selection, final worker choice or release is inferred from archiving."
+  ],
+  "selection": "Headpair not selected; all15 intervals include1 at12/6. Retain plainqueryrow for subsequentworker/finalcomparisons."
+}

@@ -673,3 +673,17 @@ candidate captures. All 100 match their references exactly; the independent
 absolute failures remain failed. API, cache/suffix lifecycle, quality, seeded
 streams and complete-request measurements remain separate, with no completion
 or release claim inferred here. This is the final kernel hypothesis in this pass.
+
+
+## Final head-pair outcome: no established incremental gain
+
+Head pairing completed functional nonregression, including100 exact arrays,
+API/prefix/suffix and seeded streams. Strict accuracy remains4/9 and10/18;
+passing regression gates do not make all answers correct. Completed20-pair
+standard and10-pair extended comparisons have all15 metric confidence intervals
+crossing1. The candidate is **not selected**; plain prefill query-row pairing
+remains the kernel selected for subsequent worker/final-reference evaluation.
+The3968 decode estimate is suggestive but not conclusive, and no universal
+slowdown is claimed. See the [complete outcome and evidence](native_b1_headpair_outcome.md).
+Inherited absolute numerical failures remain unresolved; this is not a release
+or numerical-fix announcement.
