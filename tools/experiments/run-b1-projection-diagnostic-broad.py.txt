@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+"""Root-run, fail-closed fixed-oracle inventory; preparation is not execution."""
+from pathlib import Path
+import hashlib,json,subprocess,sys
+ROOT=Path(__file__).resolve().parents[2]
+B=ROOT/'build/native-cpu';TAG='prefill-b1-arithmetic-projection-diagnostic'
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def read(p):return json.loads(Path(p).read_text())
+binary=B/(TAG+'-build/qwen_cpu');manifest=binary.parent/'manifest.json'
+assert read(manifest)['completed'] and read(manifest)['binary_sha256']==sha(binary)
+prior=B/(TAG+'-boundary63-oracle.json');g=read(prior)
+assert g['completed'] and g['passed'] and not g.get('error') and g['inputs'][str(binary)]==sha(binary)
+rows=[]
+for n in (2048,3968):rows.append((f'context{n}',2,B/f'extended-tutorial-fixtures/context{n}.json',B/f'extended-tutorial-fixtures/context{n}-continuation1.json',B/f'norm-f64-context{n}-oracle.json'))
+rows += [('tiny',4,ROOT/'build/native-phase0/prompt-oracle.json',ROOT/'build/native-phase0/continuation-oracle.json',B/'norm-f64-tiny-oracle.json'),('short',8,ROOT/'build/native-phase0/prompt-short.json',B/'continuation-short.json',B/'norm-f64-short-oracle.json'),('long',4,ROOT/'build/native-phase0/prompt-long.json',B/'continuation-long.json',B/'norm-f64-long-oracle.json')]
+for n in (511,512,513):rows.append((f'boundary{n}',2,B/f'boundary-fixtures-v1/prompt-{n}.json',B/f'boundary-fixtures-v1/continuation-{n}.json',B/f'norm-f64-boundary{n}-oracle.json'))
+rows.append(('context1024',2,B/'extended-tutorial-fixtures/context1024.json',B/'extended-tutorial-fixtures/context1024-continuation1.json',B/'norm-f64-context1024-oracle.json'))
+for n in (64,65,127,128,129):rows.append((f'newboundary{n}',2,B/f'prefix-granularity-boundary-fixtures-v1/prompt-{n}.json',B/f'prefix-granularity-boundary-fixtures-v1/continuation-{n}.json',B/f'div-prefix-v2-boundary{n}-oracle.json'))
+paths=[binary,manifest,prior,Path(__file__).resolve()]
+for label,count,prompt,teacher,oracle in rows:
+ assert not (B/f'{TAG}-{label}-logits').exists()
+ assert not (B/f'{TAG}-{label}-oracle.json').exists()
+ x=read(oracle);assert x['completed'] and not x.get('error') and x['oracle_logits_storage']['dumps']
+ paths.extend((prompt,teacher,oracle))
+frozen={str(p):sha(p) for p in paths}
+def guarded(name,args):subprocess.run([sys.executable,str(ROOT/'tools/benchmark_guard.py'),'--name',name,'--',sys.executable,*map(str,args)],cwd=ROOT,check=True)
+for label,count,prompt,teacher,oracle in rows:
+ assert all(sha(p)==h for p,h in frozen.items()),'Input changed'
+ directory=B/f'{TAG}-{label}-logits';output=B/f'{TAG}-{label}-oracle.json'
+ guarded('B1 projection diagnostic capture '+label,[ROOT/'tools/capture_native_cpu_logits.py','--binary',binary,'--weights',B/'weights.bin','--prompt',prompt,'--continuation',teacher,'--tokens',count,'--threads',12,'--prefill-threads',6,'--directory',directory])
+ guarded('B1 projection diagnostic fixed oracle '+label,[ROOT/'tools/check_native_saved_oracle.py','--profile-report',directory/'report.json','--oracle-report',oracle,'--run-index',0,'--experiment-note','Only B>1 layer projections use B1-order dots; baseline19 attention/norm unchanged. Fixed .01/.002 gates; no performance claim.','--output',output])
+ x=read(output);assert x['completed'] and x['passed'] and not x.get('error')
+ assert all(sha(p)==h for p,h in frozen.items()),'Input changed'
+print('All requested fixed-oracle trajectories passed; separate lifecycle/quality/performance gates remain.')

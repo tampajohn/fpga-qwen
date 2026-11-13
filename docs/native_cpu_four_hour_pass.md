@@ -17,6 +17,7 @@ chunk candidates. That absolute numerical gap remains unresolved.
 | Original 64/128 canonical chunks | Completed 80-position inventory fails four comparisons: prompts 63 and 64 in both variants. Matched baseline19 controls have identical full vectors on both failed trajectories. Old 28 positions pass per variant; cached/fresh qualification remains pending. Absolute failures remain unresolved. |
 | Direct norm/QK division | Short boundaries pass, but 512/128/64 each independently fail the 2048 absolute gate. Rejected; no performance qualification. |
 | Split-K128 projections | Both 63/64 positions fail unchanged limits. Rejected before broader gates or timing. |
+| B1-order batched projections | Pass 63/64 with sequential-control byte identity, then fail 2048 absolute error. Broader run stopped; 3968 not executed. No timing or release qualification. |
 | Original-arithmetic QK key pairing | 68 repeated full-logit arrays match build19 exactly. Completed shape timing shows selected long-prefix gains, with the inherited absolute gap explicitly retained. No release or whole-request/llama claim. |
 | Adjacent query-row pairing | Exact68 and API/prefix/suffix/9+18 quality gates passed relatively. [First complete ten-pair request comparisons](native_query_row_pair.md#first-completed-whole-request-comparisons-against-build19) favor long-context TTFT and the3968 request in this run; short-request and all decode intervals include1. Every noisy sample retained; separate quiet repeat planned. Actual-boundary/seeded controls pending; no promotion or absolute numerical pass. |
 
@@ -475,7 +476,7 @@ lifecycle and complete-request measurements remain additional requirements.
 Completing this numerical inventory does not authorize a release, backend default
 change or performance claim; the absolute numerical gap is still unresolved.
 
-## B1-order batched projection diagnostic: first fixture passes
+## B1-order batched projection diagnostic: initial pass, broader failure
 
 The [isolated patch](../tools/experiments/native-prefill-b1-arithmetic-projection-diagnostic.patch)
 replaces only batched layer SGEMM projections with the existing two-input,
@@ -496,9 +497,31 @@ and greedy identity. This isolates the projection-path change on this fixture
 more narrowly than the earlier all-sequential control; it does not prove a
 library defect, a general cause of network error or equivalence for every chunk.
 
-Broader fixed-oracle testing remains pending, beginning with2048/3968. No numerical
-limit changed. This diagnostic is not claimed faster or promoted, and its result
-does not erase the original build19 failure or qualify unrelated optimizations.
+The subsequent [2048/2049 capture](../reports/native-cpu-prefill-b1-arithmetic-projection-diagnostic-context2048-capture.json)
+and [fixed oracle gate](../reports/native-cpu-prefill-b1-arithmetic-projection-diagnostic-context2048-oracle.json)
+completed with a failure at 2048: maximum absolute error 0.011130333 exceeds 0.01,
+while RMS 0.001872640 passes. The teacher step 2049 passes at maximum 0.005331993,
+RMS 0.001022315. Greedy IDs match at both positions. The earlier 63/64 success
+does not override this failure, and the arithmetic-changing diagnostic is not
+qualified for timing or release. No limit changed.
+
+The broad runner stopped at this first numerical failure. **The 3968 trajectory
+and subsequent broad fixtures were not executed.** Before this run, the initial
+script had stopped during preflight because it named a nonexistent 3968 oracle;
+no model execution began in that attempt. The
+[preflight correction record](../reports/native-cpu-b1-projection-broad-preflight-correction.json)
+binds the original and corrected runner hashes. The correction selects the
+existing independent `context3968-native-llama-oracle-control.json` vectors;
+it changes no numerical limit. Both the
+[original runner](../tools/experiments/run-b1-projection-diagnostic-broad.py.txt)
+and [corrected runner](../tools/experiments/run-b1-projection-diagnostic-broad-v2.py.txt)
+are archived byte-for-byte as text and require restoration to their original
+`build/native-cpu/` paths for reproduction. A corrected preflight is not a
+completed 3968 result.
+
+This narrows one fixture's projection-path diagnosis but supplies no general
+arithmetic fix. No further arithmetic design or performance claim follows from
+this partial broad matrix; original baseline failures remain in the record.
 
 
 ## Prepared regression and prefix-diagnostic runners

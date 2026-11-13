@@ -1,0 +1,13 @@
+{
+  "completed": true,
+  "model_execution_started": false,
+  "original_script_sha256": "555e23d0fc73943acf29b5ebd08e6925343f5c6754178fdf154762d8db78de07",
+  "error": "Preflight missing norm-f64-context3968-oracle.json",
+  "correction": "Use existing actual saved NumPy vectors in context3968-native-llama-oracle-control.json",
+  "corrected_script_sha256": "9e6a0b7a9c7179386a3808c484d9dbd5bcd2bf6d6ba7b877a39bedee5b7e072d",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/b1-projection-broad-preflight-correction.json",
+    "source_sha256": "1d60fa2c566c0ca6ee804b8429749791f4cfd6bcb7b82827f67630366f21b2be",
+    "sanitization": "Repository/home prefixes anonymized, process identifiers removed, failed statuses and comparisons preserved."
+  }
+}
