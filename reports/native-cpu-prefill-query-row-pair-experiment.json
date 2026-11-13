@@ -1,0 +1,24 @@
+{
+  "prepared_only": true,
+  "built": false,
+  "baseline": "build19 original arithmetic; known independent boundary63 NumPy failure retained",
+  "baseline_source_sha256": {
+    "$REPO/engine/core.cpp": "2ebb48fff9228647ca873eb9c078ee0a93c676d99135d4417075a82adbaeeed0",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_source_sha256": {
+    "$REPO/build/native-cpu/prefill-query-row-pair-source/core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+    "$REPO/build/native-cpu/prefill-query-row-pair-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/prefill-query-row-pair-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "change": "Ordinary B>1 pairs adjacent token rows and two GQA heads, sharing canonical Half K/V loads/conversions across4queries. Common causal prefix then second-row extra key; odd token uses original pairedhead path. Time32/channel16 PV, no QKtwo-key composition.",
+  "unchanged": "Per-output ascending j/t, two QK accumulators and final reduction; reciprocal score scaling; separate vvexpf original causal length; FP16KV, norm, projections, B1/B2.",
+  "scratch": "Six additional FP32 arrays, each max(decode_threads,prefill_threads)*context: 6*12*4096*4=1179648 bytes (1.125 MiB) at default; maximum64threads6MiB.",
+  "required_validation": "Independent source review; compiled spill/loop inspection; full repeated logit equivalence including odd/even rows and timeblock tails; API/prefix/quality; all timings root-owned. Identity does not resolve baseline oracle failure.",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefill-query-row-pair-source/experiment.json",
+    "source_sha256": "b5c2c7a5534f73feb8d725dd4d1e3c15614ce4e2e2881b2a1842cdbcc515bb57",
+    "sanitization": "Repository/home paths replaced; process/host identifiers removed. Original source/artifact hashes retained."
+  }
+}

@@ -1,0 +1,576 @@
+{
+  "completed": true,
+  "source_only": true,
+  "inference_run": false,
+  "build_run": false,
+  "source_sha256": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+  "integer_mapping_cases": [
+    {
+      "batch": 2,
+      "pos": 0,
+      "workers": 1,
+      "items": 8,
+      "total_cost": 24
+    },
+    {
+      "batch": 2,
+      "pos": 0,
+      "workers": 6,
+      "items": 8,
+      "total_cost": 24
+    },
+    {
+      "batch": 2,
+      "pos": 0,
+      "workers": 12,
+      "items": 8,
+      "total_cost": 24
+    },
+    {
+      "batch": 2,
+      "pos": 0,
+      "workers": 64,
+      "items": 8,
+      "total_cost": 24
+    },
+    {
+      "batch": 2,
+      "pos": 4094,
+      "workers": 1,
+      "items": 8,
+      "total_cost": 65528
+    },
+    {
+      "batch": 2,
+      "pos": 4094,
+      "workers": 6,
+      "items": 8,
+      "total_cost": 65528
+    },
+    {
+      "batch": 2,
+      "pos": 4094,
+      "workers": 12,
+      "items": 8,
+      "total_cost": 65528
+    },
+    {
+      "batch": 2,
+      "pos": 4094,
+      "workers": 64,
+      "items": 8,
+      "total_cost": 65528
+    },
+    {
+      "batch": 3,
+      "pos": 0,
+      "workers": 1,
+      "items": 16,
+      "total_cost": 48
+    },
+    {
+      "batch": 3,
+      "pos": 0,
+      "workers": 6,
+      "items": 16,
+      "total_cost": 48
+    },
+    {
+      "batch": 3,
+      "pos": 0,
+      "workers": 12,
+      "items": 16,
+      "total_cost": 48
+    },
+    {
+      "batch": 3,
+      "pos": 0,
+      "workers": 64,
+      "items": 16,
+      "total_cost": 48
+    },
+    {
+      "batch": 3,
+      "pos": 4093,
+      "workers": 1,
+      "items": 16,
+      "total_cost": 98280
+    },
+    {
+      "batch": 3,
+      "pos": 4093,
+      "workers": 6,
+      "items": 16,
+      "total_cost": 98280
+    },
+    {
+      "batch": 3,
+      "pos": 4093,
+      "workers": 12,
+      "items": 16,
+      "total_cost": 98280
+    },
+    {
+      "batch": 3,
+      "pos": 4093,
+      "workers": 64,
+      "items": 16,
+      "total_cost": 98280
+    },
+    {
+      "batch": 31,
+      "pos": 0,
+      "workers": 1,
+      "items": 128,
+      "total_cost": 3968
+    },
+    {
+      "batch": 31,
+      "pos": 0,
+      "workers": 6,
+      "items": 128,
+      "total_cost": 3968
+    },
+    {
+      "batch": 31,
+      "pos": 0,
+      "workers": 12,
+      "items": 128,
+      "total_cost": 3968
+    },
+    {
+      "batch": 31,
+      "pos": 0,
+      "workers": 64,
+      "items": 128,
+      "total_cost": 3968
+    },
+    {
+      "batch": 31,
+      "pos": 4065,
+      "workers": 1,
+      "items": 128,
+      "total_cost": 1012088
+    },
+    {
+      "batch": 31,
+      "pos": 4065,
+      "workers": 6,
+      "items": 128,
+      "total_cost": 1012088
+    },
+    {
+      "batch": 31,
+      "pos": 4065,
+      "workers": 12,
+      "items": 128,
+      "total_cost": 1012088
+    },
+    {
+      "batch": 31,
+      "pos": 4065,
+      "workers": 64,
+      "items": 128,
+      "total_cost": 1012088
+    },
+    {
+      "batch": 32,
+      "pos": 0,
+      "workers": 1,
+      "items": 128,
+      "total_cost": 4224
+    },
+    {
+      "batch": 32,
+      "pos": 0,
+      "workers": 6,
+      "items": 128,
+      "total_cost": 4224
+    },
+    {
+      "batch": 32,
+      "pos": 0,
+      "workers": 12,
+      "items": 128,
+      "total_cost": 4224
+    },
+    {
+      "batch": 32,
+      "pos": 0,
+      "workers": 64,
+      "items": 128,
+      "total_cost": 4224
+    },
+    {
+      "batch": 32,
+      "pos": 4064,
+      "workers": 1,
+      "items": 128,
+      "total_cost": 1044608
+    },
+    {
+      "batch": 32,
+      "pos": 4064,
+      "workers": 6,
+      "items": 128,
+      "total_cost": 1044608
+    },
+    {
+      "batch": 32,
+      "pos": 4064,
+      "workers": 12,
+      "items": 128,
+      "total_cost": 1044608
+    },
+    {
+      "batch": 32,
+      "pos": 4064,
+      "workers": 64,
+      "items": 128,
+      "total_cost": 1044608
+    },
+    {
+      "batch": 33,
+      "pos": 0,
+      "workers": 1,
+      "items": 136,
+      "total_cost": 4488
+    },
+    {
+      "batch": 33,
+      "pos": 0,
+      "workers": 6,
+      "items": 136,
+      "total_cost": 4488
+    },
+    {
+      "batch": 33,
+      "pos": 0,
+      "workers": 12,
+      "items": 136,
+      "total_cost": 4488
+    },
+    {
+      "batch": 33,
+      "pos": 0,
+      "workers": 64,
+      "items": 136,
+      "total_cost": 4488
+    },
+    {
+      "batch": 33,
+      "pos": 4063,
+      "workers": 1,
+      "items": 136,
+      "total_cost": 1077120
+    },
+    {
+      "batch": 33,
+      "pos": 4063,
+      "workers": 6,
+      "items": 136,
+      "total_cost": 1077120
+    },
+    {
+      "batch": 33,
+      "pos": 4063,
+      "workers": 12,
+      "items": 136,
+      "total_cost": 1077120
+    },
+    {
+      "batch": 33,
+      "pos": 4063,
+      "workers": 64,
+      "items": 136,
+      "total_cost": 1077120
+    },
+    {
+      "batch": 63,
+      "pos": 0,
+      "workers": 1,
+      "items": 256,
+      "total_cost": 16128
+    },
+    {
+      "batch": 63,
+      "pos": 0,
+      "workers": 6,
+      "items": 256,
+      "total_cost": 16128
+    },
+    {
+      "batch": 63,
+      "pos": 0,
+      "workers": 12,
+      "items": 256,
+      "total_cost": 16128
+    },
+    {
+      "batch": 63,
+      "pos": 0,
+      "workers": 64,
+      "items": 256,
+      "total_cost": 16128
+    },
+    {
+      "batch": 63,
+      "pos": 4033,
+      "workers": 1,
+      "items": 256,
+      "total_cost": 2048760
+    },
+    {
+      "batch": 63,
+      "pos": 4033,
+      "workers": 6,
+      "items": 256,
+      "total_cost": 2048760
+    },
+    {
+      "batch": 63,
+      "pos": 4033,
+      "workers": 12,
+      "items": 256,
+      "total_cost": 2048760
+    },
+    {
+      "batch": 63,
+      "pos": 4033,
+      "workers": 64,
+      "items": 256,
+      "total_cost": 2048760
+    },
+    {
+      "batch": 64,
+      "pos": 0,
+      "workers": 1,
+      "items": 256,
+      "total_cost": 16640
+    },
+    {
+      "batch": 64,
+      "pos": 0,
+      "workers": 6,
+      "items": 256,
+      "total_cost": 16640
+    },
+    {
+      "batch": 64,
+      "pos": 0,
+      "workers": 12,
+      "items": 256,
+      "total_cost": 16640
+    },
+    {
+      "batch": 64,
+      "pos": 0,
+      "workers": 64,
+      "items": 256,
+      "total_cost": 16640
+    },
+    {
+      "batch": 64,
+      "pos": 4032,
+      "workers": 1,
+      "items": 256,
+      "total_cost": 2081024
+    },
+    {
+      "batch": 64,
+      "pos": 4032,
+      "workers": 6,
+      "items": 256,
+      "total_cost": 2081024
+    },
+    {
+      "batch": 64,
+      "pos": 4032,
+      "workers": 12,
+      "items": 256,
+      "total_cost": 2081024
+    },
+    {
+      "batch": 64,
+      "pos": 4032,
+      "workers": 64,
+      "items": 256,
+      "total_cost": 2081024
+    },
+    {
+      "batch": 65,
+      "pos": 0,
+      "workers": 1,
+      "items": 264,
+      "total_cost": 17160
+    },
+    {
+      "batch": 65,
+      "pos": 0,
+      "workers": 6,
+      "items": 264,
+      "total_cost": 17160
+    },
+    {
+      "batch": 65,
+      "pos": 0,
+      "workers": 12,
+      "items": 264,
+      "total_cost": 17160
+    },
+    {
+      "batch": 65,
+      "pos": 0,
+      "workers": 64,
+      "items": 264,
+      "total_cost": 17160
+    },
+    {
+      "batch": 65,
+      "pos": 4031,
+      "workers": 1,
+      "items": 264,
+      "total_cost": 2113280
+    },
+    {
+      "batch": 65,
+      "pos": 4031,
+      "workers": 6,
+      "items": 264,
+      "total_cost": 2113280
+    },
+    {
+      "batch": 65,
+      "pos": 4031,
+      "workers": 12,
+      "items": 264,
+      "total_cost": 2113280
+    },
+    {
+      "batch": 65,
+      "pos": 4031,
+      "workers": 64,
+      "items": 264,
+      "total_cost": 2113280
+    },
+    {
+      "batch": 511,
+      "pos": 0,
+      "workers": 1,
+      "items": 2048,
+      "total_cost": 1046528
+    },
+    {
+      "batch": 511,
+      "pos": 0,
+      "workers": 6,
+      "items": 2048,
+      "total_cost": 1046528
+    },
+    {
+      "batch": 511,
+      "pos": 0,
+      "workers": 12,
+      "items": 2048,
+      "total_cost": 1046528
+    },
+    {
+      "batch": 511,
+      "pos": 0,
+      "workers": 64,
+      "items": 2048,
+      "total_cost": 1046528
+    },
+    {
+      "batch": 511,
+      "pos": 3585,
+      "workers": 1,
+      "items": 2048,
+      "total_cost": 15702008
+    },
+    {
+      "batch": 511,
+      "pos": 3585,
+      "workers": 6,
+      "items": 2048,
+      "total_cost": 15702008
+    },
+    {
+      "batch": 511,
+      "pos": 3585,
+      "workers": 12,
+      "items": 2048,
+      "total_cost": 15702008
+    },
+    {
+      "batch": 511,
+      "pos": 3585,
+      "workers": 64,
+      "items": 2048,
+      "total_cost": 15702008
+    },
+    {
+      "batch": 512,
+      "pos": 0,
+      "workers": 1,
+      "items": 2048,
+      "total_cost": 1050624
+    },
+    {
+      "batch": 512,
+      "pos": 0,
+      "workers": 6,
+      "items": 2048,
+      "total_cost": 1050624
+    },
+    {
+      "batch": 512,
+      "pos": 0,
+      "workers": 12,
+      "items": 2048,
+      "total_cost": 1050624
+    },
+    {
+      "batch": 512,
+      "pos": 0,
+      "workers": 64,
+      "items": 2048,
+      "total_cost": 1050624
+    },
+    {
+      "batch": 512,
+      "pos": 3584,
+      "workers": 1,
+      "items": 2048,
+      "total_cost": 15730688
+    },
+    {
+      "batch": 512,
+      "pos": 3584,
+      "workers": 6,
+      "items": 2048,
+      "total_cost": 15730688
+    },
+    {
+      "batch": 512,
+      "pos": 3584,
+      "workers": 12,
+      "items": 2048,
+      "total_cost": 15730688
+    },
+    {
+      "batch": 512,
+      "pos": 3584,
+      "workers": 64,
+      "items": 2048,
+      "total_cost": 15730688
+    }
+  ],
+  "integer_mapping_passed": true,
+  "review": "Peroutput QKtwoaccumulatorascendingj/FMA/reduction preserved; scoresmaxascendingt; secondrowonlyextraKV appendedaftercommonprefix; PVsameascendingtFMA despitechannel16tiles; oddroworiginalfallback; scratchperworker contextbound; no source issue found. Compiledexactness/assembly/performance remain rootgates.",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefill-query-row-pair-source-review.json",
+    "source_sha256": "abc221e45c03e36f3241c2d44dce0e98e26a79f26097bdd646632ed930815b38",
+    "sanitization": "Repository/home paths replaced; process/host identifiers removed. Original source/artifact hashes retained."
+  }
+}

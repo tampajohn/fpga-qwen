@@ -274,3 +274,38 @@ It is neither a whole-request nor a llama comparison. Both baseline19 and this
 arithmetic-preserving candidate retain the known independent 63-token numerical
 gap; relative timing and baseline identity do not confer absolute numerical
 qualification. No candidate was promoted from this result.
+
+## Adjacent query-row pairing: source and exactness evidence
+
+An isolated [original patch](../tools/experiments/native-prefill-query-row-pair.patch)
+pairs two adjacent token rows and their two GQA heads during ordinary batched
+prefill. Four independent queries share canonical FP16 K/V loads and conversions
+across the common causal prefix; only the second row receives its extra final
+key/value. Each query keeps its original channel/time reduction order and its
+own softmax call at its own causal length. An odd final row uses the original
+paired-head path. B1 decode and B2 verification are unchanged. This candidate
+starts from original-arithmetic build19, without the two-key QK or direct-division
+experiments.
+
+PV uses fixed time32/channel16 tiles with sixteen independent vector accumulators.
+Six additional per-worker/context FP32 scratch arrays cost 1.125 MiB at default
+12-worker/4096-context capacity, or 6 MiB at64 workers. The weighted task map
+covers `ceil(batch/2)*8` items. [Source metadata](../reports/native-cpu-prefill-query-row-pair-experiment.json),
+[independent source/integer-boundary review](../reports/native-cpu-prefill-query-row-pair-source-review.json)
+and [executed build](../reports/native-cpu-prefill-query-row-pair-manifest.json)
+preserve provenance.
+
+The completed [56-array gate](../reports/native-cpu-prefill-query-row-pair-exact-gate.json)
+and [12-array boundary gate](../reports/native-cpu-prefill-query-row-pair-timeboundary-exact-gate.json)
+pass byte identity against captures bound to the released build19 executable.
+[Assembly review](../reports/native-cpu-prefill-query-row-pair-assembly-review.json)
+confirms the four-query QK loop shares one Half key vector across eight independent
+FMA accumulators; the common-prefix PV loop shares two Half value vectors across
+sixteen accumulators. These inner loops have no stores, stack accesses or calls.
+Surrounding tile boundaries store outputs and the function uses stack state;
+no whole-function spill-free or performance claim follows.
+
+The baseline19 independent 63-token NumPy failure remains inherited and unresolved
+by byte identity. This is fixture-scoped arithmetic preservation, not absolute
+numerical qualification or promotion. Timing results are not included until the
+separate comparison completes; live build19 is unchanged.

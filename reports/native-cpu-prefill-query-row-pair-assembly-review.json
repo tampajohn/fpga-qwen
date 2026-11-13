@@ -1,0 +1,146 @@
+{
+  "completed": true,
+  "diagnostic_only": true,
+  "performance_claim_eligible": false,
+  "inputs": {
+    "build/native-cpu/prefill-query-row-pair-assembly/disassembly.txt": "77e90fe78b7b24177cba917a3941033d24e593a63c51840e47802556ccc6c430",
+    "build/native-cpu/prefill-query-row-pair-assembly/symbols.txt": "b92399d03058cb8f477a711d621cbe7f512ea19fc6063eec9be560d0ac6d079a",
+    "build/native-cpu/prefill-query-row-pair-build/qwen_cpu": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+    "build/native-cpu/prefill-query-row-pair-source/core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884"
+  },
+  "loops": [
+    {
+      "name": "four-query QK channel loop",
+      "address_range": [
+        "0x10000bb50",
+        "0x10000bba0"
+      ],
+      "instructions": [
+        "10000bb50: 3cc104b3    \tldr\tq19, [x5], #0x10",
+        "10000bb54: 0e217a74    \tfcvtl\tv20.4s, v19.4h",
+        "10000bb58: 4e217a73    \tfcvtl2\tv19.4s, v19.8h",
+        "10000bb5c: ad405895    \tldp\tq21, q22, [x4]",
+        "10000bb60: 4e35ce83    \tfmla.4s\tv3, v20, v21",
+        "10000bb64: 4e36ce71    \tfmla.4s\tv17, v19, v22",
+        "10000bb68: ad505895    \tldp\tq21, q22, [x4, #0x200]",
+        "10000bb6c: 4e35ce90    \tfmla.4s\tv16, v20, v21",
+        "10000bb70: 4e36ce72    \tfmla.4s\tv18, v19, v22",
+        "10000bb74: 3dc80095    \tldr\tq21, [x4, #0x2000]",
+        "10000bb78: 4e35ce86    \tfmla.4s\tv6, v20, v21",
+        "10000bb7c: 3dc80495    \tldr\tq21, [x4, #0x2010]",
+        "10000bb80: 4e35ce67    \tfmla.4s\tv7, v19, v21",
+        "10000bb84: 3dc88095    \tldr\tq21, [x4, #0x2200]",
+        "10000bb88: 4e35ce84    \tfmla.4s\tv4, v20, v21",
+        "10000bb8c: 3dc88494    \tldr\tq20, [x4, #0x2210]",
+        "10000bb90: 4e34ce65    \tfmla.4s\tv5, v19, v20",
+        "10000bb94: 91002063    \tadd\tx3, x3, #0x8",
+        "10000bb98: 91008084    \tadd\tx4, x4, #0x20",
+        "10000bb9c: f101e07f    \tcmp\tx3, #0x78",
+        "10000bba0: 54fffd83    \tb.lo\t0x10000bb50"
+      ],
+      "fmla_count": 8,
+      "stack_references": 0,
+      "stores": 0,
+      "calls": 0,
+      "interpretation": "One Half key vector (8channels), two widenings, eight FP32 query vectors, eight independent FMA accumulators."
+    },
+    {
+      "name": "four-query PV common-prefix time loop",
+      "address_range": [
+        "0x10000d6f8",
+        "0x10000d764"
+      ],
+      "instructions": [
+        "10000d6f8: bc6d7a98    \tldr\ts24, [x20, x13, lsl #2]",
+        "10000d6fc: bc6d7ab9    \tldr\ts25, [x21, x13, lsl #2]",
+        "10000d700: bc6d7ada    \tldr\ts26, [x22, x13, lsl #2]",
+        "10000d704: acc8737b    \tldp\tq27, q28, [x27], #0x100",
+        "10000d708: 0e217b7d    \tfcvtl\tv29.4s, v27.4h",
+        "10000d70c: 4f9813a7    \tfmla.4s\tv7, v29, v24[0]",
+        "10000d710: 4f9913a5    \tfmla.4s\tv5, v29, v25[0]",
+        "10000d714: 4f9a13a3    \tfmla.4s\tv3, v29, v26[0]",
+        "10000d718: bc6d7afe    \tldr\ts30, [x23, x13, lsl #2]",
+        "10000d71c: 4f9e13a1    \tfmla.4s\tv1, v29, v30[0]",
+        "10000d720: 4e217b7b    \tfcvtl2\tv27.4s, v27.8h",
+        "10000d724: 4f981371    \tfmla.4s\tv17, v27, v24[0]",
+        "10000d728: 4f991373    \tfmla.4s\tv19, v27, v25[0]",
+        "10000d72c: 4f9a1375    \tfmla.4s\tv21, v27, v26[0]",
+        "10000d730: 4f9e1377    \tfmla.4s\tv23, v27, v30[0]",
+        "10000d734: 0e217b9b    \tfcvtl\tv27.4s, v28.4h",
+        "10000d738: 4e217b9c    \tfcvtl2\tv28.4s, v28.8h",
+        "10000d73c: 4f981366    \tfmla.4s\tv6, v27, v24[0]",
+        "10000d740: 4f981392    \tfmla.4s\tv18, v28, v24[0]",
+        "10000d744: 4f991364    \tfmla.4s\tv4, v27, v25[0]",
+        "10000d748: 4f991394    \tfmla.4s\tv20, v28, v25[0]",
+        "10000d74c: 4f9a1362    \tfmla.4s\tv2, v27, v26[0]",
+        "10000d750: 4f9a1396    \tfmla.4s\tv22, v28, v26[0]",
+        "10000d754: 4f9e1360    \tfmla.4s\tv0, v27, v30[0]",
+        "10000d758: 4f9e1390    \tfmla.4s\tv16, v28, v30[0]",
+        "10000d75c: 910005ad    \tadd\tx13, x13, #0x1",
+        "10000d760: eb0901bf    \tcmp\tx13, x9",
+        "10000d764: 54fffcab    \tb.lt\t0x10000d6f8"
+      ],
+      "fmla_count": 16,
+      "stack_references": 0,
+      "stores": 0,
+      "calls": 0,
+      "interpretation": "Two Half value vectors (16channels) in one LDP, four widenings, four probability scalar loads, sixteen independent vector FMA accumulators."
+    },
+    {
+      "name": "unchanged odd-row paired-head PV time loop",
+      "address_range": [
+        "0x10000cc20",
+        "0x10000cc9c"
+      ],
+      "instructions": [
+        "10000cc20: bc7e7a99    \tldr\ts25, [x20, x30, lsl #2]",
+        "10000cc24: bc7e7ab8    \tldr\ts24, [x21, x30, lsl #2]",
+        "10000cc28: ad406f9a    \tldp\tq26, q27, [x28]",
+        "10000cc2c: 0e217b5c    \tfcvtl\tv28.4s, v26.4h",
+        "10000cc30: 4e217b5a    \tfcvtl2\tv26.4s, v26.8h",
+        "10000cc34: 4f991387    \tfmla.4s\tv7, v28, v25[0]",
+        "10000cc38: 4f991350    \tfmla.4s\tv16, v26, v25[0]",
+        "10000cc3c: 4f981383    \tfmla.4s\tv3, v28, v24[0]",
+        "10000cc40: 4f981354    \tfmla.4s\tv20, v26, v24[0]",
+        "10000cc44: 0e217b7a    \tfcvtl\tv26.4s, v27.4h",
+        "10000cc48: 4e217b7b    \tfcvtl2\tv27.4s, v27.8h",
+        "10000cc4c: 4f991346    \tfmla.4s\tv6, v26, v25[0]",
+        "10000cc50: 4f991372    \tfmla.4s\tv18, v27, v25[0]",
+        "10000cc54: 4f981342    \tfmla.4s\tv2, v26, v24[0]",
+        "10000cc58: 4f981376    \tfmla.4s\tv22, v27, v24[0]",
+        "10000cc5c: ad416f9a    \tldp\tq26, q27, [x28, #0x20]",
+        "10000cc60: 0e217b5c    \tfcvtl\tv28.4s, v26.4h",
+        "10000cc64: 4f991385    \tfmla.4s\tv5, v28, v25[0]",
+        "10000cc68: 4f981381    \tfmla.4s\tv1, v28, v24[0]",
+        "10000cc6c: 4e217b5a    \tfcvtl2\tv26.4s, v26.8h",
+        "10000cc70: 4f991353    \tfmla.4s\tv19, v26, v25[0]",
+        "10000cc74: 4f981357    \tfmla.4s\tv23, v26, v24[0]",
+        "10000cc78: 0e217b7a    \tfcvtl\tv26.4s, v27.4h",
+        "10000cc7c: 4e217b7b    \tfcvtl2\tv27.4s, v27.8h",
+        "10000cc80: 4f991344    \tfmla.4s\tv4, v26, v25[0]",
+        "10000cc84: 4f991375    \tfmla.4s\tv21, v27, v25[0]",
+        "10000cc88: 910007de    \tadd\tx30, x30, #0x1",
+        "10000cc8c: 4f981340    \tfmla.4s\tv0, v26, v24[0]",
+        "10000cc90: 9104039c    \tadd\tx28, x28, #0x100",
+        "10000cc94: 4f981371    \tfmla.4s\tv17, v27, v24[0]",
+        "10000cc98: eb1803df    \tcmp\tx30, x24",
+        "10000cc9c: 54fffc2b    \tb.lt\t0x10000cc20"
+      ],
+      "fmla_count": 16,
+      "stack_references": 0,
+      "stores": 0,
+      "calls": 0,
+      "interpretation": "Original two-query channel32 path: four Half vectors, eight widenings, two probabilities, sixteen accumulators."
+    }
+  ],
+  "limits": [
+    "Static disassembly confirms load sharing and register-resident accumulators inside the selected loops only; surrounding function uses stack for state and tile-boundary stores.",
+    "No measured speed, cache-traffic or general whole-function spill-free claim.",
+    "Absolute baseline19 boundary63 NumPy failure is inherited; compiled bit identity remains a separate gate."
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/prefill-query-row-pair-assembly/review.json",
+    "source_sha256": "8cbfcdfc61afc3f1a5ec7e13fb97177255aa74f0f355339c0a106a8261b9f9e4",
+    "sanitization": "Repository/home paths replaced; process/host identifiers removed. Original source/artifact hashes retained."
+  }
+}
