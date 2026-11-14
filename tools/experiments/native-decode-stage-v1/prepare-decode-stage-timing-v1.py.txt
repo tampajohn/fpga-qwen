@@ -1,0 +1,36 @@
+"""Source-only clock instrumentation, original immutable build20 arithmetic."""
+from pathlib import Path
+import difflib,hashlib,json
+ROOT=Path(__file__).resolve().parents[2];B=ROOT/'build/native-cpu';dest=B/'decode-stage-timing-v1-source'
+def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+manifest_path=B/'build-20/manifest.json';m=json.loads(manifest_path.read_text())
+source=ROOT/'engine';original={n:(source/n).read_text()for n in ('core.cpp','core.hpp','main.cpp')}
+for n in original:
+ recorded=[v for k,v in m['source_sha256'].items()if Path(k).name==n]
+ assert recorded==[sha(source/n)],'Current source is not immutable build20'
+main=original['main.cpp']
+needle='''                    if(command=="step") model.step(ids[0]); else model.prefill(ids);
+                    consumed_history.insert(consumed_history.end(),ids.begin(),ids.end());
+                    for(int id:ids) sampler.consumed(id);
+                    const int selected=sampler.select(model.logits());
+                    const double elapsed=std::chrono::duration<double>(Clock::now()-start).count();
+                    std::cout<<"{\\"token\\":"<<selected<<",\\"position\\":"<<model.position()<<",\\"seconds\\":"<<std::setprecision(17)<<elapsed<<"}\\n";'''
+replacement='''                    if(command=="step") model.step(ids[0]); else model.prefill(ids);
+                    const auto diagnostic_model_done=Clock::now();
+                    consumed_history.insert(consumed_history.end(),ids.begin(),ids.end());
+                    for(int id:ids) sampler.consumed(id);
+                    const auto diagnostic_history_done=Clock::now();
+                    const int selected=sampler.select(model.logits());
+                    const auto diagnostic_sampler_done=Clock::now();
+                    const double elapsed=std::chrono::duration<double>(diagnostic_sampler_done-start).count();
+                    std::cout<<"{\\"token\\":"<<selected<<",\\"position\\":"<<model.position()<<",\\"seconds\\":"<<std::setprecision(17)<<elapsed
+                        <<",\\"diagnostic_model_seconds\\":"<<std::chrono::duration<double>(diagnostic_model_done-start).count()
+                        <<",\\"diagnostic_history_seconds\\":"<<std::chrono::duration<double>(diagnostic_history_done-diagnostic_model_done).count()
+                        <<",\\"diagnostic_sampler_seconds\\":"<<std::chrono::duration<double>(diagnostic_sampler_done-diagnostic_history_done).count()<<"}\\n";'''
+assert main.count(needle)==1
+main=main.replace(needle,replacement);dest.mkdir(exist_ok=False)
+for n,text in original.items():(dest/n).write_text(main if n=='main.cpp'else text)
+(dest/'candidate.patch').write_text(''.join(difflib.unified_diff(original['main.cpp'].splitlines(True),main.splitlines(True),fromfile='build20/main.cpp',tofile='decode-stage-timing/main.cpp')))
+metadata=dict(prepared_only=True,built=False,executed=False,diagnostic_only=True,performance_claim_eligible=False,baseline='immutable build20',baseline_manifest_sha256=sha(manifest_path),baseline_source_sha256={str(source/n):sha(source/n)for n in original},candidate_source_sha256={str(dest/n):sha(dest/n)for n in original},changes='Only3coordinatorclocktimestamps and3JSONdurationfields in ordinary prefill/step. Model/core/header, sampler implementation and verify-greedy untouched.',scope='Model includesallpoolwaits;history separate;sampler includesfinite/argmax scan and chat scoring/top20/RNG. Protocolparse/output/flush remainoutsideCPPseconds.',limitations=['Addedclockcalls perturb timings, especially tinyhistorysegments. Diagnostic attribution only, not a speed benchmark.','Coreclockduration includesreal arithmetic and synchronization, not a wait-only estimate.','Same sampled IDs/full-logit bytes and seededchat continuity mustbe checked before attributing.','No standalone sampler optimization or protocolbehavior change.'])
+(dest/'experiment.json').write_text(json.dumps(metadata,indent=2)+'\n')
+print(dest)

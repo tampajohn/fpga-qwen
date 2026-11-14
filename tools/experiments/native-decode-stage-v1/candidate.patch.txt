@@ -1,0 +1,22 @@
+--- build20/main.cpp
++++ decode-stage-timing/main.cpp
+@@ -161,11 +161,17 @@
+                     if(consumed_history.size()!=size_t(model.position()))throw std::runtime_error("Consumed history does not match model position");
+                     const auto start=Clock::now();
+                     if(command=="step") model.step(ids[0]); else model.prefill(ids);
++                    const auto diagnostic_model_done=Clock::now();
+                     consumed_history.insert(consumed_history.end(),ids.begin(),ids.end());
+                     for(int id:ids) sampler.consumed(id);
++                    const auto diagnostic_history_done=Clock::now();
+                     const int selected=sampler.select(model.logits());
+-                    const double elapsed=std::chrono::duration<double>(Clock::now()-start).count();
+-                    std::cout<<"{\"token\":"<<selected<<",\"position\":"<<model.position()<<",\"seconds\":"<<std::setprecision(17)<<elapsed<<"}\n";
++                    const auto diagnostic_sampler_done=Clock::now();
++                    const double elapsed=std::chrono::duration<double>(diagnostic_sampler_done-start).count();
++                    std::cout<<"{\"token\":"<<selected<<",\"position\":"<<model.position()<<",\"seconds\":"<<std::setprecision(17)<<elapsed
++                        <<",\"diagnostic_model_seconds\":"<<std::chrono::duration<double>(diagnostic_model_done-start).count()
++                        <<",\"diagnostic_history_seconds\":"<<std::chrono::duration<double>(diagnostic_history_done-diagnostic_model_done).count()
++                        <<",\"diagnostic_sampler_seconds\":"<<std::chrono::duration<double>(diagnostic_sampler_done-diagnostic_history_done).count()<<"}\n";
+                 } else if(command=="dump-hidden") {
+                     const auto begin=line.find(' ');
+                     if(begin==std::string::npos || begin+1==line.size())throw std::runtime_error("Hidden dump path required");

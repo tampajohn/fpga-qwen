@@ -1,0 +1,68 @@
+{
+  "completed": true,
+  "diagnostic_only": true,
+  "records": [
+    {
+      "source": "build/native-cpu/build20-stage452-greedy-v1/report.json",
+      "sha256": "03433f9e7314d681052839578e8c4cff0cecdd142b9a4fe9404369204fc13948",
+      "archive": "reports/native-cpu-build20-stage452-greedy-v1.json",
+      "archive_sha256": "1982bc61d41701adf41802ea012150b1de5c3bf6f4f11d6175db8083f044f717"
+    },
+    {
+      "source": "build/native-cpu/build20-stage452-chat-v1/report.json",
+      "sha256": "ba79397104ab05ae11e7904891b91ec55221d279df16035e2848de2c978edadb",
+      "archive": "reports/native-cpu-build20-stage452-chat-v1.json",
+      "archive_sha256": "df92c3fd50a0920d0211bd4b127c897fbcbd8c2e13591f396609ea79f0ef3540"
+    },
+    {
+      "source": "build/native-cpu/stage-timing-exact-gate-v1.json",
+      "sha256": "e2c21b392d4e0d8df428ae482cdb0137318b6462e52429b23176429327819b31",
+      "archive": "reports/native-cpu-build20-stage452-exact-v1.json",
+      "archive_sha256": "4bdae7c01d24bdc6e6a25da8923de05c2e95c6ef772e26869a2bf3f7ffb284a2"
+    },
+    {
+      "source": "build/native-cpu/prepare-decode-stage-timing-v1.py",
+      "sha256": "959b1d32b8e4e04867fd6be3e0359de925cee928a32a423397d732a1f6dd1966",
+      "archive": "tools/experiments/native-decode-stage-v1/prepare-decode-stage-timing-v1.py.txt",
+      "archive_sha256": "959b1d32b8e4e04867fd6be3e0359de925cee928a32a423397d732a1f6dd1966"
+    },
+    {
+      "source": "build/native-cpu/profile_decode_stage_timing_v1.py",
+      "sha256": "7ce0c676e9ff2a4061a3a52866a037362c15b05aa3980a7a08d7bbb967ac6849",
+      "archive": "tools/experiments/native-decode-stage-v1/profile_decode_stage_timing_v1.py.txt",
+      "archive_sha256": "7ce0c676e9ff2a4061a3a52866a037362c15b05aa3980a7a08d7bbb967ac6849"
+    },
+    {
+      "source": "build/native-cpu/decode-stage-timing-v1-source/candidate.patch",
+      "sha256": "99b3ab807c36fac981754de1006f42010b4ca88dc3c7ade7fd568b9ea389f5b4",
+      "archive": "tools/experiments/native-decode-stage-v1/candidate.patch.txt",
+      "archive_sha256": "99b3ab807c36fac981754de1006f42010b4ca88dc3c7ade7fd568b9ea389f5b4"
+    },
+    {
+      "source": "build/native-cpu/decode-stage-timing-v1-source/core.cpp",
+      "sha256": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+      "archive": "tools/experiments/native-decode-stage-v1/core.cpp.txt",
+      "archive_sha256": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884"
+    },
+    {
+      "source": "build/native-cpu/decode-stage-timing-v1-source/core.hpp",
+      "sha256": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+      "archive": "tools/experiments/native-decode-stage-v1/core.hpp.txt",
+      "archive_sha256": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357"
+    },
+    {
+      "source": "build/native-cpu/decode-stage-timing-v1-source/experiment.json",
+      "sha256": "191406ecfb64c09b7cca26be46b8604c72b9145497327014168e7b6434362b44",
+      "archive": "tools/experiments/native-decode-stage-v1/experiment.json.txt",
+      "archive_sha256": "191406ecfb64c09b7cca26be46b8604c72b9145497327014168e7b6434362b44"
+    },
+    {
+      "source": "build/native-cpu/decode-stage-timing-v1-source/main.cpp",
+      "sha256": "59b567265b39d4cbf0879e1a489e23a2a164fa81bba790d73bdf437b7a957e62",
+      "archive": "tools/experiments/native-decode-stage-v1/main.cpp.txt",
+      "archive_sha256": "59b567265b39d4cbf0879e1a489e23a2a164fa81bba790d73bdf437b7a957e62"
+    }
+  ],
+  "performance_claim_eligible": false,
+  "source_snapshot_note": "Exact local source bytes archived as .txt; local generator/collector ROOT paths are preserved, not installed runnable paths."
+}

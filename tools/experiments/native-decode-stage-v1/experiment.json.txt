@@ -1,0 +1,27 @@
+{
+  "prepared_only": true,
+  "built": false,
+  "executed": false,
+  "diagnostic_only": true,
+  "performance_claim_eligible": false,
+  "baseline": "immutable build20",
+  "baseline_manifest_sha256": "d6329dc58d1e1a02b49189384db1fedbb64a3622082bf91ae8a9505a393e5bca",
+  "baseline_source_sha256": {
+    "/Users/jadams/workspace/sandbox/fpga-qwen/engine/core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_source_sha256": {
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/decode-stage-timing-v1-source/core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/decode-stage-timing-v1-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "/Users/jadams/workspace/sandbox/fpga-qwen/build/native-cpu/decode-stage-timing-v1-source/main.cpp": "59b567265b39d4cbf0879e1a489e23a2a164fa81bba790d73bdf437b7a957e62"
+  },
+  "changes": "Only3coordinatorclocktimestamps and3JSONdurationfields in ordinary prefill/step. Model/core/header, sampler implementation and verify-greedy untouched.",
+  "scope": "Model includesallpoolwaits;history separate;sampler includesfinite/argmax scan and chat scoring/top20/RNG. Protocolparse/output/flush remainoutsideCPPseconds.",
+  "limitations": [
+    "Addedclockcalls perturb timings, especially tinyhistorysegments. Diagnostic attribution only, not a speed benchmark.",
+    "Coreclockduration includesreal arithmetic and synchronization, not a wait-only estimate.",
+    "Same sampled IDs/full-logit bytes and seededchat continuity mustbe checked before attributing.",
+    "No standalone sampler optimization or protocolbehavior change."
+  ]
+}
