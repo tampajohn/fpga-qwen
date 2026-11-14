@@ -224,7 +224,7 @@ to 1.184e-8, and NumPy sum with division to zero. Twenty of 63 rounded sums and
 12 of 63 denominators differ between the original reductions.
 
 However, normalizing native batch projections with the NumPy expression barely
-changes their discrepancy from the *captured oracle projection outputs*:
+changes their discrepancy from the *captured oracle post-normalization outputs*:
 
 | Stage | Native norm on batch input | NumPy norm on that same batch input |
 |---|---:|---:|
