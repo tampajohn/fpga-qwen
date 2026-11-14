@@ -38,4 +38,24 @@ TTFT and decode throughput remain separate metrics, with alternating pairs and
 uncertainty reported. A new release requires isolated and live browser checks,
 rollback artifacts, current documentation and published evidence.
 
-Status: investigations started; no new candidate qualified or promoted.
+## Findings and current work
+
+- [Adapter and sampler diagnostics](native_decode_overhead.md) found less than
+  1% command residual on the tested 452-token streams. Protocol batching is not
+  the current priority. Greedy selection has a separately tested SIMD prototype;
+  its standalone equivalence checks do not establish end-to-end improvement.
+- The fixed attention-worker candidate passed its initial exactness, API,
+  lifecycle, quality and seeded-stream checks. Its three-pair exploratory screen
+  narrowly met the predeclared triage rule but includes a slower 1536-token
+  decode case. Independent confirmation is required; no speed win is claimed.
+- Fresh buffered component profiles locate most short-context model wall time
+  in projection phases. An independent row-block scheduling hypothesis will
+  test load distribution without changing per-output arithmetic or assuming
+  particular core placement.
+- [Controlled numerical diagnostics](native_kv_rounding_diagnosis.md) reproduce
+  the native and oracle operations exactly on captured inputs. Smaller local
+  discrepancies and fewer changed FP16 bins did not consistently improve error
+  magnitude. Further speculative arithmetic repairs are parked; finer prefix
+  blocks remain held under unchanged acceptance limits.
+
+Build 20 remains the deployed release. No follow-up candidate has been promoted.
