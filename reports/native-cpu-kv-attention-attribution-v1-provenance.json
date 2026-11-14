@@ -1,0 +1,17 @@
+{
+  "completed": true,
+  "root_executed": true,
+  "model_inference": false,
+  "diagnostic_subkernel_arithmetic": true,
+  "acceptance_oracle_changed": false,
+  "network_tolerances_changed": false,
+  "performance_claim_eligible": false,
+  "source_report_sha256": "48fcaa07b165adc63c3cecefc2db3291502fa483185a3d4b87789f9170110410",
+  "archived_report_sha256": "bbef4940873e0e18e33ecab91dbf065682994df3e01a7deaee5721669fb50a6e",
+  "helper_original_path": "build/native-cpu/numerical-diagnostics/analyze_kv_attention_attribution_v1.py",
+  "helper_sha256": "06b1f4c6a7cbfb8a331143f2f001be04737a17f498565da3d1aaa8a0513fe982",
+  "helper_archive_path": "tools/experiments/analyze-kv-attention-attribution-v1.py.txt",
+  "helper_archive_sha256": "06b1f4c6a7cbfb8a331143f2f001be04737a17f498565da3d1aaa8a0513fe982",
+  "source_review": "Independent dispatch_validation review passed before root execution.",
+  "reproduction": "Restore byte-identical text helper to original path; use fresh output under tools/benchmark_guard.py. Requires existing identity-qualified63trace artifacts; raw tensors not archived here."
+}

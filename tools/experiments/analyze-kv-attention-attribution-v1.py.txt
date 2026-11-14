@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+"""Guarded offline causal-input attribution on existing identity-qualified63 traces.
+No network inference, modified acceptance oracle, or performance claim.
+"""
+import argparse,hashlib,itertools,json,os,sys
+from pathlib import Path
+os.environ['VECLIB_MAXIMUM_THREADS']='1';os.environ['OPENBLAS_NUM_THREADS']='1'
+ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT/'tools'))
+import numpy as np
+from capture_native_cpu_logits import guard,save
+B=ROOT/'build/native-cpu'
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def read(p):return json.loads(Path(p).read_text())
+def metrics(x,y):
+ d=np.asarray(x,dtype=np.float64)-np.asarray(y,dtype=np.float64)
+ return dict(max_absolute=float(np.max(np.abs(d))),rms=float(np.sqrt(np.mean(d*d))),changed_elements=int(np.count_nonzero(d)),elements=int(d.size))
+def attention(q,k,v):
+ # Same diagnostic arithmetic for all counterfactuals. Each input is a captured
+ # F32 value widened exactly; this FP64 result is NOT the acceptance oracle.
+ q=np.asarray(q,dtype=np.float64);k=np.repeat(np.asarray(k,dtype=np.float64),2,axis=1);v=np.repeat(np.asarray(v,dtype=np.float64),2,axis=1)
+ scores=np.einsum('hd,thd->ht',q,k,optimize=False)/np.sqrt(np.float64(128))
+ exp=np.exp(scores-np.max(scores,axis=1,keepdims=True));p=exp/np.sum(exp,axis=1,keepdims=True)
+ return np.einsum('ht,thd->hd',p,v,optimize=False).reshape(-1)
+def main():
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);a=p.parse_args();out=a.output.resolve();assert not out.exists() and not out.with_suffix('.pending.json').exists()
+ report=dict(completed=False,diagnostic_only=True,inference_run=False,subkernel_arithmetic_run=True,gpu=False,pytorch=False,performance_claim_eligible=False,acceptance_oracle_changed=False,tolerances_changed=False,target_position=62,context_tokens=63,guard_before=guard(ROOT/'build/benchmark-status'),inputs={},layers=[],limitations=['FP64 attention is a shared diagnostic kernel, not an independent replacement network oracle or release criterion.','Shapley contributions exactly decompose a local matched-kernel output difference, not final-logit error or model-quality causation.','Only targetrow has pre-FP16 K/V captures; allprefix canonicalKV exists but its allrow precast values were not captured.','No conclusion about failed64/2048 fixtures follows without separate matched captures.','Used original trace artifacts are checked directly against prior identity-qualified analysis hashes; unrelated later runtime-source changes are not retroactively checked as if these traces came from current code.'])
+ def freeze(path,expected=None):
+  path=Path(path).resolve();digest=sha(path);assert expected is None or digest==expected,path;report['inputs'][str(path)]=digest;return path
+ try:
+  analysis_path=freeze(B/'native63-stage-analysis-v1.json');analysis=read(analysis_path);assert analysis['completed'] and analysis['identity_prerequisites_passed'] and analysis['target_position']==62
+  oracle_path=freeze(B/'numpy63-layer-trace-v1/report.json',analysis['inputs'][str((B/'numpy63-layer-trace-v1/report.json').resolve())]);oracle=read(oracle_path);assert oracle['completed'] and oracle['passed'] and oracle['target_position']==62
+  freeze(Path(__file__));freeze(ROOT/'tools/capture_native_cpu_logits.py');freeze(ROOT/'tools/benchmark_guard.py')
+  phase=('input_norm_h','q_projection','k_projection','v_projection','q_rope','k_rope','canonical_keys','canonical_values','attended')
+  traces={}
+  for mode in ('batch','sequential','oracle'):
+   if mode=='oracle':rows=oracle['traces'];folder=None
+   else:
+    name='native63-batched-layer-trace-v1' if mode=='batch' else 'native63-sequential-layer-trace-v1'
+    folder=B/name/'capture-000000';manifest=folder/'manifest.jsonl';freeze(manifest,analysis['inputs'][str(manifest.resolve())]);rows=[json.loads(x) for x in manifest.read_text().splitlines() if x]
+    assert rows[0]['kind']=='start' and rows[0]['target_position']==62
+    rows=[x for x in rows if x.get('kind')=='tensor']
+   index={}
+   for r in rows:
+    if r['phase'] not in phase:continue
+    file=Path(r['path']) if mode=='oracle' else folder/r['file']
+    expected=r['sha256'] if mode=='oracle' else analysis['inputs'][str(file.resolve())]
+    freeze(file,expected);v=np.fromfile(file,dtype='<f4').reshape(r['shape']);assert np.isfinite(v).all()
+    index[r['layer'],r['phase']]=v
+   assert len(index)==28*len(phase);traces[mode]=index
+  for layer in range(28):
+   data={m:{p:t[layer,p] for p in phase} for m,t in traces.items()}
+   row=dict(layer=layer,projection_differences={},target_kv_cast_audit={},target_quantization_differences={},attention_attribution={})
+   for m in ('batch','sequential'):
+    row['projection_differences'][m]={p:metrics(data[m][p],data['oracle'][p]) for p in ('input_norm_h','q_projection','k_projection','v_projection')}
+   for m in data:
+    row['target_kv_cast_audit'][m]={}
+    for raw,cache in [('k_rope','canonical_keys'),('v_projection','canonical_values')]:
+     pre=data[m][raw];stored=data[m][cache][62];cast=pre.astype(np.float16).astype(np.float32)
+     equal=cast.tobytes()==stored.tobytes();row['target_kv_cast_audit'][m][cache]=dict(bit_identical=equal,metrics=metrics(cast,stored))
+     assert equal,('Target native/oracle Half cast mismatch',m,layer,cache)
+   for left,right in [('batch','sequential'),('batch','oracle'),('sequential','oracle')]:
+    row['target_quantization_differences'][left+'-minus-'+right]={}
+    for raw,cache in [('k_rope','canonical_keys'),('v_projection','canonical_values')]:
+     pre=metrics(data[left][raw],data[right][raw]);post=metrics(data[left][cache][62],data[right][cache][62]);row['target_quantization_differences'][left+'-minus-'+right][cache]=dict(precast=pre,postcast=post,allprefix_postcast=metrics(data[left][cache],data[right][cache]),rms_amplification=(post['rms']/pre['rms'] if pre['rms'] else None))
+   fields=('q_rope','canonical_keys','canonical_values');reference=[data['oracle'][f] for f in fields]
+   for mode in ('batch','sequential'):
+    native=[data[mode][f] for f in fields];outputs={}
+    for mask in range(8):outputs[mask]=attention(*[native[i] if mask&(1<<i) else reference[i] for i in range(3)])
+    total=outputs[7]-outputs[0];contributions=[];records={}
+    for i,name in enumerate(('query','rounded_keys','rounded_values')):
+     value=np.zeros_like(total)
+     for mask in range(8):
+      if mask&(1<<i):continue
+      size=mask.bit_count();weight=(1/3 if size in (0,2) else 1/6)
+      value+=weight*(outputs[mask|(1<<i)]-outputs[mask])
+     contributions.append(value);records[name]=dict(vector_magnitude=metrics(value,np.zeros_like(value)),signed_projection_onto_total=(float(np.dot(value,total)/np.dot(total,total)) if np.dot(total,total) else None))
+    reconstructed=sum(contributions);residual=metrics(reconstructed,total)
+    # This is algebraic reconstruction accuracy, not a neural-output tolerance.
+    assert np.allclose(reconstructed,total,rtol=1e-12,atol=1e-12)
+    row['attention_attribution'][mode]=dict(all_native_vs_all_oracle_common_kernel=metrics(outputs[7],outputs[0]),shapley=records,shapley_reconstruction=residual,native_attention_arithmetic_residual=metrics(data[mode]['attended'],outputs[7]),oracle_attention_arithmetic_residual=metrics(data['oracle']['attended'],outputs[0]),actual_native_vs_oracle=metrics(data[mode]['attended'],data['oracle']['attended']))
+   report['layers'].append(row);save(out,report)
+  assert all(sha(path)==digest for path,digest in report['inputs'].items())
+  report.update(completed=True,all_target_half_casts_bit_identical=True,guard_after=guard(ROOT/'build/benchmark-status'))
+ except BaseException as e:report['error']=dict(type=type(e).__name__,message=str(e));raise
+ finally:save(out,report)
+ print(out)
+if __name__=='__main__':main()
