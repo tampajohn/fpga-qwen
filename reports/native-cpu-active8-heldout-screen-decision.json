@@ -1,0 +1,141 @@
+{
+  "completed": true,
+  "exploratory_only": true,
+  "performance_claim": false,
+  "source_report": "$REPO/build/native-cpu/decode-attention-active8-v2-heldout-discovery.json",
+  "contexts": [
+    {
+      "context": "context192",
+      "pairs": [
+        {
+          "decode": 1.635058891584013,
+          "ttft": 1.0414966294508652,
+          "request": 1.5385382685021807
+        },
+        {
+          "decode": 0.9546572827791956,
+          "ttft": 1.0425170850413281,
+          "request": 0.9677264260060783
+        },
+        {
+          "decode": 1.0941593258659155,
+          "ttft": 1.0199323776619733,
+          "request": 1.0808795196166934
+        }
+      ],
+      "median": {
+        "decode": 1.0941593258659155,
+        "ttft": 1.0414966294508652,
+        "request": 1.0808795196166934
+      }
+    },
+    {
+      "context": "context768",
+      "pairs": [
+        {
+          "decode": 0.5254096486943063,
+          "ttft": 0.9581829907429399,
+          "request": 0.658239909747811
+        },
+        {
+          "decode": 1.2058067331576265,
+          "ttft": 1.2685649629561366,
+          "request": 1.2325285737228284
+        },
+        {
+          "decode": 1.1324150864627642,
+          "ttft": 0.9409841143871758,
+          "request": 1.0411505016029454
+        }
+      ],
+      "median": {
+        "decode": 1.1324150864627642,
+        "ttft": 0.9581829907429399,
+        "request": 1.0411505016029454
+      }
+    },
+    {
+      "context": "context1536",
+      "pairs": [
+        {
+          "decode": 0.8409598198555387,
+          "ttft": 1.0333729318883698,
+          "request": 0.9574548730827165
+        },
+        {
+          "decode": 0.8700029024918408,
+          "ttft": 1.034760182593486,
+          "request": 0.9628856849259255
+        },
+        {
+          "decode": 0.6527895590277948,
+          "ttft": 0.9958138342456305,
+          "request": 0.8408268044989474
+        }
+      ],
+      "median": {
+        "decode": 0.8409598198555387,
+        "ttft": 1.0333729318883698,
+        "request": 0.9574548730827165
+      }
+    },
+    {
+      "context": "context2560",
+      "pairs": [
+        {
+          "decode": 0.7178836554996151,
+          "ttft": 0.9957826366562865,
+          "request": 0.906507327998414
+        },
+        {
+          "decode": 1.1128477449082754,
+          "ttft": 0.996353511007749,
+          "request": 1.024350784922165
+        },
+        {
+          "decode": 1.1858154065107056,
+          "ttft": 1.09022135369536,
+          "request": 1.1150418595110048
+        }
+      ],
+      "median": {
+        "decode": 1.1128477449082754,
+        "ttft": 0.996353511007749,
+        "request": 1.024350784922165
+      }
+    },
+    {
+      "context": "context3328",
+      "pairs": [
+        {
+          "decode": 1.5126591038868924,
+          "ttft": 1.0504060193303149,
+          "request": 1.1339540801061294
+        },
+        {
+          "decode": 0.7545917639418233,
+          "ttft": 1.0582112952077474,
+          "request": 0.9780347689933759
+        },
+        {
+          "decode": 0.9672390277037383,
+          "ttft": 1.0080545705114587,
+          "request": 1.0001337043404532
+        }
+      ],
+      "median": {
+        "decode": 0.9672390277037383,
+        "ttft": 1.0504060193303149,
+        "request": 1.0001337043404532
+      }
+    }
+  ],
+  "decode_geometric_mean": 1.0232133650518174,
+  "advance_to_full_qualification": true,
+  "rule": "Geometric mean decode >1 and every median request ratio >=0.95, fixed before data; triage only",
+  "archive_provenance": {
+    "source_report": "build/native-cpu/decode-attention-active8-v2-heldout-screen-decision.json",
+    "source_sha256": "bf8c48fe177fe6d444063b90848566ce8cf45a7a07cc26c5636e277e5390be0f",
+    "sanitization": "Paths/process identifiers sanitized; all paired observations, negative outcomes and frozen input IDs retained."
+  }
+}
