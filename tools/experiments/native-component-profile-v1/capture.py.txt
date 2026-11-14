@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""Guarded isolated component wall diagnostic, with pristine20 full-logit controls."""
+from pathlib import Path
+import argparse,hashlib,json,math,os,sys,threading,time
+import numpy as np
+ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT/'tools'))
+from benchmark_native_phase0 import guard
+from native_cpu_chat import NativeCPUChat,EOS
+from chat_protocol import ChatProtocol
+from experiment import locate_model
+B=ROOT/'build/native-cpu'
+def sha(p):
+ with Path(p).open('rb')as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def read(p):return json.loads(Path(p).read_text())
+def check(ok,message):
+ if not ok:raise RuntimeError(message)
+def main():
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--binary',type=Path,required=True);p.add_argument('--prompt',type=Path,required=True);p.add_argument('--directory',type=Path,required=True);p.add_argument('--tokens',type=int,default=32);p.add_argument('--checkpoint');a=p.parse_args()
+ check(2<=a.tokens<=128,'Use2..128outputs');guard(ROOT/'build/benchmark-status');out=a.directory.resolve();out.mkdir(exist_ok=False)
+ report=dict(completed=False,passed=False,diagnostic_only=True,performance_claim_eligible=False,correctness=[],visits=[],limitations=['Coordinator wall phases include scheduling/wait/contention, not CPU shares or removable overhead.','Clock/record writes perturb execution; same-binary off/on repeats diagnose this but do not establish uninstrumented fractions.','First-use means first request in a fresh process, not guaranteed cold OS/filesystem/CPU caches.','No diagnostic I/O or full-logit dumps inside scored decode blocks; ordinary response JSON remains.','Counter export after whole request preserves contiguous prefill-to-step dispatch. Prefill/step records are classified separately.','Baseline absolute oracle gaps are not repaired by this relative check.'])
+ def save():(out/'report.json').write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
+ engine=None;cancel=threading.Event();original_env=dict(os.environ)
+ try:
+  candidate=a.binary.resolve();baseline=(B/'build-20/qwen_cpu').resolve();weights=B/'weights.bin';prompt=a.prompt.resolve();ids=read(prompt);check(isinstance(ids,list)and ids and all(type(x)is int and 0<=x<151936 for x in ids),'Invalid prompt');check(len(ids)+a.tokens-1<=4096,'Capacity')
+  checkpoint=locate_model(a.checkpoint);protocol=ChatProtocol(checkpoint);paths=[Path(__file__).resolve(),prompt,weights,Path(str(weights)+'.index'),Path(str(weights)+'.manifest.json')]
+  paths += [ROOT/'tools'/n for n in ('native_cpu_chat.py','chat_protocol.py','suffix.py','experiment.py','benchmark_native_phase0.py','benchmark_guard.py')]+[checkpoint/n for n in ('tokenizer.json','tokenizer_config.json','config.json')]
+  for binary in (baseline,candidate):
+   m=read(binary.parent/'manifest.json');check(m['completed']and m['binary_sha256']==sha(binary)and m['gpu']is False and m['pytorch']is False,'Build binding')
+   paths.extend((binary,binary.parent/'manifest.json'))
+   for path,digest in m['source_sha256'].items():check(sha(path)==digest,'Build source changed');paths.append(Path(path))
+  meta=Path(read(candidate.parent/'manifest.json')['source_directory'])/'instrumentation.json';metadata=read(meta);check(metadata['base_build']=='build-20'and metadata['diagnostic_only'],'Wrong diagnostic');paths.append(meta)
+  check(metadata['base_source_sha256']==read(B/'build-20/staging.json')['shared_source_after'],'Wrong source baseline');paths.append(B/'build-20/staging.json')
+  check(len(metadata['phases'])==11 and len(set(metadata['phases']))==11,'Phase labels')
+  cm=read(candidate.parent/'manifest.json')
+  for path,digest in metadata['source_sha256'].items():check(sha(path)==digest==cm['source_sha256'][path],'Instrumentation source binding')
+  paths.append(B/'prepare-build20-component-profile-v1.py')
+  report.update(inputs={str(p):sha(p)for p in paths},prompt_ids=ids,tokens=a.tokens,phases=metadata['phases'])
+  pack=read(Path(str(weights)+'.manifest.json'));check(pack['completed']is True and pack['format']=='QWCPU01'and pack['binary']['sha256']==report['inputs'][str(weights)]and pack['index']['sha256']==report['inputs'][str(weights)+'.index'],'Weight pack binding')
+  removed=[]
+  for key in list(os.environ):
+   if key.startswith(('DYLD_','GGML_','LLAMA_ARG_'))or key=='VECLIB_MAXIMUM_THREADS':removed.append(key);os.environ.pop(key)
+  report['removed_environment_names']=sorted(removed);save()
+  def start(binary):
+   nonlocal engine
+   # Publish ownership before start/readiness may raise; outer finally reaps it.
+   engine=NativeCPUChat(protocol,binary,weights,12,6,reuse_prefix=False)
+   engine.start(cancel);check(engine.ready['decode_threads']==12 and engine.ready['prefill_threads']==6 and not engine.ready['gpu']and not engine.ready['pytorch'],'Runtime mismatch');return engine
+  def command(text):return engine.command(text,cancel)
+  def setup(instrumented,enabled):
+   command('reset');command('mode greedy')
+   if instrumented:
+    command('profile-off');command('profile-reset');command('profile-on'if enabled else'profile-off')
+  def records(enabled):
+   command('profile-off');trace=command('profile-read');check(trace['diagnostic']=='native_components_v1'and trace['enabled']is False,'Trace schema')
+   rows=trace['records'];check(len(rows)==(a.tokens if enabled else 0),'Trace record count')
+   for i,row in enumerate(rows):
+    prefill=i==0;tokens=len(ids)if prefill else 1;chunks=(tokens+511)//512
+    check(row['prefill']is prefill and row['base']==(0 if prefill else len(ids)+i-1)and row['tokens']==tokens,'Trace positions')
+    check(row['phase_calls']==[chunks]+[28*chunks]*9+[chunks],'Phase coverage')
+    values=row['phase_ns']+[row['head_ns'],row['append_ns']];check(len(row['phase_ns'])==11 and all(type(v)is int and v>=0 for v in values),'Trace durations')
+    accounted=sum(row['phase_ns'])+row['head_ns'];check(accounted<=row['append_ns'],'Phase overlap');row['unattributed_ns']=row['append_ns']-accounted
+   return rows
+  def request(expected=None,dump_prefix=None):
+   outputs=[];dumps=[];walls=[]
+   for i in range(a.tokens):
+    text='prefill '+' '.join(map(str,ids))if i==0 else'step '+str(outputs[-1]);begin=time.perf_counter_ns();response=command(text);elapsed=time.perf_counter_ns()-begin
+    token=response['token'];check(response['position']==len(ids)+i and type(token)is int and 0<=token<151936,'Position/token');check(token not in EOS,'Fixture reached earlyEOS; preserve failure, no replacement');outputs.append(token);walls.append(elapsed)
+    if expected is not None:check(token==expected[i],'Token trajectory differs')
+    if dump_prefix is not None:
+     path=out/f'{dump_prefix}-{i:03}.f32';ack=command('dump '+str(path));check(ack.get('ok')and ack['count']==151936 and ack['position']==len(ids)+i and path.stat().st_size==151936*4,'Bad dump')
+     check(np.isfinite(np.fromfile(path,dtype='<f4')).all(),'Nonfinite logits');dumps.append(dict(path=str(path),sha256=sha(path),position=len(ids)+i))
+   return dict(output_ids=outputs,prefill_command_ns=walls[0],decode_command_ns=walls[1:],dumps=dumps)
+  engine=start(baseline);setup(False,False);reference=request(dump_prefix='baseline');report['reference']=reference;engine.close();engine=None;save()
+  for enabled in (False,True):
+   engine=start(candidate);setup(True,enabled);row=request(reference['output_ids'],f'correctness-{int(enabled)}');row['enabled']=enabled;row['phase_records']=records(enabled)
+   check([d['sha256']for d in row['dumps']]==[d['sha256']for d in reference['dumps']],'Full logits differ from pristine20');report['correctness'].append(row);engine.close();engine=None;save()
+  # New process for first-use record, then rotated off/on visits with same-request warmups.
+  engine=start(candidate)
+  for index,enabled in enumerate((True,False,True,True,False)):
+   if index:
+    setup(True,False);request(reference['output_ids'])
+   setup(True,enabled);row=request(reference['output_ids']);row.update(enabled=enabled,first_use=index==0,repeat=None if index==0 else(index-1)//2,phase_records=records(enabled));report['visits'].append(row);save()
+  engine.close();engine=None
+  for row in [reference,*report['correctness']]:
+   for dump in row['dumps']:check(sha(dump['path'])==dump['sha256'],'Dump changed')
+  check(all(sha(path)==digest for path,digest in report['inputs'].items()),'Frozen source/input changed');guard(ROOT/'build/benchmark-status');report.update(completed=True,passed=True,full_logit_identity_passed=True)
+ except BaseException as error:report['error']=dict(type=type(error).__name__,message=str(error));raise
+ finally:
+  if engine is not None:
+   try:engine.close()
+   except BaseException as error:report['cleanup_error']=str(error);report['completed']=False;report['passed']=False
+  os.environ.clear();os.environ.update(original_env);save()
+ print(out/'report.json')
+if __name__=='__main__':main()

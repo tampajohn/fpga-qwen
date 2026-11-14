@@ -1,0 +1,154 @@
+--- a/engine/core.cpp
++++ b/engine/core.cpp
+@@ -13,6 +13,7 @@
+ #include <cstring>
+ #include <fcntl.h>
+ #include <fstream>
++#include <sstream>
+ #include <limits>
+ #include <map>
+ #include <mutex>
+@@ -350,7 +351,24 @@
+     // Full retained FP16 KV, laid out [layer][head][position][channel].
+     // Logical positions and visible context are unchanged; there is no eviction.
+     size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*K+head)*options.context+position)*D;}
++    // Isolated diagnostic: coordinator only, bounded storage, no per-step I/O.
++    struct DiagRecord {int base=0,tokens=0;bool prefill=false;long long total=0,head=0;long long ns[11]{},calls[11]{};};
++    bool diag_enabled=false;size_t diag_count=0;
++    std::array<DiagRecord,256> diag_records{};
++    DiagRecord* diag_active=nullptr;
++    struct DiagGuard {Impl* self;~DiagGuard(){self->diag_active=nullptr;}};
++    std::string diag_json()const {
++        std::ostringstream os;os<<"{\"diagnostic\":\"native_components_v1\",\"enabled\":"<<(diag_enabled?"true":"false")<<",\"records\":[";
++        for(size_t i=0;i<diag_count;++i){if(i)os<<',';const auto& d=diag_records[i];
++            os<<"{\"base\":"<<d.base<<",\"tokens\":"<<d.tokens<<",\"prefill\":"<<(d.prefill?"true":"false")<<",\"append_ns\":"<<d.total<<",\"head_ns\":"<<d.head<<",\"phase_ns\":[";
++            for(int p=0;p<11;++p){if(p)os<<',';os<<d.ns[p];}os<<"],\"phase_calls\":[";
++            for(int p=0;p<11;++p){if(p)os<<',';os<<d.calls[p];}os<<"]}";
++        }
++        os<<"]}";return os.str();
++    }
+     void chunk(const int* ids,int batch,Pool& pool) {
++        auto dt=diag_active?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point{};
++        auto mark=[&](int phase){if(diag_active){auto now=std::chrono::steady_clock::now();diag_active->ns[phase]+=std::chrono::duration_cast<std::chrono::nanoseconds>(now-dt).count();++diag_active->calls[phase];dt=now;}};
+         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
+         attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
+         half_gate.resize(gate.size());tanh_gate.resize(gate.size());
+@@ -381,9 +399,11 @@
+         }
+         const Half* embeddings=tensor("model.embed_tokens.weight").half;
+         for(int b=0;b<batch;++b)for(int j=0;j<H;++j)x[b*H+j]=embeddings[size_t(ids[b])*H+j];
++        mark(0);
+         for(int layer=0;layer<L;++layer){std::string p="model.layers."+std::to_string(layer)+".";
+             const float* nw=tensor(p+"input_layernorm.weight").norm;
+             for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
++            mark(1);
+             if(batch==1) {
+                 project_group<3>({&tensor(p+"self_attn.q_proj.weight"),&tensor(p+"self_attn.k_proj.weight"),&tensor(p+"self_attn.v_proj.weight")},
+                                  h.data(),{q.data(),k.data(),v.data()},pool);
+@@ -392,6 +412,7 @@
+                 project(tensor(p+"self_attn.k_proj.weight"),h.data(),k.data(),batch,pool);
+                 project(tensor(p+"self_attn.v_proj.weight"),h.data(),v.data(),batch,pool);
+             }
++            mark(2);
+             const float* qn=tensor(p+"self_attn.q_norm.weight").norm;const float* kn=tensor(p+"self_attn.k_norm.weight").norm;
+             for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
+                 for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
+@@ -404,6 +425,7 @@
+                     for(int j=0;j<D;++j){keys[dst+j]=Half(k[src+j]);values[dst+j]=Half(v[src+j]);}
+                 }
+             }
++            mark(3);
+             if(batch>1) {
+                 // One item owns two adjacent token rows and their GQA head pair.
+                 // A final odd row uses the unchanged original paired-head path.
+@@ -622,14 +644,18 @@
+                     }
+                 }
+             });
++            mark(4);
+             project(tensor(p+"self_attn.o_proj.weight"),attended.data(),residual.data(),batch,pool);
+             for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
++            mark(5);
+             nw=tensor(p+"post_attention_layernorm.weight").norm;for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
++            mark(6);
+             if(batch==1) {
+                 project_group<2>({&tensor(p+"mlp.gate_proj.weight"),&tensor(p+"mlp.up_proj.weight")},h.data(),{gate.data(),up.data()},pool);
+             } else {
+                 project(tensor(p+"mlp.gate_proj.weight"),h.data(),gate.data(),batch,pool);project(tensor(p+"mlp.up_proj.weight"),h.data(),up.data(),batch,pool);
+             }
++            mark(7);
+             // vForce is an explicit CPU vector-libm path, including batch one.
+             // Apple vForce.h permits denormal flushing and OS/architecture-dependent
+             // results; this change requires the full numerical gate, not bit equality.
+@@ -637,12 +663,15 @@
+             const int gate_count=static_cast<int>(gate.size());
+             vvtanhf(tanh_gate.data(),half_gate.data(),&gate_count);
+             for(size_t j=0;j<gate.size();++j)gate[j]=gate[j]*(0.5f+0.5f*tanh_gate[j])*up[j];
++            mark(8);
+             project(tensor(p+"mlp.down_proj.weight"),gate.data(),residual.data(),batch,pool);
+             for(size_t j=0;j<x.size();++j)x[j]+=residual[j];
++            mark(9);
+         }
+         pos+=batch;
+         // Keep only last hidden state; vocabulary is computed once per API call.
+         norm(x.data()+size_t(batch-1)*H,tensor("model.norm.weight").norm,last_hidden.data(),H);
++        mark(10);
+     }
+     void verify_chunk(const int* ids,Pool& pool) {
+         constexpr int batch=2;
+@@ -708,13 +737,24 @@
+         if(verification_pending)throw std::runtime_error("Commit or discard pending verification before inference");
+         require(!ids.empty(),"Empty token input");require(ids.size()<=size_t(options.context-pos),"Context capacity exceeded");
+         for(int id:ids)require(id>=0&&id<vocabulary,"Token ID out of range");
++        if(diag_enabled && diag_count==diag_records.size())throw std::runtime_error("Diagnostic buffer full; reset counters");
++        DiagRecord record{};record.base=pos;record.tokens=int(ids.size());record.prefill=prefill;
++        diag_active=diag_enabled?&record:nullptr;DiagGuard diag_guard{this};
++        auto diag_start=diag_enabled?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point{};
+         Pool& pool=prefill?*prefill_pool:*decode_pool;
+         for(size_t begin=0;begin<ids.size();begin+=prefill_chunk){int batch=std::min(prefill_chunk,ids.size()-begin);chunk(ids.data()+begin,batch,pool);}
++        auto diag_head=diag_enabled?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point{};
+         output.resize(vocabulary);project(tensor("model.embed_tokens.weight"),last_hidden.data(),output.data(),1,pool);
++        if(diag_enabled){auto end=std::chrono::steady_clock::now();record.total=std::chrono::duration_cast<std::chrono::nanoseconds>(end-diag_start).count();record.head=std::chrono::duration_cast<std::chrono::nanoseconds>(end-diag_head).count();diag_records[diag_count++]=record;}
++
+     }
+ };
+ Model::Model(const std::string& path,Options options):impl_(std::make_unique<Impl>(path,options)){}
+ Model::~Model()=default;
++void Model::profile_enable(bool enabled){impl_->diag_enabled=enabled;}
++void Model::profile_reset(){impl_->diag_count=0;}
++std::string Model::profile_read()const{return impl_->diag_json();}
++
+ void Model::reset(){
+     impl_->pos=0;impl_->output.clear();impl_->verification_pending=false;
+     impl_->verification_logits.clear();impl_->verification_hidden.clear();
+--- a/engine/core.hpp
++++ b/engine/core.hpp
+@@ -29,6 +29,10 @@
+     Model(const Model&) = delete;
+     Model& operator=(const Model&) = delete;
+     void reset();
++    // Isolated diagnostic API; never included in live build20.
++    void profile_enable(bool enabled);
++    void profile_reset();
++    std::string profile_read()const;
+     // Retain KV [0, position), discard logits. Invalid positions leave state
+     // unchanged. Exact prefix reuse additionally requires canonical batch bounds.
+     void truncate(int position);
+--- a/engine/main.cpp
++++ b/engine/main.cpp
+@@ -104,7 +104,14 @@
+                     throw std::runtime_error("Invalid command line");
+                 std::istringstream input(line);std::string command;input>>command;
+                 if(command=="quit") { no_extra(input);std::cout<<"{\"ok\":true}\n"<<std::flush;break; }
+-                if(command=="reset") {
++                if(command=="profile-on" || command=="profile-off" || command=="profile-reset" || command=="profile-read") {
++                    no_extra(input);
++                    if(command=="profile-on")model.profile_enable(true);
++                    else if(command=="profile-off")model.profile_enable(false);
++                    else if(command=="profile-reset")model.profile_reset();
++                    if(command=="profile-read")std::cout<<model.profile_read()<<"\n";
++                    else std::cout<<"{\"ok\":true}\n";
++                } else if(command=="reset") {
+                     no_extra(input);model.reset();sampler.reset();consumed_history.clear();
+                     std::cout<<"{\"ok\":true,\"position\":0}\n";
+                 } else if(command=="rewind") {

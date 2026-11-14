@@ -1,0 +1,41 @@
+{
+  "prepared_only": true,
+  "diagnostic_only": true,
+  "base_build": "build-20",
+  "base_source_sha256": {
+    "$REPO/engine/core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "source_sha256": {
+    "$REPO/build/native-cpu/build20-component-profile-v1-source/core.cpp": "34392e41de3dd6e7449d3678ccd8c52468993fda2146d424fcb941fdd93173fb",
+    "$REPO/build/native-cpu/build20-component-profile-v1-source/core.hpp": "5965c3687a247b4556a7c4b9057385d7cfeaaad1dc89547836619863869a68e4",
+    "$REPO/build/native-cpu/build20-component-profile-v1-source/main.cpp": "53c934128d6c6c9b32f4ad33d114b815d38a3dc80050ee2cc44470bdab58dd8f"
+  },
+  "phases": [
+    "setup_embedding_ranges",
+    "input_norm",
+    "qkv_projection",
+    "qk_norm_rope_kv_store",
+    "attention",
+    "output_projection_residual",
+    "post_attention_norm",
+    "gate_up_projection",
+    "activation",
+    "down_projection_residual",
+    "final_norm"
+  ],
+  "buffer_capacity": 256,
+  "limitations": [
+    "Coordinator wall intervals include worker wait/contention, not CPU shares or removable scheduling overhead.",
+    "Timestamp/storage overhead charged to following phase; append-to-phase residual reported.",
+    "Buffered data exported only by profile-read outside measured blocks; no per-token diagnostic I/O.",
+    "No B2 verification attribution; this diagnostic uses ordinary prefill/step only.",
+    "Requires all selected logits bit-identical to pristine20 and all generated token IDs matched before interpretation.",
+    "Same-binary off/on controls measure instrumentation perturbation, not an optimization speedup."
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/build20-component-profile-v1-source/instrumentation.json",
+    "source_sha256": "18843ca9a39dd90efc4a1b9c8e95cc022d5db227824e2d1bcdaa64406ea90631"
+  }
+}

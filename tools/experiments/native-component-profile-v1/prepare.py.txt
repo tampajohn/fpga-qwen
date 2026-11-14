@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""Source-only isolated coordinator profiling; never builds or executes models."""
+from pathlib import Path
+import json,hashlib,difflib
+ROOT=Path(__file__).resolve().parents[2];B=ROOT/'build/native-cpu';source=ROOT/'engine';out=B/'build20-component-profile-v1-source';assert not out.exists()
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+staging=json.loads((B/'build-20/staging.json').read_text());assert staging['completed']
+for name in ('core.cpp','core.hpp','main.cpp'):assert sha(source/name)==staging['shared_source_after'][str(source/name)]
+original={n:(source/n).read_text()for n in ('core.cpp','core.hpp','main.cpp')};s=original['core.cpp'];a=s.index('    void chunk(');b=s.index('    void verify_chunk(',a);chunk=s[a:b]
+def replace(old,new):
+ global chunk
+ assert chunk.count(old)==1,(old,chunk.count(old));chunk=chunk.replace(old,new)
+replace('        x.resize(size_t(batch)*H);','        auto dt=diag_active?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point{};\n        auto mark=[&](int phase){if(diag_active){auto now=std::chrono::steady_clock::now();diag_active->ns[phase]+=std::chrono::duration_cast<std::chrono::nanoseconds>(now-dt).count();++diag_active->calls[phase];dt=now;}};\n        x.resize(size_t(batch)*H);')
+replace('        for(int layer=0;layer<L;++layer)','        mark(0);\n        for(int layer=0;layer<L;++layer)')
+replace('            if(batch==1) {\n                project_group<3>','            mark(1);\n            if(batch==1) {\n                project_group<3>')
+replace('            const float* qn=','            mark(2);\n            const float* qn=')
+replace('            if(batch>1) {\n                // One item','            mark(3);\n            if(batch>1) {\n                // One item')
+replace('            project(tensor(p+"self_attn.o_proj.weight")','            mark(4);\n            project(tensor(p+"self_attn.o_proj.weight")')
+replace('            nw=tensor(p+"post_attention_layernorm.weight")','            mark(5);\n            nw=tensor(p+"post_attention_layernorm.weight")')
+replace('            if(batch==1) {\n                project_group<2>','            mark(6);\n            if(batch==1) {\n                project_group<2>')
+replace('            // vForce is','            mark(7);\n            // vForce is')
+replace('            project(tensor(p+"mlp.down_proj.weight")','            mark(8);\n            project(tensor(p+"mlp.down_proj.weight")')
+replace('            for(size_t j=0;j<x.size();++j)x[j]+=residual[j];\n        }','            for(size_t j=0;j<x.size();++j)x[j]+=residual[j];\n            mark(9);\n        }')
+replace('tensor("model.norm.weight").norm,last_hidden.data(),H);','tensor("model.norm.weight").norm,last_hidden.data(),H);\n        mark(10);')
+fields='''    // Isolated diagnostic: coordinator only, bounded storage, no per-step I/O.
+    struct DiagRecord {int base=0,tokens=0;bool prefill=false;long long total=0,head=0;long long ns[11]{},calls[11]{};};
+    bool diag_enabled=false;size_t diag_count=0;
+    std::array<DiagRecord,256> diag_records{};
+    DiagRecord* diag_active=nullptr;
+    struct DiagGuard {Impl* self;~DiagGuard(){self->diag_active=nullptr;}};
+    std::string diag_json()const {
+        std::ostringstream os;os<<"{\\"diagnostic\\":\\"native_components_v1\\",\\"enabled\\":"<<(diag_enabled?"true":"false")<<",\\"records\\":[";
+        for(size_t i=0;i<diag_count;++i){if(i)os<<',';const auto& d=diag_records[i];
+            os<<"{\\"base\\":"<<d.base<<",\\"tokens\\":"<<d.tokens<<",\\"prefill\\":"<<(d.prefill?"true":"false")<<",\\"append_ns\\":"<<d.total<<",\\"head_ns\\":"<<d.head<<",\\"phase_ns\\":[";
+            for(int p=0;p<11;++p){if(p)os<<',';os<<d.ns[p];}os<<"],\\"phase_calls\\":[";
+            for(int p=0;p<11;++p){if(p)os<<',';os<<d.calls[p];}os<<"]}";
+        }
+        os<<"]}";return os.str();
+    }
+'''
+s=s[:a]+fields+chunk+s[b:];s=s.replace('#include <fstream>','#include <fstream>\n#include <sstream>')
+needle='        Pool& pool=prefill?*prefill_pool:*decode_pool;';assert s.count(needle)==1
+s=s.replace(needle,'''        if(diag_enabled && diag_count==diag_records.size())throw std::runtime_error("Diagnostic buffer full; reset counters");
+        DiagRecord record{};record.base=pos;record.tokens=int(ids.size());record.prefill=prefill;
+        diag_active=diag_enabled?&record:nullptr;DiagGuard diag_guard{this};
+        auto diag_start=diag_enabled?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point{};
+'''+needle)
+needle='        output.resize(vocabulary);project(tensor("model.embed_tokens.weight"),last_hidden.data(),output.data(),1,pool);';assert s.count(needle)==1
+s=s.replace(needle,'        auto diag_head=diag_enabled?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point{};\n'+needle+'''\n        if(diag_enabled){auto end=std::chrono::steady_clock::now();record.total=std::chrono::duration_cast<std::chrono::nanoseconds>(end-diag_start).count();record.head=std::chrono::duration_cast<std::chrono::nanoseconds>(end-diag_head).count();diag_records[diag_count++]=record;}
+''')
+needle='Model::~Model()=default;';assert s.count(needle)==1;s=s.replace(needle,needle+'''\nvoid Model::profile_enable(bool enabled){impl_->diag_enabled=enabled;}
+void Model::profile_reset(){impl_->diag_count=0;}
+std::string Model::profile_read()const{return impl_->diag_json();}
+''')
+h=original['core.hpp'].replace('    void reset();','    void reset();\n    // Isolated diagnostic API; never included in live build20.\n    void profile_enable(bool enabled);\n    void profile_reset();\n    std::string profile_read()const;')
+m=original['main.cpp'];needle='                if(command=="reset") {';assert m.count(needle)==1
+m=m.replace(needle,'''                if(command=="profile-on" || command=="profile-off" || command=="profile-reset" || command=="profile-read") {
+                    no_extra(input);
+                    if(command=="profile-on")model.profile_enable(true);
+                    else if(command=="profile-off")model.profile_enable(false);
+                    else if(command=="profile-reset")model.profile_reset();
+                    if(command=="profile-read")std::cout<<model.profile_read()<<"\\n";
+                    else std::cout<<"{\\"ok\\":true}\\n";
+                } else if(command=="reset") {''')
+out.mkdir();modified={'core.cpp':s,'core.hpp':h,'main.cpp':m};patch=''
+for name,text in modified.items():
+ (out/name).write_text(text);patch+=''.join(difflib.unified_diff(original[name].splitlines(True),text.splitlines(True),fromfile='a/engine/'+name,tofile='b/engine/'+name))
+(out/'candidate.patch').write_text(patch)
+metadata=dict(prepared_only=True,diagnostic_only=True,base_build='build-20',base_source_sha256=staging['shared_source_after'],source_sha256={str((out/n).resolve()):sha(out/n)for n in modified},phases=['setup_embedding_ranges','input_norm','qkv_projection','qk_norm_rope_kv_store','attention','output_projection_residual','post_attention_norm','gate_up_projection','activation','down_projection_residual','final_norm'],buffer_capacity=256,limitations=['Coordinator wall intervals include worker wait/contention, not CPU shares or removable scheduling overhead.','Timestamp/storage overhead charged to following phase; append-to-phase residual reported.','Buffered data exported only by profile-read outside measured blocks; no per-token diagnostic I/O.','No B2 verification attribution; this diagnostic uses ordinary prefill/step only.','Requires all selected logits bit-identical to pristine20 and all generated token IDs matched before interpretation.','Same-binary off/on controls measure instrumentation perturbation, not an optimization speedup.'])
+(out/'instrumentation.json').write_text(json.dumps(metadata,indent=2)+'\n');print(out)

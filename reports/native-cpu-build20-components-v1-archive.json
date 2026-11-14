@@ -1,0 +1,185 @@
+{
+  "completed": true,
+  "diagnostic_only": true,
+  "records": [
+    {
+      "source": "build/native-cpu/build20-components85-v1/report.json",
+      "source_sha256": "d602e80c886def60f9ec6840d390e6b06333e7459de2ede2690e3fe5451f4391",
+      "archive": "reports/native-cpu-build20-components85-v1.json",
+      "archive_sha256": "ddf42f9601e29a67c9f856985c78844c4fd8fbe00f673d14b5e9fed0b791cb06"
+    },
+    {
+      "source": "build/native-cpu/build20-components3968-v1/report.json",
+      "source_sha256": "dee9207893a8488f6db4916b8a78386a1bca1737121e37095eecb76816075289",
+      "archive": "reports/native-cpu-build20-components3968-v1.json",
+      "archive_sha256": "c8dd1e09c501f45e716624f3836238e3304f445118b32808ee85c29a8023c4b2"
+    },
+    {
+      "source": "build/native-cpu/build20-component-profile-v1-build/manifest.json",
+      "source_sha256": "c1f349287752777ca91bf274508967a8134fa46567b873f7a224971af18e930b",
+      "archive": "reports/native-cpu-build20-components-v1-build.json",
+      "archive_sha256": "a92cd9849b9c905ce33b76d56da70d2b4f9df2791da09b49fce752e031c0304d"
+    },
+    {
+      "source": "build/native-cpu/build20-component-profile-v1-source/instrumentation.json",
+      "source_sha256": "18843ca9a39dd90efc4a1b9c8e95cc022d5db227824e2d1bcdaa64406ea90631",
+      "archive": "reports/native-cpu-build20-components-v1-instrumentation.json",
+      "archive_sha256": "f86b8599b6ed784fe339976d056883dd3773fae4ee9400ea62e79f70010a577b"
+    },
+    {
+      "source": "build/native-cpu/prepare-build20-component-profile-v1.py",
+      "source_sha256": "a1c967cb7007be7bafaf9118fe697992dab68d8b26f8eaf8fb25a6823acf291b",
+      "archive": "tools/experiments/native-component-profile-v1/prepare.py.txt",
+      "archive_sha256": "a1c967cb7007be7bafaf9118fe697992dab68d8b26f8eaf8fb25a6823acf291b"
+    },
+    {
+      "source": "build/native-cpu/profile_build20_components_v1.py",
+      "source_sha256": "32c90d2eea90457ba83f1b25e5ec5a2262d5e3db4284141d026e282081f38068",
+      "archive": "tools/experiments/native-component-profile-v1/capture.py.txt",
+      "archive_sha256": "32c90d2eea90457ba83f1b25e5ec5a2262d5e3db4284141d026e282081f38068"
+    },
+    {
+      "source": "build/native-cpu/build20-component-profile-v1-source/candidate.patch",
+      "source_sha256": "f7be7efafdd4ae14e8d2cc4d00e5753e7e56b279e1343d30be225c9f57a08774",
+      "archive": "tools/experiments/native-component-profile-v1/candidate.patch",
+      "archive_sha256": "f7be7efafdd4ae14e8d2cc4d00e5753e7e56b279e1343d30be225c9f57a08774"
+    }
+  ],
+  "decode_observations": [
+    {
+      "prompt_tokens": 85,
+      "decode_calls": 31,
+      "first_use": true,
+      "repeat": null,
+      "mean_decode_model_ms": 10.745950193548387,
+      "phase_fractions": {
+        "setup_embedding_ranges": 0.00015560250550923226,
+        "input_norm": 0.004664364840268587,
+        "qkv_projection": 0.18298790407630713,
+        "qk_norm_rope_kv_store": 0.011822101106860794,
+        "attention": 0.09906560567861761,
+        "output_projection_residual": 0.1509581632157322,
+        "post_attention_norm": 0.0032682109655737795,
+        "gate_up_projection": 0.21530339399638673,
+        "activation": 0.009944094287691685,
+        "down_projection_residual": 0.194253744612494,
+        "final_norm": 0.00020676356466605382
+      },
+      "head_fraction": 0.12735755732085907,
+      "projection_groups_and_residuals_fraction": 0.7435032059009201
+    },
+    {
+      "prompt_tokens": 85,
+      "decode_calls": 31,
+      "first_use": false,
+      "repeat": 0,
+      "mean_decode_model_ms": 11.150492032258066,
+      "phase_fractions": {
+        "setup_embedding_ranges": 0.00012910178160140383,
+        "input_norm": 0.004417253359278203,
+        "qkv_projection": 0.18168380088813843,
+        "qk_norm_rope_kv_store": 0.011771715452116907,
+        "attention": 0.10050147273553121,
+        "output_projection_residual": 0.15156077026926396,
+        "post_attention_norm": 0.0032070217945799717,
+        "gate_up_projection": 0.2198065768560197,
+        "activation": 0.009503251980030518,
+        "down_projection_residual": 0.19675387794908042,
+        "final_norm": 0.0001890036659253107
+      },
+      "head_fraction": 0.12046699122517819,
+      "projection_groups_and_residuals_fraction": 0.7498050259625025
+    },
+    {
+      "prompt_tokens": 85,
+      "decode_calls": 31,
+      "first_use": false,
+      "repeat": 1,
+      "mean_decode_model_ms": 12.161275612903227,
+      "phase_fractions": {
+        "setup_embedding_ranges": 0.0001607031121501834,
+        "input_norm": 0.0043047134295738036,
+        "qkv_projection": 0.18306987395188998,
+        "qk_norm_rope_kv_store": 0.010538445107509202,
+        "attention": 0.10270595181409556,
+        "output_projection_residual": 0.15337470540813175,
+        "post_attention_norm": 0.0030152901192899055,
+        "gate_up_projection": 0.21807244944572135,
+        "activation": 0.008418506203816522,
+        "down_projection_residual": 0.1959154783486953,
+        "final_norm": 0.0001702044499024646
+      },
+      "head_fraction": 0.12024284835739749,
+      "projection_groups_and_residuals_fraction": 0.7504325071544383
+    },
+    {
+      "prompt_tokens": 3968,
+      "decode_calls": 31,
+      "first_use": true,
+      "repeat": null,
+      "mean_decode_model_ms": 15.347090129032258,
+      "phase_fractions": {
+        "setup_embedding_ranges": 0.00012594170578441102,
+        "input_norm": 0.003450999896809271,
+        "qkv_projection": 0.12289963283446352,
+        "qk_norm_rope_kv_store": 0.009854683096655284,
+        "attention": 0.3482305253394321,
+        "output_projection_residual": 0.13035775990772352,
+        "post_attention_norm": 0.0032677078214810224,
+        "gate_up_projection": 0.15417863158062492,
+        "activation": 0.007139415820412937,
+        "down_projection_residual": 0.13121696870416924,
+        "final_norm": 0.00015221967243411074
+      },
+      "head_fraction": 0.08911499780916754,
+      "projection_groups_and_residuals_fraction": 0.5386529930269812
+    },
+    {
+      "prompt_tokens": 3968,
+      "decode_calls": 31,
+      "first_use": false,
+      "repeat": 0,
+      "mean_decode_model_ms": 14.220763451612903,
+      "phase_fractions": {
+        "setup_embedding_ranges": 0.00012333623928411792,
+        "input_norm": 0.003660966734495474,
+        "qkv_projection": 0.11383137097441846,
+        "qk_norm_rope_kv_store": 0.009212159103104457,
+        "attention": 0.36296172084967254,
+        "output_projection_residual": 0.1262675686798513,
+        "post_attention_norm": 0.0032346999781217227,
+        "gate_up_projection": 0.15267108736757695,
+        "activation": 0.007837045779768455,
+        "down_projection_residual": 0.12144356380194977,
+        "final_norm": 0.00016143137653375884
+      },
+      "head_fraction": 0.09858058820656711,
+      "projection_groups_and_residuals_fraction": 0.5142135908237965
+    },
+    {
+      "prompt_tokens": 3968,
+      "decode_calls": 31,
+      "first_use": false,
+      "repeat": 1,
+      "mean_decode_model_ms": 18.468414,
+      "phase_fractions": {
+        "setup_embedding_ranges": 0.00010218143432663273,
+        "input_norm": 0.0031687423273752866,
+        "qkv_projection": 0.13181514019802465,
+        "qk_norm_rope_kv_store": 0.007555054319647693,
+        "attention": 0.3203595783904695,
+        "output_projection_residual": 0.14572096602514206,
+        "post_attention_norm": 0.0027463419785348805,
+        "gate_up_projection": 0.15574496805124124,
+        "activation": 0.005948564310237835,
+        "down_projection_residual": 0.1482849914943008,
+        "final_norm": 0.00012539456337059692
+      },
+      "head_fraction": 0.0784193436006907,
+      "projection_groups_and_residuals_fraction": 0.5815660657687087
+    }
+  ],
+  "full_logit_comparisons": 128,
+  "performance_claim_eligible": false,
+  "live_engine_changed": false
+}
