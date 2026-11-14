@@ -1,0 +1,45 @@
+{
+  "prepared_only": true,
+  "executed": false,
+  "baseline": "build-20",
+  "baseline_source_sha256": {
+    "$REPO/engine/core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+    "$REPO/engine/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/engine/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_source_sha256": {
+    "$REPO/build/native-cpu/decode-attention-active8-v2-source/core.cpp": "4d2aefa983f18f0c4472b6a50a4a59c1eab335e42d8e3b6abed594f24e97701a",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "policy": "Ordinary B1 attention uses min(8,pool size) active jobs, all other kernels retain full pool. No context threshold.",
+  "scope": "Same persistent physical pool; inactive workers acknowledge generation without calling job. All workers completion barrier retained. This is not a process-wide8-thread run or hard affinity.",
+  "unchanged": "B1 numerical loops, B>1 paired attention, B2 verification math, projection grouping, scratch sizes, pool spin budget and physical thread count.",
+  "validation_required": [
+    "Independent release/acquire and lifetime review",
+    "Full exact and B1/B2 API gates across workers1/6/8/12/64",
+    "Held-out context grid before any policy selection; no absolute oracle repair claim"
+  ],
+  "pool_stress": {
+    "source_sha256": "156dba2ec9c34157c24b766f8886e162c677d879163af940eaa4c7e2422f409f",
+    "pool_class_sha256": "e7eceb0cdb40a95bfc579737a9bd8d0f6202423d6fbbed8040d76c1e8bc12772",
+    "scope": "Exact extracted candidate Pool class, standalone partitions/empty/exception/idle reuse; no model math",
+    "executed": false
+  },
+  "protocol_revision": "Two-stage3-pair exploratory then independent20-pair qualification; original draft preserved before all execution",
+  "structural_revision": {
+    "reason": "v1 build helper globs source *.cpp; colocated standalone pool_stress.cpp caused duplicate main link failure. v1 source/build/log preserved. v2 has exactly the three engine translation/interface files; runtime bytes unchanged.",
+    "runtime_equal_to": {
+      "$REPO/build/native-cpu/decode-attention-active8-v1-source/core.cpp": "4d2aefa983f18f0c4472b6a50a4a59c1eab335e42d8e3b6abed594f24e97701a",
+      "$REPO/build/native-cpu/decode-attention-active8-v1-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+      "$REPO/build/native-cpu/decode-attention-active8-v1-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+    },
+    "prior_pool_stress_source": "$REPO/build/native-cpu/decode-attention-active8-v1-source/pool_stress.cpp",
+    "rerun_stress_required": false
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/decode-attention-active8-v2-source/experiment.json",
+    "source_sha256": "c6301fad198115ee3d4d6782958ab8a9c7ead8737fe78cc60c726ddc4d59a6c2",
+    "sanitization": "Repository/home paths and process identifiers sanitized; all failed and successful outcomes retained."
+  }
+}

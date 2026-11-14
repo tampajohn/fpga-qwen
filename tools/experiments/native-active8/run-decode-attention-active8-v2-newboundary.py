@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""Root-run supplemental exactness, not an independent absolute oracle gate."""
+from pathlib import Path
+import hashlib,json,subprocess,sys
+ROOT=Path(__file__).resolve().parents[2];B=ROOT/'build/native-cpu'
+sys.path.insert(0,str(B))
+from active8_baseline_bridge import bridge
+bridge_inputs,bridge_refs=bridge()
+TAGS=('decode-attention-active8-v2',)
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def read(p):return json.loads(Path(p).read_text())
+reference=B/'build-19/qwen_cpu';m=read(reference.parent/'manifest.json');assert m['completed'] and m['binary_sha256']==sha(reference)
+refs={63:B/'build19-newboundary63-control/report.json',64:B/'build19-original-prefix-control-boundary64/report.json'}
+paths=[reference,reference.parent/'manifest.json',Path(__file__).resolve()]
+paths.extend(ROOT/'tools'/name for name in ('capture_native_cpu_logits.py','compare_native_cpu_captures.py','native_cpu_chat.py','benchmark_guard.py'))
+for n,ref in refs.items():
+ j=read(ref);prompt=B/f'prefix-granularity-boundary-fixtures-v1/prompt-{n}.json';teacher=B/f'prefix-granularity-boundary-fixtures-v1/continuation-{n}.json'
+ assert j['completed'] and not j.get('error') and not j.get('cleanup_error') and j['requested_steps']==2 and j['prompt_ids']==read(prompt) and len(j['runs'])==2
+ assert j['inputs'][str(reference)]==sha(reference)
+ assert all(run['consumed_continuation_ids']==read(teacher)[:1] for run in j['runs'])
+ for run in j['runs']:
+  assert len(run['logit_dumps'])==2
+  for dump in run['logit_dumps']:
+   assert sha(dump['path'])==dump['sha256'];paths.append(Path(dump['path']))
+ paths.extend((ref,prompt,teacher))
+for tag in TAGS:
+ binary=B/(tag+'-build/qwen_cpu');m=read(binary.parent/'manifest.json');assert m['completed'] and m['binary_sha256']==sha(binary)
+ paths.extend((binary,binary.parent/'manifest.json'))
+ for path,digest in m['source_sha256'].items():
+  assert sha(path)==digest,'Candidate source changed: '+path
+  paths.append(Path(path))
+ for n in refs:assert not (B/f'{tag}-newboundary{n}-relative-logits').exists()
+ assert not (B/f'{tag}-newboundary-relative-exact-gate.json').exists()
+frozen={str(p):sha(p) for p in paths};frozen.update(bridge_inputs)
+actual={str(Path(d['path']).resolve()):d['sha256']for path in refs.values()for run in read(path)['runs']for d in run['logit_dumps']}
+assert actual==bridge_refs['newboundary_relative_exact'],'Build20 boundary controls differ'
+def guarded(name,args):subprocess.run([sys.executable,str(ROOT/'tools/benchmark_guard.py'),'--name',name,'--',sys.executable,*map(str,args)],cwd=ROOT,check=True)
+for tag in TAGS:
+ binary=B/(tag+'-build/qwen_cpu');candidates=[]
+ for n in refs:
+  assert all(sha(p)==h for p,h in frozen.items()),'Frozen input changed'
+  directory=B/f'{tag}-newboundary{n}-relative-logits';candidates.append(directory/'report.json')
+  guarded(tag+' actual boundary '+str(n),[ROOT/'tools/capture_native_cpu_logits.py','--binary',binary,'--weights',B/'weights.bin','--prompt',B/f'prefix-granularity-boundary-fixtures-v1/prompt-{n}.json','--continuation',B/f'prefix-granularity-boundary-fixtures-v1/continuation-{n}.json','--tokens',2,'--threads',12,'--prefill-threads',6,'--directory',directory])
+ output=B/f'{tag}-newboundary-relative-exact-gate.json'
+ guarded(tag+' actual boundary relative exactness',[ROOT/'tools/compare_native_cpu_captures.py','--reference',*refs.values(),'--candidate',*candidates,'--output',output])
+ g=read(output);assert g['completed'] and g['passed'] and g['compared_arrays']==8
+ assert all(sha(p)==h for p,h in frozen.items()),'Frozen input changed'
+print('Each candidate matches8arrays on actual new63/64fixtures. Baseline independent oracle failures remain inherited; no absolute pass or promotion.')

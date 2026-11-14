@@ -1,0 +1,33 @@
+{
+  "completed": true,
+  "passed": true,
+  "run_executed_by_binder": false,
+  "report": "$REPO/build/native-cpu/decode-attention-active8-v1-pool-stress-report.json",
+  "report_sha256": "198b5ee0fe46a5daa0c798ad1af3fe47b917a3023727c8011232f07639bd0641",
+  "stress_source": "$REPO/build/native-cpu/decode-attention-active8-v1-source/pool_stress.cpp",
+  "stress_source_sha256": "156dba2ec9c34157c24b766f8886e162c677d879163af940eaa4c7e2422f409f",
+  "stress_binary": "$REPO/build/native-cpu/decode-attention-active8-v1-pool-stress",
+  "stress_binary_sha256": "8157b77455003cc5d3607d1c2e377c8ec9882406c1223decbd6d788081fff8bf",
+  "candidate_core": "$REPO/build/native-cpu/decode-attention-active8-v2-source/core.cpp",
+  "candidate_core_sha256": "4d2aefa983f18f0c4472b6a50a4a59c1eab335e42d8e3b6abed594f24e97701a",
+  "pool_class_sha256": "e7eceb0cdb40a95bfc579737a9bd8d0f6202423d6fbbed8040d76c1e8bc12772",
+  "workers": [
+    1,
+    6,
+    8,
+    12,
+    64
+  ],
+  "partition_jobs": 3000,
+  "binder_sha256": "b6a36e5d781280f08a0b470811fd50ed0bd453bc7a531ce233dc80a66af17577",
+  "limitations": [
+    "Post-run binding of existing root-run result and unchanged exact extracted Pool source; not a compiler provenance attestation captured at compile time.",
+    "v1 engine link failed because standalone stress main was colocated; v2 preserves runtime bytes and moves no math.",
+    "No model or worker-count speed claims."
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/decode-attention-active8-v2-pool-stress-binding.json",
+    "source_sha256": "dcf88cf88e7f0ba6408aaffd2accb743d78a6f82b44dfdfe901943802fa2b67c",
+    "sanitization": "Repository/home paths and process identifiers sanitized; all failed and successful outcomes retained."
+  }
+}

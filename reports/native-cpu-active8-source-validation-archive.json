@@ -1,0 +1,150 @@
+{
+  "completed": true,
+  "candidate_live": false,
+  "performance_measured": false,
+  "relative_arrays": 100,
+  "known_absolute_failures_retained": [
+    "boundary63",
+    "boundary64"
+  ],
+  "records": [
+    {
+      "source": "build/native-cpu/decode-attention-active8-v1-build/manifest.json",
+      "source_sha256": "850bd051fea16f4dc542f679a04f3571d51376caa4e64f937991b61221edd5a9",
+      "archive": "reports/native-cpu-active8-v1-failed-build.json",
+      "archive_sha256": "20947b9184a7d26e666c33f6cb2e3eedf0194641fd0d4f96a9b07e39e145e8fe"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-build/manifest.json",
+      "source_sha256": "9431e7eb41f52e77a8446b02d354df61d0a583405998593a11683f5f7e4b1d40",
+      "archive": "reports/native-cpu-active8-v2-build.json",
+      "archive_sha256": "26a24389c489dbaf433c56c21b6e871ff464ef70a06858a997241be63c581609"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v1-source/experiment.json",
+      "source_sha256": "0f9fb516087c67f37200d847a44992b71d738e24da10fdfb11eae1be0a90a7bd",
+      "archive": "reports/native-cpu-active8-v1-experiment.json",
+      "archive_sha256": "35720b0f2fde5d6f4386e795d9f26d70076467c1f09aae333502af973d918a67"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-source/experiment.json",
+      "source_sha256": "c6301fad198115ee3d4d6782958ab8a9c7ead8737fe78cc60c726ddc4d59a6c2",
+      "archive": "reports/native-cpu-active8-v2-experiment.json",
+      "archive_sha256": "9af85899d58f35cd12717ce2f7b802eef28216abe07e287fcaad7e0f40f11b46"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v1-pool-stress-report.json",
+      "source_sha256": "198b5ee0fe46a5daa0c798ad1af3fe47b917a3023727c8011232f07639bd0641",
+      "archive": "reports/native-cpu-active8-pool-stress.json",
+      "archive_sha256": "469a74e6853cdcde88b1f3cfc5bea164404095d2507dd48d255e0a616375175b"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-pool-stress-binding.json",
+      "source_sha256": "dcf88cf88e7f0ba6408aaffd2accb743d78a6f82b44dfdfe901943802fa2b67c",
+      "archive": "reports/native-cpu-active8-pool-binding.json",
+      "archive_sha256": "02be5087bd1afabb16914cfcf8eed009338784eb1828514c4d8fe3e4956bc257"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-assembly/review.json",
+      "source_sha256": "93b74c4801ec9ac156a0e40b94173c794f7f8aa037ba6f3ff836a4d600b5b4e0",
+      "archive": "reports/native-cpu-active8-assembly.json",
+      "archive_sha256": "84a45c574d1c0664d0bd46b36ab7eb004282049fe589bc4451f7463b9a0505ba"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-exact-gate.json",
+      "source_sha256": "e3434815e99ad06b6b32d24eadd8a11ed5bf4a93043d1bfbb6ceb09063581e5a",
+      "archive": "reports/native-cpu-active8-exact-gate.json",
+      "archive_sha256": "a59a2e4ef4b160c0b00941eb4d15f60c8b333defebf759d0709b03458f8716d4"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-timeboundary-exact-gate.json",
+      "source_sha256": "e5b81a530575e47a83767e6d15df4f59ca7d5d9223db5df8e144ece1567cb7f5",
+      "archive": "reports/native-cpu-active8-timeboundary-exact-gate.json",
+      "archive_sha256": "2d7a71a3e08dcc48dc8fda96056da3f146577d82cb83035cb510c933c8050719"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-newboundary-relative-exact-gate.json",
+      "source_sha256": "4ebe033934bbfc3666ecaed8d566a1f5e90f233b9597e3708c1bc1bf9014f88c",
+      "archive": "reports/native-cpu-active8-newboundary-relative-exact-gate.json",
+      "archive_sha256": "8cda1d4279f4ec08125e1639f79fa7019803c1528b1b47c20c2617321cd53c53"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-step-edge-exact-gate.json",
+      "source_sha256": "7f3443d76f09f7bc7616bbe70d65829b21fc0f6cc004e0bb403afcb9bda62b07",
+      "archive": "reports/native-cpu-active8-step-edge-exact-gate.json",
+      "archive_sha256": "11ffbfc6888761cf589dc39abee0e8fea61b948dd10a4caa0c13eb43219ad63c"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-source/candidate.patch",
+      "source_sha256": "17eed5db7971d9a7de6f50955fcb21dff205bbbd2de82991d530b66931846e90",
+      "archive": "tools/experiments/native-active8/candidate.patch",
+      "archive_sha256": "17eed5db7971d9a7de6f50955fcb21dff205bbbd2de82991d530b66931846e90"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-source/design.md",
+      "source_sha256": "a55dba63f77d761e36368394bfa727808d767a452501d112d6b324fcd9d4fd13",
+      "archive": "tools/experiments/native-active8/design.md",
+      "archive_sha256": "a55dba63f77d761e36368394bfa727808d767a452501d112d6b324fcd9d4fd13"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-source/design-draft-v1-before-execution.md",
+      "source_sha256": "22f7ce3de791794d3983da6707fb8139b145b5b93c04b39bf93deec25191956f",
+      "archive": "tools/experiments/native-active8/design-draft-v1-before-execution.md",
+      "archive_sha256": "22f7ce3de791794d3983da6707fb8139b145b5b93c04b39bf93deec25191956f"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v1-source/pool_stress.cpp",
+      "source_sha256": "156dba2ec9c34157c24b766f8886e162c677d879163af940eaa4c7e2422f409f",
+      "archive": "tools/experiments/native-active8/pool_stress.cpp",
+      "archive_sha256": "156dba2ec9c34157c24b766f8886e162c677d879163af940eaa4c7e2422f409f"
+    },
+    {
+      "source": "build/native-cpu/active8_baseline_bridge.py",
+      "source_sha256": "60d64b9f23165757647b1eb32b62e2e09053fff49cf15cef3d50f76e0f620082",
+      "archive": "tools/experiments/native-active8/active8_baseline_bridge.py",
+      "archive_sha256": "60d64b9f23165757647b1eb32b62e2e09053fff49cf15cef3d50f76e0f620082"
+    },
+    {
+      "source": "build/native-cpu/bind-active8-pool-stress-v1.py",
+      "source_sha256": "b6a36e5d781280f08a0b470811fd50ed0bd453bc7a531ce233dc80a66af17577",
+      "archive": "tools/experiments/native-active8/bind-active8-pool-stress-v1.py",
+      "archive_sha256": "b6a36e5d781280f08a0b470811fd50ed0bd453bc7a531ce233dc80a66af17577"
+    },
+    {
+      "source": "build/native-cpu/prepare-active8-heldout-fixtures-v1.py",
+      "source_sha256": "0e7e7b946e71ff7f0c89916f4868b49761ec6c5d65e10637958ed21851a17e4d",
+      "archive": "tools/experiments/native-active8/prepare-active8-heldout-fixtures-v1.py",
+      "archive_sha256": "0e7e7b946e71ff7f0c89916f4868b49761ec6c5d65e10637958ed21851a17e4d"
+    },
+    {
+      "source": "build/native-cpu/benchmark_active8_heldout_v1.py",
+      "source_sha256": "9f1513df1f83f8a36092fa00f484eafc01303edb1ebd146822988559c414f795",
+      "archive": "tools/experiments/native-active8/benchmark_active8_heldout_v1.py",
+      "archive_sha256": "9f1513df1f83f8a36092fa00f484eafc01303edb1ebd146822988559c414f795"
+    },
+    {
+      "source": "build/native-cpu/run-decode-attention-active8-v2-exact-gates.sh",
+      "source_sha256": "8f747022667ae6042cb4ec2554395c7948b6e8ca18de85efb3393ab2dfc972ed",
+      "archive": "tools/experiments/native-active8/run-decode-attention-active8-v2-exact-gates.sh",
+      "archive_sha256": "8f747022667ae6042cb4ec2554395c7948b6e8ca18de85efb3393ab2dfc972ed"
+    },
+    {
+      "source": "build/native-cpu/run-decode-attention-active8-v2-newboundary.py",
+      "source_sha256": "99def6caf8656da0691a1733875531c6e2b79eee05974832f197b3b73d7c2750",
+      "archive": "tools/experiments/native-active8/run-decode-attention-active8-v2-newboundary.py",
+      "archive_sha256": "99def6caf8656da0691a1733875531c6e2b79eee05974832f197b3b73d7c2750"
+    },
+    {
+      "source": "build/native-cpu/run-decode-attention-active8-v2-step-edges.py",
+      "source_sha256": "526ccb62771c6de62007d165f1c0b285681350d6503f54b7ab95a04559295db9",
+      "archive": "tools/experiments/native-active8/run-decode-attention-active8-v2-step-edges.py",
+      "archive_sha256": "526ccb62771c6de62007d165f1c0b285681350d6503f54b7ab95a04559295db9"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v1-build/build.log",
+      "source_sha256": "cd1c2732b7e9bd0d4b94e11e71004b5e092e532c0f30992b2faee7e85513f76f",
+      "archive": "tools/experiments/native-active8/v1-failed-build.log",
+      "archive_sha256": "190ba618be64ba47485a85226d3349069ccd829713e65c2cada69cb6ac28a4bd"
+    }
+  ]
+}

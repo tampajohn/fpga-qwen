@@ -1,0 +1,160 @@
+{
+  "completed": true,
+  "passed": true,
+  "scope": "Bit-identical full logits and predicted/consumed IDs on all supplied repeated trajectories only.",
+  "source_sha256": "63669a5601cda5f75f1ff1814d290a0e38f1790e4b1980fd898f726609df71d5",
+  "inputs": {
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-31/report.json": "f4494d1b6b114eefd8ae826a663621f53ed9b3867628ea57dd828acc849a35e4",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-31/report.json": "7aba69b5969b21bde9e2fd8db1b43e840a5cbf8cc8eaf1f9a22488b6d7fd3828",
+    "$REPO/build/native-cpu/kv-head-major-time32-build/qwen_cpu": "827b0694d8304282bb11186e86ef62169770a3aed409e3444f2ebdac2f4e09e6",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$REPO/build/native-cpu/prefill-v-time32-boundary-fixtures/prompt-31.json": "2238ac10aa872daec1a1dc10e50d55dd1bf2a2fb71af6285bcb43b23585211e7",
+    "$REPO/build/native-cpu/prefill-v-time32-boundary-fixtures/continuation-empty.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu": "2f0596b8d9cd49b539153ad237e4b271574018ba0a2e371d5298f407d9f66b9a",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-31/run0-step0.f32": "0d7c8df26d12d37e019778dee231382540292446545d90a271f8fbd6991b2240",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-31/run0-step0.f32": "0d7c8df26d12d37e019778dee231382540292446545d90a271f8fbd6991b2240",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-31/run1-step0.f32": "0d7c8df26d12d37e019778dee231382540292446545d90a271f8fbd6991b2240",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-31/run1-step0.f32": "0d7c8df26d12d37e019778dee231382540292446545d90a271f8fbd6991b2240",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-32/report.json": "3678bf783ff87ad5fb1a7fe0f27db6584f95929cbaa50924983245f8ccd73003",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-32/report.json": "083856fafad4bffcf550f258bdf9786fb7feca46d8c91a8b880a1785cbe0fc33",
+    "$REPO/build/native-cpu/prefill-v-time32-boundary-fixtures/prompt-32.json": "de4d0f870e456d049771abee5742a041c4dd646c5cf58ddc428412ca7a0dc471",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-32/run0-step0.f32": "fb1689c2ff3088bfb533768a1ce0ec4b1d7209aa8fc1e5cb800b3411a2e6e400",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-32/run0-step0.f32": "fb1689c2ff3088bfb533768a1ce0ec4b1d7209aa8fc1e5cb800b3411a2e6e400",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-32/run1-step0.f32": "fb1689c2ff3088bfb533768a1ce0ec4b1d7209aa8fc1e5cb800b3411a2e6e400",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-32/run1-step0.f32": "fb1689c2ff3088bfb533768a1ce0ec4b1d7209aa8fc1e5cb800b3411a2e6e400",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-33/report.json": "d866f0633050caf714ef88b4ea84fbf274399dd4c378033f3ba1d0374dfa19da",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-33/report.json": "da856d8d35ad1c0e25ba2aa31a781b590fe12b7fbaa386d571adfe4e3ba691f6",
+    "$REPO/build/native-cpu/prefill-v-time32-boundary-fixtures/prompt-33.json": "b3588c2d5fc00d710d4ee7c278c2cc3836b64e82bc2de44042d77d5df4816eb6",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-33/run0-step0.f32": "76fd809db554e3d79455ef35b009709ae3ad4555bd24fd9b57c5cbf4837aeb6e",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-33/run0-step0.f32": "76fd809db554e3d79455ef35b009709ae3ad4555bd24fd9b57c5cbf4837aeb6e",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-33/run1-step0.f32": "76fd809db554e3d79455ef35b009709ae3ad4555bd24fd9b57c5cbf4837aeb6e",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-33/run1-step0.f32": "76fd809db554e3d79455ef35b009709ae3ad4555bd24fd9b57c5cbf4837aeb6e",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-63/report.json": "abd5e1efd0bec5d62f475e6e8ad37c40e2bf96559ddfca2dd1d438bca963fc84",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-63/report.json": "e9d0887420cb76f8274e1adfd3ca6c13467ea19252450a80f60753a348e50681",
+    "$REPO/build/native-cpu/prefill-v-time32-boundary-fixtures/prompt-63.json": "f5a0298de61e181346cc5dfab048df071ca0f29a45d4b57ad3fb640e78709ff3",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-63/run0-step0.f32": "60c139268303c15a11a3280e46d92a94d1fca1d8f49d6a8bc365f9212109f423",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-63/run0-step0.f32": "60c139268303c15a11a3280e46d92a94d1fca1d8f49d6a8bc365f9212109f423",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-63/run1-step0.f32": "60c139268303c15a11a3280e46d92a94d1fca1d8f49d6a8bc365f9212109f423",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-63/run1-step0.f32": "60c139268303c15a11a3280e46d92a94d1fca1d8f49d6a8bc365f9212109f423",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-64/report.json": "5bc77fd9a964eb69d416a3cc70c0288fa9167cea5480a3c40e56896db34fb7ba",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-64/report.json": "1d23420ae489e530416f9cb11c213e52ac080614016de9bad28812bbce70dd21",
+    "$REPO/build/native-cpu/prefill-v-time32-boundary-fixtures/prompt-64.json": "175a98f3f9499aa857338eedd08e74b2fde8eade07c25bc949e2eae557460c7e",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-64/run0-step0.f32": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-64/run0-step0.f32": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-64/run1-step0.f32": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-64/run1-step0.f32": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-65/report.json": "ae489de6c3a13dec7b16443933def41c88014dd18dabef1fe70dc778e364adf5",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-65/report.json": "e0a60acce0a0b1d7585b587f605ece66f53cc4c6f0cc1192c09a7196c44e74d5",
+    "$REPO/build/native-cpu/prefill-v-time32-boundary-fixtures/prompt-65.json": "8bce20de4826415917d17d1cfc7cf7c4a7c8aa3310bed2c9124798891f08faf0",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-65/run0-step0.f32": "576e412cf06f6622f0d869409ce5fb80bde1d59e8f1dbe86256be51bba781440",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-65/run0-step0.f32": "576e412cf06f6622f0d869409ce5fb80bde1d59e8f1dbe86256be51bba781440",
+    "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-65/run1-step0.f32": "576e412cf06f6622f0d869409ce5fb80bde1d59e8f1dbe86256be51bba781440",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-65/run1-step0.f32": "576e412cf06f6622f0d869409ce5fb80bde1d59e8f1dbe86256be51bba781440"
+  },
+  "arrays": [
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-31/run0-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-31/run0-step0.f32",
+      "context_tokens": 31,
+      "bit_identical": true,
+      "reference_sha256": "0d7c8df26d12d37e019778dee231382540292446545d90a271f8fbd6991b2240",
+      "candidate_sha256": "0d7c8df26d12d37e019778dee231382540292446545d90a271f8fbd6991b2240"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-31/run1-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-31/run1-step0.f32",
+      "context_tokens": 31,
+      "bit_identical": true,
+      "reference_sha256": "0d7c8df26d12d37e019778dee231382540292446545d90a271f8fbd6991b2240",
+      "candidate_sha256": "0d7c8df26d12d37e019778dee231382540292446545d90a271f8fbd6991b2240"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-32/run0-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-32/run0-step0.f32",
+      "context_tokens": 32,
+      "bit_identical": true,
+      "reference_sha256": "fb1689c2ff3088bfb533768a1ce0ec4b1d7209aa8fc1e5cb800b3411a2e6e400",
+      "candidate_sha256": "fb1689c2ff3088bfb533768a1ce0ec4b1d7209aa8fc1e5cb800b3411a2e6e400"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-32/run1-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-32/run1-step0.f32",
+      "context_tokens": 32,
+      "bit_identical": true,
+      "reference_sha256": "fb1689c2ff3088bfb533768a1ce0ec4b1d7209aa8fc1e5cb800b3411a2e6e400",
+      "candidate_sha256": "fb1689c2ff3088bfb533768a1ce0ec4b1d7209aa8fc1e5cb800b3411a2e6e400"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-33/run0-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-33/run0-step0.f32",
+      "context_tokens": 33,
+      "bit_identical": true,
+      "reference_sha256": "76fd809db554e3d79455ef35b009709ae3ad4555bd24fd9b57c5cbf4837aeb6e",
+      "candidate_sha256": "76fd809db554e3d79455ef35b009709ae3ad4555bd24fd9b57c5cbf4837aeb6e"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-33/run1-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-33/run1-step0.f32",
+      "context_tokens": 33,
+      "bit_identical": true,
+      "reference_sha256": "76fd809db554e3d79455ef35b009709ae3ad4555bd24fd9b57c5cbf4837aeb6e",
+      "candidate_sha256": "76fd809db554e3d79455ef35b009709ae3ad4555bd24fd9b57c5cbf4837aeb6e"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-63/run0-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-63/run0-step0.f32",
+      "context_tokens": 63,
+      "bit_identical": true,
+      "reference_sha256": "60c139268303c15a11a3280e46d92a94d1fca1d8f49d6a8bc365f9212109f423",
+      "candidate_sha256": "60c139268303c15a11a3280e46d92a94d1fca1d8f49d6a8bc365f9212109f423"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-63/run1-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-63/run1-step0.f32",
+      "context_tokens": 63,
+      "bit_identical": true,
+      "reference_sha256": "60c139268303c15a11a3280e46d92a94d1fca1d8f49d6a8bc365f9212109f423",
+      "candidate_sha256": "60c139268303c15a11a3280e46d92a94d1fca1d8f49d6a8bc365f9212109f423"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-64/run0-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-64/run0-step0.f32",
+      "context_tokens": 64,
+      "bit_identical": true,
+      "reference_sha256": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88",
+      "candidate_sha256": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-64/run1-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-64/run1-step0.f32",
+      "context_tokens": 64,
+      "bit_identical": true,
+      "reference_sha256": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88",
+      "candidate_sha256": "454758944231bbe5e74cd380ec018cc5e10e222a39eef69d7b354c8b330a1d88"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-65/run0-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-65/run0-step0.f32",
+      "context_tokens": 65,
+      "bit_identical": true,
+      "reference_sha256": "576e412cf06f6622f0d869409ce5fb80bde1d59e8f1dbe86256be51bba781440",
+      "candidate_sha256": "576e412cf06f6622f0d869409ce5fb80bde1d59e8f1dbe86256be51bba781440"
+    },
+    {
+      "reference": "$REPO/build/native-cpu/kv-head-major-time32-timeboundary-candidate-65/run1-step0.f32",
+      "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-candidate-65/run1-step0.f32",
+      "context_tokens": 65,
+      "bit_identical": true,
+      "reference_sha256": "576e412cf06f6622f0d869409ce5fb80bde1d59e8f1dbe86256be51bba781440",
+      "candidate_sha256": "576e412cf06f6622f0d869409ce5fb80bde1d59e8f1dbe86256be51bba781440"
+    }
+  ],
+  "compared_arrays": 12,
+  "archive_provenance": {
+    "source_report": "build/native-cpu/decode-attention-active8-v2-timeboundary-exact-gate.json",
+    "source_sha256": "e5b81a530575e47a83767e6d15df4f59ca7d5d9223db5df8e144ece1567cb7f5",
+    "sanitization": "Repository/home paths and process identifiers sanitized; all failed and successful outcomes retained."
+  }
+}

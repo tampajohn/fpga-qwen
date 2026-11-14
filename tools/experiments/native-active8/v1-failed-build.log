@@ -1,0 +1,12 @@
+$REPO/build/native-cpu/decode-attention-active8-v1-source/core.cpp:296:13: warning: 'cblas_sgemm' is deprecated: first deprecated in macOS 13.3 - An updated CBLAS interface supporting ILP64 is available.  Please compile with -DACCELERATE_NEW_LAPACK to access the new headers and -DACCELERATE_LAPACK_ILP64 for ILP64 support. [-Wdeprecated-declarations]
+  296 |             cblas_sgemm(CblasRowMajor,CblasNoTrans,CblasTrans,batch,w.rows,w.cols,1.0f,x,w.cols,w.wide.data(),w.cols,0.0f,y,w.rows);
+      |             ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/vecLib.framework/Headers/cblas.h:610:6: note: 'cblas_sgemm' has been explicitly marked deprecated here
+  610 | void cblas_sgemm(const enum CBLAS_ORDER __Order,
+      |      ^
+1 warning generated.
+duplicate symbol '_main' in:
+    /private/var/folders/1j/8_5gj1n12qn9xxxqp9n_0nq80000gp/T/main-a09db9.o
+    /private/var/folders/1j/8_5gj1n12qn9xxxqp9n_0nq80000gp/T/pool_stress-98321f.o
+ld: 1 duplicate symbols
+clang++: error: linker command failed with exit code 1 (use -v to see invocation)

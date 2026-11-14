@@ -1,0 +1,17 @@
+{
+  "completed": true,
+  "passed": true,
+  "partition_jobs": 3000,
+  "workers": [
+    1,
+    6,
+    8,
+    12,
+    64
+  ],
+  "archive_provenance": {
+    "source_report": "build/native-cpu/decode-attention-active8-v1-pool-stress-report.json",
+    "source_sha256": "198b5ee0fe46a5daa0c798ad1af3fe47b917a3023727c8011232f07639bd0641",
+    "sanitization": "Repository/home paths and process identifiers sanitized; all failed and successful outcomes retained."
+  }
+}
