@@ -1,0 +1,7 @@
+{
+  "original_core_sha256": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+  "norm_function_sha256": "37140e363d0a5b56a883a8b5f9b59edd9197424c53fa386b040d6e680ee18158",
+  "source_sha256": "20d5f094d897a4c7503c5f09fb7e936e4d5ee4992cd5609c4b0989a46ea9d7e9",
+  "source_only": true,
+  "network_variant": false
+}

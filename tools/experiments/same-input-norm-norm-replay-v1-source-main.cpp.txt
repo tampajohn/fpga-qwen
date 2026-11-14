@@ -1,0 +1,31 @@
+#include <cmath>
+#include <fstream>
+#include <vector>
+#include <stdexcept>
+#include <string>
+#include <iostream>
+void norm(const float* x,const float* w,float* out,int n) {
+    // Accumulate FP32-rounded squares in FP64, then round the sum once
+    // before the existing FP32 scale and output operations.
+    double precise_sum=0;
+    for(int j=0;j<n;++j){const float square=x[j]*x[j];precise_sum+=static_cast<double>(square);}
+    const float sum=static_cast<float>(precise_sum);
+    const float inv=1.0f/std::sqrt(sum/n+1e-6f);
+    for(int j=0;j<n;++j)out[j]=(x[j]*inv)*w[j];
+}
+std::vector<float> read(const std::string& path,size_t n){std::ifstream f(path,std::ios::binary|std::ios::ate);if(!f||f.tellg()!=std::streamoff(n*4))throw std::runtime_error("shape");f.seekg(0);std::vector<float>x(n);f.read(reinterpret_cast<char*>(x.data()),n*4);if(!f)throw std::runtime_error("read");return x;}
+void write(const std::string& path,const std::vector<float>& x){std::ofstream f(path,std::ios::binary);f.write(reinterpret_cast<const char*>(x.data()),x.size()*4);f.close();if(!f)throw std::runtime_error("write");}
+int main(int argc,char**argv){try{
+ if(argc!=7)throw std::runtime_error("input weights np_sums output_prefix n rows");
+ int n=std::stoi(argv[5]),rows=std::stoi(argv[6]);if((n!=128&&n!=1024)||rows<1)throw std::runtime_error("dimensions");
+ auto x=read(argv[1],size_t(n)*rows),w=read(argv[2],n),np_sums=read(argv[3],rows);
+ std::vector<float> native(x.size()),f64div(x.size()),f32recip(x.size()),f32div(x.size()),diagnostics(rows*4);
+ for(int r=0;r<rows;++r){const float* a=x.data()+size_t(r)*n;float* out=native.data()+size_t(r)*n;norm(a,w.data(),out,n);
+  double precise_sum=0;for(int j=0;j<n;++j){const float sq=a[j]*a[j];precise_sum+=static_cast<double>(sq);}
+  const float sum64=static_cast<float>(precise_sum),sum32=np_sums[r];
+  const float d64=std::sqrt(sum64/n+1e-6f),d32=std::sqrt(sum32/n+1e-6f),i32=1.0f/d32;
+  diagnostics[r*4]=sum64;diagnostics[r*4+1]=sum32;diagnostics[r*4+2]=d64;diagnostics[r*4+3]=d32;
+  for(int j=0;j<n;++j){size_t k=size_t(r)*n+j;f64div[k]=(a[j]/d64)*w[j];f32recip[k]=(a[j]*i32)*w[j];f32div[k]=(a[j]/d32)*w[j];}
+ }
+ const std::string p=argv[4];write(p+"-native.f32",native);write(p+"-f64div.f32",f64div);write(p+"-f32recip.f32",f32recip);write(p+"-f32div.f32",f32div);write(p+"-diagnostics.f32",diagnostics);
+}catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}

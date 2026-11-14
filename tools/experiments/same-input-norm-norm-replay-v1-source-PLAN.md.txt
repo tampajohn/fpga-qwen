@@ -1,0 +1,33 @@
+# Controlled normalization replay, not a network candidate
+
+Freeze the standalone source and driver before root executes. No model inference,
+shared engine edits, timing claim, tolerance change, or replacement oracle.
+
+Input matrix: all 63 positions, input normalization n1024, Q16/K8 head
+normalization n128, each from batch, sequential, and independent oracle captures.
+Use exact FP32 norm weights from the existing pack and require equality to the
+checkpoint BF16 values widened to FP32. Require the unchanged native function on
+its own batch/sequential inputs and the unchanged NumPy expression on its own
+oracle inputs to reproduce every captured output bit before interpretation.
+
+On each identical input compare four operations: native FP32-square/FP64-sum
+rounded to FP32 with reciprocal scaling (original), that reduction with direct
+division, installed NumPy FP32 sum with reciprocal scaling, and installed NumPy
+FP32 sum with direct division. Report all rows, sum/denominator differences and
+per-position comparisons. C++ division and reciprocal paths use the production
+optimization flags without fast-math. The observer's own-output identity gate
+handles possible standalone compilation differences.
+
+The installed NumPy Python `_methods._mean` calls `umr_sum` without widening
+float32 dtype and divides into its same-dtype result. This establishes dtype and
+mean scaling. Its wrapper does not prove the exact compiled pairwise association;
+therefore the replay uses the installed NumPy reducer directly and hashes both
+wrapper and compiled extension. Do not call a hand-written tree equivalent
+without separately matching it on every relevant input shape and pattern.
+
+A future repair hypothesis is conditional on these results and not implemented.
+If proposed, preregister fixed fresh63/64 and their teacher continuations, all old
+28 oracle positions including2048/3968, and the remaining fine-prefix boundaries.
+Keep maxabs0.01, RMS0.002, rtol0, and greedy identity unchanged. Require the full
+matrix to pass before any arithmetic-changing network timing. A local replay win
+alone is insufficient: prior direct-division and B1-projection changes failed2048.

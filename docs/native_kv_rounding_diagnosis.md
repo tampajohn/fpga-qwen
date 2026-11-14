@@ -205,3 +205,53 @@ and [binding record](../reports/native-cpu-layer0-all63-oracle-analysis-provenan
 preserve the executed source and report hashes. Both this analysis and its
 predecessor are offline observations with unchanged max-absolute0.01/RMS0.002
 acceptance limits; neither clears the existing native numerical failures.
+
+## Same-input normalization replay completed
+
+The [controlled replay](../reports/native-cpu-same-input-norm-replay-v1.json)
+passes all nine own-input reproduction checks: input normalization and Q/K head
+normalization, each on batch, sequential, and oracle inputs. The extracted native
+function exactly reproduces captured native outputs; the unchanged NumPy expression
+exactly reproduces captured oracle outputs. FP32 normalization weights are also
+checked against the original checkpoint's widened BF16 values.
+
+On every captured input, supplying the installed NumPy FP32 sum to compiled
+**direct division** reproduces the NumPy normalization output exactly. Neither
+changing only the reduction nor changing only reciprocal multiplication suffices.
+For identical embedding inputs, original native-versus-NumPy RMS is 1.446e-8;
+native reduction with division reduces it to 7.713e-9, NumPy sum with reciprocal
+to 1.184e-8, and NumPy sum with division to zero. Twenty of 63 rounded sums and
+12 of 63 denominators differ between the original reductions.
+
+However, normalizing native batch projections with the NumPy expression barely
+changes their discrepancy from the *captured oracle projection outputs*:
+
+| Stage | Native norm on batch input | NumPy norm on that same batch input |
+|---|---:|---:|
+| Q post-normalization RMS versus captured oracle | 1.51048e-6 | 1.51547e-6 |
+| K post-normalization RMS versus captured oracle | 1.35414e-5 | 1.35727e-5 |
+
+These slight increases are retained. Alignment of the local normalization
+operation does not remove the upstream projection discrepancy and is not a
+network accuracy fix. Sequential K improves modestly, from 3.42955e-6 to
+3.32723e-6, but the conclusion remains local and fixture-specific.
+
+The next useful controlled test is **projection input attribution across all63
+rows**: run the unchanged NumPy FP32 Q/K/V matvec on both native-normalized and
+oracle-normalized hidden inputs, using the same verified matrix values. Require
+its own oracle-input projections to exactly reproduce the captured oracle arrays.
+Then distinguish the effect of changed normalized inputs from native-versus-NumPy
+projection reduction on the same inputs. Retain all output rows and both native
+batch/sequential paths. This extends the earlier target-row matched projection
+experiment without changing the network or inventing a different acceptance
+reference. An FP64 exact-product diagnostic, if later needed, remains explicitly
+separate from the NumPy network oracle.
+
+The installed NumPy wrapper confirms FP32 reduction followed by FP32 division;
+this experiment uses its actual compiled sum. It does not prove a particular
+hand-written pairwise tree matches that implementation. No new network rewrite
+is justified by the local zero-error combination alone. Any later arithmetic
+candidate still requires fresh63/64, the old28 positions including2048/3968,
+and remaining fine-boundary gates at unchanged0.01/0.002/rtol0 limits before timing.
+The [source/build bindings](../reports/native-cpu-same-input-norm-replay-v1-provenance.json)
+include the executed standalone helper and preregistered diagnostic plan.

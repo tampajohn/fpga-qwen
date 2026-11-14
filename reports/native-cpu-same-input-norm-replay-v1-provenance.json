@@ -1,0 +1,35 @@
+{
+  "diagnostic_only": true,
+  "numerical_qualification": false,
+  "performance_claim_eligible": false,
+  "source_report": "$REPO/build/native-cpu/same-input-norm-replay-v1/report.json",
+  "raw_source_sha256": "59cac2cf9fcec9b051094ac9affc015e26965530a10fd97a54447b768d3ab6e0",
+  "archive_report_sha256": "26fa8b1dee4b7751b900a12bd5b66f79c5a615ec1b89720de96815d2b080f99e",
+  "sources": {
+    "$REPO/tools/experiments/same-input-norm-numerical-diagnostics-replay_same_input_norm_v1.py.txt": {
+      "original": "$REPO/build/native-cpu/numerical-diagnostics/replay_same_input_norm_v1.py",
+      "raw_sha256": "588f1ee1ed4ff5d9f63acc3606f8652f084e492d652d58b233de97652e933eab",
+      "archive_sha256": "588f1ee1ed4ff5d9f63acc3606f8652f084e492d652d58b233de97652e933eab"
+    },
+    "$REPO/tools/experiments/same-input-norm-norm-replay-v1-source-main.cpp.txt": {
+      "original": "$REPO/build/native-cpu/norm-replay-v1-source/main.cpp",
+      "raw_sha256": "20d5f094d897a4c7503c5f09fb7e936e4d5ee4992cd5609c4b0989a46ea9d7e9",
+      "archive_sha256": "20d5f094d897a4c7503c5f09fb7e936e4d5ee4992cd5609c4b0989a46ea9d7e9"
+    },
+    "$REPO/tools/experiments/same-input-norm-norm-replay-v1-source-provenance.json.txt": {
+      "original": "$REPO/build/native-cpu/norm-replay-v1-source/provenance.json",
+      "raw_sha256": "4cd13dd89c2e810f8b7be609de004a21b9c09ecf8355cb254ca0ee47a77a801a",
+      "archive_sha256": "4cd13dd89c2e810f8b7be609de004a21b9c09ecf8355cb254ca0ee47a77a801a"
+    },
+    "$REPO/tools/experiments/same-input-norm-norm-replay-v1-source-PLAN.md.txt": {
+      "original": "$REPO/build/native-cpu/norm-replay-v1-source/PLAN.md",
+      "raw_sha256": "116a78eab4c4d5963d01484bb73eb037db62aed818871629c5025a4faf801d36",
+      "archive_sha256": "116a78eab4c4d5963d01484bb73eb037db62aed818871629c5025a4faf801d36"
+    },
+    "$REPO/tools/experiments/same-input-norm-same-input-norm-replay-v1-build.log.txt": {
+      "original": "$REPO/build/native-cpu/same-input-norm-replay-v1/build.log",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archive_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

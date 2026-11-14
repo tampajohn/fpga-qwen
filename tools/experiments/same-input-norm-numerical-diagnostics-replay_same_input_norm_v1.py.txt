@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""Guarded standalone norm replay. Own-input byte reproduction gates interpretation."""
+import argparse,json,sys,subprocess,os
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT/'tools'))
+from capture_native_cpu_logits import guard,sha,save
+B=ROOT/'build/native-cpu'
+def main():
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--directory',type=Path,required=True);a=p.parse_args()
+ guarded=guard(ROOT/'build/benchmark-status');out=a.directory.resolve();out.mkdir(exist_ok=False)
+ report=dict(completed=False,diagnostic_only=True,numerical_qualification=False,performance_claim_eligible=False,network_variant=False,guard_before=guarded,reproduction=[],comparisons={})
+ rp=out/'report.json';save(rp,report)
+ try:
+  os.environ['VECLIB_MAXIMUM_THREADS']='4';os.environ['OPENBLAS_NUM_THREADS']='4'
+  import numpy as np
+  from experiment import read_header
+  nr=B/'build20-layer0-all63-trace-v1/report.json';orr=B/'numpy-layer0-all63-trace-v1/report.json'
+  native=json.loads(nr.read_text());oracle=json.loads(orr.read_text())
+  assert native['completed'] and native['identity_passed'] and oracle['completed'] and oracle['passed']
+  assert not any(r.get('error') or r.get('cleanup_error') for r in (native,oracle))
+  assert native['prompt_ids']==oracle['prompt_ids'] and oracle['logits']['bit_identical']
+  source=B/'norm-replay-v1-source/main.cpp';provenance=B/'norm-replay-v1-source/provenance.json'
+  meta=json.loads(provenance.read_text());assert sha(source)==meta['source_sha256']
+  core=B/'prefill-query-row-pair-source/core.cpp';assert sha(core)==meta['original_core_sha256']
+  original_text=core.read_text();original_norm=original_text[original_text.index('void norm('):original_text.index('\nvoid rope(',original_text.index('void norm('))]
+  candidate_text=source.read_text();candidate_norm=candidate_text[candidate_text.index('void norm('):candidate_text.index('\nstd::vector<float> read(',candidate_text.index('void norm('))]
+  assert candidate_norm==original_norm
+  weights=B/'weights.bin';index=Path(str(weights)+'.index');manifest=Path(str(weights)+'.manifest.json')
+  paths=[nr,orr,Path(__file__).resolve(),source,provenance,core,weights,index,manifest,ROOT/'tools/capture_native_cpu_logits.py',ROOT/'tools/benchmark_guard.py',ROOT/'tools/native_cpu_chat.py',ROOT/'tools/suffix.py',ROOT/'tools/experiment.py']
+  inputs={str(p):sha(p) for p in paths}
+  pack=json.loads(manifest.read_text());assert pack['completed'] and pack['binary']['sha256']==inputs[str(weights)] and pack['index']['sha256']==inputs[str(index)]
+  for p,d in native['generated_hashes'].items():assert sha(p)==d;inputs[p]=d
+  for row in oracle['traces']:assert sha(row['path'])==row['sha256'];inputs[row['path']]=row['sha256']
+  checkpoint=Path(oracle['oracle_configuration']['checkpoint'])/'model.safetensors'
+  assert str(checkpoint) in oracle['inputs'] and sha(checkpoint)==oracle['inputs'][str(checkpoint)];inputs[str(checkpoint)]=oracle['inputs'][str(checkpoint)]
+  # Freeze installed Python reduction wrapper and compiled NumPy implementation.
+  import numpy._core._methods as methods
+  import numpy._core._multiarray_umath as compiled
+  for module in (methods,compiled):inputs[str(Path(module.__file__))]=sha(module.__file__)
+  report.update(inputs=inputs,numpy_version=np.__version__,numpy_mean_contract='Installed _methods._mean uses umr_sum with float32 dtype retained, then true_divide into same float32 output. Pairwise inner-kernel association not inferred from wrapper alone.')
+  command=['/usr/bin/clang++','-std=c++20','-O3','-mcpu=native','-flto=thin','-ffp-contract=fast','-fno-math-errno',str(source),'-o',str(out/'norm_replay')]
+  report['build_command']=command;save(rp,report)
+  proc=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True);(out/'build.log').write_text(proc.stdout);report['build_exit_code']=proc.returncode;assert proc.returncode==0
+  generated={str(out/'norm_replay'):sha(out/'norm_replay'),str(out/'build.log'):sha(out/'build.log')}
+  header,start,_=read_header(checkpoint);entries={line.split()[0]:line.split()[1:] for line in index.read_text().splitlines()[1:]}
+  records={(r['position'],r['phase']):r for r in oracle['traces']};assert len(records)==693
+  def data(mode,phase,n):
+   rows=[]
+   for pos in range(63):
+    path=Path(records[pos,phase]['path']) if mode=='oracle' else nr.parent/f'{mode}-traces/capture-000000/row-{pos:03d}-{phase}.f32'
+    assert str(path) in inputs and sha(path)==inputs[str(path)]
+    x=np.fromfile(path,dtype='<f4');assert x.size==(2048 if phase.startswith('q_') else 1024) and np.isfinite(x).all();rows.append(x.reshape(-1,n))
+   return np.stack(rows)
+  def metrics(x,y):
+   d=x.astype(np.float64)-y.astype(np.float64)
+   return dict(max_abs=float(np.max(np.abs(d))),rms=float(np.sqrt(np.mean(d*d))),different_bits=int(np.count_nonzero(x.view(np.uint32)!=y.view(np.uint32))),elements=int(x.size))
+  def dump(path,x):x.astype('<f4').tofile(path);generated[str(path)]=sha(path)
+  for stage,pre,post,n,wname in [('input','embedding','input_norm_h',1024,'input_layernorm'),('q','q_projection','q_post_norm',128,'self_attn.q_norm'),('k','k_projection','k_post_norm',128,'self_attn.k_norm')]:
+   full='model.layers.0.'+wname+'.weight';typ,rows,cols,offset,length=entries[full];assert typ=='F32' and int(rows)==n and int(cols)==1 and int(length)==n*4
+   with weights.open('rb') as f:f.seek(int(offset));w=np.frombuffer(f.read(n*4),dtype='<f4').copy()
+   spec=header[full];assert spec['dtype']=='BF16'
+   with checkpoint.open('rb') as f:f.seek(start+spec['data_offsets'][0]);raw=np.frombuffer(f.read(spec['data_offsets'][1]-spec['data_offsets'][0]),dtype='<u2')
+   original=(raw.astype(np.uint32)<<16).view(np.float32);assert np.array_equal(w.view(np.uint32),original.view(np.uint32))
+   wp=out/(stage+'-weights.f32');dump(wp,w);report['comparisons'][stage]={}
+   for mode in ('batch','sequential','oracle'):
+    x=data(mode,pre,n);target=data(mode,post,n);assert x.shape==target.shape
+    # Same axes and dtype as original oracle: shape [heads,n] per token.
+    py=np.stack([v/np.sqrt(np.mean(v*v,axis=-1,keepdims=True)+np.float32(1e-6))*w for v in x])
+    sums=np.stack([np.sum(v*v,axis=-1,keepdims=True) for v in x]);assert sums.dtype==np.float32
+    ip=out/f'{stage}-{mode}-input.f32';sp=out/f'{stage}-{mode}-sums.f32';prefix=out/f'{stage}-{mode}'
+    dump(ip,x);dump(sp,sums)
+    subprocess.run([str(out/'norm_replay'),str(ip),str(wp),str(sp),str(prefix),str(n),str(x.size//n)],check=True)
+    results={}
+    for variant in ('native','f64div','f32recip','f32div'):
+     path=Path(str(prefix)+'-'+variant+'.f32');v=np.fromfile(path,dtype='<f4');assert v.size==x.size and np.isfinite(v).all();results[variant]=v.reshape(x.shape);generated[str(path)]=sha(path)
+    dp=Path(str(prefix)+'-diagnostics.f32');generated[str(dp)]=sha(dp)
+    d=np.fromfile(dp,dtype='<f4').reshape(-1,4);assert d.shape==(x.size//n,4) and np.isfinite(d).all()
+    own=py if mode=='oracle' else results['native']
+    reproduction=dict(stage=stage,mode=mode,exact=bool(np.array_equal(own.view(np.uint32),target.view(np.uint32))),metrics=metrics(own,target))
+    report['reproduction'].append(reproduction);save(rp,report)
+    assert reproduction['exact'],'Own-input normalization not reproduced; factorial interpretation invalid'
+    report['comparisons'][stage][mode]=dict(shape=list(x.shape),variants_vs_same_input_numpy={v:metrics(z,py) for v,z in results.items()},native_vs_captured_oracle_output=metrics(results['native'],data('oracle',post,n)),numpy_vs_captured_oracle_output=metrics(py,data('oracle',post,n)),sum_f64rounded_vs_numpy_f32=metrics(d[:,0].copy(),d[:,1].copy()),denominator_difference=metrics(d[:,2].copy(),d[:,3].copy()),per_position={v:[metrics(z[i],py[i]) for i in range(63)] for v,z in results.items()})
+    save(rp,report)
+  assert inputs=={p:sha(p) for p in inputs} and generated=={p:sha(p) for p in generated}
+  report.update(completed=True,identity_prerequisites_passed=True,generated_hashes=generated,guard_after=guard(ROOT/'build/benchmark-status'))
+ except BaseException as e:report['error']=dict(type=type(e).__name__,message=str(e));raise
+ finally:save(rp,report)
+ print(rp)
+if __name__=='__main__':main()
