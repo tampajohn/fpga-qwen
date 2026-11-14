@@ -1,0 +1,10 @@
+{
+  "source_report": "$REPO/build/native-cpu/layer0-all63-oracle-analysis-v1.json",
+  "raw_source_sha256": "8d10a8e0c0ac5b6f5e7924688a210d7509e60683f45cc7453fb9ab4b750b1601",
+  "archive_report_sha256": "4c3cd1522b6c22257e189861518924e9197aedb64f21f0f9c3f9b29096afc248",
+  "source_helper": "$REPO/build/native-cpu/numerical-diagnostics/analyze_layer0_all63_oracle_v1.py",
+  "source_helper_sha256": "8e4ec8de4844e6c576509b6ec668ad96c42beb54eced1247d7f719a3b7fa7a66",
+  "archive_helper_sha256": "8e4ec8de4844e6c576509b6ec668ad96c42beb54eced1247d7f719a3b7fa7a66",
+  "numerical_qualification": false,
+  "performance_claim_eligible": false
+}

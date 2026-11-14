@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+"""Guarded all-row observation comparison; no changed oracle or acceptance limits."""
+import argparse,json,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT/'tools'))
+from capture_native_cpu_logits import guard,sha,save
+B=ROOT/'build/native-cpu'
+PHASES=('embedding','input_norm_h','q_projection','k_projection','v_projection','q_post_norm','k_post_norm','q_rope','k_rope','canonical_keys','canonical_values')
+def main():
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
+ guarded=guard(ROOT/'build/benchmark-status');assert not a.output.exists()
+ import numpy as np
+ nr=B/'build20-layer0-all63-trace-v1/report.json';orr=B/'numpy-layer0-all63-trace-v1/report.json'
+ native=json.loads(nr.read_text());oracle=json.loads(orr.read_text())
+ assert native['completed'] and native['identity_passed'] and oracle['completed'] and oracle['passed']
+ assert not any(x.get('error') or x.get('cleanup_error') for x in (native,oracle))
+ assert oracle['logits']['bit_identical'] and native['prompt_ids']==oracle['prompt_ids']
+ inputs={str(x):sha(x) for x in (nr,orr,Path(__file__).resolve())}
+ for path,digest in native['generated_hashes'].items():assert sha(path)==digest;inputs[path]=digest
+ for row in oracle['traces']:
+  assert sha(row['path'])==row['sha256'];inputs[row['path']]=row['sha256']
+ assert sha(oracle['logits']['path'])==oracle['logits']['sha256']==oracle['logits']['reference_sha256']
+ inputs[oracle['logits']['path']]=oracle['logits']['sha256']
+ records={(r['position'],r['phase']):r for r in oracle['traces']};assert len(records)==len(oracle['traces'])==693
+ def data(mode,phase):
+  rows=[];n=2048 if phase.startswith('q_') else 1024
+  for pos in range(63):
+   if mode=='oracle':
+    r=records[pos,phase];path=Path(r['path']);assert r['layer']==0 and r['dtype']=='float32' and r['byte_order']=='little'
+   else:path=nr.parent/f'{mode}-traces/capture-000000/row-{pos:03d}-{phase}.f32'
+   assert str(path) in inputs and sha(path)==inputs[str(path)]
+   x=np.fromfile(path,dtype='<f4');assert x.shape==(n,) and np.isfinite(x).all();rows.append(x)
+  return np.stack(rows)
+ def metrics(x,y):
+  d=x.astype(np.float64)-y.astype(np.float64)
+  return dict(max_abs=float(np.abs(d).max()),rms=float(np.sqrt(np.mean(d*d))),different_values=int(np.count_nonzero(x!=y)),different_bits=int(np.count_nonzero(x.view(np.uint32)!=y.view(np.uint32))),elements=x.size)
+ arrays={m:{p:data(m,p) for p in PHASES} for m in ('batch','sequential','oracle')}
+ report=dict(completed=False,diagnostic_only=True,numerical_qualification=False,performance_claim_eligible=False,guard_before=guarded,inputs=inputs,comparisons={},cast_audits={},cast_bin_changes={},scope='Observed native-versus-oracle differences at layer0 across63 rows; no attribution to whole-network failure. Midpoints are exact FP64 representations of adjacent finite FP16 bins. No phase acceptance thresholds.')
+ for mode in ('batch','sequential'):
+  phases={p:dict(all_rows=metrics(arrays[mode][p],arrays['oracle'][p]),by_position=[dict(position=i,**metrics(arrays[mode][p][i],arrays['oracle'][p][i])) for i in range(63)]) for p in PHASES}
+  report['comparisons'][mode]=dict(phases=phases,first_differing_phase_by_position=[dict(position=i,phase=next((p for p in PHASES if phases[p]['by_position'][i]['different_bits']),None)) for i in range(63)])
+ for label,pre,post in [('keys','k_rope','canonical_keys'),('values','v_projection','canonical_values')]:
+  for mode in arrays:
+   cast=arrays[mode][pre].astype(np.float16).astype(np.float32)
+   assert np.array_equal(cast.view(np.uint32),arrays[mode][post].view(np.uint32))
+   report['cast_audits'][mode+'_'+label]=dict(bit_identical=True,elements=cast.size)
+  for mode in ('batch','sequential'):
+   x,y=arrays[mode][pre],arrays['oracle'][pre];xc,yc=arrays[mode][post],arrays['oracle'][post]
+   entries=[]
+   for pos,col in np.argwhere(xc!=yc):
+    lo,hi=sorted((float(xc[pos,col]),float(yc[pos,col])))
+    adjacent=float(np.nextafter(np.float16(lo),np.float16(np.inf)))==hi
+    row=dict(position=int(pos),head=int(col//128),channel=int(col%128),native_pre_hex=float(x[pos,col]).hex(),oracle_pre_hex=float(y[pos,col]).hex(),native_half_bits=int(np.float16(xc[pos,col]).view(np.uint16)),oracle_half_bits=int(np.float16(yc[pos,col]).view(np.uint16)),adjacent_bins=adjacent)
+    if adjacent:
+     midpoint=(lo+hi)/2
+     row.update(exact_midpoint_hex=midpoint.hex(),native_signed_margin=float(x[pos,col])-midpoint,oracle_signed_margin=float(y[pos,col])-midpoint)
+    entries.append(row)
+   report['cast_bin_changes'][mode+'_'+label]=dict(before=metrics(x,y),after=metrics(xc,yc),changed_bins=len(entries),adjacent_bin_changes=sum(r['adjacent_bins'] for r in entries),entries=entries)
+ assert inputs=={p:sha(p) for p in inputs}
+ report.update(completed=True,guard_after=guard(ROOT/'build/benchmark-status'));save(a.output,report);print(a.output)
+if __name__=='__main__':main()

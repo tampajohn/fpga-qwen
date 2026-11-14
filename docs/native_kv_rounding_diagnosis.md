@@ -149,3 +149,59 @@ omit raw tensor files and repetitive tensor-hash inventories; they retain the
 SHA256 of each complete local execution report. The native analysis preserves
 all per-position metrics. This work changed no serving code, oracle tolerance,
 release status, or performance claim.
+
+## Independent-oracle comparison: normalization differs before projection
+
+The completed [all-row oracle comparison](../reports/native-cpu-layer0-all63-oracle-analysis.json)
+adds an important distinction: native batch and sequential share identical
+normalized inputs, but those inputs already differ slightly from the independent
+oracle. Their embedding vectors are exact; input-normalized RMS difference from
+the oracle is 1.446e-8. Thus projection is the first **native-path** divergence,
+not the first native-versus-oracle divergence.
+
+| All63 layer0 tensor | Batch–oracle RMS | Sequential–oracle RMS |
+|---|---:|---:|
+| K projection | 3.120e-7 | 8.159e-8 |
+| K post-normalization | 1.354e-5 | 3.430e-6 |
+| K after RoPE | 1.355e-5 | 3.447e-6 |
+| Canonical K | 4.918e-5 | 2.753e-5 |
+| V projection | 9.142e-8 | 3.869e-8 |
+| Canonical V | 2.081e-6 | 2.119e-6 |
+
+All six complete-history FP16 casts match their own captured canonical arrays.
+Batch K differs from the oracle in 204 elements, including 183 adjacent-bin
+changes; sequential K differs in 120, including 106 adjacent-bin changes. For V,
+the counts are 298/284 and 226/225 respectively. These are numerically different
+bins; signed-zero bit-only differences are separately retained in phase metrics.
+The full report retains every differing element, not just examples.
+
+One concrete batch K example is position0/head0/channel51. Its precast value is
+2.980232e-8 above the exact adjacent-bin midpoint, while the oracle value is
+6.854534e-7 below it. Both conversions correctly choose their respective bins.
+This demonstrates rounding sensitivity to upstream values, not a faulty cast.
+Sequential V has fewer differing bins but slightly higher canonical RMS than
+batch V, so neither bin count nor projection RMS guarantees a better final result.
+
+The next controlled diagnostic should replay **normalization on identical
+captured inputs**, before proposing another network change. Use all63 embedding
+rows and every projected Q/K head from each captured path. Evaluate the unchanged
+native normalization and unchanged NumPy normalization on each same input and
+same FP32 norm weights. First require native own-input results to reproduce
+captured native outputs and NumPy own-input results to reproduce captured oracle
+outputs. Then use a fixed two-factor comparison of input origin and normalization
+implementation to separate input perturbation from operation differences.
+
+If that reproduction succeeds, separately expose rounded-square sum, denominator,
+and output scaling. The native implementation sums FP32-rounded squares in FP64,
+rounds the sum to FP32, and multiplies by a rounded reciprocal; the oracle uses
+its existing FP32 mean and direct division. A predeclared diagnostic comparison
+of these reduction/scaling choices may explain the difference, but cannot serve
+as a new acceptance oracle or justify a network patch on its own. The previous
+direct-division candidate's 2048 failure remains decisive. No additional network
+variant or timing test follows from these results automatically.
+
+The [analysis helper snapshot](../tools/experiments/analyze-layer0-all63-oracle-v1.py.txt)
+and [binding record](../reports/native-cpu-layer0-all63-oracle-analysis-provenance.json)
+preserve the executed source and report hashes. Both this analysis and its
+predecessor are offline observations with unchanged max-absolute0.01/RMS0.002
+acceptance limits; neither clears the existing native numerical failures.
