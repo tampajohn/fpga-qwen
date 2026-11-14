@@ -1,0 +1,21 @@
+{
+  "completed": true,
+  "diagnostic_only": true,
+  "performance_claim_eligible": false,
+  "records": [
+    {
+      "source": "build/native-cpu/build20-overhead452-greedy-v1/report.json",
+      "raw_source_sha256": "da9c2cfc5a41bb6c5b316543fb585cdf83d7193c37c517051c72b82d2cf6d361",
+      "archive": "reports/native-cpu-build20-overhead452-greedy-v1.json",
+      "archive_sha256": "fe4e4b70f4dfb76ffc297c87716f5a6e03126ce0faada750e7bb3d00acf564da"
+    },
+    {
+      "source": "build/native-cpu/build20-overhead452-chat-v1/report.json",
+      "raw_source_sha256": "9f9d8fdcbb1ca2f7ce7194dfd8e21cee55866b50ea0600b1771c1758407e67f3",
+      "archive": "reports/native-cpu-build20-overhead452-chat-v1.json",
+      "archive_sha256": "276e873c31a50c40e9f554c2c46880ceb4f8be58ff30a235f9fdc5444487eef3"
+    }
+  ],
+  "helper": "tools/profile_native_decode_overhead.py",
+  "helper_sha256": "e61bc9672df6daf98f2ab9fd1da821cff9dd2e92afa353f196e63ff7dd9798a9"
+}
