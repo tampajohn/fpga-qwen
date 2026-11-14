@@ -1,0 +1,10 @@
+{
+  "source_report": "$REPO/build/native-cpu/same-input-projection-all63-v1/report.json",
+  "raw_source_sha256": "4d73454fbe50649771a1e050f3cefea3075ab20cb599c0ad6cb9cb87362d650b",
+  "archive_report_sha256": "b6ac9e0269acfeb5299481b8d3fcefa4af706db715d582a18a2308d5f3efba5c",
+  "source_helper": "$REPO/build/native-cpu/numerical-diagnostics/replay_same_input_projection_all63_v1.py",
+  "source_helper_sha256": "b511f042e10a32d875f57dddb7b633f5c053234ce791ecaf46d4c43fe97d25cd",
+  "archive_helper_sha256": "b511f042e10a32d875f57dddb7b633f5c053234ce791ecaf46d4c43fe97d25cd",
+  "numerical_qualification": false,
+  "performance_claim_eligible": false
+}

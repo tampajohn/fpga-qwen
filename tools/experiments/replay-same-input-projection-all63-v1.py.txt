@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""Guarded same-input projection attribution; no network variant or accuracy gate."""
+import argparse,json,sys,os
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT/'tools'))
+from capture_native_cpu_logits import guard,sha,save
+B=ROOT/'build/native-cpu'
+def main():
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--directory',type=Path,required=True);a=p.parse_args()
+ guarded=guard(ROOT/'build/benchmark-status');out=a.directory.resolve();out.mkdir(exist_ok=False)
+ report=dict(completed=False,diagnostic_only=True,numerical_qualification=False,performance_claim_eligible=False,network_variant=False,guard_before=guarded,projection_identity=[],comparisons={},half_relevance={},scope='Original per-position NumPy FP32 matvec, no batched replacement. Two-term vector decomposition is local observation, not final-network causality.')
+ rp=out/'report.json';save(rp,report)
+ try:
+  os.environ['VECLIB_MAXIMUM_THREADS']='4';os.environ['OPENBLAS_NUM_THREADS']='4'
+  import numpy as np
+  from experiment import read_header
+  nr=B/'build20-layer0-all63-trace-v1/report.json';orr=B/'numpy-layer0-all63-trace-v1/report.json'
+  native=json.loads(nr.read_text());oracle=json.loads(orr.read_text())
+  assert native['completed'] and native['identity_passed'] and oracle['completed'] and oracle['passed']
+  assert not any(r.get('error') or r.get('cleanup_error') for r in (native,oracle))
+  assert native['prompt_ids']==oracle['prompt_ids'] and oracle['logits']['bit_identical']
+  weights=B/'weights.bin';index=Path(str(weights)+'.index');manifest=Path(str(weights)+'.manifest.json')
+  paths=[nr,orr,Path(__file__).resolve(),weights,index,manifest,ROOT/'tools/capture_native_cpu_logits.py',ROOT/'tools/benchmark_guard.py',ROOT/'tools/native_cpu_chat.py',ROOT/'tools/suffix.py',ROOT/'tools/experiment.py',ROOT/'tests/test_full_model.py']
+  inputs={str(p):sha(p) for p in paths}
+  pack=json.loads(manifest.read_text());assert pack['completed'] and pack['binary']['sha256']==inputs[str(weights)] and pack['index']['sha256']==inputs[str(index)]
+  for path,digest in native['generated_hashes'].items():assert sha(path)==digest;inputs[path]=digest
+  for r in oracle['traces']:assert sha(r['path'])==r['sha256'];inputs[r['path']]=r['sha256']
+  for path,digest in oracle['inputs'].items():
+   if Path(path).name=='test_full_model.py':assert sha(path)==digest
+  checkpoint=Path(oracle['oracle_configuration']['checkpoint'])/'model.safetensors'
+  assert str(checkpoint) in oracle['inputs'] and sha(checkpoint)==oracle['inputs'][str(checkpoint)];inputs[str(checkpoint)]=oracle['inputs'][str(checkpoint)]
+  import numpy._core._multiarray_umath as compiled
+  inputs[str(Path(compiled.__file__))]=sha(compiled.__file__)
+  report.update(inputs=inputs,numpy_version=np.__version__,weights_verified={})
+  header,start,_=read_header(checkpoint);entries={line.split()[0]:line.split()[1:] for line in index.read_text().splitlines()[1:]}
+  records={(r['position'],r['phase']):r for r in oracle['traces']};assert len(records)==693
+  generated={}
+  def data(mode,phase):
+   rows=[];n=2048 if phase.startswith('q_') else 1024
+   for pos in range(63):
+    path=Path(records[pos,phase]['path']) if mode=='oracle' else nr.parent/f'{mode}-traces/capture-000000/row-{pos:03d}-{phase}.f32'
+    assert str(path) in inputs and sha(path)==inputs[str(path)]
+    x=np.fromfile(path,dtype='<f4');assert x.shape==(n,) and np.isfinite(x).all();rows.append(x)
+   return np.stack(rows)
+  def weight(name):
+   full='model.layers.0.'+name+'.weight';typ,rows,cols,offset,length=entries[full];rows,cols=int(rows),int(cols)
+   dtype='<f2' if typ=='F16' else '<f4';assert typ in ('F16','F32') and int(length)==rows*cols*np.dtype(dtype).itemsize
+   with weights.open('rb') as f:f.seek(int(offset));w=np.frombuffer(f.read(int(length)),dtype=dtype).astype(np.float32).reshape((rows,cols) if cols!=1 else (rows,))
+   spec=header[full];assert spec['dtype']=='BF16'
+   with checkpoint.open('rb') as f:f.seek(start+spec['data_offsets'][0]);raw=np.frombuffer(f.read(spec['data_offsets'][1]-spec['data_offsets'][0]),dtype='<u2')
+   original=(raw.astype(np.uint32)<<16).view(np.float32).reshape(spec['shape'])
+   if len(spec['shape'])==2:original=original.astype(np.float16).astype(np.float32)
+   assert w.shape==original.shape and np.array_equal(w.view(np.uint32),original.view(np.uint32))
+   report['weights_verified'][full]=dict(shape=list(w.shape),pack_dtype=typ,checkpoint_conversion_bit_identical=True)
+   return w
+  def metrics(x,y):
+   d=x.astype(np.float64)-y.astype(np.float64)
+   return dict(max_abs=float(np.abs(d).max()),rms=float(np.sqrt(np.mean(d*d))),different_bits=int(np.count_nonzero(x.view(np.uint32)!=y.view(np.uint32))),elements=int(x.size))
+  def attribution(actual,same,reference):
+   total=actual.astype(np.float64)-reference.astype(np.float64);kernel=actual.astype(np.float64)-same.astype(np.float64);input_effect=same.astype(np.float64)-reference.astype(np.float64)
+   assert np.array_equal(kernel+input_effect,total)
+   norm=float(np.sum(total*total));kn=float(np.sum(kernel*kernel));inn=float(np.sum(input_effect*input_effect));cross=float(np.sum(kernel*input_effect))
+   return dict(total_rms=float(np.sqrt(np.mean(total*total))),kernel_rms=float(np.sqrt(np.mean(kernel*kernel))),input_rms=float(np.sqrt(np.mean(input_effect*input_effect))),kernel_projection_on_total=float(np.sum(kernel*total)/norm) if norm else None,input_projection_on_total=float(np.sum(input_effect*total)/norm) if norm else None,contribution_cosine=cross/(kn*inn)**.5 if kn and inn else None,twice_cross_inner_product=2*cross,reconstruction_exact=True)
+  def dump(name,x):
+   path=out/(name+'.f32');x.astype('<f4').tofile(path);generated[str(path)]=sha(path)
+  hs={m:data(m,'input_norm_h') for m in ('batch','sequential','oracle')}
+  assert np.array_equal(hs['batch'].view(np.uint32),hs['sequential'].view(np.uint32))
+  projected={};normweights={k:weight('self_attn.'+k+'_norm') for k in ('q','k')}
+  for letter,heads in [('q',16),('k',8),('v',8)]:
+   w=weight('self_attn.'+letter+'_proj');assert w.shape==(heads*128,1024)
+   projected[letter]={}
+   for mode in hs:
+    # Match oracle's per-position matrix-vector operation, never a batched GEMM.
+    projected[letter][mode]=np.stack([w @ hs[mode][pos] for pos in range(63)])
+    assert projected[letter][mode].dtype==np.float32 and np.isfinite(projected[letter][mode]).all();dump(letter+'-'+mode+'-numpy-projection',projected[letter][mode])
+   ref=data('oracle',letter+'_projection');own=projected[letter]['oracle']
+   ident=bool(np.array_equal(own.view(np.uint32),ref.view(np.uint32)));report['projection_identity'].append(dict(projection=letter,exact=ident,metrics=metrics(own,ref)));save(rp,report)
+   assert ident,'Oracle projection not reproduced; attribution invalid'
+   report['comparisons'][letter]={}
+   for mode in ('batch','sequential'):
+    actual=data(mode,letter+'_projection');same=projected[letter][mode]
+    report['comparisons'][letter][mode]=dict(all_rows=attribution(actual,same,ref),by_position=[dict(position=i,**attribution(actual[i],same[i],ref[i])) for i in range(63)])
+  def canonical(letter,values):
+   if letter=='v':return values.astype(np.float16).astype(np.float32)
+   rows=[]
+   for pos in range(63):
+    x=values[pos].reshape(8,128);x=x/np.sqrt(np.mean(x*x,axis=-1,keepdims=True)+np.float32(1e-6))*normweights['k']
+    angle=pos/(1000000.0**(np.arange(64,dtype=np.float64)*2/128));cs,sn=np.cos(angle).astype(np.float32),np.sin(angle).astype(np.float32)
+    left,right=np.split(x,2,axis=-1);x=np.concatenate((left*cs-right*sn,right*cs+left*sn),axis=-1)
+    rows.append(x.astype(np.float16).astype(np.float32).reshape(-1))
+   return np.stack(rows)
+  for letter,phase in [('k','canonical_keys'),('v','canonical_values')]:
+   reference=data('oracle',phase);own=canonical(letter,projected[letter]['oracle']);assert np.array_equal(own.view(np.uint32),reference.view(np.uint32))
+   report['half_relevance'][letter]=dict(oracle_transform_reproduction_exact=True,paths={})
+   for mode in ('batch','sequential'):
+    np_from_native_h=canonical(letter,projected[letter][mode]);np_from_native_proj=canonical(letter,data(mode,letter+'_projection'))
+    report['half_relevance'][letter]['paths'][mode]=dict(captured_native_vs_oracle=metrics(data(mode,phase),reference),numpy_projection_on_native_h_then_oracle_transform=metrics(np_from_native_h,reference),native_projection_then_oracle_transform=metrics(np_from_native_proj,reference),per_position=[dict(position=i,input_only=metrics(np_from_native_h[i],reference[i]),native_projection=metrics(np_from_native_proj[i],reference[i])) for i in range(63)])
+  assert inputs=={p:sha(p) for p in inputs} and generated=={p:sha(p) for p in generated}
+  report.update(completed=True,identity_prerequisites_passed=True,generated_hashes=generated,guard_after=guard(ROOT/'build/benchmark-status'))
+ except BaseException as e:report['error']=dict(type=type(e).__name__,message=str(e));raise
+ finally:save(rp,report)
+ print(rp)
+if __name__=='__main__':main()

@@ -255,3 +255,49 @@ candidate still requires fresh63/64, the old28 positions including2048/3968,
 and remaining fine-boundary gates at unchanged0.01/0.002/rtol0 limits before timing.
 The [source/build bindings](../reports/native-cpu-same-input-norm-replay-v1-provenance.json)
 include the executed standalone helper and preregistered diagnostic plan.
+
+## Projection replay completed; numerical repair branch parked
+
+The [all63 projection replay](../reports/native-cpu-same-input-projection-all63-v1.json)
+exactly reproduces all oracle Q/K/V projections with per-position NumPy matvecs.
+The packed matrices match checkpoint conversion. On native normalized inputs,
+the native-versus-NumPy projection operation accounts for signed projections
+0.985/0.995/0.979 onto total batch Q/K/V discrepancy. Input-normalization effects
+are smaller at this stage, with some cancellation. These are local vector
+contributions, not shares of final network error.
+
+The downstream result prevents treating this as a straightforward repair:
+
+| Layer0 K comparison against oracle | Differing elements | Maximum difference | RMS |
+|---|---:|---:|---:|
+| Captured native batch canonical K | 204 | 0.00390625 | 4.918e-5 |
+| NumPy projection on native H, then oracle norm/RoPE/FP16 | 52 | 0.0625 | 2.461e-4 |
+
+The counterfactual reduces the number of changed bins while substantially
+increasing aggregate canonical K error. Its own oracle-input transformation
+reproduces captured oracle K exactly, so this reversal is not dismissed as an
+unqualified observer. The same counterfactual improves V RMS slightly
+(2.081e-6 to1.729e-6 for batch), preserving evidence in both directions.
+Native-versus-oracle input differences, projection reduction, normalization, and
+FP16 thresholds interact; fixing one local operation does not guarantee lower
+cache error or final logits. The report retains every position and both paths.
+
+**Park this numerical repair branch rather than implement another speculative
+network variant.** The evidence explains real local mechanisms but does not yet
+justify one bounded, speed-preserving repair. Direct-division, B1-projection, and
+split-reduction candidates already failed fixed broader gates, and the latest
+controlled replacement demonstrates another reversal. A wholesale attempt to
+match every oracle operation would be a separately scoped reference-engine
+project, not an established optimization from these results.
+
+No more attribution runs are queued from this branch. The existing fresh63/64
+absolute failures and finer-prefix hold remain explicit. Arithmetic-preserving
+performance work may continue under the documented nonregression policy; no
+absolute tolerance is loosened or failure relabeled. Reopening numerical repair
+requires a concrete implementation hypothesis and its unchanged broad numerical
+qualification plan, not only a locally smaller RMS or fewer changed FP16 bins.
+
+The [binding record](../reports/native-cpu-same-input-projection-all63-v1-provenance.json)
+and [executed helper](../tools/experiments/replay-same-input-projection-all63-v1.py.txt)
+preserve provenance. No raw tensor payload is committed; per-position metrics,
+identity gates, and both favorable and unfavorable counterfactuals are retained.
