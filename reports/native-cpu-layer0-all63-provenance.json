@@ -73,7 +73,7 @@
     "$REPO/tools/experiments/layer0-all63-build20-layer0-all63-trace-v1-build-manifest.json.txt": {
       "source": "$REPO/build/native-cpu/build20-layer0-all63-trace-v1-build/manifest.json",
       "raw_source_sha256": "387f1fcc152a0efc0b061178648c45bdd4966cb3dfaffd82728566dc063c7aa3",
-      "archive_sha256": "e9a42cbb8c02a6cc237c6fbf66527ef3e4dd4fbe87a9f4e94c90e82211471526"
+      "archive_sha256": "e5389e981407e01f337404a5fb11a2192c770bbe8a6519d87c6fb7afbfe1d70c"
     }
   }
 }

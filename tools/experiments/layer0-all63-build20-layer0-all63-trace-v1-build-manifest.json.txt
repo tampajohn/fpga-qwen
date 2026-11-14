@@ -6,7 +6,6 @@
     "directory": "$REPO/build/benchmark-status",
     "metadata": {
       "name": "Build layer0 all63 observational trace",
-      "pid": 88626,
       "started_at": "2026-11-14T03:57:34.045166+00:00"
     }
   },
