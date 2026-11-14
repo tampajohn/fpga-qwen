@@ -1,0 +1,67 @@
+{
+  "completed": true,
+  "records": [
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-qualification.json",
+      "source_sha256": "5a72216d70dc98afb536f6a0821840bd0777ff611e42961eaa0abd3742625033",
+      "archive": "reports/native-cpu-active8-qualification.json",
+      "archive_sha256": "e64a2e1fb4bcb4d6ed3c4d284f37112f0e3c90f6fd54f09f7e8b4fe5b1319cf1"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-prefix-check/report.json",
+      "source_sha256": "4776e517923b5b55e536a3cb35cbd398e323d49e4ff7b53aab1895b963d7d18f",
+      "archive": "reports/native-cpu-active8-qualification-prefix.json",
+      "archive_sha256": "84ec2128039086465385207380f50beefa65e0972835b2c43b89c70a525784c1"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-suffix-trajectories.json",
+      "source_sha256": "c75aa50cd59de8286c249695743704d941066a869fd3c7a652240e6833bcd735",
+      "archive": "reports/native-cpu-active8-qualification-suffix.json",
+      "archive_sha256": "fb99dde8045de00599266cad12a86e8523d48b9b87fddeb247f932ee1de97c38"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-suffix-cli/report.json",
+      "source_sha256": "8937c9a0fa8a78840806a8a16b5ecdcebc7626dec5d40561b541a173e8805056",
+      "archive": "reports/native-cpu-active8-qualification-cli.json",
+      "archive_sha256": "95dc3690a9af5892cef0b6a3abe0d0a16dfcf563ea074925db18132bf6249776"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-quality.json",
+      "source_sha256": "c6db7575c9a838bb8d1ce430f439cb9a5a40616a631d394932c72a8f7b1adb4b",
+      "archive": "reports/native-cpu-active8-qualification-quality.json",
+      "archive_sha256": "9269ca0d4431ad4e0d9c38e5b529be16d84cdc3e61d3f863e1a1dd638820faad"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-extended-quality.json",
+      "source_sha256": "b873b96a811044a5af8f33f1a047b2bc7ace5f3b3cfa120db7b5b3d0584fade6",
+      "archive": "reports/native-cpu-active8-qualification-extended.json",
+      "archive_sha256": "5ac3390374a45414c342a7a0a44f7a19695644c8982caf9bff7a171131608251"
+    },
+    {
+      "source": "build/native-cpu/decode-attention-active8-v2-seeded-stream/report.json",
+      "source_sha256": "61aa64b555e4e8e7b89ff2c69b47ed2523da39c3fb5b9dd2ac814506f098dbd1",
+      "archive": "reports/native-cpu-active8-qualification-seeded.json",
+      "archive_sha256": "12d443204234c5a4160fee33cd3723d49cc492669a621276e63447e13eb4200e"
+    },
+    {
+      "source": "build/native-cpu/run_active8_qualification_v1.py",
+      "source_sha256": "9f5e220cf3730b9ef219548feea88ae985b2062b2983eec4e4fdc9e3000b173c",
+      "archive": "tools/experiments/native-active8/run_active8_qualification_v1.py",
+      "archive_sha256": "9f5e220cf3730b9ef219548feea88ae985b2062b2983eec4e4fdc9e3000b173c"
+    },
+    {
+      "source": "build/native-cpu/check_active8_qualification_v1.py",
+      "source_sha256": "e9a52f0da51f9e869230fe47b032f11334a33b52c736c42333f3282f6563fbe8",
+      "archive": "tools/experiments/native-active8/check_active8_qualification_v1.py",
+      "archive_sha256": "e9a52f0da51f9e869230fe47b032f11334a33b52c736c42333f3282f6563fbe8"
+    },
+    {
+      "source": "build/native-cpu/check_active8_extended_quality_v1.py",
+      "source_sha256": "7c6e00dff657ceb52e205499ea280dc4198418ee54eb5d0f92e6f78d7ea62402",
+      "archive": "tools/experiments/native-active8/check_active8_extended_quality_v1.py",
+      "archive_sha256": "7c6e00dff657ceb52e205499ea280dc4198418ee54eb5d0f92e6f78d7ea62402"
+    }
+  ],
+  "release_authorized": false,
+  "absolute_oracle_pass_claimed": false
+}

@@ -1,0 +1,1299 @@
+{
+  "completed": true,
+  "mode": "quality",
+  "precision": "f16",
+  "gpu": false,
+  "pytorch": false,
+  "performance_claim_eligible": false,
+  "numerical_quality_review_required": true,
+  "paired_sampling_complete": false,
+  "timing_claim": false,
+  "configurations": [
+    {
+      "name": "native-reference-build-20",
+      "binary": "$REPO/build/native-cpu/build-20/qwen_cpu",
+      "weights": "$REPO/build/native-cpu/weights.bin",
+      "decode_threads": 12,
+      "prefill_threads": 6
+    },
+    {
+      "name": "native-candidate-decode-attention-active8-v2-build",
+      "binary": "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu",
+      "weights": "$REPO/build/native-cpu/weights.bin",
+      "decode_threads": 12,
+      "prefill_threads": 6
+    }
+  ],
+  "rounds": 2,
+  "tokens": 32,
+  "context_suite": "standard",
+  "warmups_per_visit_profile": 0,
+  "comparison_scope": "Original engine optimization comparison; not a llama target claim",
+  "builds": {},
+  "model": {
+    "path": "$REPO/build/native-cpu/weights.bin",
+    "sha256": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9"
+  },
+  "guard_before": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Active8 qualification quality",
+      "started_at": "2026-11-14T04:17:14.392815+00:00"
+    }
+  },
+  "host_before": {
+    "timestamp_utc": "2026-11-14T04:17:15Z",
+    "load_average": [
+      11.77734375,
+      9.7685546875,
+      10.53564453125
+    ],
+    "busiest_processes": [
+      {
+        "cpu_percent": 99.2,
+        "memory_percent": 0.7,
+        "elapsed": "11-14:32:48"
+      },
+      {
+        "cpu_percent": 87.6,
+        "memory_percent": 0.1,
+        "elapsed": "00:01"
+      },
+      {
+        "cpu_percent": 81.9,
+        "memory_percent": 10.4,
+        "elapsed": "08-07:45:54"
+      },
+      {
+        "cpu_percent": 49.1,
+        "memory_percent": 0.4,
+        "elapsed": "11-07:15:49"
+      },
+      {
+        "cpu_percent": 44.5,
+        "memory_percent": 0.3,
+        "elapsed": "13:33"
+      },
+      {
+        "cpu_percent": 12.5,
+        "memory_percent": 0.4,
+        "elapsed": "07-12:55:26"
+      },
+      {
+        "cpu_percent": 11.1,
+        "memory_percent": 0.0,
+        "elapsed": "11-14:33:07"
+      },
+      {
+        "cpu_percent": 5.7,
+        "memory_percent": 0.3,
+        "elapsed": "11-14:33:15"
+      },
+      {
+        "cpu_percent": 5.1,
+        "memory_percent": 0.1,
+        "elapsed": "11-14:32:27"
+      },
+      {
+        "cpu_percent": 4.6,
+        "memory_percent": 0.4,
+        "elapsed": "06-22:06:06"
+      },
+      {
+        "cpu_percent": 3.3,
+        "memory_percent": 0.0,
+        "elapsed": "11-14:33:16"
+      },
+      {
+        "cpu_percent": 3.1,
+        "memory_percent": 0.0,
+        "elapsed": "11-14:32:21"
+      },
+      {
+        "cpu_percent": 3.0,
+        "memory_percent": 0.1,
+        "elapsed": "02-11:02:03"
+      },
+      {
+        "cpu_percent": 2.4,
+        "memory_percent": 0.7,
+        "elapsed": "11-14:33:14"
+      },
+      {
+        "cpu_percent": 2.0,
+        "memory_percent": 0.0,
+        "elapsed": "11-14:33:15"
+      },
+      {
+        "cpu_percent": 1.9,
+        "memory_percent": 0.1,
+        "elapsed": "11-14:33:08"
+      },
+      {
+        "cpu_percent": 1.7,
+        "memory_percent": 0.0,
+        "elapsed": "11-14:32:49"
+      },
+      {
+        "cpu_percent": 1.6,
+        "memory_percent": 0.0,
+        "elapsed": "11-14:33:16"
+      },
+      {
+        "cpu_percent": 1.6,
+        "memory_percent": 0.1,
+        "elapsed": "11-14:32:33"
+      },
+      {
+        "cpu_percent": 1.0,
+        "memory_percent": 0.6,
+        "elapsed": "11-14:32:48"
+      }
+    ]
+  },
+  "preflight": [],
+  "visits": [],
+  "results": [
+    {
+      "configuration": "native-reference-build-20",
+      "case": "fact_recall",
+      "category": "history retrieval",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "configuration": "native-reference-build-20",
+      "case": "corrected_fact",
+      "category": "history correction",
+      "result": {
+        "output_token_ids": [
+          43,
+          7523,
+          13,
+          151645
+        ],
+        "output_token_count": 4,
+        "text": "Lima.",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "configuration": "native-reference-build-20",
+      "case": "assistant_quote",
+      "category": "assistant history retrieval",
+      "result": {
+        "output_token_ids": [
+          13936,
+          36506,
+          11,
+          50344,
+          0,
+          151645
+        ],
+        "output_token_count": 6,
+        "text": "Welcome aboard, Maya!",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "verbatim_quote": true
+        },
+        "details": "quote target: \"Welcome aboard, Maya!\""
+      }
+    },
+    {
+      "configuration": "native-reference-build-20",
+      "case": "task_switch",
+      "category": "latest instruction",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          13,
+          151645
+        ],
+        "output_token_count": 9,
+        "text": "9, 2, 5.",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "configuration": "native-reference-build-20",
+      "case": "json_extraction",
+      "category": "structured extraction",
+      "result": {
+        "output_token_ids": [
+          73594,
+          2236,
+          198,
+          4913,
+          606,
+          788,
+          330,
+          44,
+          8832,
+          497,
+          330,
+          3423,
+          788,
+          330,
+          665,
+          278,
+          16707,
+          73594,
+          151645
+        ],
+        "output_token_count": 19,
+        "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "configuration": "native-reference-build-20",
+      "case": "two_step_arithmetic",
+      "category": "arithmetic",
+      "result": {
+        "output_token_ids": [
+          785,
+          2790,
+          1372,
+          315,
+          54208,
+          374,
+          220,
+          16,
+          22,
+          2518,
+          488,
+          220,
+          23,
+          6303,
+          284,
+          220
+        ],
+        "output_token_count": 16,
+        "text": "The total number of beads is 17 red + 8 blue = ",
+        "finish_reason": "length",
+        "eos_observed": false
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "configuration": "native-reference-build-20",
+      "case": "distractor_recall",
+      "category": "selective retrieval",
+      "result": {
+        "output_token_ids": [
+          34,
+          33215,
+          151645
+        ],
+        "output_token_count": 3,
+        "text": "Cedar",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"Cedar\""
+      }
+    },
+    {
+      "configuration": "native-reference-build-20",
+      "case": "evidence_only",
+      "category": "grounded unknown",
+      "result": {
+        "output_token_ids": [
+          16088,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "unknown",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"unknown\""
+      }
+    },
+    {
+      "configuration": "native-reference-build-20",
+      "case": "new_question_after_repetition",
+      "category": "repetition recovery",
+      "result": {
+        "output_token_ids": [
+          22,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "7",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "case": "fact_recall",
+      "category": "history retrieval",
+      "result": {
+        "output_token_ids": [
+          22,
+          18,
+          16,
+          24,
+          151645
+        ],
+        "output_token_count": 5,
+        "text": "7319",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"7319\""
+      }
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "case": "corrected_fact",
+      "category": "history correction",
+      "result": {
+        "output_token_ids": [
+          43,
+          7523,
+          13,
+          151645
+        ],
+        "output_token_count": 4,
+        "text": "Lima.",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "case": "assistant_quote",
+      "category": "assistant history retrieval",
+      "result": {
+        "output_token_ids": [
+          13936,
+          36506,
+          11,
+          50344,
+          0,
+          151645
+        ],
+        "output_token_count": 6,
+        "text": "Welcome aboard, Maya!",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "verbatim_quote": true
+        },
+        "details": "quote target: \"Welcome aboard, Maya!\""
+      }
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "case": "task_switch",
+      "category": "latest instruction",
+      "result": {
+        "output_token_ids": [
+          24,
+          11,
+          220,
+          17,
+          11,
+          220,
+          20,
+          13,
+          151645
+        ],
+        "output_token_count": 9,
+        "text": "9, 2, 5.",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "case": "json_extraction",
+      "category": "structured extraction",
+      "result": {
+        "output_token_ids": [
+          73594,
+          2236,
+          198,
+          4913,
+          606,
+          788,
+          330,
+          44,
+          8832,
+          497,
+          330,
+          3423,
+          788,
+          330,
+          665,
+          278,
+          16707,
+          73594,
+          151645
+        ],
+        "output_token_count": 19,
+        "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "case": "two_step_arithmetic",
+      "category": "arithmetic",
+      "result": {
+        "output_token_ids": [
+          785,
+          2790,
+          1372,
+          315,
+          54208,
+          374,
+          220,
+          16,
+          22,
+          2518,
+          488,
+          220,
+          23,
+          6303,
+          284,
+          220
+        ],
+        "output_token_count": 16,
+        "text": "The total number of beads is 17 red + 8 blue = ",
+        "finish_reason": "length",
+        "eos_observed": false
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "case": "distractor_recall",
+      "category": "selective retrieval",
+      "result": {
+        "output_token_ids": [
+          34,
+          33215,
+          151645
+        ],
+        "output_token_count": 3,
+        "text": "Cedar",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"Cedar\""
+      }
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "case": "evidence_only",
+      "category": "grounded unknown",
+      "result": {
+        "output_token_ids": [
+          16088,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "unknown",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": true,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": true
+        },
+        "details": "exact target: \"unknown\""
+      }
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "case": "new_question_after_repetition",
+      "category": "repetition recovery",
+      "result": {
+        "output_token_ids": [
+          22,
+          151645
+        ],
+        "output_token_count": 2,
+        "text": "7",
+        "finish_reason": "eos",
+        "eos_observed": true
+      },
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    }
+  ],
+  "sessions": [
+    {
+      "configuration": "native-reference-build-20",
+      "command": [
+        "$REPO/build/native-cpu/build-20/qwen_cpu",
+        "--weights",
+        "$REPO/build/native-cpu/weights.bin",
+        "--threads",
+        "12",
+        "--prefill-threads",
+        "6",
+        "--context",
+        "4096"
+      ],
+      "metadata": {
+        "transport": "Persistent subprocess JSON lines; one step request per output",
+        "weight_storage": "FP16 matrices / FP32 norms",
+        "kv": "FP16",
+        "arithmetic": "Original C++ FP32 math",
+        "cpu_threads": 12,
+        "prefill_threads": 6,
+        "gpu": false,
+        "pytorch": false,
+        "prefill_weight_cache": "Layer FP16 weights widened once to FP32 for Accelerate prefill; embedding stays FP16",
+        "placement": "No hard pinning; VECLIB_MAXIMUM_THREADS requested, not independently verified",
+        "actual_startup": {
+          "ready": true,
+          "protocol": 1,
+          "position": 0,
+          "decode_threads": 12,
+          "prefill_threads": 6,
+          "context": 4096,
+          "lossless_bf16_decode_cache_bytes": 0,
+          "gpu": false,
+          "pytorch": false,
+          "weight_precision": "f16",
+          "norm_precision": "f32",
+          "norm_accumulator_precision": "f64",
+          "activation_precision": "f32",
+          "kv_precision": "f16",
+          "prefix_reuse": true,
+          "prefix_reuse_chunk": 512,
+          "suffix_drafting": false,
+          "verify_greedy_b2": true,
+          "max_verified_draft": 1
+        }
+      },
+      "runtime_log": {
+        "path": "$REPO/build/native-cpu/decode-attention-active8-v2-quality-logs/quality/native-reference-build-20/native.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "command": [
+        "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu",
+        "--weights",
+        "$REPO/build/native-cpu/weights.bin",
+        "--threads",
+        "12",
+        "--prefill-threads",
+        "6",
+        "--context",
+        "4096"
+      ],
+      "metadata": {
+        "transport": "Persistent subprocess JSON lines; one step request per output",
+        "weight_storage": "FP16 matrices / FP32 norms",
+        "kv": "FP16",
+        "arithmetic": "Original C++ FP32 math",
+        "cpu_threads": 12,
+        "prefill_threads": 6,
+        "gpu": false,
+        "pytorch": false,
+        "prefill_weight_cache": "Layer FP16 weights widened once to FP32 for Accelerate prefill; embedding stays FP16",
+        "placement": "No hard pinning; VECLIB_MAXIMUM_THREADS requested, not independently verified",
+        "actual_startup": {
+          "ready": true,
+          "protocol": 1,
+          "position": 0,
+          "decode_threads": 12,
+          "prefill_threads": 6,
+          "context": 4096,
+          "lossless_bf16_decode_cache_bytes": 0,
+          "gpu": false,
+          "pytorch": false,
+          "weight_precision": "f16",
+          "norm_precision": "f32",
+          "norm_accumulator_precision": "f64",
+          "activation_precision": "f32",
+          "kv_precision": "f16",
+          "prefix_reuse": true,
+          "prefix_reuse_chunk": 512,
+          "suffix_drafting": false,
+          "verify_greedy_b2": true,
+          "max_verified_draft": 1
+        }
+      },
+      "runtime_log": {
+        "path": "$REPO/build/native-cpu/decode-attention-active8-v2-quality-logs/quality/native-candidate-decode-attention-active8-v2-build/native.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "limitations": [
+    "Both engines use identical subprocess transport, weights, and requested thread counts; reset/mode setup is outside the clock.",
+    "Persistent prefill and optional auxiliary caches can differ; actual startup metadata records cache bytes when available.",
+    "This direct comparison isolates a candidate configuration against an original-engine reference, not achievement of the tuned llama target.",
+    "One process is live per visit; startup and warmup excluded. Background OS work and address placement uncontrolled.",
+    "All scores require separate numerical/quality review. Discovery is exploratory, never a performance claim."
+  ],
+  "inputs": {
+    "$REPO/build/native-cpu/build-20/qwen_cpu": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu": "2f0596b8d9cd49b539153ad237e4b271574018ba0a2e371d5298f407d9f66b9a",
+    "$REPO/build/native-cpu/weights.bin": "033d4fad0de8d0af88070a0ba96f325ac811811789721a5632dcf8f413afeec9",
+    "$REPO/build/native-cpu/weights.bin.index": "c2fa52ca4b3e65c7c1be989dfe472ec0661e474f9ed43e3825563299123452b7",
+    "$REPO/build/native-cpu/weights.bin.manifest.json": "0627290518a5f7d559b4978e36b407e912a27af0e6c1fb772b056f9eee05685e",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+    "$HOME/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca/model.safetensors": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b",
+    "$REPO/build/native-cpu/build-20/manifest.json": "d6329dc58d1e1a02b49189384db1fedbb64a3622082bf91ae8a9505a393e5bca",
+    "$REPO/build/native-cpu/decode-attention-active8-v2-build/manifest.json": "9431e7eb41f52e77a8446b02d354df61d0a583405998593a11683f5f7e4b1d40"
+  },
+  "source_hashes": {
+    "$REPO/tools/benchmark_native_cpu.py": "8f0d62b38b29d48bf4d3e94156d591686208fba4168ad7fe6753c7da77063090",
+    "$REPO/tools/native_cpu_chat.py": "154729079992e9c8c0df6e43077789ea73b8f85decb0a000f40e4cc3853b5882",
+    "$REPO/tools/benchmark_native_phase0.py": "2072dff376baf6e0476c7beddfae311483ea2a15a3af54af8622ad8bbbe17b7e",
+    "$REPO/tools/benchmark_matched.py": "88627ed3b10440864d451d1d81bb72b08b62558737fe7bd968a4fb093f821fc6",
+    "$REPO/tools/check_native_phase0_quality.py": "019649bf7db8c51cf3c420d3042c0f2918f83bf440b9e16b9c976e094b9d6e12",
+    "$REPO/tools/conversation_eval.py": "ec227a96c449eedc32b38a8024b7d9747b30db25af66fd06f3364989eb61d8eb",
+    "$REPO/tools/chat_protocol.py": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e",
+    "$REPO/tools/benchmark_guard.py": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7",
+    "$REPO/tools/experiment.py": "d3c38e5def2ad18945bc0c97a95bda7db3958d8327b5d5be1042b3da1717b713"
+  },
+  "native_builds": {
+    "$REPO/build/native-cpu/build-20/qwen_cpu": {
+      "completed": true,
+      "gpu": false,
+      "pytorch": false,
+      "guard": {
+        "directory": "$REPO/build/benchmark-status",
+        "metadata": {
+          "name": "query-row-pair-build",
+          "started_at": "2026-11-13T18:32:40.913061+00:00"
+        }
+      },
+      "command": [
+        "/usr/bin/clang++",
+        "-std=c++20",
+        "-O3",
+        "-mcpu=native",
+        "-flto=thin",
+        "-ffp-contract=fast",
+        "-fno-math-errno",
+        "-pthread",
+        "$REPO/build/native-cpu/prefill-query-row-pair-source/core.cpp",
+        "$REPO/build/native-cpu/prefill-query-row-pair-source/main.cpp",
+        "-framework",
+        "Accelerate",
+        "-o",
+        "$REPO/build/native-cpu/prefill-query-row-pair-build/qwen_cpu"
+      ],
+      "source_directory": "$REPO/build/native-cpu/prefill-query-row-pair-source",
+      "source_sha256": {
+        "$REPO/build/native-cpu/prefill-query-row-pair-source/core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+        "$REPO/build/native-cpu/prefill-query-row-pair-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+        "$REPO/build/native-cpu/prefill-query-row-pair-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+        "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+      },
+      "removed_environment_keys": [],
+      "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+      "started_at": "2026-11-13T18:32:41Z",
+      "exit_code": 0,
+      "binary": "$REPO/build/native-cpu/build-20/qwen_cpu",
+      "binary_sha256": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+      "linked_libraries": "$REPO/build/native-cpu/prefill-query-row-pair-build/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+      "copy_provenance": {
+        "operation": "Byte-identical copy, NOT a recompilation",
+        "original_binary": "$REPO/build/native-cpu/prefill-query-row-pair-build/qwen_cpu",
+        "original_manifest": "$REPO/build/native-cpu/prefill-query-row-pair-build/manifest.json",
+        "original_manifest_sha256": "e0954d18b281fb2652421daacc85b8247d930744d846247a359df220face8dc9",
+        "original_binary_sha256": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+        "original_source_and_command_fields_preserved": true
+      }
+    },
+    "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu": {
+      "completed": true,
+      "gpu": false,
+      "pytorch": false,
+      "guard": {
+        "directory": "$REPO/build/benchmark-status",
+        "metadata": {
+          "name": "Build isolated attention worker v2",
+          "started_at": "2026-11-14T03:55:21.445084+00:00"
+        }
+      },
+      "command": [
+        "/usr/bin/clang++",
+        "-std=c++20",
+        "-O3",
+        "-mcpu=native",
+        "-flto=thin",
+        "-ffp-contract=fast",
+        "-fno-math-errno",
+        "-pthread",
+        "$REPO/build/native-cpu/decode-attention-active8-v2-source/core.cpp",
+        "$REPO/build/native-cpu/decode-attention-active8-v2-source/main.cpp",
+        "-framework",
+        "Accelerate",
+        "-o",
+        "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu"
+      ],
+      "source_directory": "$REPO/build/native-cpu/decode-attention-active8-v2-source",
+      "source_sha256": {
+        "$REPO/build/native-cpu/decode-attention-active8-v2-source/core.cpp": "4d2aefa983f18f0c4472b6a50a4a59c1eab335e42d8e3b6abed594f24e97701a",
+        "$REPO/build/native-cpu/decode-attention-active8-v2-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+        "$REPO/build/native-cpu/decode-attention-active8-v2-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+        "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+      },
+      "removed_environment_keys": [],
+      "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+      "started_at": "2026-11-14T03:55:21Z",
+      "exit_code": 0,
+      "binary": "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu",
+      "binary_sha256": "2f0596b8d9cd49b539153ad237e4b271574018ba0a2e371d5298f407d9f66b9a",
+      "linked_libraries": "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+    }
+  },
+  "native_build": {
+    "completed": true,
+    "gpu": false,
+    "pytorch": false,
+    "guard": {
+      "directory": "$REPO/build/benchmark-status",
+      "metadata": {
+        "name": "Build isolated attention worker v2",
+        "started_at": "2026-11-14T03:55:21.445084+00:00"
+      }
+    },
+    "command": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-O3",
+      "-mcpu=native",
+      "-flto=thin",
+      "-ffp-contract=fast",
+      "-fno-math-errno",
+      "-pthread",
+      "$REPO/build/native-cpu/decode-attention-active8-v2-source/core.cpp",
+      "$REPO/build/native-cpu/decode-attention-active8-v2-source/main.cpp",
+      "-framework",
+      "Accelerate",
+      "-o",
+      "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu"
+    ],
+    "source_directory": "$REPO/build/native-cpu/decode-attention-active8-v2-source",
+    "source_sha256": {
+      "$REPO/build/native-cpu/decode-attention-active8-v2-source/core.cpp": "4d2aefa983f18f0c4472b6a50a4a59c1eab335e42d8e3b6abed594f24e97701a",
+      "$REPO/build/native-cpu/decode-attention-active8-v2-source/core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+      "$REPO/build/native-cpu/decode-attention-active8-v2-source/main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47",
+      "$REPO/tools/build_native_cpu.py": "922bf254ac791ed365344a9d8fb353ce12578426600d561d97c4a6146d52c3e5"
+    },
+    "removed_environment_keys": [],
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.4.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "started_at": "2026-11-14T03:55:21Z",
+    "exit_code": 0,
+    "binary": "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu",
+    "binary_sha256": "2f0596b8d9cd49b539153ad237e4b271574018ba0a2e371d5298f407d9f66b9a",
+    "linked_libraries": "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu:\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n"
+  },
+  "suite_sha256": "e83a1561ae3c1245ad1a2be15fc6521471ce63c2037da887af7ce0fec3136810",
+  "reference_configuration": "native-reference-build-20",
+  "suite": [
+    "fact_recall",
+    "corrected_fact",
+    "assistant_quote",
+    "task_switch",
+    "json_extraction",
+    "two_step_arithmetic",
+    "distractor_recall",
+    "evidence_only",
+    "new_question_after_repetition"
+  ],
+  "suite_accuracy": [
+    {
+      "configuration": "native-reference-build-20",
+      "correct": 4,
+      "total": 9,
+      "fraction": 0.4444444444444444,
+      "all_cases_correct": false
+    },
+    {
+      "configuration": "native-candidate-decode-attention-active8-v2-build",
+      "correct": 4,
+      "total": 9,
+      "fraction": 0.4444444444444444,
+      "all_cases_correct": false
+    }
+  ],
+  "comparisons": [
+    {
+      "reference": "native-reference-build-20",
+      "candidate": "native-candidate-decode-attention-active8-v2-build",
+      "cases": [
+        {
+          "case": "fact_recall",
+          "output_ids_identical": true,
+          "finish_identical": true,
+          "text_identical": true,
+          "grading_identical": true,
+          "reference_correct": true,
+          "candidate_correct": true,
+          "new_case_regression": false,
+          "improved_case": false,
+          "regressed_checks": []
+        },
+        {
+          "case": "corrected_fact",
+          "output_ids_identical": true,
+          "finish_identical": true,
+          "text_identical": true,
+          "grading_identical": true,
+          "reference_correct": false,
+          "candidate_correct": false,
+          "new_case_regression": false,
+          "improved_case": false,
+          "regressed_checks": []
+        },
+        {
+          "case": "assistant_quote",
+          "output_ids_identical": true,
+          "finish_identical": true,
+          "text_identical": true,
+          "grading_identical": true,
+          "reference_correct": true,
+          "candidate_correct": true,
+          "new_case_regression": false,
+          "improved_case": false,
+          "regressed_checks": []
+        },
+        {
+          "case": "task_switch",
+          "output_ids_identical": true,
+          "finish_identical": true,
+          "text_identical": true,
+          "grading_identical": true,
+          "reference_correct": false,
+          "candidate_correct": false,
+          "new_case_regression": false,
+          "improved_case": false,
+          "regressed_checks": []
+        },
+        {
+          "case": "json_extraction",
+          "output_ids_identical": true,
+          "finish_identical": true,
+          "text_identical": true,
+          "grading_identical": true,
+          "reference_correct": false,
+          "candidate_correct": false,
+          "new_case_regression": false,
+          "improved_case": false,
+          "regressed_checks": []
+        },
+        {
+          "case": "two_step_arithmetic",
+          "output_ids_identical": true,
+          "finish_identical": true,
+          "text_identical": true,
+          "grading_identical": true,
+          "reference_correct": false,
+          "candidate_correct": false,
+          "new_case_regression": false,
+          "improved_case": false,
+          "regressed_checks": []
+        },
+        {
+          "case": "distractor_recall",
+          "output_ids_identical": true,
+          "finish_identical": true,
+          "text_identical": true,
+          "grading_identical": true,
+          "reference_correct": true,
+          "candidate_correct": true,
+          "new_case_regression": false,
+          "improved_case": false,
+          "regressed_checks": []
+        },
+        {
+          "case": "evidence_only",
+          "output_ids_identical": true,
+          "finish_identical": true,
+          "text_identical": true,
+          "grading_identical": true,
+          "reference_correct": true,
+          "candidate_correct": true,
+          "new_case_regression": false,
+          "improved_case": false,
+          "regressed_checks": []
+        },
+        {
+          "case": "new_question_after_repetition",
+          "output_ids_identical": true,
+          "finish_identical": true,
+          "text_identical": true,
+          "grading_identical": true,
+          "reference_correct": false,
+          "candidate_correct": false,
+          "new_case_regression": false,
+          "improved_case": false,
+          "regressed_checks": []
+        }
+      ],
+      "exact_trajectory_gate_passed": true,
+      "text_identical": true,
+      "grading_identical": true,
+      "no_new_case_regressions": true,
+      "no_new_check_regressions": true,
+      "no_new_regressions": true,
+      "passed": true
+    }
+  ],
+  "baseline_wrong_answers": [
+    {
+      "case": "corrected_fact",
+      "text": "Lima.",
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": true,
+          "exact_answer": false
+        },
+        "details": "exact target: \"Lima\""
+      }
+    },
+    {
+      "case": "task_switch",
+      "text": "9, 2, 5.",
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "only_comma_separated_integers": false,
+          "correct_order": false
+        },
+        "details": "integer_list target: [2, 5, 9]"
+      }
+    },
+    {
+      "case": "json_extraction",
+      "text": "```json\n{\"name\": \"Mira\", \"color\": \"teal\"}\n```",
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "valid_json_only": false,
+          "exact_fields_and_values": false
+        },
+        "details": "json target: {\"name\": \"Mira\", \"color\": \"teal\"}"
+      }
+    },
+    {
+      "case": "two_step_arithmetic",
+      "text": "The total number of beads is 17 red + 8 blue = ",
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"20\""
+      }
+    },
+    {
+      "case": "new_question_after_repetition",
+      "text": "7",
+      "grade": {
+        "passed": false,
+        "checks": {
+          "nonempty": true,
+          "answer_present": false,
+          "exact_answer": false
+        },
+        "details": "exact target: \"12\""
+      }
+    }
+  ],
+  "exact_trajectory_gate_passed": true,
+  "no_new_regressions": true,
+  "passed": true,
+  "guard_after": {
+    "directory": "$REPO/build/benchmark-status",
+    "metadata": {
+      "name": "Active8 qualification quality",
+      "started_at": "2026-11-14T04:17:14.392815+00:00"
+    }
+  },
+  "host_after": {
+    "timestamp_utc": "2026-11-14T04:17:22Z",
+    "load_average": [
+      11.3017578125,
+      9.7275390625,
+      10.51171875
+    ],
+    "busiest_processes": [
+      {
+        "cpu_percent": 100.0,
+        "memory_percent": 0.7,
+        "elapsed": "11-14:32:55"
+      },
+      {
+        "cpu_percent": 95.8,
+        "memory_percent": 0.1,
+        "elapsed": "00:08"
+      },
+      {
+        "cpu_percent": 94.5,
+        "memory_percent": 0.1,
+        "elapsed": "11-14:32:34"
+      },
+      {
+        "cpu_percent": 64.5,
+        "memory_percent": 10.4,
+        "elapsed": "08-07:46:01"
+      },
+      {
+        "cpu_percent": 49.9,
+        "memory_percent": 0.4,
+        "elapsed": "11-07:15:56"
+      },
+      {
+        "cpu_percent": 43.7,
+        "memory_percent": 0.3,
+        "elapsed": "13:40"
+      },
+      {
+        "cpu_percent": 11.9,
+        "memory_percent": 0.4,
+        "elapsed": "07-12:55:33"
+      },
+      {
+        "cpu_percent": 5.7,
+        "memory_percent": 0.3,
+        "elapsed": "11-14:33:22"
+      },
+      {
+        "cpu_percent": 5.0,
+        "memory_percent": 0.4,
+        "elapsed": "07-01:38:00"
+      },
+      {
+        "cpu_percent": 2.8,
+        "memory_percent": 0.1,
+        "elapsed": "02-11:02:10"
+      },
+      {
+        "cpu_percent": 2.1,
+        "memory_percent": 1.1,
+        "elapsed": "11-07:15:57"
+      },
+      {
+        "cpu_percent": 1.9,
+        "memory_percent": 0.0,
+        "elapsed": "00:00"
+      },
+      {
+        "cpu_percent": 1.8,
+        "memory_percent": 0.0,
+        "elapsed": "11-14:32:28"
+      },
+      {
+        "cpu_percent": 1.7,
+        "memory_percent": 0.2,
+        "elapsed": "11-07:15:56"
+      },
+      {
+        "cpu_percent": 1.6,
+        "memory_percent": 0.1,
+        "elapsed": "11-14:33:15"
+      },
+      {
+        "cpu_percent": 1.3,
+        "memory_percent": 0.0,
+        "elapsed": "11-14:33:22"
+      },
+      {
+        "cpu_percent": 1.3,
+        "memory_percent": 0.1,
+        "elapsed": "11-14:32:40"
+      },
+      {
+        "cpu_percent": 1.2,
+        "memory_percent": 0.0,
+        "elapsed": "11-14:33:13"
+      },
+      {
+        "cpu_percent": 1.1,
+        "memory_percent": 0.0,
+        "elapsed": "11-14:59:40"
+      },
+      {
+        "cpu_percent": 1.0,
+        "memory_percent": 0.5,
+        "elapsed": "12:15:41"
+      }
+    ]
+  },
+  "archive_provenance": {
+    "source_report": "build/native-cpu/decode-attention-active8-v2-quality.json",
+    "source_sha256": "c6db7575c9a838bb8d1ce430f439cb9a5a40616a631d394932c72a8f7b1adb4b",
+    "sanitization": "Repository/home paths and process identifiers sanitized; all outcomes, quality scores and seeded token arrays retained."
+  }
+}

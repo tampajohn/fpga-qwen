@@ -28,4 +28,12 @@ The [complete exploratory report](../reports/native-cpu-active8-heldout-discover
 
 Ratios above1 favor the candidate. The1536-token decode regression and3328-token median slowdown remain visible; three pairs cannot support context thresholds or a broad performance claim. No contexts or outliers were removed. The [complete messages and token fixtures](../reports/native-cpu-active8-heldout-fixtures.json) were frozen before measurements.
 
-The [full36-case B2 API gate](../reports/native-cpu-active8-verify-api.json) also passed with1/12/64 physical workers. Remaining prefix/suffix/CLI/quality/seed gates and independent20-pair confirmation are still pending. The policy remains fixed operation-aware partitioning, not an adaptive context switch. Live build20 remains unchanged.
+The [full36-case B2 API gate](../reports/native-cpu-active8-verify-api.json) also passed with1/12/64 physical workers. The additional qualification gates below have now passed; independent20-pair confirmation remains pending. The policy remains fixed operation-aware partitioning, not an adaptive context switch. Live build20 remains unchanged.
+
+## Completed relative functional qualification
+
+The [bound aggregate](../reports/native-cpu-active8-qualification.json) now includes the prior100-array/API36 evidence and all six additional checks against pristine build20: [canonical prefix28](../reports/native-cpu-active8-qualification-prefix.json), [suffix35 plus7 cached cases and cancellation/restart](../reports/native-cpu-active8-qualification-suffix.json), [CLI5](../reports/native-cpu-active8-qualification-cli.json), [nine-case quality](../reports/native-cpu-active8-qualification-quality.json), [eighteen-case quality](../reports/native-cpu-active8-qualification-extended.json), and [seeded sampled streams](../reports/native-cpu-active8-qualification-seeded.json). The archives retain all token arrays, case outcomes and source/binary bindings.
+
+Both engines scored4/9 and10/18 respectively. Passing means exact trajectory agreement and no new regressions on these finite suites, not better answer accuracy or universal correctness. Seeds42/1337 and repeated runs retain the same sampled trajectories. The known absolute63/64 numerical failures remain disclosed.
+
+The [qualification archive inventory](../reports/native-cpu-active8-qualification-archive.json) includes byte-identical executed controller/checker and native-reference eighteen-case helper snapshots. Confirmation, original-context regression controls and any release decision remain separate; these results do not promote the candidate or alter live build20.

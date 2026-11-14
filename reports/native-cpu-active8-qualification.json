@@ -1,0 +1,85 @@
+{
+  "completed": true,
+  "passed": true,
+  "source_sha256": {
+    "$REPO/build/native-cpu/run_active8_qualification_v1.py": "9f5e220cf3730b9ef219548feea88ae985b2062b2983eec4e4fdc9e3000b173c",
+    "$REPO/build/native-cpu/check_active8_qualification_v1.py": "e9a52f0da51f9e869230fe47b032f11334a33b52c736c42333f3282f6563fbe8",
+    "$REPO/tools/check_native_cpu_prefix.py": "485c4e7a448a122a017e7568c5dc871eddb877325e98aa504ed1eb6fd63e1e50",
+    "$REPO/tools/check_native_suffix.py": "0b701b30e77ee646c9ed1cbc6fd828384bccc4dca2afd080d9a7061648dd473d",
+    "$REPO/tools/check_native_suffix_cli.py": "9d8cfc781a5523e865bc476b7ab6708c64c2c5f95467283ba4cb2edf80489b2a",
+    "$REPO/tools/benchmark_native_cpu.py": "8f0d62b38b29d48bf4d3e94156d591686208fba4168ad7fe6753c7da77063090",
+    "$REPO/build/native-cpu/check_active8_extended_quality_v1.py": "7c6e00dff657ceb52e205499ea280dc4198418ee54eb5d0f92e6f78d7ea62402",
+    "$REPO/build/native-cpu/check-seeded-stream-regression-v1.py": "d1a59bcb04d03936677d4dfa7bfe0f48281b642c8ab34e3b857f358298651a43",
+    "$REPO/tools/native_cpu_chat.py": "154729079992e9c8c0df6e43077789ea73b8f85decb0a000f40e4cc3853b5882",
+    "$REPO/tools/chat_protocol.py": "626321aa06c9f050887912be39917a20013f33edae2f93f1bd2112955439652e",
+    "$REPO/tools/suffix.py": "06bd949ad8f1c4b96fa641b1bbde8a0e706519f26d4267e7e4e3342999a12ab7",
+    "$REPO/tools/benchmark_guard.py": "9a5df6755c2c9d6886950234dcf8a59f3f53567c0bbd163e6517f0069bbfa4a7"
+  },
+  "executed": [
+    "prefix",
+    "suffix",
+    "cli",
+    "quality",
+    "extended",
+    "seeded"
+  ],
+  "candidate": "$REPO/build/native-cpu/decode-attention-active8-v2-build/qwen_cpu",
+  "binary_sha256": "2f0596b8d9cd49b539153ad237e4b271574018ba0a2e371d5298f407d9f66b9a",
+  "candidate_manifest_sha256": "9431e7eb41f52e77a8446b02d354df61d0a583405998593a11683f5f7e4b1d40",
+  "baseline_binary_sha256": "d5ec2765f58e9e7406116319b5d8b181432e914dbfa3ff0a5c0a8fadfdc3371e",
+  "baseline_manifest_sha256": "d6329dc58d1e1a02b49189384db1fedbb64a3622082bf91ae8a9505a393e5bca",
+  "full": true,
+  "reports": {
+    "exact-gate": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-exact-gate.json",
+      "sha256": "e3434815e99ad06b6b32d24eadd8a11ed5bf4a93043d1bfbb6ceb09063581e5a"
+    },
+    "timeboundary-exact-gate": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-timeboundary-exact-gate.json",
+      "sha256": "e5b81a530575e47a83767e6d15df4f59ca7d5d9223db5df8e144ece1567cb7f5"
+    },
+    "newboundary-relative-exact-gate": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-newboundary-relative-exact-gate.json",
+      "sha256": "4ebe033934bbfc3666ecaed8d566a1f5e90f233b9597e3708c1bc1bf9014f88c"
+    },
+    "step-edge-exact-gate": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-step-edge-exact-gate.json",
+      "sha256": "7f3443d76f09f7bc7616bbe70d65829b21fc0f6cc004e0bb403afcb9bda62b07"
+    },
+    "api": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-verify-api/report.json",
+      "sha256": "f52e760984848debf5cd4f1fa0b29b21d8808fe2483a158d04ea364dec084439"
+    },
+    "prefix": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-prefix-check/report.json",
+      "sha256": "4776e517923b5b55e536a3cb35cbd398e323d49e4ff7b53aab1895b963d7d18f"
+    },
+    "suffix": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-suffix-trajectories.json",
+      "sha256": "c75aa50cd59de8286c249695743704d941066a869fd3c7a652240e6833bcd735"
+    },
+    "cli": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-suffix-cli/report.json",
+      "sha256": "8937c9a0fa8a78840806a8a16b5ecdcebc7626dec5d40561b541a173e8805056"
+    },
+    "quality": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-quality.json",
+      "sha256": "c6db7575c9a838bb8d1ce430f439cb9a5a40616a631d394932c72a8f7b1adb4b"
+    },
+    "extended": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-extended-quality.json",
+      "sha256": "b873b96a811044a5af8f33f1a047b2bc7ace5f3b3cfa120db7b5b3d0584fade6"
+    },
+    "seeded": {
+      "path": "$REPO/build/native-cpu/decode-attention-active8-v2-seeded-stream/report.json",
+      "sha256": "61aa64b555e4e8e7b89ff2c69b47ed2523da39c3fb5b9dd2ac814506f098dbd1"
+    }
+  },
+  "absolute_oracle_pass_claimed": false,
+  "release_authorized": false,
+  "archive_provenance": {
+    "source_report": "build/native-cpu/decode-attention-active8-v2-qualification.json",
+    "source_sha256": "5a72216d70dc98afb536f6a0821840bd0777ff611e42961eaa0abd3742625033",
+    "sanitization": "Repository/home paths and process identifiers sanitized; all outcomes, quality scores and seeded token arrays retained."
+  }
+}
