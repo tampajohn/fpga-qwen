@@ -1,0 +1,38 @@
+{
+  "completed": true,
+  "passed": true,
+  "inference_run": false,
+  "records": [
+    {
+      "mode": "greedy",
+      "reports": [
+        {
+          "path": "build/native-cpu/build20-overhead452-greedy-v1/report.json",
+          "sha256": "da9c2cfc5a41bb6c5b316543fb585cdf83d7193c37c517051c72b82d2cf6d361"
+        },
+        {
+          "path": "build/native-cpu/build20-stage452-greedy-v1/report.json",
+          "sha256": "03433f9e7314d681052839578e8c4cff0cecdd142b9a4fe9404369204fc13948"
+        }
+      ],
+      "visits_compared": 8,
+      "visible_stream_identical": true
+    },
+    {
+      "mode": "chat",
+      "reports": [
+        {
+          "path": "build/native-cpu/build20-overhead452-chat-v1/report.json",
+          "sha256": "9f9d8fdcbb1ca2f7ce7194dfd8e21cee55866b50ea0600b1771c1758407e67f3"
+        },
+        {
+          "path": "build/native-cpu/build20-stage452-chat-v1/report.json",
+          "sha256": "ba79397104ab05ae11e7904891b91ec55221d279df16035e2848de2c978edadb"
+        }
+      ],
+      "visits_compared": 8,
+      "visible_stream_identical": true
+    }
+  ],
+  "scope": "Offline comparison of exact visible update IDs/text and terminal finish reason across pristine20 and native stage timing arms/repeats. Suppressed terminal EOS ID is not compared. No throughput or absolute numerical claim."
+}
