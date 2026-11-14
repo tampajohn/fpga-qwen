@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+"""Guarded offline metrics only: native batch versus sequential, not an oracle gate."""
+import argparse,json,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[3]
+sys.path.insert(0,str(ROOT/'tools'))
+from capture_native_cpu_logits import guard,sha,save
+
+def main():
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--capture',type=Path,default=ROOT/'build/native-cpu/build20-layer0-all63-trace-v1/report.json')
+    ap.add_argument('--output',type=Path,required=True); a=ap.parse_args()
+    guarded=guard(ROOT/'build/benchmark-status')
+    assert not a.output.exists()
+    import numpy as np
+    source=json.loads(a.capture.read_text())
+    assert source['completed'] is True and source['identity_passed'] is True
+    assert not source.get('error') and not source.get('cleanup_error')
+    inputs={str(a.capture.resolve()):sha(a.capture),str(Path(__file__).resolve()):sha(__file__)}
+    for p,digest in source['generated_hashes'].items():
+        assert sha(p)==digest; inputs[p]=digest
+    # Historical helper/source mutation is not silently reinterpreted: final frozen
+    # hashes were checked by the completed capture; direct trace data are rechecked here.
+    base=a.capture.parent
+    phases=('embedding','input_norm_h','q_projection','k_projection','v_projection',
+            'q_post_norm','k_post_norm','q_rope','k_rope','canonical_keys','canonical_values')
+    def data(mode,phase):
+        rows=[]
+        for i in range(63):
+            p=(base/f'{mode}-traces/capture-000000/row-{i:03d}-{phase}.f32').resolve()
+            assert str(p) in source['generated_hashes'] and sha(p)==source['generated_hashes'][str(p)]
+            x=np.fromfile(p,dtype='<f4')
+            assert x.shape==((2048 if phase.startswith('q_') else 1024),) and np.isfinite(x).all()
+            rows.append(x)
+        return np.stack(rows)
+    def metrics(x,y):
+        delta=x.astype(np.float64)-y.astype(np.float64)
+        return dict(max_abs=float(np.max(np.abs(delta))),rms=float(np.sqrt(np.mean(delta*delta))),
+            differing_values=int(np.count_nonzero(x!=y)),differing_bits=int(np.count_nonzero(x.view(np.uint32)!=y.view(np.uint32))),elements=int(x.size))
+    report=dict(completed=False,diagnostic_only=True,numerical_qualification=False,timing_claim=False,
+        guard_before=guarded,inputs=inputs,phases={},half_cast_audits={},rounding_comparisons={},
+        scope='Same packed weights; batch versus sequential only. No independent-oracle error attribution, quality gate, or final-logit causal proof.')
+    for phase in phases:
+        batch,seq=data('batch',phase),data('sequential',phase)
+        report['phases'][phase]=dict(all_rows=metrics(batch,seq),by_position=[dict(position=i,**metrics(batch[i],seq[i])) for i in range(63)])
+    for label,pre,post in [('keys','k_rope','canonical_keys'),('values','v_projection','canonical_values')]:
+        for mode in ('batch','sequential'):
+            before,after=data(mode,pre),data(mode,post)
+            cast=before.astype(np.float16).astype(np.float32)
+            assert np.array_equal(cast.view(np.uint32),after.view(np.uint32))
+            report['half_cast_audits'][mode+'_'+label]=dict(all_elements_bit_identical=True,elements=int(after.size))
+        b,s=data('batch',pre),data('sequential',pre)
+        bc,sc=data('batch',post),data('sequential',post)
+        report['rounding_comparisons'][label]=dict(before=metrics(b,s),after=metrics(bc,sc),
+            by_position=[dict(position=i,before=metrics(b[i],s[i]),after=metrics(bc[i],sc[i])) for i in range(63)],
+            before_equal_after_different=int(np.count_nonzero((b==s)&(bc!=sc))),
+            before_different_after_equal=int(np.count_nonzero((b!=s)&(bc==sc))))
+    assert inputs=={p:sha(p) for p in inputs}
+    report.update(completed=True,guard_after=guard(ROOT/'build/benchmark-status'))
+    save(a.output,report); print(a.output)
+if __name__=='__main__':main()

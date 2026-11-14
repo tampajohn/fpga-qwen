@@ -1,0 +1,79 @@
+{
+  "diagnostic_only": true,
+  "numerical_qualification": false,
+  "performance_claim_eligible": false,
+  "reports": {
+    "$REPO/reports/native-cpu-layer0-all63-native-capture.json": {
+      "source": "$REPO/build/native-cpu/build20-layer0-all63-trace-v1/report.json",
+      "raw_source_sha256": "aa55b47cec5419e832509c702039140de3dae561b2f3cdc786f92cfa0b2ee893",
+      "archive_sha256": "3907f8330eb0a5ae8569fc18d7a2cb970e0ffb1f8d1888297023d8b06dd242eb"
+    },
+    "$REPO/reports/native-cpu-layer0-all63-oracle-capture.json": {
+      "source": "$REPO/build/native-cpu/numpy-layer0-all63-trace-v1/report.json",
+      "raw_source_sha256": "30d3dad72528cabd7e72f784f2d757a37490882a1e60746e6b533c38d13ae511",
+      "archive_sha256": "8c34132636e69e7b55597dea00c9318a70c0dcce5b50ce523a484380430c8c93"
+    },
+    "$REPO/reports/native-cpu-layer0-all63-native-analysis.json": {
+      "source": "$REPO/build/native-cpu/layer0-all63-native-analysis-v1.json",
+      "raw_source_sha256": "4d3d24a91885e537a6eec6f7bf7750564c00745f288110bfc9c5889590e2deb7",
+      "archive_sha256": "c3ac7e56f5118c3a0d4d45208d83e610d2c56de2362b731bd2a51b53ed8a6643"
+    }
+  },
+  "sources": {
+    "$REPO/tools/experiments/layer0-all63-numerical-diagnostics-prepare_layer0_all63_trace_v1.py.txt": {
+      "source": "$REPO/build/native-cpu/numerical-diagnostics/prepare_layer0_all63_trace_v1.py",
+      "raw_source_sha256": "e06dea67e47e8a245791f74c474bb9ca7b92cb6da9adb94fb1cd82042a5fa25e",
+      "archive_sha256": "e06dea67e47e8a245791f74c474bb9ca7b92cb6da9adb94fb1cd82042a5fa25e"
+    },
+    "$REPO/tools/experiments/layer0-all63-numerical-diagnostics-capture_layer0_all63_v1.py.txt": {
+      "source": "$REPO/build/native-cpu/numerical-diagnostics/capture_layer0_all63_v1.py",
+      "raw_source_sha256": "8c795e5e0e099fcb46b704493ae0ef92fc45994b882283e1d3a0d6ff7bea32f9",
+      "archive_sha256": "8c795e5e0e099fcb46b704493ae0ef92fc45994b882283e1d3a0d6ff7bea32f9"
+    },
+    "$REPO/tools/experiments/layer0-all63-numerical-diagnostics-analyze_layer0_all63_native_v1.py.txt": {
+      "source": "$REPO/build/native-cpu/numerical-diagnostics/analyze_layer0_all63_native_v1.py",
+      "raw_source_sha256": "31bd916f08410328df6d391722d6d326310a7663c0dface3f44e9cb68665b543",
+      "archive_sha256": "31bd916f08410328df6d391722d6d326310a7663c0dface3f44e9cb68665b543"
+    },
+    "$REPO/tools/experiments/layer0-all63-numerical-diagnostics-prepare_numpy_all63_trace_v1.py.txt": {
+      "source": "$REPO/build/native-cpu/numerical-diagnostics/prepare_numpy_all63_trace_v1.py",
+      "raw_source_sha256": "c1dcbfd6cd719b034ff01adc9e6e41cecbe3531d37b86ddaa37861735eaedd08",
+      "archive_sha256": "c1dcbfd6cd719b034ff01adc9e6e41cecbe3531d37b86ddaa37861735eaedd08"
+    },
+    "$REPO/tools/experiments/layer0-all63-numerical-diagnostics-numpy_all63_trace_oracle_v1.py.txt": {
+      "source": "$REPO/build/native-cpu/numerical-diagnostics/numpy_all63_trace_oracle_v1.py",
+      "raw_source_sha256": "214f986fb51cba076464a97b2f5274cb395ef4db0e9282701b66b193d1365db2",
+      "archive_sha256": "214f986fb51cba076464a97b2f5274cb395ef4db0e9282701b66b193d1365db2"
+    },
+    "$REPO/tools/experiments/layer0-all63-numerical-diagnostics-capture_numpy_all63_trace_v1.py.txt": {
+      "source": "$REPO/build/native-cpu/numerical-diagnostics/capture_numpy_all63_trace_v1.py",
+      "raw_source_sha256": "c050d4b784aa39ebd66093e49fca6eb5a9047d6bf209ef99cc604500c8eefb3b",
+      "archive_sha256": "c050d4b784aa39ebd66093e49fca6eb5a9047d6bf209ef99cc604500c8eefb3b"
+    },
+    "$REPO/tools/experiments/layer0-all63-numerical-diagnostics-numpy_all63_trace_oracle_v1.patch.txt": {
+      "source": "$REPO/build/native-cpu/numerical-diagnostics/numpy_all63_trace_oracle_v1.patch",
+      "raw_source_sha256": "b620742c9cceb730557b588ff4e08f183ef16fb9a3e8e75f0874826785317d9c",
+      "archive_sha256": "b620742c9cceb730557b588ff4e08f183ef16fb9a3e8e75f0874826785317d9c"
+    },
+    "$REPO/tools/experiments/layer0-all63-numerical-diagnostics-numpy_all63_trace_oracle_v1-provenance.json.txt": {
+      "source": "$REPO/build/native-cpu/numerical-diagnostics/numpy_all63_trace_oracle_v1-provenance.json",
+      "raw_source_sha256": "00e5968020749bab32eda6a5ab889ed05599dce10a5e2a6beb0f80809a056db5",
+      "archive_sha256": "f3f0aa0daf28247b1c03a39815aa0e0ef761df96de40d394ed9fb76acc6d21ec"
+    },
+    "$REPO/tools/experiments/layer0-all63-build20-layer0-all63-trace-v1-source-candidate.patch.txt": {
+      "source": "$REPO/build/native-cpu/build20-layer0-all63-trace-v1-source/candidate.patch",
+      "raw_source_sha256": "833581b24fdbf16a1b03d48abc95e03b0502bc7d2368c2b135faa92c2832597c",
+      "archive_sha256": "833581b24fdbf16a1b03d48abc95e03b0502bc7d2368c2b135faa92c2832597c"
+    },
+    "$REPO/tools/experiments/layer0-all63-build20-layer0-all63-trace-v1-source-experiment.json.txt": {
+      "source": "$REPO/build/native-cpu/build20-layer0-all63-trace-v1-source/experiment.json",
+      "raw_source_sha256": "6d971354a0880e51a47bcb93aacc76e744f3d692b172ae000cc6713f4fa342c3",
+      "archive_sha256": "6d971354a0880e51a47bcb93aacc76e744f3d692b172ae000cc6713f4fa342c3"
+    },
+    "$REPO/tools/experiments/layer0-all63-build20-layer0-all63-trace-v1-build-manifest.json.txt": {
+      "source": "$REPO/build/native-cpu/build20-layer0-all63-trace-v1-build/manifest.json",
+      "raw_source_sha256": "387f1fcc152a0efc0b061178648c45bdd4966cb3dfaffd82728566dc063c7aa3",
+      "archive_sha256": "e9a42cbb8c02a6cc237c6fbf66527ef3e4dd4fbe87a9f4e94c90e82211471526"
+    }
+  }
+}

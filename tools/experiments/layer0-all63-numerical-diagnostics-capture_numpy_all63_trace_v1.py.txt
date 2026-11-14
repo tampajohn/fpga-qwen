@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+"""Guarded observational independent-oracle trace at layer0 positions0..62; no new tolerance contract."""
+import argparse,hashlib,json,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[3]
+sys.path.insert(0,str(ROOT/'tools'))
+from benchmark_native_phase0 import guard,sha
+from numpy_all63_trace_oracle_v1 import NumpyQwen
+import numpy as np
+SHAPES={name: ([16,128] if name.startswith('q_') else [8,128] if name in ('k_projection','v_projection','k_post_norm','k_rope','canonical_keys','canonical_values') else [1024]) for name in ('embedding','input_norm_h','q_projection','k_projection','v_projection','q_post_norm','k_post_norm','q_rope','k_rope','canonical_keys','canonical_values')}
+def main():
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--oracle-report',type=Path,required=True);p.add_argument('--directory',type=Path,required=True);p.add_argument('--guard-state-dir',type=Path,default=ROOT/'build/benchmark-status');a=p.parse_args()
+ guard(a.guard_state_dir);out=a.directory.resolve();out.mkdir(exist_ok=False)
+ r=dict(completed=False,passed=False,gpu=False,pytorch=False,performance_claim_eligible=False,target_positions=list(range(63)),target_layer=0,context_tokens=63,phase_shapes=SHAPES,traces=[],scope='Observational copied independent NumPy oracle; original FP32 math retained. Final full logits must byte-match existing persisted oracle. Trace differences do not by themselves establish implementation errors.')
+ def save():(out/'report.json').write_text(json.dumps(r,indent=2)+'\n')
+ try:
+  refpath=a.oracle_report.resolve();ref=json.loads(refpath.read_text())
+  assert ref['completed'] is True and not ref.get('error') and not ref.get('cleanup_error')
+  storage=ref['oracle_logits_storage'];assert Path(storage['report']).resolve()==refpath
+  assert storage['dtype']=='float32' and storage['byte_order']=='little' and storage['numerical_conversion'] is False
+  prompt=storage['prompt_ids'];assert len(prompt)==63
+  old=next(row for row in storage['dumps'] if row['step']==0 and row['context_tokens']==63)
+  assert old['completed'] is True and sha(Path(old['path']))==old['sha256']
+  assert Path(old['path']).stat().st_size==151936*4
+  config=ref['oracle'];assert config['weight_precision']=='f16' and config['kv_precision']=='f16'
+  checkpoint=Path(config['checkpoint']);provenance=Path(__file__).parent/'numpy_all63_trace_oracle_v1-provenance.json';source=Path(__file__).parent/'numpy_all63_trace_oracle_v1.py'
+  origin=json.loads(provenance.read_text());assert sha(source)==origin['diagnostic_sha256'] and sha(Path(origin['original']))==origin['original_sha256']
+  inputs={str(refpath):sha(refpath),str(Path(old['path'])):old['sha256']}
+  for path,digest in ref['inputs'].items():
+   if Path(path).name in ('model.safetensors','config.json'):
+    assert sha(Path(path))==digest;inputs[path]=digest
+  assert str(checkpoint/'model.safetensors') in inputs
+  fixture=ROOT/'build/native-cpu/extended-tutorial-fixtures/context3968.json'
+  assert prompt==json.loads(fixture.read_text())[:63];inputs[str(fixture)]=sha(fixture)
+  inputs[str(Path(origin['original']))]=origin['original_sha256']
+  for path in [Path(__file__).resolve(),source,provenance,ROOT/'tools/benchmark_native_phase0.py',ROOT/'tools/experiment.py']:
+   inputs[str(path)]=sha(path)
+  r.update(inputs=inputs,prompt_ids=prompt,oracle_reference=str(refpath),oracle_configuration=config,original_oracle_passed=ref.get('passed'));save()
+  oracle=NumpyQwen(checkpoint,weight_precision='f16',kv_precision='f16')
+  expected=None
+  for position,token in enumerate(prompt):expected=oracle.token(token,logits=position==62)
+  assert isinstance(expected,np.ndarray) and expected.dtype==np.dtype('<f4') and expected.shape==(151936,) and np.isfinite(expected).all()
+  data=expected.tobytes();digest=hashlib.sha256(data).hexdigest()
+  with (out/'logits.f32').open('xb') as f:f.write(data)
+  r['logits']=dict(path=str(out/'logits.f32'),sha256=digest,reference_sha256=old['sha256'],greedy=int(expected.argmax()),bit_identical=digest==old['sha256'])
+  # Preserve observations even if instrumentation identity fails, but fail the run.
+  for position in range(63):
+   for phase,shape in SHAPES.items():
+    values=oracle.trace_rows[(position,phase)]
+    assert values.dtype==np.dtype('<f4') and list(values.shape)==shape and np.isfinite(values).all()
+    path=out/f'row-{position:03d}-{phase}.f32';payload=values.tobytes(order='C')
+    with path.open('xb') as f:f.write(payload)
+    r['traces'].append(dict(layer=0,position=position,phase=phase,shape=shape,dtype='float32',byte_order='little',path=str(path),sha256=hashlib.sha256(payload).hexdigest(),bytes=len(payload)))
+  save();assert digest==old['sha256'],'Trace oracle final logits differ from persisted original; diagnostic invalid'
+  assert sha(out/'logits.f32')==digest and (out/'logits.f32').stat().st_size==151936*4
+  assert len(r['traces'])==63*11
+  for row in r['traces']:assert sha(Path(row['path']))==row['sha256'] and Path(row['path']).stat().st_size==row['bytes']
+  assert all(sha(Path(path))==digest for path,digest in inputs.items())
+  r.update(completed=True,passed=True)
+ except BaseException as error:r['error']=dict(type=type(error).__name__,message=str(error));raise
+ finally:save()
+ print(out/'report.json')
+if __name__=='__main__':main()

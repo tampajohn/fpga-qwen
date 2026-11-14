@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+"""Guarded observational layer-zero tracing; no numerical or timing qualification."""
+import argparse, json, os, sys, threading, struct, math
+from pathlib import Path
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT/'tools'))
+from capture_native_cpu_logits import sha, save, guard, read_ids, VOCABULARY
+from native_cpu_chat import NativeCPUChat
+B = ROOT/'build/native-cpu'
+PHASES = {name: (2048 if name.startswith('q_') else 1024) for name in (
+ 'embedding','input_norm_h','q_projection','k_projection','v_projection',
+ 'q_post_norm','k_post_norm','q_rope','k_rope','canonical_keys','canonical_values')}
+
+def validate_trace(directory, mode):
+    rows = [json.loads(x) for x in (directory/'manifest.jsonl').read_text().splitlines()]
+    starts = [r for r in rows if r['kind']=='chunk_start']
+    ends = [r for r in rows if r['kind']=='chunk_complete']
+    expected = [(0,63)] if mode=='batch' else [(i,1) for i in range(63)]
+    assert [(r['base'],r['rows']) for r in starts] == expected
+    assert [r['batch'] for r in starts] == [n for _,n in expected]
+    assert [(r['base'],r['rows']) for r in ends] == expected
+    assert [r['all63_complete'] for r in ends] == [False]*(len(expected)-1)+[True]
+    found = {}; files = {}
+    for r in rows:
+        if r['kind'] != 'tensor': continue
+        key = (r['position'],r['phase'])
+        assert key not in found and 0<=key[0]<63 and key[1] in PHASES
+        n=PHASES[key[1]]
+        assert r['layer']==0 and r['elements']==n and r['bytes']==4*n
+        assert r['dtype']=='float32' and r['byte_order']=='little'
+        p=directory/r['file']; assert p.parent==directory and p.stat().st_size==4*n
+        assert all(math.isfinite(v) for v in struct.unpack('<'+str(n)+'f',p.read_bytes()))
+        found[key]=sha(p); files[str(p)]=found[key]
+    assert len(found)==693 and len(list(directory.glob('*.f32')))==693
+    return dict(tensors=files, manifest_sha256=sha(directory/'manifest.jsonl'))
+
+def main():
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--directory',type=Path,required=True)
+    args=ap.parse_args(); gd=ROOT/'build/benchmark-status'; guarded=guard(gd)
+    out=args.directory.resolve(); out.mkdir(parents=True,exist_ok=False)
+    report=dict(completed=False,diagnostic_only=True,timing_claim=False,performance_claim_eligible=False,
+        numerical_qualification=False,guard_before=guarded,arms=[],trace_validation={},identity_passed=False)
+    rp=out/'report.json'; save(rp,report)
+    weights=B/'weights.bin'; fixtures=B/'prefix-granularity-boundary-fixtures-v1'
+    prompt_path=fixtures/'prompt-63.json'; continuation_path=fixtures/'continuation-63.json'
+    binaries={'baseline':B/'build-20/qwen_cpu','trace':B/'build20-layer0-all63-trace-v1-build/qwen_cpu'}
+    source=B/'build20-layer0-all63-trace-v1-source'
+    inputs=[Path(__file__).resolve(),Path(__file__).with_name('prepare_layer0_all63_trace_v1.py'),
+        weights,Path(str(weights)+'.index'),Path(str(weights)+'.manifest.json'),prompt_path,continuation_path,
+        source/'experiment.json',source/'candidate.patch',B/'extended-tutorial-fixtures/context3968.json']
+    inputs += [ROOT/'tools'/n for n in ('native_cpu_chat.py','suffix.py','capture_native_cpu_logits.py','benchmark_guard.py')]
+    inputs += [source/n for n in ('core.cpp','core.hpp','main.cpp')]
+    inputs += [p for binary in binaries.values() for p in (binary,binary.parent/'manifest.json')]
+    previous=os.environ.pop('QWEN_LAYER0_TRACE_DIR',None)
+    generated={}
+    try:
+        prompt=read_ids(prompt_path); continuation=read_ids(continuation_path)
+        assert len(prompt)==63 and len(continuation)==1
+        full=read_ids(B/'extended-tutorial-fixtures/context3968.json')
+        assert len(full)==3968 and prompt==full[:63] and continuation==full[63:64]
+        report.update(prompt_ids=prompt,continuation_ids=continuation)
+        report['inputs']={str(p):sha(p) for p in inputs}
+        pack=json.loads(Path(str(weights)+'.manifest.json').read_text())
+        assert pack['completed'] and pack['format']=='QWCPU01'
+        assert pack['binary']['sha256']==sha(weights) and pack['index']['sha256']==sha(Path(str(weights)+'.index'))
+        report['weight_pack_manifest']=pack
+        experiment=json.loads((source/'experiment.json').read_text())
+        assert experiment['generator_sha256']==sha(Path(__file__).with_name('prepare_layer0_all63_trace_v1.py'))
+        assert experiment['parent_manifest_sha256']==sha(B/'build-20/manifest.json')
+        for kind,binary in binaries.items():
+            manifest=json.loads((binary.parent/'manifest.json').read_text())
+            assert manifest['completed'] and manifest['binary_sha256']==sha(binary)
+            wanted=experiment['candidate_source_sha256' if kind=='trace' else 'parent_source_sha256']
+            for name,digest in wanted.items():
+                matching=[v for k,v in manifest['source_sha256'].items() if Path(k).name==name]
+                assert matching==[digest]
+                if kind=='trace': assert sha(source/name)==digest
+        for mode in ('batch','sequential'):
+            for kind,binary in binaries.items():
+                arm=dict(mode=mode,kind=kind,runs=[]); report['arms'].append(arm); save(rp,report)
+                trace_root=out/(mode+'-traces')
+                if kind=='trace': os.environ['QWEN_LAYER0_TRACE_DIR']=str(trace_root)
+                else: os.environ.pop('QWEN_LAYER0_TRACE_DIR',None)
+                engine=NativeCPUChat(None,binary=binary,weights=weights,threads=12,prefill_threads=6)
+                cancel=threading.Event()
+                try:
+                    engine.start(cancel); arm['startup']=engine.ready
+                    assert engine.ready['gpu'] is False and engine.ready['pytorch'] is False
+                    assert engine.ready['decode_threads']==12 and engine.ready['prefill_threads']==6
+                    for repeat in range(2):
+                        run=dict(repeat=repeat,predicted_ids=[],dumps=[]); arm['runs'].append(run)
+                        assert engine.command('reset',cancel)=={'ok':True,'position':0}
+                        assert engine.command('mode greedy',cancel).get('ok') is True
+                        if mode=='batch': response=engine.command('prefill '+' '.join(map(str,prompt)),cancel)
+                        else:
+                            for pos,token in enumerate(prompt):
+                                response=engine.command(f'step {token}',cancel)
+                                assert response.get('position')==pos+1
+                        for step in range(2):
+                            assert response.get('position')==63+step and type(response.get('token')) is int
+                            assert 0<=response['token']<VOCABULARY
+                            run['predicted_ids'].append(response['token'])
+                            dump=out/f'{mode}-{kind}-repeat{repeat}-step{step}.f32'
+                            ack=engine.command('dump '+str(dump),cancel)
+                            assert ack.get('ok') is True and ack.get('count')==VOCABULARY and ack.get('position')==63+step
+                            assert dump.stat().st_size==VOCABULARY*4
+                            assert all(math.isfinite(v) for v in struct.unpack('<'+str(VOCABULARY)+'f',dump.read_bytes()))
+                            generated[str(dump)]=sha(dump)
+                            run['dumps'].append(dict(path=str(dump),sha256=generated[str(dump)],context_tokens=63+step))
+                            save(rp,report)
+                            if step==0: response=engine.command(f'step {continuation[0]}',cancel)
+                        if kind=='trace':
+                            capture=trace_root/f'capture-{repeat:06d}'
+                            record=validate_trace(capture,mode)
+                            report['trace_validation'][str(capture)]=record
+                            generated.update(record['tensors']); generated[str(capture/'manifest.jsonl')]=record['manifest_sha256']
+                            save(rp,report)
+                finally: engine.close()
+            arms=[a for a in report['arms'] if a['mode']==mode]
+            expected=arms[0]['runs'][0]
+            for arm in arms:
+                for run in arm['runs']:
+                    assert run['predicted_ids']==expected['predicted_ids']
+                    assert [d['sha256'] for d in run['dumps']]==[d['sha256'] for d in expected['dumps']]
+            records=[report['trace_validation'][str(trace_root/f'capture-{i:06d}')]['tensors'] for i in range(2)]
+            assert {Path(k).name:v for k,v in records[0].items()}=={Path(k).name:v for k,v in records[1].items()}
+        assert report['inputs']=={str(p):sha(p) for p in inputs}
+        assert generated=={p:sha(p) for p in generated}
+        report.update(completed=True,identity_passed=True,guard_after=guard(gd),generated_hashes=generated)
+    except BaseException as e:
+        report['error']=dict(type=type(e).__name__,message=str(e)); raise
+    finally:
+        if previous is None: os.environ.pop('QWEN_LAYER0_TRACE_DIR',None)
+        else: os.environ['QWEN_LAYER0_TRACE_DIR']=previous
+        save(rp,report)
+    print(rp)
+if __name__=='__main__': main()

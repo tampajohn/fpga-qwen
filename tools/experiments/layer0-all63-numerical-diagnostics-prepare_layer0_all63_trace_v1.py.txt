@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+"""Source-only observational generator; build20 arithmetic unchanged."""
+from pathlib import Path
+import hashlib,json,difflib
+ROOT=Path(__file__).resolve().parents[3];B=ROOT/'build/native-cpu';parent=B/'prefill-query-row-pair-source';dest=B/'build20-layer0-all63-trace-v1-source'
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def replace(text,old,new):
+ assert text.count(old)==1,old[:90]
+ return text.replace(old,new,1)
+def main():
+ assert not dest.exists();m=json.loads((B/'build-20/manifest.json').read_text());assert m['completed']
+ # Bind immutable build20 source snapshot, not mutable live-source filenames.
+ for f in ('core.cpp','core.hpp','main.cpp'):assert sha(parent/f)==m['source_sha256'][str((parent/f).resolve())]
+ dest.mkdir();original=(parent/'core.cpp').read_text();text=original
+ text=replace(text,'#include <fstream>\n','#include <fstream>\n#include <cstdlib>\n#include <filesystem>\n#include <iomanip>\n#include <sstream>\n')
+ marker='struct Tensor {int rows=0,cols=0;const Half* half=nullptr;const float* norm=nullptr;std::vector<float> wide;};\n'
+ helper=r'''
+// Observational layer0-only tracing. No operands are changed. Each logical row
+// gets its own file so batch63 and sequential STEP captures share a schema.
+std::atomic<unsigned long long> layer0_trace_sequence{0};
+thread_local std::filesystem::path layer0_trace_current;
+struct Layer0All63Trace {
+    bool enabled=false;
+    int base=0,rows=0;
+    std::filesystem::path directory;
+    std::ofstream manifest;
+    static std::string number(unsigned long long n,int width) {
+        std::ostringstream out;out<<std::setw(width)<<std::setfill('0')<<n;return out.str();
+    }
+    Layer0All63Trace(int position,int batch):base(position) {
+        const char* path=std::getenv("QWEN_LAYER0_TRACE_DIR");
+        if(!path || !*path || position>=63 || batch<=0)return;
+        rows=std::min(batch,63-position);
+        const std::filesystem::path root(path);std::filesystem::create_directories(root);
+        if(position==0) {
+            layer0_trace_current=root/("capture-"+number(layer0_trace_sequence.fetch_add(1),6));
+            require(std::filesystem::create_directory(layer0_trace_current),"Layer0 trace capture exists");
+        }
+        require(!layer0_trace_current.empty() && layer0_trace_current.parent_path()==root,"Layer0 trace requires position0 start");
+        directory=layer0_trace_current;manifest.open(directory/"manifest.jsonl",std::ios::out|std::ios::app);
+        require(bool(manifest),"Cannot create layer0 manifest");enabled=true;
+        manifest<<"{\"kind\":\"chunk_start\",\"base\":"<<base<<",\"batch\":"<<batch<<",\"rows\":"<<rows<<"}\n";
+        manifest.flush();require(bool(manifest),"Layer0 header write failed");
+    }
+    void write(const char* phase,const float* data,int stride) {
+        if(!enabled)return;
+        for(int row=0;row<rows;++row) {
+            const std::string file="row-"+number(base+row,3)+"-"+phase+".f32";
+            require(!std::filesystem::exists(directory/file),"Layer0 tensor exists");
+            std::ofstream out(directory/file,std::ios::binary|std::ios::out|std::ios::trunc);
+            require(bool(out),"Cannot create layer0 tensor");
+            out.write(reinterpret_cast<const char*>(data+size_t(row)*stride),size_t(stride)*sizeof(float));out.close();
+            require(bool(out),"Layer0 tensor write failed");
+            manifest<<"{\"kind\":\"tensor\",\"layer\":0,\"position\":"<<base+row<<",\"phase\":\""<<phase
+                    <<"\",\"file\":\""<<file<<"\",\"elements\":"<<stride<<",\"bytes\":"<<size_t(stride)*sizeof(float)
+                    <<",\"dtype\":\"float32\",\"byte_order\":\"little\"}\n";
+        }
+        manifest.flush();require(bool(manifest),"Layer0 manifest write failed");
+    }
+    void finish() {
+        if(enabled){manifest<<"{\"kind\":\"chunk_complete\",\"base\":"<<base<<",\"rows\":"<<rows
+            <<",\"all63_complete\":"<<(base+rows==63?"true":"false")<<"}\n";manifest.flush();require(bool(manifest),"Layer0 completion write failed");}
+    }
+};
+'''
+ text=replace(text,marker,marker+helper)
+ text=replace(text,'    void chunk(const int* ids,int batch,Pool& pool) {\n','    void chunk(const int* ids,int batch,Pool& pool) {\n        Layer0All63Trace trace(pos,batch);\n')
+ old='        for(int b=0;b<batch;++b)for(int j=0;j<H;++j)x[b*H+j]=embeddings[size_t(ids[b])*H+j];\n'
+ # Same embedding statement also occurs in B2; target only ordinary chunk prefix.
+ start=text.index('    void chunk(');end=text.index('    void verify_chunk(');ordinary=text[start:end]
+ ordinary=replace(ordinary,old,old+'        trace.write("embedding",x.data(),H);\n')
+ old='            for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);\n'
+ ordinary=replace(ordinary,old,old+'            if(layer==0)trace.write("input_norm_h",h.data(),H);\n')
+ old='            const float* qn=tensor(p+"self_attn.q_norm.weight").norm;const float* kn=tensor(p+"self_attn.k_norm.weight").norm;\n'
+ addition='''            std::vector<float> trace_q_norm,trace_k_norm;
+            if(layer==0 && trace.enabled) {
+                trace.write("q_projection",q.data(),Q*D);trace.write("k_projection",k.data(),K*D);trace.write("v_projection",v.data(),K*D);
+                trace_q_norm.resize(size_t(batch)*Q*D);trace_k_norm.resize(size_t(batch)*K*D);
+            }
+'''
+ ordinary=replace(ordinary,old,addition+old)
+ old='for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}'
+ new='for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);if(layer==0 && trace.enabled)std::copy_n(a,D,trace_q_norm.data()+(size_t(b)*Q+head)*D);rope(a,cs,sn);}'
+ ordinary=replace(ordinary,old,new)
+ old='for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}'
+ new='for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);if(layer==0 && trace.enabled)std::copy_n(a,D,trace_k_norm.data()+(size_t(b)*K+head)*D);rope(a,cs,sn);}'
+ ordinary=replace(ordinary,old,new)
+ old='''            if(batch>1) {
+                // One item owns two adjacent token rows and their GQA head pair.'''
+ observe='''            if(layer==0 && trace.enabled) {
+                trace.write("q_post_norm",trace_q_norm.data(),Q*D);trace.write("k_post_norm",trace_k_norm.data(),K*D);
+                trace.write("q_rope",q.data(),Q*D);trace.write("k_rope",k.data(),K*D);
+                std::vector<float> trace_keys(size_t(trace.rows)*K*D),trace_values(trace_keys.size());
+                for(int row=0;row<trace.rows;++row)for(int head=0;head<K;++head)for(int j=0;j<D;++j) {
+                    const size_t offset=cache_offset(0,pos+row,head)+j,index=(size_t(row)*K+head)*D+j;
+                    trace_keys[index]=float(keys[offset]);trace_values[index]=float(values[offset]);
+                }
+                trace.write("canonical_keys",trace_keys.data(),K*D);trace.write("canonical_values",trace_values.data(),K*D);trace.finish();
+            }
+'''
+ ordinary=replace(ordinary,old,observe+old);text=text[:start]+ordinary+text[end:]
+ assert text[text.index('    void verify_chunk('):]==original[original.index('    void verify_chunk('):]
+ (dest/'core.cpp').write_text(text)
+ for name in ('core.hpp','main.cpp'):(dest/name).write_bytes((parent/name).read_bytes())
+ (dest/'candidate.patch').write_text(''.join(difflib.unified_diff(original.splitlines(True),text.splitlines(True),fromfile='a/engine/core.cpp',tofile='b/engine/core.cpp')))
+ metadata=dict(prepared_only=True,built=False,inference_run=False,diagnostic_only=True,performance_claim_eligible=False,parent='Releasedbuild20 byteidenticalqueryrowtime32',parent_manifest_sha256=sha(B/'build-20/manifest.json'),parent_source_sha256={f:sha(parent/f) for f in ('core.cpp','core.hpp','main.cpp')},candidate_source_sha256={f:sha(dest/f) for f in ('core.cpp','core.hpp','main.cpp')},generator_sha256=sha(Path(__file__)),capture='EnvQWEN_LAYER0_TRACE_DIR;row0..62 only;11phases×63=693arrays/capture. Batch63 andsequentialSTEP useidenticalrow-schema; resetatposition0createsnextcapture.',arithmetic='Onlyobservationalcopies/writecalls inserted, normthenrope originalorder retained; B2functionandsuffixexactunchanged. No altered weights/normalization/attention oracceptancetolerances.',qualification='Final full-logitbytes mustmatchpristinebuild20 perbatch/sequentialpath andbothrepeats beforetraceinterpretation. Timinginvalidwhenenabled.')
+ (dest/'experiment.json').write_text(json.dumps(metadata,indent=2)+'\n');print(dest)
+if __name__=='__main__':main()

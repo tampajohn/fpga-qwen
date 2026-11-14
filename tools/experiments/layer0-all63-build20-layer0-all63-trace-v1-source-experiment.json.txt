@@ -1,0 +1,23 @@
+{
+  "prepared_only": true,
+  "built": false,
+  "inference_run": false,
+  "diagnostic_only": true,
+  "performance_claim_eligible": false,
+  "parent": "Releasedbuild20 byteidenticalqueryrowtime32",
+  "parent_manifest_sha256": "d6329dc58d1e1a02b49189384db1fedbb64a3622082bf91ae8a9505a393e5bca",
+  "parent_source_sha256": {
+    "core.cpp": "e9e07fad8f5f5930eb8fb05f4cfa9eb736a544ae44685660747c25f918fcd884",
+    "core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "candidate_source_sha256": {
+    "core.cpp": "b853b1b7cd309068ac7f3f1661bfe35856356f5859e9a3b0c133fee6decd4b0b",
+    "core.hpp": "70cce7277ce0c6932c509b734e9b65172280de6be46df237b802f1a0c0991357",
+    "main.cpp": "4d9b8ef4bba56188e2fd456ac2fa15f520209c5e958e7b19c16f7dedb04f9e47"
+  },
+  "generator_sha256": "e06dea67e47e8a245791f74c474bb9ca7b92cb6da9adb94fb1cd82042a5fa25e",
+  "capture": "EnvQWEN_LAYER0_TRACE_DIR;row0..62 only;11phases\u00d763=693arrays/capture. Batch63 andsequentialSTEP useidenticalrow-schema; resetatposition0createsnextcapture.",
+  "arithmetic": "Onlyobservationalcopies/writecalls inserted, normthenrope originalorder retained; B2functionandsuffixexactunchanged. No altered weights/normalization/attention oracceptancetolerances.",
+  "qualification": "Final full-logitbytes mustmatchpristinebuild20 perbatch/sequentialpath andbothrepeats beforetraceinterpretation. Timinginvalidwhenenabled."
+}

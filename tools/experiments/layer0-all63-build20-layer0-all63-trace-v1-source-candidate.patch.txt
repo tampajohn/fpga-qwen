@@ -1,0 +1,123 @@
+--- a/engine/core.cpp
++++ b/engine/core.cpp
+@@ -13,6 +13,10 @@
+ #include <cstring>
+ #include <fcntl.h>
+ #include <fstream>
++#include <cstdlib>
++#include <filesystem>
++#include <iomanip>
++#include <sstream>
+ #include <limits>
+ #include <map>
+ #include <mutex>
+@@ -116,6 +120,54 @@
+     ~Mapping(){if(data!=MAP_FAILED)munmap(data,length);}
+ };
+ struct Tensor {int rows=0,cols=0;const Half* half=nullptr;const float* norm=nullptr;std::vector<float> wide;};
++
++// Observational layer0-only tracing. No operands are changed. Each logical row
++// gets its own file so batch63 and sequential STEP captures share a schema.
++std::atomic<unsigned long long> layer0_trace_sequence{0};
++thread_local std::filesystem::path layer0_trace_current;
++struct Layer0All63Trace {
++    bool enabled=false;
++    int base=0,rows=0;
++    std::filesystem::path directory;
++    std::ofstream manifest;
++    static std::string number(unsigned long long n,int width) {
++        std::ostringstream out;out<<std::setw(width)<<std::setfill('0')<<n;return out.str();
++    }
++    Layer0All63Trace(int position,int batch):base(position) {
++        const char* path=std::getenv("QWEN_LAYER0_TRACE_DIR");
++        if(!path || !*path || position>=63 || batch<=0)return;
++        rows=std::min(batch,63-position);
++        const std::filesystem::path root(path);std::filesystem::create_directories(root);
++        if(position==0) {
++            layer0_trace_current=root/("capture-"+number(layer0_trace_sequence.fetch_add(1),6));
++            require(std::filesystem::create_directory(layer0_trace_current),"Layer0 trace capture exists");
++        }
++        require(!layer0_trace_current.empty() && layer0_trace_current.parent_path()==root,"Layer0 trace requires position0 start");
++        directory=layer0_trace_current;manifest.open(directory/"manifest.jsonl",std::ios::out|std::ios::app);
++        require(bool(manifest),"Cannot create layer0 manifest");enabled=true;
++        manifest<<"{\"kind\":\"chunk_start\",\"base\":"<<base<<",\"batch\":"<<batch<<",\"rows\":"<<rows<<"}\n";
++        manifest.flush();require(bool(manifest),"Layer0 header write failed");
++    }
++    void write(const char* phase,const float* data,int stride) {
++        if(!enabled)return;
++        for(int row=0;row<rows;++row) {
++            const std::string file="row-"+number(base+row,3)+"-"+phase+".f32";
++            require(!std::filesystem::exists(directory/file),"Layer0 tensor exists");
++            std::ofstream out(directory/file,std::ios::binary|std::ios::out|std::ios::trunc);
++            require(bool(out),"Cannot create layer0 tensor");
++            out.write(reinterpret_cast<const char*>(data+size_t(row)*stride),size_t(stride)*sizeof(float));out.close();
++            require(bool(out),"Layer0 tensor write failed");
++            manifest<<"{\"kind\":\"tensor\",\"layer\":0,\"position\":"<<base+row<<",\"phase\":\""<<phase
++                    <<"\",\"file\":\""<<file<<"\",\"elements\":"<<stride<<",\"bytes\":"<<size_t(stride)*sizeof(float)
++                    <<",\"dtype\":\"float32\",\"byte_order\":\"little\"}\n";
++        }
++        manifest.flush();require(bool(manifest),"Layer0 manifest write failed");
++    }
++    void finish() {
++        if(enabled){manifest<<"{\"kind\":\"chunk_complete\",\"base\":"<<base<<",\"rows\":"<<rows
++            <<",\"all63_complete\":"<<(base+rows==63?"true":"false")<<"}\n";manifest.flush();require(bool(manifest),"Layer0 completion write failed");}
++    }
++};
+ float dot(const float* x,const Half* w,int n) {
+     float32x4_t a=vdupq_n_f32(0),b=a;
+     for(int j=0;j<n;j+=8) {
+@@ -351,6 +403,7 @@
+     // Logical positions and visible context are unchanged; there is no eviction.
+     size_t cache_offset(int layer,int position,int head=0)const {return ((size_t(layer)*K+head)*options.context+position)*D;}
+     void chunk(const int* ids,int batch,Pool& pool) {
++        Layer0All63Trace trace(pos,batch);
+         x.resize(size_t(batch)*H);h.resize(x.size());q.resize(size_t(batch)*Q*D);k.resize(size_t(batch)*K*D);v.resize(k.size());
+         attended.resize(q.size());residual.resize(x.size());gate.resize(size_t(batch)*F);up.resize(gate.size());
+         half_gate.resize(gate.size());tanh_gate.resize(gate.size());
+@@ -381,9 +434,11 @@
+         }
+         const Half* embeddings=tensor("model.embed_tokens.weight").half;
+         for(int b=0;b<batch;++b)for(int j=0;j<H;++j)x[b*H+j]=embeddings[size_t(ids[b])*H+j];
++        trace.write("embedding",x.data(),H);
+         for(int layer=0;layer<L;++layer){std::string p="model.layers."+std::to_string(layer)+".";
+             const float* nw=tensor(p+"input_layernorm.weight").norm;
+             for(int b=0;b<batch;++b)norm(x.data()+b*H,nw,h.data()+b*H,H);
++            if(layer==0)trace.write("input_norm_h",h.data(),H);
+             if(batch==1) {
+                 project_group<3>({&tensor(p+"self_attn.q_proj.weight"),&tensor(p+"self_attn.k_proj.weight"),&tensor(p+"self_attn.v_proj.weight")},
+                                  h.data(),{q.data(),k.data(),v.data()},pool);
+@@ -392,10 +447,15 @@
+                 project(tensor(p+"self_attn.k_proj.weight"),h.data(),k.data(),batch,pool);
+                 project(tensor(p+"self_attn.v_proj.weight"),h.data(),v.data(),batch,pool);
+             }
++            std::vector<float> trace_q_norm,trace_k_norm;
++            if(layer==0 && trace.enabled) {
++                trace.write("q_projection",q.data(),Q*D);trace.write("k_projection",k.data(),K*D);trace.write("v_projection",v.data(),K*D);
++                trace_q_norm.resize(size_t(batch)*Q*D);trace_k_norm.resize(size_t(batch)*K*D);
++            }
+             const float* qn=tensor(p+"self_attn.q_norm.weight").norm;const float* kn=tensor(p+"self_attn.k_norm.weight").norm;
+             for(int b=0;b<batch;++b){const float* cs=cosines.data()+(pos+b)*64;const float* sn=sines.data()+(pos+b)*64;
+-                for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);rope(a,cs,sn);}
+-                for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);rope(a,cs,sn);}
++                for(int head=0;head<Q;++head){float* a=q.data()+(b*Q+head)*D;norm(a,qn,a,D);if(layer==0 && trace.enabled)std::copy_n(a,D,trace_q_norm.data()+(size_t(b)*Q+head)*D);rope(a,cs,sn);}
++                for(int head=0;head<K;++head){float* a=k.data()+(b*K+head)*D;norm(a,kn,a,D);if(layer==0 && trace.enabled)std::copy_n(a,D,trace_k_norm.data()+(size_t(b)*K+head)*D);rope(a,cs,sn);}
+                 // Heads are no longer adjacent for a single token. Convert
+                 // canonical K/V once at their original logical head/position.
+                 for(int head=0;head<K;++head) {
+@@ -403,6 +463,16 @@
+                     const size_t src=(size_t(b)*K+head)*D;
+                     for(int j=0;j<D;++j){keys[dst+j]=Half(k[src+j]);values[dst+j]=Half(v[src+j]);}
+                 }
++            }
++            if(layer==0 && trace.enabled) {
++                trace.write("q_post_norm",trace_q_norm.data(),Q*D);trace.write("k_post_norm",trace_k_norm.data(),K*D);
++                trace.write("q_rope",q.data(),Q*D);trace.write("k_rope",k.data(),K*D);
++                std::vector<float> trace_keys(size_t(trace.rows)*K*D),trace_values(trace_keys.size());
++                for(int row=0;row<trace.rows;++row)for(int head=0;head<K;++head)for(int j=0;j<D;++j) {
++                    const size_t offset=cache_offset(0,pos+row,head)+j,index=(size_t(row)*K+head)*D+j;
++                    trace_keys[index]=float(keys[offset]);trace_values[index]=float(values[offset]);
++                }
++                trace.write("canonical_keys",trace_keys.data(),K*D);trace.write("canonical_values",trace_values.data(),K*D);trace.finish();
+             }
+             if(batch>1) {
+                 // One item owns two adjacent token rows and their GQA head pair.

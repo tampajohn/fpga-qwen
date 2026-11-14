@@ -112,3 +112,40 @@ to these historical trace artifacts.
 This command repeats diagnostic subkernel arithmetic only, with a fresh output;
 it performs no network inference, build or timing. The completed v1 report is
 preserved without overwriting it.
+
+## Completed all63 observation: native path divergence begins at projection
+
+The new [native capture](../reports/native-cpu-layer0-all63-native-capture.json)
+records all 63 rows of layer 0, with 11 phases per row. Its batch and sequential
+paths each match pristine build20 full-vocabulary outputs at contexts 63 and 64,
+across both repeats; all recorded phase bytes also repeat exactly. The separate
+[independent oracle capture](../reports/native-cpu-layer0-all63-oracle-capture.json)
+records the same 693 vectors and exactly matches its persisted original final
+logits. These are **instrumentation identity checks**, not new passes of the
+native absolute numerical gate. The existing 63/64 failures remain open.
+
+The [native batch-versus-sequential analysis](../reports/native-cpu-layer0-all63-native-analysis.json)
+finds identical embedding and input-normalized vectors across every row. The
+first observed divergence is the matrix projection stage. Over all rows, K
+projection RMS difference is 3.224e-7; after K normalization it is 1.401e-5, and
+after RoPE it remains 1.401e-5. Canonical FP16 K RMS difference is 4.935e-5,
+with 220 of 64512 elements differing. V projection RMS difference is 9.545e-8;
+canonical V differs in 330 elements, with RMS 2.675e-6. All four native K/V casts
+across the full history exactly reproduce their captured canonical values.
+
+These observations isolate the first native-path divergence to projection on
+identical normalized inputs. They show normalization and rounding change the
+magnitude and sparsity of those differences; they do not establish which path
+is closer to the independent oracle, nor explain the final-logit failure by
+themselves. The prepared matched native/oracle analysis will compare all phases
+and identify numerically different FP16 bins, including exact adjacent-bin
+midpoints. No further arithmetic candidate is justified merely by these local
+RMS changes. Earlier projection and normalization fixes that failed 2048 remain
+rejected.
+
+The [provenance inventory](../reports/native-cpu-layer0-all63-provenance.json)
+archives source/build records and executed helper snapshots. Capture summaries
+omit raw tensor files and repetitive tensor-hash inventories; they retain the
+SHA256 of each complete local execution report. The native analysis preserves
+all per-position metrics. This work changed no serving code, oracle tolerance,
+release status, or performance claim.

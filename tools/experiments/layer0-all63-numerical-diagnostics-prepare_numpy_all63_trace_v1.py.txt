@@ -1,0 +1,38 @@
+"""Source-only generation: layer0 all63 observational independent oracle."""
+from pathlib import Path
+import hashlib,json,difflib
+ROOT=Path(__file__).resolve().parents[3]; here=Path(__file__).parent
+original=ROOT/'tests/test_full_model.py'; text=original.read_text()
+base=text[text.index('class NumpyQwen:'):text.index('\n\nclass FullModelTests')]; s=base
+s=s.replace('        self.cache = []\n\n    def reset', '''        self.cache = []
+        self.trace_rows = {}
+
+    def record(self, name, layer, value):
+        if layer == 0 and len(self.cache) < 63:
+            self.trace_rows[(len(self.cache),name)] = value.copy()
+        return value
+
+    def reset''',1)
+s=s.replace("        x = w['model.embed_tokens.weight'][token].copy()", "        x = w['model.embed_tokens.weight'][token].copy()\n        self.record('embedding',0,x)")
+s=s.replace("            h = norm(x, weight('input_layernorm'))", "            h = norm(x, weight('input_layernorm'))\n            self.record('input_norm_h',layer,h)")
+for letter,heads in [('q',16),('k',8)]:
+    old=f"            {letter} = rope(norm((weight('self_attn.{letter}_proj') @ h).reshape({heads}, 128), weight('self_attn.{letter}_norm')))"
+    new=f"            {letter} = rope(self.record('{letter}_post_norm',layer,norm(self.record('{letter}_projection',layer,(weight('self_attn.{letter}_proj') @ h).reshape({heads}, 128)), weight('self_attn.{letter}_norm'))))"
+    assert old in s; s=s.replace(old,new)
+s=s.replace("            v = (weight('self_attn.v_proj') @ h).reshape(8, 128)", "            v = (weight('self_attn.v_proj') @ h).reshape(8, 128)\n            self.record('v_projection',layer,v)\n            self.record('q_rope',layer,q)\n            self.record('k_rope',layer,k)")
+s=s.replace('            payload.append((k, v))', "            self.record('canonical_keys',layer,k)\n            self.record('canonical_values',layer,v)\n            payload.append((k, v))")
+preamble="""# Observation-only original oracle arithmetic, no evaluation in generator.
+import os
+os.environ['VECLIB_MAXIMUM_THREADS']='4'
+os.environ['OPENBLAS_NUM_THREADS']='4'
+import sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[3]
+sys.path.insert(0,str(ROOT))
+import numpy as np
+from tools.experiment import read_header
+
+"""
+out=here/'numpy_all63_trace_oracle_v1.py'; assert not out.exists();out.write_text(preamble+s+'\n')
+(here/'numpy_all63_trace_oracle_v1.patch').write_text(''.join(difflib.unified_diff(base.splitlines(True),s.splitlines(True),fromfile='original',tofile='observational')))
+(here/'numpy_all63_trace_oracle_v1-provenance.json').write_text(json.dumps(dict(original=str(original),original_sha256=hashlib.sha256(original.read_bytes()).hexdigest(),diagnostic=str(out),diagnostic_sha256=hashlib.sha256(out.read_bytes()).hexdigest(),source_only=True,arithmetic='Identity-returning record copies; original expressions/evaluation order preserved.'),indent=2)+'\n')
